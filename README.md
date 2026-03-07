@@ -1,6 +1,6 @@
 # Integration of Rust and Python
 
-Here are some notes on how to wrap a Python package around fast, parallelized Rust code. Parallelization is achieved using `Rayon`.
+Some notes on how to wrap a Python package around fast, parallelized Rust code. Parallelization is achieved using `Rayon`.
 
 The example Rust code wrapped here is Conway's "Game of Life" in a simplified version of the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life).
 
