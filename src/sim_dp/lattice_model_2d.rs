@@ -7,7 +7,7 @@ use rayon::prelude::*;
 /// 
 /// Contains: grid size as width n_x and height n_y;
 /// the boolean lattice (true=alive) stored as a linear vector; 
-/// birth and surival rules as length-1 and length-2 vectors.
+/// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct LatticeModel2D<
     const MIN_BORN: usize,
