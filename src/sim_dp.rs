@@ -16,7 +16,7 @@ pub fn sim_dp(n_x: usize, n_y: usize, n_iterations: usize) {
     let t_serial_computation = monitor(
         compute_serial, n_x, n_y, n_iterations/10,
     ).as_secs_f64() * 10.0;
-    println!("  Serial: {:4.3}s", t_serial_computation);
+    println!("Serial:   {:4.3}s", t_serial_computation);
     let t_parallel_computation = monitor(
         compute_parallel, n_x, n_y, n_iterations,
     ).as_secs_f64();

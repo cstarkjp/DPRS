@@ -149,13 +149,13 @@ impl<
 /// Minimal testing.
 #[test]
 fn test_dp() {
-    let mut grid1 = LatticeModel::<2, 2, 2, 3>::initialize(200, 200).randomize();
-    let mut grid2 = grid1.clone();
+    let mut lm1 = LatticeModel::<2, 2, 2, 3>::initialize(200, 200).randomize();
+    let mut lm2 = lm1.clone();
 
     for _ in 0..100 {
-        grid1 = grid1.next_iteration_serial();
-        grid2 = grid2.next_iteration_parallel();
+        lm1 = lm1.next_iteration_serial();
+        lm2 = lm2.next_iteration_parallel();
 
-        assert_eq!(grid1, grid2);
+        assert_eq!(lm1, lm2);
     }
 }
