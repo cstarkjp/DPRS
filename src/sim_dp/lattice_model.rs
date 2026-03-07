@@ -3,7 +3,7 @@ use rand::distr::StandardUniform;
 use rand::{RngExt, rng};
 use rayon::prelude::*;
 
-/// Model domain (grid plus metadata container) in 2d.
+/// Model lattice in 2d.
 /// 
 /// Contains: grid size as width n_x and height n_y;
 /// the boolean lattice (true=alive) stored as a linear vector; 
@@ -20,7 +20,7 @@ pub struct LatticeModel<
     lattice: Vec<bool>,
 }
 
-/// Grid methods.
+/// Lattice model methods.
 impl<
     const MIN_BORN: usize,
     const MAX_BORN: usize,
