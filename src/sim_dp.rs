@@ -1,8 +1,8 @@
-mod lattice_model;
+mod lattice_model_2d;
 mod compute;
 mod monitor;
 
-use lattice_model::LatticeModel;
+use lattice_model_2d::LatticeModel2D;
 use compute::{compute_serial, compute_parallel};
 use monitor::monitor;
 
