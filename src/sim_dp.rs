@@ -1,8 +1,9 @@
 mod domain;
-use domain::Domain;
 mod compute;
-use compute::{compute_serial, compute_parallel};
 mod monitor;
+
+use domain::Domain;
+use compute::{compute_serial, compute_parallel};
 use monitor::monitor;
 
 /// Entry point to this module.
