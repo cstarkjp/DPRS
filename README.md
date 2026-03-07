@@ -12,7 +12,7 @@ Set up the Python virtual environment using `uv`:
     source .venv/bin/activate
     uv pip install maturin ipython numpy
 
-Set up Python package location:
+Set up a minimal Python package:
 
     mkdir -p python/dprs
     touch python/dprs/__init__.py
