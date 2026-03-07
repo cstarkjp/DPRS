@@ -1,3 +1,11 @@
+# Integration of Rust and Python
+
+Here are some notes on setting up a Python package wrapped around some Rust code that runs a version of Conway's "Game of Life" using `Rayon` for parallelization ([adapted from here](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life)).
+
+
+
+
+
 Create a mixed Rust-Python project:
 
     maturin new dprs -b pyo3
