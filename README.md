@@ -54,19 +54,19 @@ For this to build correctly, mod `pyproject.toml` like this:
     python-source = "python"
     module-name = "dprs.sim"
 
-Add `<path>/dprs/python` to VS Code's extra paths for Pylance.
+Add `<path>/DPRS/python` to VS Code's extra paths for Pylance.
 
 Compile the Rust and build a Python binary:
 
     maturin develop --release
 
-which writes to e.g. `<path>/dprs/.venv/lib/python3.14/site-packages/dprs/dprs.cpython-314-darwin.so`.
+which writes to e.g. `<path>/DPRS/.venv/lib/python3.14/site-packages/dprs/dprs.cpython-314-darwin.so`.
 
 Build a Python wheel:
 
     maturin build --release
 
-which writes to e.g. `<path>/dprs/target/wheels/dprs-0.1.0-cp314-cp314-macosx_11_0_arm64.whl` as well as creating `dylib` file in 'target/maturin' etc.
+which writes to e.g. `<path>/DPRS/target/wheels/dprs-0.1.0-cp314-cp314-macosx_11_0_arm64.whl` as well as creating `dylib` file in 'target/maturin' etc.
 
 Then install the Python wheel into the local venv using `uv pip`:
 
