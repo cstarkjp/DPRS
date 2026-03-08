@@ -20,7 +20,7 @@ pub fn sim_dp(n_x: usize, n_y: usize, n_iterations: usize) -> Vec<bool> {
     let (t_parallel_computation, lattice,) = monitor(
         compute_parallel, n_x, n_y, n_iterations, 1,
     );
-    println!("Parallel: {:4.3}s", t_serial_computation);
+    println!("Parallel: {:4.3}s", t_parallel_computation);
     println!("Speedup => {:.2}x", t_serial_computation/t_parallel_computation);
     println!();
 

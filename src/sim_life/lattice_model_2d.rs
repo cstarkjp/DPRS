@@ -9,25 +9,14 @@ use rayon::prelude::*;
 /// the boolean lattice (true=alive) stored as a linear vector; 
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel2D<
-    const MIN_BORN: usize,
-    const MAX_BORN: usize,
-    const MIN_SURVIVE: usize,
-    const MAX_SURVIVE: usize,
-> {
+pub struct LatticeModel2D {
     n_x: usize,
     n_y: usize,
-    lattice: Vec<bool>,
+    pub lattice: Vec<bool>,
 }
 
 /// Lattice model methods.
-impl<
-    const MIN_BORN: usize,
-    const MAX_BORN: usize,
-    const MIN_SURVIVE: usize,
-    const MAX_SURVIVE: usize,
-> LatticeModel2D<MIN_BORN, MAX_BORN, MIN_SURVIVE, MAX_SURVIVE>
-{
+impl LatticeModel2D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn initialize(n_x: usize, n_y: usize,) -> Self {
@@ -107,9 +96,9 @@ impl<
         let n_alive_neighbors = self.n_alive_neighbors(x, y);
 
         if self.is_alive(x, y) {
-            (MIN_SURVIVE..=MAX_SURVIVE).contains(&n_alive_neighbors)
+            (2..=3).contains(&n_alive_neighbors)
         } else {
-            (MIN_BORN..=MAX_BORN).contains(&n_alive_neighbors)
+            (2..=2).contains(&n_alive_neighbors)
         }
     }
 
@@ -144,8 +133,8 @@ impl<
 
 /// Minimal testing.
 #[test]
-fn test_dp() {
-    let mut lm1 = LatticeModel2D::<2, 2, 2, 3>::initialize(200, 200).randomize();
+fn test_life() {
+    let mut lm1 = LatticeModel2D::initialize(200, 200).randomize();
     let mut lm2 = lm1.clone();
 
     for _ in 0..100 {

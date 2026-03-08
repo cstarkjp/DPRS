@@ -24,10 +24,10 @@ mod sim {
     }
 
     #[pyfunction]
-    fn life(x: usize, y: usize, n: usize) -> PyResult<String> {
+    fn life(x: usize, y: usize, n: usize) -> PyResult<Vec<bool>> {
         println!("life: {x} {y} {n}");
-        sim_life(x, y, n);
-        Ok("Done".to_string())
-    }
+        let lattice = sim_life(x, y, n);
 
+        Ok(lattice)
+    }
 }

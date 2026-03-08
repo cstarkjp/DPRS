@@ -1,14 +1,15 @@
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use crate::sim_life::LatticeModel2D;
 
 /// Run a simulation and record how long the computation takes.
 pub fn monitor(
-    compute: fn(LatticeModel2D<2, 2, 2, 3>, usize) -> (), 
-    n_x: usize, n_y: usize, n_iterations: usize,
-) -> Duration {
+    compute: fn(LatticeModel2D, usize) -> Vec<bool>, 
+    n_x: usize, n_y: usize, n_iterations: usize, slow_factor: usize,
+) -> (f64, Vec<bool>) {
     let time = Instant::now();
     let grid = LatticeModel2D::initialize(n_x, n_y).randomize();
-    compute(grid, n_iterations);
+    let lattice = compute(grid, n_iterations/slow_factor);
+    let duration = time.elapsed().as_secs_f64() * (slow_factor as f64);
 
-    time.elapsed()
+    (duration, lattice)
 }
