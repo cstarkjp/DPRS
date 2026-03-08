@@ -48,7 +48,7 @@ Implement `src/lib.rs`. The Python module can follow this naming pattern:
             Ok("Done".to_string())
         }
         #[pyfunction]
-        fn pcp(x: usize, y: usize, n: usize) -> PyResult<String> {
+        fn life(x: usize, y: usize, n: usize) -> PyResult<String> {
             println!("{x} {y} {n}");
             run(x, y, n);
             Ok("Done".to_string())

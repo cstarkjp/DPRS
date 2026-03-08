@@ -1,4 +1,4 @@
-use crate::sim_pcp::LatticeModel2D;
+use crate::sim_life::LatticeModel2D;
 
 /// Run a simulation for n_iterations using serial processing.
 pub fn compute_serial(lattice_model: LatticeModel2D<2, 2, 2, 3>, n_iterations: usize) {

@@ -12,7 +12,7 @@ use rayon::prelude::*;
 pub struct LatticeModel2D {
     n_x: usize,
     n_y: usize,
-    lattice: Vec<bool>,
+    pub lattice: Vec<bool>,
 }
 
 /// Lattice model methods.

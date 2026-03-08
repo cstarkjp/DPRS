@@ -8,7 +8,10 @@ edition = "2024"
 name = "dprs"
 crate-type = ["cdylib"]
 
+# Latest coupled dependency for PyO3 and numpy is 0.28.0/0.28.0
 [dependencies]
-pyo3 = "0.27.0"
+pyo3 = "0.28.0"
+# numpy = "0.28.0"
+# ndarray = "0.17.2"
 rand = "0.10.0"
 rayon = "1.11.0"
