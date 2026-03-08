@@ -16,17 +16,23 @@ mod sim {
     use super::*;
 
     #[pyfunction]
-    fn dp(x: usize, y: usize, n: usize) -> PyResult<Vec<bool>> {
-        println!("dp: {x} {y} {n}");
-        let lattice = sim_dp(x, y, n);
+    fn dp(
+        x: usize, y: usize, n: usize,
+        s: usize, n_threads: usize,
+    ) -> PyResult<Vec<bool>> {
+        println!("dp: {x} {y} {n} {s} {n_threads}");
+        let lattice = sim_dp(x, y, n, s, n_threads,);
 
         Ok(lattice)
     }
 
     #[pyfunction]
-    fn life(x: usize, y: usize, n: usize) -> PyResult<Vec<bool>> {
-        println!("life: {x} {y} {n}");
-        let lattice = sim_life(x, y, n);
+    fn life(
+        x: usize, y: usize, n: usize,
+        s: usize, n_threads: usize,
+    ) -> PyResult<Vec<bool>> {
+        println!("life: {x} {y} {n} {s} {n_threads}");
+        let lattice = sim_life(x, y, n,  s, n_threads,);
 
         Ok(lattice)
     }

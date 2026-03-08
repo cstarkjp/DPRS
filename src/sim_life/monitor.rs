@@ -5,9 +5,9 @@ use crate::sim_life::LatticeModel2D;
 pub fn monitor(
     compute: fn(LatticeModel2D, usize) -> Vec<bool>, 
     n_x: usize, n_y: usize, n_iterations: usize, slow_factor: usize,
+    n_threads: usize,
 ) -> (f64, Vec<bool>) {
     let grid = LatticeModel2D::initialize(n_x, n_y).randomize();
-    let n_threads = 16;
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(n_threads)
         .build()
