@@ -1,7 +1,7 @@
-use crate::sim_dp::LatticeModel2D;
+use crate::sim_pcp::LatticeModel2D;
 
 /// Run a simulation for n_iterations using serial processing.
-pub fn compute_serial(lattice_model: LatticeModel2D, n_iterations: usize) {
+pub fn compute_serial(lattice_model: LatticeModel2D<2, 2, 2, 3>, n_iterations: usize) {
     let mut lattice_model = lattice_model;
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_serial();
@@ -9,7 +9,7 @@ pub fn compute_serial(lattice_model: LatticeModel2D, n_iterations: usize) {
 }
 
 /// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel(lattice_model: LatticeModel2D, n_iterations: usize) {
+pub fn compute_parallel(lattice_model: LatticeModel2D<2, 2, 2, 3>, n_iterations: usize) {
     let mut lattice_model = lattice_model;
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_parallel();
