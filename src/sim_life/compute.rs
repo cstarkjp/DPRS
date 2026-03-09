@@ -1,9 +1,7 @@
 use crate::sim_life::LatticeModel2D;
 
 /// Run a simulation for n_iterations using serial processing.
-pub fn compute_serial(
-    mut lattice_model: LatticeModel2D, n_iterations: usize,
-) -> Vec<bool> {
+pub fn compute_serial(mut lattice_model: LatticeModel2D, n_iterations: usize) -> Vec<bool> {
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_serial();
     }
@@ -12,11 +10,21 @@ pub fn compute_serial(
 }
 
 /// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel(
-    mut lattice_model: LatticeModel2D, n_iterations: usize,
-) -> Vec<bool> {
+pub fn compute_parallel(mut lattice_model: LatticeModel2D, n_iterations: usize) -> Vec<bool> {
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_parallel();
+    }
+
+    lattice_model.lattice
+}
+
+/// Run a simulation for n_iterations using parallel processing.
+pub fn compute_parallel_chunked(
+    mut lattice_model: LatticeModel2D,
+    n_iterations: usize,
+) -> Vec<bool> {
+    for _ in 0..n_iterations {
+        lattice_model = lattice_model.next_iteration_parallel_chunked();
     }
 
     lattice_model.lattice

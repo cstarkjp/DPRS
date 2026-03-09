@@ -77,13 +77,71 @@ impl LatticeModel2D {
         self.next_grid(new_lattice)
     }
 
+    /// Calculate the next cells for just one row
+    ///
+    /// This zips across the row (unless it is the top or bottom row) using
+    /// windows onto the lattice for the cells in the row above, those in this
+    /// row, and those in the row below
+    ///
+    /// By using iterators we can guarantee safe access without (unnecessary) range checks.
     pub fn next_row(&self, row: usize, lattice_row: &mut [bool]) {
         if row == 0 || row == self.n_y - 1 {
             return;
         }
-        for (x, lattice_cell) in lattice_row.iter_mut().enumerate() {
-            *lattice_cell = self.will_succeed(x, row);
+
+        // Find the cell that is up and to the left
+        let above_start = (row - 1) * self.n_x;
+
+        // Iterate over every cell in the row skipping the first and last
+        //
+        // With each also provided three windows on the lattice each of 3 bools
+        //
+        //   the first is starting at 'above_start', i.e. above left through to above right
+        //   the second is starting just left of this cell through to the one to the right
+        //   the third is starting at two rows down from'above_start', i.e. below left through to below right
+        for (lattice_cell, (from_up_left, (from_left, from_below_left))) in
+            lattice_row.iter_mut().skip(1).take(self.n_x - 2).zip(
+                self.lattice.split_at(above_start).1.windows(3).zip(
+                    self.lattice
+                        .split_at(above_start + self.n_x)
+                        .1
+                        .windows(3)
+                        .zip(
+                            self.lattice
+                                .split_at(above_start + 2 * self.n_x)
+                                .1
+                                .windows(3),
+                        ),
+                ),
+            )
+        {
+            // This actually just converts &[bool] of length three to &[bool;3] for the function call - type munging
+            //
+            // I suspect that this is optimized out completely as it will check the length is 3, and it will no the length is 3 from the window creation.
+            let upper_row = from_up_left.as_array::<3>().unwrap();
+            let middle_row = from_left.as_array::<3>().unwrap();
+            let lower_row = from_below_left.as_array::<3>().unwrap();
+
+            // Count the neighbors - the cells in the three *arrays* that we are using
+            let n_alive_neighbors = Self::count_neighbours(upper_row, middle_row, lower_row);
+            *lattice_cell = {
+                if middle_row[1] {
+                    (2..=3).contains(&n_alive_neighbors)
+                } else {
+                    (2..=2).contains(&n_alive_neighbors)
+                }
+            };
         }
+    }
+
+    /// Count the neighbours given the three rows of cells
+    ///
+    /// As they are arrays there needs to be no range checking (not that there is in release anyway...)
+    fn count_neighbours(above: &[bool; 3], middle: &[bool; 3], below: &[bool; 3]) -> usize {
+        above.iter().map(|b| *b as usize).sum::<usize>()
+            + below.iter().map(|b| *b as usize).sum::<usize>()
+            + { if middle[0] { 1 } else { 0 } }
+            + { if middle[2] { 1 } else { 0 } }
     }
 
     /// Evolve the grid by one iteration using parallel processing.
