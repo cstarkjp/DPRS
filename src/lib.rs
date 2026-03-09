@@ -58,9 +58,7 @@ mod sim {
                     "n_x" => p.n_x = value,
                     "n_y" => {
                         p.n_y = value;
-                        if p.dim==Dimension::D1 {
-                            p.dim = Dimension::D2;
-                        }
+                        if p.dim==Dimension::D1 { p.dim = Dimension::D2; }
                     },
                     "n_z" => {
                         p.n_z = value;
