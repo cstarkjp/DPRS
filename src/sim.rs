@@ -5,8 +5,6 @@
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 // use pyo3::ffi::PyObject;
-// use pyo3::types::PyTuple;
-// use std::collections::HashMap;
 
 mod life;
 use life::sim_life;
@@ -34,17 +32,6 @@ struct Parameters {
 #[derive(PartialEq, Debug, Clone)]
 enum Dimension { D1, D2, D3, }
 
-// use std::str::FromStr;
-// use std::fmt::Debug;
-// fn parse_and_unwrap<T>(s: &str) -> T
-// where
-//     T: FromStr,
-//     T::Err: Debug,
-// {
-//     s.parse::<T>().unwrap() 
-// }
-
-
 /// Python wrapping around DP, "Game of Life" lattice models.
 #[pymodule]
 pub mod sim {
@@ -71,7 +58,7 @@ pub mod sim {
         if let Some(dict) = kwargs {
             for (key, value) in dict {
                 // Override parameter defaults per Py kwargs dict
-                // This should probably be done using a hashmap.
+                // This should probably be done using a PyObject.
                 let v_float = value
                     .to_string().as_str().parse::<f64>().unwrap_or(0.0);
                 let v_uint = value

@@ -76,17 +76,12 @@ pub fn compute(
 
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations/sample_rate + 1;
-    // Would be more efficient to pre-allocate
     let mut lattices: Vec<Vec<bool>> = Vec::new();
-        // = vec![vec![false; model.n_cells()]; n_lattices];
 
     // Evolve the lattice for n_iterations
 
     // Record the initial lattice
-    // let i_lattice = 0/sample_rate + 1;
-    // lattices[i_lattice] = model.lattice.clone();
     lattices.push(model.lattice.clone());
-    // println!("Lattices:  {}  {}/{}", 0, 1, n_lattices);
     for i in 1..(n_iterations+1) {
         if do_parallel {
             model = model.next_iteration_parallel();
@@ -94,10 +89,7 @@ pub fn compute(
             model = model.next_iteration_serial();
         }
         if i % sample_rate == 0 {
-            // let i_lattice = i/sample_rate + 1;
-            // lattices[i_lattice] = model.lattice.clone();
             lattices.push(model.lattice.clone());
-            // println!("Lattices:  {}  {}/{}", i, i_lattice, n_lattices);
         }
     }
     println!("n_lattices:  {} = {}", lattices.len(), n_lattices);
