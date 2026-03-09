@@ -9,7 +9,7 @@ use rayon::prelude::*;
 ///    - grid size as width n_x and height n_y;
 ///    - the boolean lattice stored as a linear vector.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct Model2D {
+pub struct Model1D {
     n_x: usize,
     n_y: usize,
     n_z: usize,  // not going to be used
@@ -20,7 +20,7 @@ pub struct Model2D {
 }
 
 /// Lattice model methods.
-impl Model2D {
+impl Model1D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn initialize(
@@ -133,7 +133,7 @@ impl Model2D {
 /// Minimal testing.
 #[test]
 fn test_dp() {
-    let mut model1 = Model2D::initialize(200, 200, 1,).randomize();
+    let mut model1 = Model1D::initialize(200, 200, 1,).randomize();
     let mut model2 = model1.clone();
 
     for _ in 0..100 {
