@@ -8,9 +8,9 @@ pub fn sim_dp(p: Parameters) -> Vec<bool> {
     println!();
     println!("Dimension:   {:?}", p.dim);
     println!("Grid shape:  {:?}", (p.n_x, p.n_y, p.n_z));
-    println!("Iterations:  n={}", p.n_iterations);
-    println!("Slow factor: s={}", p.slow_factor);
-    println!("Threads: n_threads={}\n", p.n_threads);
+    println!("Iterations:  {}", p.n_iterations);
+    println!("Serial skip: {}", p.serial_skip);
+    println!("Threads:     {}\n", p.n_threads);
 
     let (t_serial, _,) = run_simulation(&p, false,);
     println!("Serial:   {:4.3}s", t_serial);
@@ -33,9 +33,9 @@ fn run_simulation(p: &Parameters, do_parallel: bool,) -> (f64, Vec<bool>) {
         .unwrap();
     let time = Instant::now();
     let lattice = pool.install(
-        || compute(grid, p.n_iterations/p.slow_factor, do_parallel,)
+        || compute(grid, p.n_iterations/p.serial_skip, do_parallel,)
     );
-    let duration = time.elapsed().as_secs_f64() * (p.slow_factor as f64);
+    let duration = time.elapsed().as_secs_f64() * (p.serial_skip as f64);
 
     (duration, lattice)
 }

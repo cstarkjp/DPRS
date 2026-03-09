@@ -17,7 +17,7 @@ pub struct Parameters {
     pub n_y: usize,
     pub n_z: usize,
     pub n_iterations: usize,
-    pub slow_factor: usize,
+    pub serial_skip: usize,
     pub n_threads: usize,
 }
 
@@ -41,7 +41,7 @@ mod sim {
             n_y: 1,
             n_z: 1,
             n_iterations: 100,
-            slow_factor: 1,
+            serial_skip: 1,
             n_threads: 16,
         };
 
@@ -66,7 +66,7 @@ mod sim {
                         p.dim = Dimension::D3;
                     },
                     "n_iterations" => p.n_iterations = value_,
-                    "slow_factor" => p.slow_factor = value_,
+                    "serial_skip" => p.serial_skip = value_,
                     "n_threads" => p.n_threads = value_,
                     _ => {},
                 }
