@@ -1,12 +1,11 @@
-use std::iter::repeat;
 use rand::distr::StandardUniform;
 use rand::{RngExt, rng};
 use rayon::prelude::*;
 
 /// Model lattice in 2d.
-/// 
+///
 /// Contains: grid size as width n_x and height n_y;
-/// the boolean lattice (true=alive) stored as a linear vector; 
+/// the boolean lattice (true=alive) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct LatticeModel2D {
@@ -17,27 +16,45 @@ pub struct LatticeModel2D {
 
 /// Lattice model methods.
 impl LatticeModel2D {
+    fn grid_size(x: usize, y: usize) -> usize {
+        x * y
+    }
+
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn initialize(n_x: usize, n_y: usize,) -> Self {
+    pub fn initialize(n_x: usize, n_y: usize) -> Self {
         Self {
             n_x,
             n_y,
-            lattice: repeat(false).take(n_x * n_y).collect(),
+            lattice: vec![false; Self::grid_size(n_x, n_y)],
         }
     }
 
     /// Count the total number of cells in the grid.
-    fn n_cells(&self) -> usize { self.n_x * self.n_y }
+    fn n_cells(&self) -> usize {
+        self.n_x * self.n_y
+    }
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn randomize(&self) -> Self {
-        let new_lattice = rng()
+        let mut new_lattice: Vec<bool> = rng()
             .sample_iter(&StandardUniform)
-            .take(self.n_cells())
+            .take(self.lattice.len())
             .collect();
 
+        let x = self.n_x;
+        let y = self.n_y;
+        for c in new_lattice[0..x].iter_mut() {
+            *c = false;
+        }
+        for c in new_lattice[(x * (y - 1))..(x * y)].iter_mut() {
+            *c = false;
+        }
+        for c in new_lattice.chunks_exact_mut(x) {
+            c[0] = false;
+            c[x - 1] = false;
+        }
         self.next_grid(new_lattice)
     }
 
@@ -93,12 +110,16 @@ impl LatticeModel2D {
     /// Decide if this (x,y) cell, if alive, survives or gives birth,
     /// i.e., if it will "succeed" – if so, return true.
     fn will_succeed(&self, x: usize, y: usize) -> bool {
-        let n_alive_neighbors = self.n_alive_neighbors(x, y);
-
-        if self.is_alive(x, y) {
-            (2..=3).contains(&n_alive_neighbors)
+        if x == 0 || x == self.n_x - 1 || y == 0 || y == self.n_y - 1 {
+            false
         } else {
-            (2..=2).contains(&n_alive_neighbors)
+            let n_alive_neighbors = self.n_alive_neighbors(x, y);
+
+            if self.is_alive(x, y) {
+                (2..=3).contains(&n_alive_neighbors)
+            } else {
+                (2..=2).contains(&n_alive_neighbors)
+            }
         }
     }
 
@@ -106,8 +127,8 @@ impl LatticeModel2D {
     fn n_alive_neighbors(&self, x_0: usize, y_0: usize) -> usize {
         let xp1 = x_0 + 1;
         let yp1 = y_0 + 1;
-        let xm1 = x_0.wrapping_sub(1);
-        let ym1 = y_0.wrapping_sub(1);
+        let xm1 = x_0 - 1;
+        let ym1 = y_0 - 1;
         let neighbors = [
             self.is_alive(xm1, ym1),
             self.is_alive(x_0, ym1),
@@ -124,10 +145,7 @@ impl LatticeModel2D {
 
     /// Check if this cell is within bounds and alive
     fn is_alive(&self, x: usize, y: usize) -> bool {
-        // check (x,y) coordinate is within bounds
-        !(x >= self.n_x || y >= self.n_y) 
-        // and if the cell is occupied
-        && self.lattice[y * self.n_x + x]
+        self.lattice[y * self.n_x + x]
     }
 }
 
