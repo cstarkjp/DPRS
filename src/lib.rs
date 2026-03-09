@@ -20,6 +20,8 @@ mod sim {
     #[pyo3(signature = (**kwargs))]
     fn dp(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<Vec<bool>> {
         use sim_dp::{Parameters, Dimension};
+
+        // Set parameter defaults.
         let mut p = Parameters {
             dim: Dimension::D1,
             n_x: 1,
@@ -30,9 +32,13 @@ mod sim {
             n_threads: 16,
         };
 
-        // Need to implement some validation, error handling here
+        // Need to implement some validation, error handling here.
         if let Some(dict) = kwargs {
             for (key, value) in dict {
+                // Override parameter defaults per Py kwargs dict.
+                // This should probably be done using a hashmap.
+                // Also: only unsigned integers are handled for now,
+                // which obviously needs to change.
                 let value_: usize = value.to_string().as_str().parse().unwrap();
                 match key.to_string().as_str() {
                     "n_x" => p.n_x = value_,
