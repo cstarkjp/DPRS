@@ -1,6 +1,6 @@
 use std::time::Instant;
-mod lattice_model_2d;
-use lattice_model_2d::LatticeModel2D;
+mod model_2d;
+use model_2d::Model2D;
 use crate::Parameters;
 
 /// Entry point to this module.
@@ -27,7 +27,7 @@ pub fn sim_dp(params: Parameters) -> Vec<bool> {
 
 /// Run a simulation and record how long the computation takes.
 fn run_simulation(params: &Parameters, do_parallel: bool,) -> (f64, Vec<bool>) {
-    let grid = LatticeModel2D::initialize(params.n_x, params.n_y).randomize();
+    let grid = Model2D::initialize(params.n_x, params.n_y).randomize();
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(params.n_threads)
         .build()
@@ -43,18 +43,18 @@ fn run_simulation(params: &Parameters, do_parallel: bool,) -> (f64, Vec<bool>) {
 
 /// Run a simulation for n_iterations, either serially or in parallel
 pub fn compute(
-    lattice_model: LatticeModel2D, n_iterations: usize, do_parallel: bool,
+    model: Model2D, n_iterations: usize, do_parallel: bool,
 ) -> Vec<bool> {
-    let mut lattice_model = lattice_model;
+    let mut model = model;
     if do_parallel {
         for _ in 0..n_iterations {
-            lattice_model = lattice_model.next_iteration_parallel();
+            model = model.next_iteration_parallel();
         }
     } else {
         for _ in 0..n_iterations {
-            lattice_model = lattice_model.next_iteration_serial();
+            model = model.next_iteration_serial();
         }
     }
 
-    lattice_model.lattice
+    model.lattice
 }

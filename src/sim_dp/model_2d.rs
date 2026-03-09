@@ -3,20 +3,25 @@ use rand::distr::StandardUniform;
 use rand::{RngExt, rng};
 use rayon::prelude::*;
 
-/// Model lattice in 2d.
+/// Model in 2d.
 /// 
 /// Contains: grid size as width n_x and height n_y;
 /// the boolean lattice (true=alive) stored as a linear vector; 
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel2D {
+pub struct Model2D {
     n_x: usize,
     n_y: usize,
     pub lattice: Vec<bool>,
+    // pub lattices: Vec<Vec<bool>>,
 }
 
+// let mut lattice_model_history: Vec<Vec<bool>> 
+//     = vec![vec![1, 2, 3], n_iterations]
+
+
 /// Lattice model methods.
-impl LatticeModel2D {
+impl Model2D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn initialize(n_x: usize, n_y: usize,) -> Self {
@@ -134,13 +139,13 @@ impl LatticeModel2D {
 /// Minimal testing.
 #[test]
 fn test_dp() {
-    let mut lm1 = LatticeModel2D::initialize(200, 200).randomize();
-    let mut lm2 = lm1.clone();
+    let mut model1 = Model2D::initialize(200, 200).randomize();
+    let mut model2 = model1.clone();
 
     for _ in 0..100 {
-        lm1 = lm1.next_iteration_serial();
-        lm2 = lm2.next_iteration_parallel();
+        model1 = model1.next_iteration_serial();
+        model2 = model2.next_iteration_parallel();
 
-        assert_eq!(lm1, lm2);
+        assert_eq!(model1, model2);
     }
 }
