@@ -25,18 +25,16 @@ pub fn sim_dp(p: Parameters) -> Vec<bool> {
 }
 
 /// Run a simulation and record how long the computation takes.
-fn run_simulation(
-    p: &Parameters, do_parallel: bool,
-) -> (f64, Vec<bool>) {
-    let grid = 
-        LatticeModel2D::initialize(p.n_x, p.n_y).randomize();
+fn run_simulation(p: &Parameters, do_parallel: bool,) -> (f64, Vec<bool>) {
+    let grid = LatticeModel2D::initialize(p.n_x, p.n_y).randomize();
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(p.n_threads)
         .build()
         .unwrap();
     let time = Instant::now();
-    let lattice = 
-        pool.install(|| compute(grid, p.n_iterations/p.slow_factor, do_parallel,));
+    let lattice = pool.install(
+        || compute(grid, p.n_iterations/p.slow_factor, do_parallel,)
+    );
     let duration = time.elapsed().as_secs_f64() * (p.slow_factor as f64);
 
     (duration, lattice)
