@@ -67,19 +67,24 @@ impl LatticeModel2D {
         self.next_grid(new_lattice)
     }
 
-    // /// Evolve the grid by one iteration using parallel processing.
-    // pub fn next_iteration_parallel(&self) -> Self {
-    //     let mut new_lattice = vec![false; self.lattice.len()];
-    //     new_lattice
-    //         .par_chunks_mut(self.n_x)
-    //         .enumerate()
-    //         .for_each(|(r, l)| {
-    //             for (c, lc) in l.iter_mut().enumerate() {
-    //                 *lc = self.will_succeed(r, c);
-    //             }
-    //         });
-    //     self.next_grid(new_lattice)
-    // }
+    /// Evolve the grid by one iteration using parallel processing.
+    pub fn next_iteration_parallel_chunked(&self) -> Self {
+        let mut new_lattice = vec![false; self.lattice.len()];
+        new_lattice
+            .par_chunks_mut(self.n_x)
+            .enumerate()
+            .for_each(|(r, l)| self.next_row(r, l));
+        self.next_grid(new_lattice)
+    }
+
+    pub fn next_row(&self, row: usize, lattice_row: &mut [bool]) {
+        if row == 0 || row == self.n_y - 1 {
+            return;
+        }
+        for (x, lattice_cell) in lattice_row.iter_mut().enumerate() {
+            *lattice_cell = self.will_succeed(x, row);
+        }
+    }
 
     /// Evolve the grid by one iteration using parallel processing.
     pub fn next_iteration_parallel(&self) -> Self {
@@ -154,11 +159,14 @@ impl LatticeModel2D {
 fn test_life() {
     let mut lm1 = LatticeModel2D::initialize(200, 200).randomize();
     let mut lm2 = lm1.clone();
+    let mut lm3 = lm1.clone();
 
     for _ in 0..100 {
         lm1 = lm1.next_iteration_serial();
         lm2 = lm2.next_iteration_parallel();
+        lm3 = lm3.next_iteration_parallel_chunked();
 
         assert_eq!(lm1, lm2);
+        assert_eq!(lm1, lm3);
     }
 }
