@@ -1,15 +1,19 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use rand::distr::StandardUniform;
 use rand::{RngExt, rng};
 use rayon::prelude::*;
 use std::iter::repeat_n;
 
-/// Model in 2d.
+/// Model in 1d. BUT NOT YET
 /// 
 /// Contains: 
 ///    - grid size as width n_x and height n_y;
 ///    - the boolean lattice stored as a linear vector.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct Model2D {
+pub struct Model1D {
     n_x: usize,
     n_y: usize,
     n_z: usize,  // not going to be used
@@ -20,18 +24,16 @@ pub struct Model2D {
 }
 
 /// Lattice model methods.
-impl Model2D {
+impl Model1D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn initialize(
         n_x: usize, n_y: usize, n_z: usize, 
-        // n_iterations: usize,
     ) -> Self {
         Self {
             n_x,
             n_y,
             n_z,
-            // n_iterations,
             lattice: repeat_n(false, n_x * n_y).collect(),
         }
     }
@@ -56,7 +58,6 @@ impl Model2D {
             .map(|i_cell| self.is_successor_cell(i_cell))
             // .map(|i_cell| !self.lattice[i_cell])
             .collect();
-        // println!("    next_iteration_serial");
 
         self.next_grid(new_lattice)
     }
@@ -68,7 +69,6 @@ impl Model2D {
             .map(|i_cell| self.is_successor_cell(i_cell))
             // .map(|i_cell| !self.lattice[i_cell])
             .collect();
-        // println!("    next_iteration_parallel");
 
         self.next_grid(new_lattice)
     }
@@ -80,7 +80,6 @@ impl Model2D {
             .par_chunks_mut(self.n_x)
             .enumerate()
             .for_each(|(r, l)| self.next_row(r, l));
-        // println!("    next_iteration_parallel_chunked");
 
         self.next_grid(new_lattice)
     }
@@ -214,7 +213,7 @@ impl Model2D {
 /// Minimal testing.
 #[test]
 fn test_dp() {
-    let mut model1 = Model2D::initialize(200, 200, 1,).randomize();
+    let mut model1 = Model1D::initialize(200, 200, 1,).randomize();
     let mut model2 = model1.clone();
 
     for _ in 0..100 {

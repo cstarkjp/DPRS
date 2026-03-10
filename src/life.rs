@@ -1,7 +1,10 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 mod compute;
 mod lattice_model_2d;
 mod monitor;
-
 use lattice_model_2d::LatticeModel2D;
 use compute::{compute_parallel, compute_parallel_chunked, compute_serial};
 use monitor::monitor;

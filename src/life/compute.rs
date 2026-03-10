@@ -1,4 +1,8 @@
-use crate::sim::life::LatticeModel2D;
+// #![warn(missing_docs)]
+// //!
+// //!
+
+use crate::life::LatticeModel2D;
 
 /// Run a simulation for n_iterations using serial processing.
 pub fn compute_serial(

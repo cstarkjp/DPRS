@@ -1,34 +1,42 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use rand::distr::StandardUniform;
 use rand::{RngExt, rng};
 use rayon::prelude::*;
 use std::iter::repeat_n;
 
-/// Model lattice in 2d.
+/// Model in 2d.
 /// 
-/// Contains: grid size as width n_x and height n_y;
-/// the boolean lattice (true=alive) stored as a linear vector; 
-/// birth and survival rules as a set of constants.
+/// Contains: 
+///    - grid size as width n_x and height n_y;
+///    - the boolean lattice stored as a linear vector.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel2D {
+pub struct Model2D {
     n_x: usize,
     n_y: usize,
+    n_z: usize,  // not going to be used
     pub lattice: Vec<bool>,
 }
 
 /// Lattice model methods.
-impl LatticeModel2D {
+impl Model2D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn initialize(n_x: usize, n_y: usize,) -> Self {
+    pub fn initialize(
+        n_x: usize, n_y: usize, n_z: usize, 
+    ) -> Self {
         Self {
             n_x,
             n_y,
+            n_z,
             lattice: repeat_n(false, n_x * n_y).collect(),
         }
     }
 
     /// Count the total number of cells in the grid.
-    fn n_cells(&self) -> usize { self.n_x * self.n_y }
+    pub fn n_cells(&self) -> usize { self.n_x * self.n_y }
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
@@ -45,6 +53,7 @@ impl LatticeModel2D {
     pub fn next_iteration_serial(&self) -> Self {
         let new_lattice = (0..self.n_cells())
             .map(|i_cell| self.is_successor_cell(i_cell))
+            // .map(|i_cell| !self.lattice[i_cell])
             .collect();
 
         self.next_grid(new_lattice)
@@ -55,6 +64,7 @@ impl LatticeModel2D {
         let new_lattice = (0..self.n_cells())
             .into_par_iter()
             .map(|i_cell| self.is_successor_cell(i_cell))
+            // .map(|i_cell| !self.lattice[i_cell])
             .collect();
 
         self.next_grid(new_lattice)
@@ -67,6 +77,7 @@ impl LatticeModel2D {
             .par_chunks_mut(self.n_x)
             .enumerate()
             .for_each(|(r, l)| self.next_row(r, l));
+
         self.next_grid(new_lattice)
     }
 
@@ -144,6 +155,8 @@ impl LatticeModel2D {
         Self {
             n_x: self.n_x,
             n_y: self.n_y,
+            n_z: self.n_z,
+            // n_iterations: self.n_iterations,
             lattice: new_lattice,
         }
     }
@@ -196,14 +209,14 @@ impl LatticeModel2D {
 
 /// Minimal testing.
 #[test]
-fn test_life() {
-    let mut lm1 = LatticeModel2D::initialize(200, 200).randomize();
-    let mut lm2 = lm1.clone();
+fn test_dp() {
+    let mut model1 = Model2D::initialize(200, 200, 1,).randomize();
+    let mut model2 = model1.clone();
 
     for _ in 0..100 {
-        lm1 = lm1.next_iteration_serial();
-        lm2 = lm2.next_iteration_parallel();
+        model1 = model1.next_iteration_serial();
+        model2 = model2.next_iteration_parallel();
 
-        assert_eq!(lm1, lm2);
+        assert_eq!(model1, model2);
     }
 }

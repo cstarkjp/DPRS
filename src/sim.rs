@@ -5,39 +5,14 @@
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 // use pyo3::ffi::PyObject;
-
-mod life;
-use life::sim_life;
-mod dp;
-use dp::sim_dp;
-mod dp_1d;
-use dp_1d::sim_dp_1d;
-
-/// Lattice dimension, auto-computed from presence of n_y, n_z kwarg parameters.
-#[derive(PartialEq, Debug, Clone)]
-enum Dimension { D1, D2, D3, }
-
-/// Choice of processing type: will become a Py-passable parameter
-#[derive(PartialEq, Debug, Clone)]
-enum Processing { Serial, Parallel, ParallelChunked, }
-
-/// Model parameter bundle derived from Python kwarg dict.
-#[derive(Clone)]
-struct Parameters {
-    pub dim: Dimension,
-    pub n_x: usize,
-    pub n_y: usize,
-    pub n_z: usize,
-    pub p: f64,
-    pub n_iterations: usize,
-    pub sample_rate: usize,
-    pub serial_skip: usize,
-    pub n_threads: usize,
-}
+use crate::parameters::{Parameters, Dimension, Processing};
+use crate::life::sim_life;
+use crate::dp::sim_dp;
+use crate::dp_1d::sim_dp_1d;
 
 /// Python wrapping around DP, "Game of Life" lattice models.
 #[pymodule]
-pub mod sim {
+mod sim {
     use super::*;
 
     /// In development: directed percolation in 1d/2d/3d.
@@ -53,8 +28,9 @@ pub mod sim {
             p: 0.5,
             n_iterations: 1,
             sample_rate: 10,
-            serial_skip: 1,
+            processing: Processing::ParallelChunked,
             n_threads: 1,
+            serial_skip: 1,
         };
 
         // Need to implement some validation, error handling here.
@@ -112,8 +88,9 @@ pub mod sim {
             p: 0.5,
             n_iterations: 1,
             sample_rate: 10,
-            serial_skip: 1,
+            processing: Processing::ParallelChunked,
             n_threads: 1,
+            serial_skip: 1,
         };
 
         // Need to implement some validation, error handling here.

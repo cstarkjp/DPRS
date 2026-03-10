@@ -1,7 +1,11 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use std::time::Instant;
 mod model_1d;
 use model_1d::Model1D;
-use crate::sim::{Parameters, Processing};
+use crate::parameters::{Parameters, Processing};
 
 /// Entry point to this module.
 pub fn sim_dp_1d(params: Parameters) -> (usize, Vec<Vec<bool>>) {
