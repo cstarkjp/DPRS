@@ -1,41 +1,37 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use crate::life::LatticeModel2D;
+use crate::life::{LatticeModel2D, Model2D};
 
 /// Run a simulation for n_iterations using serial processing.
-pub fn compute_serial(
-    mut lattice_model: LatticeModel2D,
+pub fn compute_serial<M: Model2D>(
+    mut lattice_model: LatticeModel2D<M>,
     n_iterations: usize,
-) -> Vec<bool> {
+) -> LatticeModel2D<M> {
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_serial();
     }
 
-    lattice_model.lattice
+    lattice_model
 }
 
 /// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel(
-    mut lattice_model: LatticeModel2D, 
+pub fn compute_parallel<M: Model2D>(
+    mut lattice_model: LatticeModel2D<M>,
     n_iterations: usize,
-) -> Vec<bool> {
+) -> LatticeModel2D<M> {
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_parallel();
     }
 
-    lattice_model.lattice
+    lattice_model
 }
 
 /// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel_chunked(
-    mut lattice_model: LatticeModel2D,
+pub fn compute_parallel_chunked<M: Model2D>(
+    mut lattice_model: LatticeModel2D<M>,
     n_iterations: usize,
-) -> Vec<bool> {
+) -> LatticeModel2D<M> {
     for _ in 0..n_iterations {
         lattice_model = lattice_model.next_iteration_parallel_chunked();
     }
 
-    lattice_model.lattice
+    lattice_model
 }
