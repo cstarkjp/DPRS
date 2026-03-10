@@ -4,11 +4,19 @@
 
 /// Lattice dimension, auto-computed from presence of n_y, n_z kwarg parameters.
 #[derive(PartialEq, Debug, Clone)]
-pub enum Dimension { D1, D2, D3, }
+pub enum Dimension {
+    D1,
+    D2,
+    D3,
+}
 
 /// Choice of processing type: will become a Py-passable parameter
 #[derive(PartialEq, Debug, Clone)]
-pub enum Processing { Serial, Parallel, ParallelChunked, }
+pub enum Processing {
+    Serial,
+    Parallel,
+    ParallelChunked,
+}
 
 /// Model parameter bundle derived from Python kwarg dict.
 #[derive(Clone)]

@@ -3,10 +3,10 @@
 // //!
 
 // Imports
-mod sim;
-pub mod parameters;
-pub mod life;
 pub mod dp;
 pub mod dp_1d;
+pub mod life;
+pub mod parameters;
+mod sim;
 
 // Exports

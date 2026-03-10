@@ -1,3 +1,7 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use rand::distr::StandardUniform;
 use rand::{Rng, RngExt};
 

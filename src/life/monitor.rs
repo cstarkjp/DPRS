@@ -1,3 +1,7 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use crate::life::{LatticeModel2D, LifeModel};
 use rand::rng;
 use std::time::Instant;

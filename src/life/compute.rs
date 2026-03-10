@@ -1,3 +1,7 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use crate::life::{LatticeModel2D, Model2D};
 
 /// Run a simulation for n_iterations using serial processing.

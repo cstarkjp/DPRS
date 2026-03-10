@@ -4,8 +4,8 @@
 
 use std::time::Instant;
 mod model_1d;
-use model_1d::Model1D;
 use crate::parameters::{Parameters, Processing};
+use model_1d::Model1D;
 
 /// Entry point to this module.
 pub fn sim_dp_1d(params: Parameters) -> (usize, Vec<Vec<bool>>) {
@@ -19,63 +19,53 @@ pub fn sim_dp_1d(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Threads:     {}", params.n_threads);
     println!();
 
-    let (t_serial, _,  _,) = 
-        run_simulation(&params, &Processing::Serial,);
+    let (t_serial, _, _) = run_simulation(&params, &Processing::Serial);
     println!("Serial:   {:4.3}s", t_serial);
 
-    let (t_parallel, _, _,) = 
-        run_simulation(&params, &Processing::Parallel);
+    let (t_parallel, _, _) = run_simulation(&params, &Processing::Parallel);
     println!("Parallel: {:4.3}s", t_parallel);
 
-    let (t_parallel_chunked, n_lattices, lattices,) = 
+    let (t_parallel_chunked, n_lattices, lattices) =
         run_simulation(&params, &Processing::ParallelChunked);
     println!("Chunked:  {:4.3}s", t_parallel_chunked);
     println!();
 
-    println!("Parallel speedup => {:.2}x", t_serial/t_parallel);
-    println!("Chunked speedup =>  {:.2}x", t_serial/t_parallel_chunked);
+    println!("Parallel speedup => {:.2}x", t_serial / t_parallel);
+    println!("Chunked speedup =>  {:.2}x", t_serial / t_parallel_chunked);
     println!();
 
     (n_lattices, lattices)
 }
 
 /// Run a simulation and record how long the computation takes.
-fn run_simulation(
-    params: &Parameters, 
-    processing: &Processing,
-) -> (f64, usize, Vec<Vec<bool>>) {
-    let model = Model1D::initialize(
-        params.n_x, 
-        params.n_y, 
-        1, 
-    ).randomize();
+fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<bool>>) {
+    let model = Model1D::initialize(params.n_x, params.n_y, 1).randomize();
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(params.n_threads)
         .build()
         .unwrap();
     let time = Instant::now();
-    let serial_skip: usize =
-        match processing {
-            Processing::Serial => params.serial_skip,
-            Processing::Parallel | Processing::ParallelChunked => 1,
-        };
-    let (n_lattices, lattices) = pool.install(
-        || compute(
-            model, 
-            params.n_iterations/serial_skip,
+    let serial_skip: usize = match processing {
+        Processing::Serial => params.serial_skip,
+        Processing::Parallel | Processing::ParallelChunked => 1,
+    };
+    let (n_lattices, lattices) = pool.install(|| {
+        compute(
+            model,
+            params.n_iterations / serial_skip,
             params.sample_rate,
-            processing,)
-    );
-    let duration: f64 = 
-        time.elapsed().as_secs_f64() * (serial_skip as f64);
+            processing,
+        )
+    });
+    let duration: f64 = time.elapsed().as_secs_f64() * (serial_skip as f64);
 
     (duration, n_lattices, lattices)
 }
 
 /// Run a simulation for n_iterations, either serially or in parallel
 pub fn compute(
-    model: Model1D, 
-    n_iterations: usize, 
+    model: Model1D,
+    n_iterations: usize,
     sample_rate: usize,
     processing: &Processing,
 ) -> (usize, Vec<Vec<bool>>) {
@@ -83,30 +73,36 @@ pub fn compute(
     let mut model = model;
 
     // Set up a recording of lattice evolution
-    let n_lattices = n_iterations/sample_rate + 1;
+    let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices: Vec<Vec<bool>> = Vec::new();
 
     // Record the initial lattice
     lattices.push(model.lattice.clone());
-    
+
     // Evolve the lattice for n_iterations
     match processing {
         Processing::Serial => {
-            for i in 1..(n_iterations+1) {
+            for i in 1..(n_iterations + 1) {
                 model = model.next_iteration_serial();
-                if i % sample_rate==0 { lattices.push(model.lattice.clone()) };
+                if i % sample_rate == 0 {
+                    lattices.push(model.lattice.clone())
+                };
             }
         }
         Processing::Parallel => {
-            for i in 1..(n_iterations+1) {
+            for i in 1..(n_iterations + 1) {
                 model = model.next_iteration_parallel();
-                if i % sample_rate==0 { lattices.push(model.lattice.clone()) };
+                if i % sample_rate == 0 {
+                    lattices.push(model.lattice.clone())
+                };
             }
-        },
+        }
         Processing::ParallelChunked => {
-            for i in 1..(n_iterations+1) {
+            for i in 1..(n_iterations + 1) {
                 model = model.next_iteration_parallel_chunked();
-                if i % sample_rate==0 { lattices.push(model.lattice.clone()) };
+                if i % sample_rate == 0 {
+                    lattices.push(model.lattice.clone())
+                };
             }
         }
     };

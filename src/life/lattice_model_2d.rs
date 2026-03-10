@@ -1,3 +1,7 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use rand::Rng;
 use rayon::prelude::*;
 
