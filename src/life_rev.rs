@@ -2,12 +2,12 @@
 // //!
 // //!
 
+mod model_2d;
+mod life_model;
+use model_2d::{LatticeModel2D, Model2D};
+use life_model::LifeModel;
 use rand::rng;
 use std::time::Instant;
-mod lattice_model_2d;
-mod life_model;
-use lattice_model_2d::{LatticeModel2D, Model2D};
-use life_model::LifeModel;
 
 /// Entry point to this module.
 pub fn sim_life_rev(
@@ -67,6 +67,28 @@ pub fn sim_life_rev(
     lattice
 }
 
+/// Run a simulation and record how long the computation takes.
+pub fn monitor(
+    compute: fn(LatticeModel2D<LifeModel>, usize) -> LatticeModel2D<LifeModel>,
+    n_x: usize,
+    n_y: usize,
+    n_iterations: usize,
+    slow_factor: usize,
+    n_threads: usize,
+) -> (f64, Vec<bool>) {
+    let life = crate::life_rev::LifeModel::default();
+    let grid = LatticeModel2D::new(life, n_x, n_y).randomize(&mut rng());
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(n_threads)
+        .build()
+        .unwrap();
+    let time = Instant::now();
+    let lattice = pool.install(|| compute(grid, n_iterations / slow_factor));
+    let duration = time.elapsed().as_secs_f64() * (slow_factor as f64);
+
+    (duration, lattice.take().1)
+}
+
 /// Run a simulation for n_iterations using serial processing.
 pub fn compute_serial<M: Model2D>(
     mut lattice_model: LatticeModel2D<M>,
@@ -101,26 +123,4 @@ pub fn compute_parallel_chunked<M: Model2D>(
     }
 
     lattice_model
-}
-
-/// Run a simulation and record how long the computation takes.
-pub fn monitor(
-    compute: fn(LatticeModel2D<LifeModel>, usize) -> LatticeModel2D<LifeModel>,
-    n_x: usize,
-    n_y: usize,
-    n_iterations: usize,
-    slow_factor: usize,
-    n_threads: usize,
-) -> (f64, Vec<bool>) {
-    let life = crate::life_rev::LifeModel::default();
-    let grid = LatticeModel2D::new(life, n_x, n_y).randomize(&mut rng());
-    let pool = rayon::ThreadPoolBuilder::new()
-        .num_threads(n_threads)
-        .build()
-        .unwrap();
-    let time = Instant::now();
-    let lattice = pool.install(|| compute(grid, n_iterations / slow_factor));
-    let duration = time.elapsed().as_secs_f64() * (slow_factor as f64);
-
-    (duration, lattice.take().1)
 }
