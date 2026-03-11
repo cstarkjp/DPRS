@@ -4,8 +4,8 @@
 
 // Imports
 pub mod dp;
-pub mod dp_1d;
 pub mod life;
+pub mod life_rev;
 pub mod parameters;
 mod sim;
 

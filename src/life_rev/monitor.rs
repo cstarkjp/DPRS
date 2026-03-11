@@ -1,0 +1,29 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
+use crate::life_rev::{LatticeModel2D, LifeModel};
+use rand::rng;
+use std::time::Instant;
+
+/// Run a simulation and record how long the computation takes.
+pub fn monitor(
+    compute: fn(LatticeModel2D<LifeModel>, usize) -> LatticeModel2D<LifeModel>,
+    n_x: usize,
+    n_y: usize,
+    n_iterations: usize,
+    slow_factor: usize,
+    n_threads: usize,
+) -> (f64, Vec<bool>) {
+    let life = crate::life_rev::LifeModel::default();
+    let grid = LatticeModel2D::new(life, n_x, n_y).randomize(&mut rng());
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(n_threads)
+        .build()
+        .unwrap();
+    let time = Instant::now();
+    let lattice = pool.install(|| compute(grid, n_iterations / slow_factor));
+    let duration = time.elapsed().as_secs_f64() * (slow_factor as f64);
+
+    (duration, lattice.take().1)
+}
