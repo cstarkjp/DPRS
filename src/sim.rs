@@ -7,7 +7,8 @@ use pyo3::prelude::*;
 
 /// Python wrapping around DP, "Game of Life" lattice models.
 #[pymodule]
-mod dprs {
+#[pyo3(name = "sim")]
+mod sim {
     use super::*;
 
     // #[pymodule_export]
