@@ -13,7 +13,6 @@ use crate::parameters::{Dimension, Parameters, Processing};
 mod sim {
     use super::*;
 
-    /// Not really dp: actually "life" but with lattice time slicing etc.
     #[pyfunction]
     #[pyo3(signature = (**kwargs))]
     fn life(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<(usize, Vec<Vec<bool>>)> {

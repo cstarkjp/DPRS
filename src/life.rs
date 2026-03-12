@@ -83,38 +83,40 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64() * (serial_skip as f64);
 
-    // Remove edge buffering before returning the lattice time-slices.
-    //
-    // TODO: make this more idiomatic Rust. Too many nested for-loops!
-    //
     if params.do_buffering {
+        // Remove edge buffering before returning the lattice time-slices.
+        //
+        // TODO: make this more idiomatic Rust. Too many nested for-loops!
+        //
         println!("Doing buffering");
         let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
         // Step through each of the recorded lattices
         // (from 0 to n_lattices-1 inclusively)
         for i_timeslice in 0..n_lattices {
-            // println!("{:?} / {}", i_timeslice, n_lattices);
+            // Extract this time slice
+            let lattice = &lattices[i_timeslice];
             // Prepare an empty lattice of pruned size
             let mut clipped_lattice: Vec<bool> = Vec::new();
-            // Iterate over each 'row', skipping the first and last
+            // Iterate over each 'row', skipping the padding
             for y in pad..(n_y - pad) {
-                // Compute the first and last cell indexes in each row
-                let lattice = &lattices[i_timeslice];
-                // Loop over these indexes *including* the last
+                // Iterate over each 'column', skipping the padding
                 for x in pad..(n_x - pad) {
                     let i_cell: usize = x + y * n_x;
                     clipped_lattice.push(lattice[i_cell]);
                 }
             }
-            // println!("{i_timeslice} {}", clipped_lattice.len());
             clipped_lattices.push(clipped_lattice);
         }
+        // Return the runtime, the number of recorded (time slice) lattices
+        // (which always includes the initial lattice at t=0), and a vector
+        // of lattice vectors.
 
         (duration, n_lattices, clipped_lattices)
     } else {
         // Return the runtime, the number of recorded (time slice) lattices
         // (which always includes the initial lattice at t=0), and a vector
         // of lattice vectors.
+
         (duration, n_lattices, lattices)
     }
 }
