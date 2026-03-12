@@ -6,7 +6,7 @@ Some notes on how to wrap a Python package around fast, parallelized Rust code. 
 
 The example Rust code wrapped here is Conway's "Game of Life" cellular automata (CA) model in a simplified version of the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life). The following Jupyter notebook demonstrates this CA in action:
 
- - [life.ipynb](notebooks/life.ipynb)
+ - [life.ipynb](notebooks/life_2d.ipynb)
 
 You'll see two parallelization strategies tested in this notebook, with the best speed-up at around 60x compared to the serial processing version.
 
