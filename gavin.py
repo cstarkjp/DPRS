@@ -9,7 +9,7 @@ sys.path.append(this_dir.joinpath("target", "release").__str__())
 import dprs as sim
 
 
-class MyParameters:
+class Parameters:
     # pub dim: MyDimension,
     dim: int = 0
     processing: int = 0
@@ -25,13 +25,7 @@ class MyParameters:
     do_buffering: bool = False
 
 
-class MyObject:
-    msg: str = "Default message"
-    list = [1, 2, 3, 4]
-
-
-sim.blob(MyObject())
-sim.blah(MyParameters())
+sim.blah(Parameters())
 
 print(f"\n{sim}\n")
 
