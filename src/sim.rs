@@ -5,7 +5,6 @@
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 // use pyo3::ffi::PyObject;
-use crate::life_rev::sim_life_rev;
 use crate::life::sim_life;
 use crate::parameters::{Dimension, Parameters, Processing};
 
@@ -17,7 +16,7 @@ mod sim {
     /// Not really dp: actually "life" but with lattice time slicing etc.
     #[pyfunction]
     #[pyo3(signature = (**kwargs))]
-    fn life_rev(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<(usize, Vec<Vec<bool>>)> {
+    fn life(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<(usize, Vec<Vec<bool>>)> {
         // Set parameter defaults.
         let mut params = Parameters {
             dim: Dimension::D1,
@@ -67,17 +66,8 @@ mod sim {
                 }
             }
         }
-        let (n_lattices, lattices) = sim_life_rev(params);
+        let (n_lattices, lattices) = sim_life(params);
 
         Ok((n_lattices, lattices))
-    }
-
-    /// Conway's Game of Life, adapted from Rayon demo.
-    #[pyfunction]
-    fn life(x: usize, y: usize, n: usize, s: usize, n_threads: usize) -> PyResult<Vec<bool>> {
-        println!("life: {x} {y} {n} {s} {n_threads}");
-        let lattice = sim_life(x, y, n, s, n_threads);
-
-        Ok(lattice)
     }
 }

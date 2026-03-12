@@ -2,10 +2,15 @@ from dprs import sim
 
 print(f"\n{sim}\n")
 
-n_x = 10_000
-n_y = n_x
-n_iterations = 50
-serial_skip = 10
-n_threads = 1
+kwargs = dict(
+    n_x = 10_000,
+    n_y = 10_000,
+    # n_z = 1,
+    p = 0.5,
+    n_iterations = 50,
+    sample_rate = 10,
+    serial_skip = 10,
+    n_threads = 8,
+)
 
-_ = sim.life(n_x, n_y, n_iterations, serial_skip, n_threads,)
+_ = sim.life(**kwargs)

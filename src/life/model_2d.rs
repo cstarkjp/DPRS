@@ -64,7 +64,7 @@ impl<M: Model2D> LatticeModel2D<M> {
     /// Borrow the lattice
     ///
     /// Update: now used in life_rev(), do not 'dead' code any more.
-    /// 
+    ///
     /// Currently this is used only in test, and so is 'dead' in clippy terms
     ///
     /// If the library were to export LatticeModel2D (to allow other code to
