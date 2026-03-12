@@ -74,7 +74,6 @@ pub fn compute<M: Model2D>(
     n_iterations: usize,
     sample_rate: usize,
     processing: &Processing,
-    // ) -> (usize, Vec<Vec<bool>>) {
 ) -> (usize, Vec<Vec<<M as Model2D>::Cell>>) {
     // Create a model lattice plus metadata
     let mut lattice_model = lattice_model;
@@ -82,9 +81,11 @@ pub fn compute<M: Model2D>(
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices = Vec::new();
-
     // Record the initial lattice
     lattices.push(lattice_model.lattice().to_vec());
+    // We aren't going to worry about the lattice type being Cell
+    //  - instead we're going to leave it up to pyo3 to convert
+    //    the lattice vector into a Python list as it thinks fit.
 
     // Evolve the lattice for n_iterations
     match processing {
@@ -114,7 +115,7 @@ pub fn compute<M: Model2D>(
         }
     };
     assert!(n_lattices == lattices.len());
-    println!("n_lattices:  {} = {}", lattices.len(), n_lattices);
+    // println!("n_lattices:  {} = {}", lattices.len(), n_lattices);
 
     (n_lattices, lattices)
 }
