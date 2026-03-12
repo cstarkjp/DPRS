@@ -13,96 +13,9 @@ use crate::parameters::{Dimension, Parameters, Processing};
 mod dprs {
     use super::*;
 
-    use pyo3::{FromPyObject, exceptions::PyTypeError};
-    #[derive(FromPyObject)]
-    struct MyObject {
-        msg: String,
-        list: Vec<u32>,
-    }
     #[pyfunction]
     // #[pyo3(signature = (**kwargs))]
-    fn blob(arg: MyObject) -> PyResult<usize> {
-        println!("msg:{} list:{:?}", arg.msg, arg.list);
-        Ok(0)
-    }
-
-    #[derive(PartialEq, Debug, Clone)]
-    #[repr(u8)]
-    pub enum MyDimension {
-        D1,
-        D2,
-        D3,
-    }
-    impl MyDimension {
-        // This can be created from num-derive
-        fn from_u8(value: u8) -> Option<Self> {
-            if value == (MyDimension::D1 as u8) {
-                Some(MyDimension::D1)
-            } else if value == (MyDimension::D2 as u8) {
-                Some(MyDimension::D2)
-            } else if value == (MyDimension::D3 as u8) {
-                Some(MyDimension::D3)
-            } else {
-                None
-            }
-        }
-    }
-    impl FromPyObject<'_, '_> for MyDimension {
-        type Error = PyErr;
-        fn extract(ob: pyo3::Borrowed<'_, '_, PyAny>) -> Result<Self, PyErr> {
-            let value: u8 = ob.extract().unwrap();
-            let opcode = MyDimension::from_u8(value).unwrap();
-            Ok(opcode)
-        }
-    }
-    /// Choice of processing type: will become a Py-passable parameter
-    #[derive(PartialEq, Debug, Clone)]
-    #[repr(u8)]
-    pub enum MyProcessing {
-        Serial,
-        Parallel,
-        ParallelChunked,
-    }
-    impl MyProcessing {
-        // This can be created from num-derive
-        fn from_u8(value: u8) -> Option<Self> {
-            if value == (MyProcessing::Serial as u8) {
-                Some(MyProcessing::Serial)
-            } else if value == (MyProcessing::Parallel as u8) {
-                Some(MyProcessing::Parallel)
-            } else if value == (MyProcessing::ParallelChunked as u8) {
-                Some(MyProcessing::ParallelChunked)
-            } else {
-                None
-            }
-        }
-    }
-    impl FromPyObject<'_, '_> for MyProcessing {
-        type Error = PyErr;
-        fn extract(ob: pyo3::Borrowed<'_, '_, PyAny>) -> Result<Self, PyErr> {
-            let value: u8 = ob.extract().unwrap();
-            let opcode = MyProcessing::from_u8(value).unwrap();
-            Ok(opcode)
-        }
-    }
-
-    #[derive(FromPyObject, Debug)]
-    struct MyParameters {
-        pub dim: MyDimension,
-        pub n_x: usize,
-        pub n_y: usize,
-        pub n_z: usize,
-        pub p: f64,
-        pub n_iterations: usize,
-        pub sample_rate: usize,
-        pub processing: MyProcessing,
-        pub n_threads: usize,
-        pub serial_skip: usize,
-        pub do_buffering: bool,
-    }
-    #[pyfunction]
-    // #[pyo3(signature = (**kwargs))]
-    fn blah(arg: MyParameters) -> PyResult<usize> {
+    fn blah(arg: Parameters) -> PyResult<usize> {
         dbg!(arg);
         Ok(0)
     }
