@@ -2,125 +2,119 @@
 // //!
 // //!
 
-mod model_2d;
 mod life_model;
-use model_2d::{LatticeModel2D, Model2D};
+mod model_2d;
+use crate::parameters::{Parameters, Processing};
 use life_model::LifeModel;
+use model_2d::{LatticeModel2D, Model2D};
 use rand::rng;
 use std::time::Instant;
 
 /// Entry point to this module.
-pub fn sim_life_rev(
-    n_x: usize,
-    n_y: usize,
-    n_iterations: usize,
-    slow_factor: usize,
-    n_threads: usize,
-) -> Vec<bool> {
+pub fn sim_life_rev(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!();
-    println!("Grid width:  x={n_x}");
-    println!("Grid height: y={n_y}");
-    println!("Iterations:  n={n_iterations}");
-    println!("Slow factor: s={slow_factor}");
-    println!("Threads: n_threads={n_threads}\n");
-
-    // Serial computation
-    let (t_serial_computation, _) = monitor(
-        compute_serial,
-        n_x,
-        n_y,
-        n_iterations,
-        slow_factor,
-        n_threads,
-    );
-    println!("Serial:   {:4.3}s", t_serial_computation);
-
-    // Rayon-parallelized computation
-    let (t_parallel_computation, _) =
-        monitor(compute_parallel, n_x, n_y, n_iterations, 1, n_threads);
-    println!("Parallel: {:4.3}s", t_parallel_computation);
-
-    // GJS-chunked+parallelized computation
-    let (t_parallel_chunked_computation, lattice) = monitor(
-        compute_parallel_chunked,
-        n_x,
-        n_y,
-        n_iterations,
-        1,
-        n_threads,
-    );
-    println!(
-        "Parallel chunked: {:4.3}s\n",
-        t_parallel_chunked_computation
-    );
-
-    println!(
-        "Parallel speedup => {:.2}x",
-        t_serial_computation / t_parallel_computation
-    );
-    println!(
-        "Chunked speedup =>  {:.2}x",
-        t_serial_computation / t_parallel_chunked_computation
-    );
+    println!("Dimension:   {:?}", params.dim);
+    println!("Grid shape:  {:?}", (params.n_x, params.n_y, params.n_z));
+    println!("Probability: {}", params.p);
+    println!("Iterations:  {}", params.n_iterations);
+    println!("Sample rate: {}", params.sample_rate);
+    println!("Serial skip: {}", params.serial_skip);
+    println!("Threads:     {}", params.n_threads);
     println!();
 
-    lattice
+    let (t_serial, _, _) = run_simulation(&params, &Processing::Serial);
+    println!("Serial:   {:4.3}s", t_serial);
+
+    let (t_parallel, _, _) = run_simulation(&params, &Processing::Parallel);
+    println!("Parallel: {:4.3}s", t_parallel);
+
+    let (t_parallel_chunked, n_lattices, lattices) =
+        run_simulation(&params, &Processing::ParallelChunked);
+    println!("Chunked:  {:4.3}s", t_parallel_chunked);
+    println!();
+
+    println!("Parallel speedup => {:.2}x", t_serial / t_parallel);
+    println!("Chunked speedup =>  {:.2}x", t_serial / t_parallel_chunked);
+    println!();
+
+    (n_lattices, lattices)
 }
 
 /// Run a simulation and record how long the computation takes.
-pub fn monitor(
-    compute: fn(LatticeModel2D<LifeModel>, usize) -> LatticeModel2D<LifeModel>,
-    n_x: usize,
-    n_y: usize,
-    n_iterations: usize,
-    slow_factor: usize,
-    n_threads: usize,
-) -> (f64, Vec<bool>) {
-    let life = crate::life_rev::LifeModel::default();
-    let grid = LatticeModel2D::new(life, n_x, n_y).randomize(&mut rng());
+fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<bool>>) {
+    let life = LifeModel::default();
+    let lattice_model_2d: LatticeModel2D<LifeModel> =
+        LatticeModel2D::new(life, params.n_x, params.n_y).randomize(&mut rng());
     let pool = rayon::ThreadPoolBuilder::new()
-        .num_threads(n_threads)
+        .num_threads(params.n_threads)
         .build()
         .unwrap();
     let time = Instant::now();
-    let lattice = pool.install(|| compute(grid, n_iterations / slow_factor));
-    let duration = time.elapsed().as_secs_f64() * (slow_factor as f64);
+    let serial_skip: usize = match processing {
+        Processing::Serial => params.serial_skip,
+        Processing::Parallel | Processing::ParallelChunked => 1,
+    };
 
-    (duration, lattice.take().1)
+    let (n_lattices, lattices) = pool.install(|| {
+        compute(
+            lattice_model_2d,
+            params.n_iterations / serial_skip,
+            params.sample_rate,
+            processing,
+        )
+    });
+    let duration: f64 = time.elapsed().as_secs_f64() * (serial_skip as f64);
+
+    (duration, n_lattices, lattices)
 }
 
-/// Run a simulation for n_iterations using serial processing.
-pub fn compute_serial<M: Model2D>(
-    mut lattice_model: LatticeModel2D<M>,
+/// Run a simulation for n_iterations, either serially or in parallel
+pub fn compute<M: Model2D>(
+    lattice_model: LatticeModel2D<M>,
     n_iterations: usize,
-) -> LatticeModel2D<M> {
-    for _ in 0..n_iterations {
-        lattice_model = lattice_model.next_iteration_serial();
-    }
+    sample_rate: usize,
+    processing: &Processing,
+    // ) -> (usize, Vec<Vec<bool>>) {
+) -> (usize, Vec<Vec<<M as Model2D>::Cell>>) {
+    // Create a model lattice plus metadata
+    let mut lattice_model = lattice_model;
 
-    lattice_model
-}
+    // Set up a recording of lattice evolution
+    let n_lattices = n_iterations / sample_rate + 1;
+    let mut lattices = Vec::new();
 
-/// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel<M: Model2D>(
-    mut lattice_model: LatticeModel2D<M>,
-    n_iterations: usize,
-) -> LatticeModel2D<M> {
-    for _ in 0..n_iterations {
-        lattice_model = lattice_model.next_iteration_parallel();
-    }
+    // Record the initial lattice
+    lattices.push(lattice_model.lattice().to_vec());
 
-    lattice_model
-}
+    // Evolve the lattice for n_iterations
+    match processing {
+        Processing::Serial => {
+            for i in 1..(n_iterations + 1) {
+                lattice_model = lattice_model.next_iteration_serial();
+                if i % sample_rate == 0 {
+                    lattices.push(lattice_model.lattice().to_vec());
+                };
+            }
+        }
+        Processing::Parallel => {
+            for i in 1..(n_iterations + 1) {
+                lattice_model = lattice_model.next_iteration_parallel();
+                if i % sample_rate == 0 {
+                    lattices.push(lattice_model.lattice().to_vec());
+                };
+            }
+        }
+        Processing::ParallelChunked => {
+            for i in 1..(n_iterations + 1) {
+                lattice_model = lattice_model.next_iteration_parallel_chunked();
+                if i % sample_rate == 0 {
+                    lattices.push(lattice_model.lattice().to_vec());
+                };
+            }
+        }
+    };
+    assert!(n_lattices == lattices.len());
+    println!("n_lattices:  {} = {}", lattices.len(), n_lattices);
 
-/// Run a simulation for n_iterations using parallel processing.
-pub fn compute_parallel_chunked<M: Model2D>(
-    mut lattice_model: LatticeModel2D<M>,
-    n_iterations: usize,
-) -> LatticeModel2D<M> {
-    for _ in 0..n_iterations {
-        lattice_model = lattice_model.next_iteration_parallel_chunked();
-    }
-
-    lattice_model
+    (n_lattices, lattices)
 }

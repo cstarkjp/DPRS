@@ -16,7 +16,7 @@ pub trait Model2D: Sync {
     /// This must be [Sync] to support the 'parallel' versions; the array of cells is accessed by many threads at once
     ///
     type Cell: Default + std::fmt::Debug + Copy + Send + Sync;
-    fn random_cell<R: Rng>(&self, rng: &mut R) -> Self::Cell;
+    fn randomize_cell<R: Rng>(&self, rng: &mut R) -> Self::Cell;
     fn next_cell(
         &self,
         above: &[Self::Cell; 3],
@@ -63,12 +63,14 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// Borrow the lattice
     ///
+    /// Update: now used in life_rev(), do not 'dead' code any more.
+    /// 
     /// Currently this is used only in test, and so is 'dead' in clippy terms
     ///
     /// If the library were to export LatticeModel2D (to allow other code to
     /// define their own models) then *that* would be public, and *this* would
     /// be the correct way to borrow the lattice
-    #[allow(dead_code)]
+    // #[allow(dead_code)]
     pub fn lattice(&self) -> &Vec<M::Cell> {
         &self.lattice
     }
@@ -90,7 +92,7 @@ impl<M: Model2D> LatticeModel2D<M> {
     /// from a de-facto Bernoulli distribution.
     pub fn randomize<R: Rng>(mut self, rng: &mut R) -> Self {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.model.random_cell(rng))
+            .map(|_| self.model.randomize_cell(rng))
             .collect();
         self
     }

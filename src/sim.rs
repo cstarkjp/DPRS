@@ -5,10 +5,8 @@
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 // use pyo3::ffi::PyObject;
-use crate::dp::sim_dp;
-// use crate::dp_1d::sim_dp_1d;
-use crate::life::sim_life;
 use crate::life_rev::sim_life_rev;
+use crate::life::sim_life;
 use crate::parameters::{Dimension, Parameters, Processing};
 
 /// Python wrapping around DP, "Game of Life" lattice models.
@@ -19,7 +17,7 @@ mod sim {
     /// Not really dp: actually "life" but with lattice time slicing etc.
     #[pyfunction]
     #[pyo3(signature = (**kwargs))]
-    fn dp(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<(usize, Vec<Vec<bool>>)> {
+    fn life_rev(kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<(usize, Vec<Vec<bool>>)> {
         // Set parameter defaults.
         let mut params = Parameters {
             dim: Dimension::D1,
@@ -69,18 +67,9 @@ mod sim {
                 }
             }
         }
-        let (n_lattices, lattices) = sim_dp(params);
+        let (n_lattices, lattices) = sim_life_rev(params);
 
         Ok((n_lattices, lattices))
-    }
-
-    /// Conway's Game of Life, adapted from Rayon demo.
-    #[pyfunction]
-    fn life_rev(x: usize, y: usize, n: usize, s: usize, n_threads: usize) -> PyResult<Vec<bool>> {
-        println!("lif_rev: {x} {y} {n} {s} {n_threads}");
-        let lattice = sim_life_rev(x, y, n, s, n_threads);
-
-        Ok(lattice)
     }
 
     /// Conway's Game of Life, adapted from Rayon demo.
