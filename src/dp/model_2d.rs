@@ -8,15 +8,15 @@ use rayon::prelude::*;
 use std::iter::repeat_n;
 
 /// Model in 2d.
-/// 
-/// Contains: 
+///
+/// Contains:
 ///    - grid size as width n_x and height n_y;
 ///    - the boolean lattice stored as a linear vector.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct Model2D {
     n_x: usize,
     n_y: usize,
-    n_z: usize,  // not going to be used
+    n_z: usize, // not going to be used
     pub lattice: Vec<bool>,
 }
 
@@ -24,9 +24,7 @@ pub struct Model2D {
 impl Model2D {
     /// Create a fresh grid (vector of booleans) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn initialize(
-        n_x: usize, n_y: usize, n_z: usize, 
-    ) -> Self {
+    pub fn initialize(n_x: usize, n_y: usize, n_z: usize) -> Self {
         Self {
             n_x,
             n_y,
@@ -36,7 +34,9 @@ impl Model2D {
     }
 
     /// Count the total number of cells in the grid.
-    pub fn n_cells(&self) -> usize { self.n_x * self.n_y }
+    pub fn n_cells(&self) -> usize {
+        self.n_x * self.n_y
+    }
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
@@ -201,16 +201,15 @@ impl Model2D {
     /// Check if this cell is within bounds and alive
     fn is_alive(&self, x: usize, y: usize) -> bool {
         // check (x,y) coordinate is within bounds
-        !(x >= self.n_x || y >= self.n_y) 
+        !(x >= self.n_x || y >= self.n_y) && self.lattice[y * self.n_x + x]
         // and if the cell is occupied
-        && self.lattice[y * self.n_x + x]
     }
 }
 
 /// Minimal testing.
 #[test]
 fn test_dp() {
-    let mut model1 = Model2D::initialize(200, 200, 1,).randomize();
+    let mut model1 = Model2D::initialize(200, 200, 1).randomize();
     let mut model2 = model1.clone();
 
     for _ in 0..100 {
