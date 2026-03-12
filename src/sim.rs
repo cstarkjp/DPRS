@@ -29,6 +29,7 @@ mod sim {
             processing: Processing::ParallelChunked,
             n_threads: 1,
             serial_skip: 1,
+            do_buffering: true,
         };
 
         // Need to implement some validation, error handling here.
@@ -38,6 +39,7 @@ mod sim {
                 // This should probably be done using a hashmap.
                 let v_float = value.to_string().as_str().parse::<f64>().unwrap_or(0.0);
                 let v_uint = value.to_string().as_str().parse::<usize>().unwrap_or(0);
+                let v_bool = value.to_string().as_str().parse::<usize>().unwrap_or(0);
                 match key.to_string().as_str() {
                     "n_x" => params.n_x = v_uint,
                     "n_y" => {
@@ -62,6 +64,7 @@ mod sim {
                         params.serial_skip = v_uint;
                     }
                     "n_threads" => params.n_threads = v_uint,
+                    "do_buffering" => params.do_buffering = v_bool != 0,
                     _ => {}
                 }
             }

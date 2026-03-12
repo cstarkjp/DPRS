@@ -31,4 +31,5 @@ pub struct Parameters {
     pub processing: Processing,
     pub n_threads: usize,
     pub serial_skip: usize,
+    pub do_buffering: bool,
 }

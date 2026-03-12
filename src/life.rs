@@ -18,8 +18,9 @@ pub fn sim_life(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Probability: {}", params.p);
     println!("Iterations:  {}", params.n_iterations);
     println!("Sample rate: {}", params.sample_rate);
-    println!("Serial skip: {}", params.serial_skip);
     println!("Threads:     {}", params.n_threads);
+    println!("Serial skip: {}", params.serial_skip);
+    println!("Buffering:   {}", params.do_buffering);
     println!();
 
     let (t_serial, _, _) = run_simulation(&params, &Processing::Serial);
@@ -44,7 +45,10 @@ pub fn sim_life(params: Parameters) -> (usize, Vec<Vec<bool>>) {
 fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<bool>>) {
     let life = LifeModel::default();
     // Buffer lattice edges
-    let pad: usize = 1;
+    let pad: usize = match params.do_buffering {
+        true => 2,
+        false => 0,
+    };
     let n_x: usize = params.n_x + pad * 2;
     let n_y: usize = params.n_y + pad * 2;
     let lattice_model_2d: LatticeModel2D<LifeModel> =
@@ -81,34 +85,38 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
 
     // Remove edge buffering before returning the lattice time-slices.
     //
-    // TODO: make this more idiomatic Rust. Too many nested for loops!
+    // TODO: make this more idiomatic Rust. Too many nested for-loops!
     //
-    let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
-    // Step through each of the recorded lattices
-    // (from 0 to n_lattices-1 inclusively)
-    for i_timeslice in 0..n_lattices {
-        // println!("{:?} / {}", i_timeslice, n_lattices);
-        // Prepare an empty lattice of pruned size
-        let mut clipped_lattice: Vec<bool> = Vec::new();
-        // Iterate over each 'row', skipping the first and last
-        for y in pad..(n_y - pad) {
-            // Compute the first and last cell indexes in each row
-            let lattice = &lattices[i_timeslice];
-            // Loop over these indexes *including* the last
-            for x in pad..(n_x - pad) {
-                let i_cell: usize = x + y * n_x;
-                clipped_lattice.push(lattice[i_cell]);
+    if params.do_buffering {
+        println!("Doing buffering");
+        let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
+        // Step through each of the recorded lattices
+        // (from 0 to n_lattices-1 inclusively)
+        for i_timeslice in 0..n_lattices {
+            // println!("{:?} / {}", i_timeslice, n_lattices);
+            // Prepare an empty lattice of pruned size
+            let mut clipped_lattice: Vec<bool> = Vec::new();
+            // Iterate over each 'row', skipping the first and last
+            for y in pad..(n_y - pad) {
+                // Compute the first and last cell indexes in each row
+                let lattice = &lattices[i_timeslice];
+                // Loop over these indexes *including* the last
+                for x in pad..(n_x - pad) {
+                    let i_cell: usize = x + y * n_x;
+                    clipped_lattice.push(lattice[i_cell]);
+                }
             }
+            // println!("{i_timeslice} {}", clipped_lattice.len());
+            clipped_lattices.push(clipped_lattice);
         }
-        // println!("{i_timeslice} {}", clipped_lattice.len());
-        clipped_lattices.push(clipped_lattice);
-    }
-    // println!("{}", clipped_lattices.len());
 
-    // Return the runtime, the number of recorded (time slice) lattices
-    // (which always includes the initial lattice at t=0), and a vector
-    // of lattice vectors.
-    (duration, n_lattices, clipped_lattices)
+        (duration, n_lattices, clipped_lattices)
+    } else {
+        // Return the runtime, the number of recorded (time slice) lattices
+        // (which always includes the initial lattice at t=0), and a vector
+        // of lattice vectors.
+        (duration, n_lattices, lattices)
+    }
 }
 
 /// Run a simulation for n_iterations, either serially or in parallel
