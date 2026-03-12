@@ -9,3 +9,4 @@ pub mod parameters;
 mod sim;
 
 // Exports
+pub use life::compute;

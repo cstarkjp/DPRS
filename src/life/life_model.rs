@@ -25,7 +25,7 @@ impl Model2D for LifeModel {
     /// As they are arrays there needs to be no range checking
     /// (not that there is in release anyway...)
     fn next_cell(&self, above: &[bool; 3], middle: &[bool; 3], below: &[bool; 3]) -> Self::Cell {
-        // Count the neighbors 
+        // Count the neighbors
         //  - the cells in the three *arrays* that we are using.
         let n_alive_neighbors = above.iter().map(|b| *b as usize).sum::<usize>()
             + below.iter().map(|b| *b as usize).sum::<usize>()

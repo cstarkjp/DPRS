@@ -65,23 +65,14 @@ impl<M: Model2D> LatticeModel2D<M> {
     }
 
     /// Borrow the lattice
-    ///
-    /// Update: now used in life_rev(), do not 'dead' code any more.
-    ///
-    /// Currently this is used only in test, and so is 'dead' in clippy terms
-    ///
-    /// If the library were to export LatticeModel2D (to allow other code to
-    /// define their own models) then *that* would be public, and *this* would
-    /// be the correct way to borrow the lattice
-    // #[allow(dead_code)]
     pub fn lattice(&self) -> &Vec<M::Cell> {
         &self.lattice
     }
 
-    /// Take the model and the lattice, destroying the rest of the model
+    /// Take the model and the lattice, destroying the rest of the model.
     ///
     /// This is the 'deconstructor', used after simulation to take the lattice
-    /// (and potentially the model, if that is useful too)
+    /// (and potentially the model, if that is useful too).
     pub fn take(self) -> (M, Vec<M::Cell>) {
         (self.model, self.lattice)
     }

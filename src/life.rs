@@ -43,18 +43,31 @@ pub fn sim_life(params: Parameters) -> (usize, Vec<Vec<bool>>) {
 /// Run a simulation and record how long the computation takes.
 fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<bool>>) {
     let life = LifeModel::default();
+    // Buffer lattice edges
+    let pad: usize = 1;
+    let n_x: usize = params.n_x + pad * 2;
+    let n_y: usize = params.n_y + pad * 2;
     let lattice_model_2d: LatticeModel2D<LifeModel> =
-        LatticeModel2D::new(life, params.n_x, params.n_y).randomize(&mut rng());
+        LatticeModel2D::new(life, n_x, n_y).randomize(&mut rng());
+
+    // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(params.n_threads)
         .build()
         .unwrap();
-    let time = Instant::now();
+
+    // Serial processing is (obvs) slow, so scale down the number of iterations
+    // according to 'serial_skip' so that its runtime approaches that of
+    // the parallelized runs.
     let serial_skip: usize = match processing {
         Processing::Serial => params.serial_skip,
         Processing::Parallel | Processing::ParallelChunked => 1,
     };
 
+    // Start the timer
+    let time = Instant::now();
+
+    // Do the simulation
     let (n_lattices, lattices) = pool.install(|| {
         compute(
             lattice_model_2d,
@@ -63,9 +76,39 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
             processing,
         )
     });
+    // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64() * (serial_skip as f64);
 
-    (duration, n_lattices, lattices)
+    // Remove edge buffering before returning the lattice time-slices.
+    //
+    // TODO: make this more idiomatic Rust. Too many nested for loops!
+    //
+    let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
+    // Step through each of the recorded lattices
+    // (from 0 to n_lattices-1 inclusively)
+    for i_timeslice in 0..n_lattices {
+        // println!("{:?} / {}", i_timeslice, n_lattices);
+        // Prepare an empty lattice of pruned size
+        let mut clipped_lattice: Vec<bool> = Vec::new();
+        // Iterate over each 'row', skipping the first and last
+        for y in pad..(n_y - pad) {
+            // Compute the first and last cell indexes in each row
+            let lattice = &lattices[i_timeslice];
+            // Loop over these indexes *including* the last
+            for x in pad..(n_x - pad) {
+                let i_cell: usize = x + y * n_x;
+                clipped_lattice.push(lattice[i_cell]);
+            }
+        }
+        // println!("{i_timeslice} {}", clipped_lattice.len());
+        clipped_lattices.push(clipped_lattice);
+    }
+    // println!("{}", clipped_lattices.len());
+
+    // Return the runtime, the number of recorded (time slice) lattices
+    // (which always includes the initial lattice at t=0), and a vector
+    // of lattice vectors.
+    (duration, n_lattices, clipped_lattices)
 }
 
 /// Run a simulation for n_iterations, either serially or in parallel
@@ -82,7 +125,11 @@ pub fn compute<M: Model2D>(
     let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices = Vec::new();
     // Record the initial lattice
-    lattices.push(lattice_model.lattice().to_vec());
+    lattices.push(
+        lattice_model.lattice().to_vec(), // .iter()
+                                          // .enumerate()
+                                          // .map(|(i, val)| val)
+    );
     // We aren't going to worry about the lattice type being Cell
     //  - instead we're going to leave it up to pyo3 to convert
     // the lattice vector into a Python list as it thinks fit.
