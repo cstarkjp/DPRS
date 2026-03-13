@@ -85,70 +85,34 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
 
     if params.do_buffering {
         // Remove edge buffering before returning the lattice time-slices.
-        //
-        // TODO: make this more idiomatic Rust. Too many nested for-loops!
-        //
         println!("Doing buffering");
-        // let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
-        // // Step through each of the recorded lattices
-        // // (from 0 to n_lattices-1 inclusively)
-        // for i_timeslice in 0..n_lattices {
-        //     // Extract this time slice
-        //     let lattice = &lattices[i_timeslice];
-        //     // Prepare an empty lattice of pruned size
-        //     // .chunks_exact .take .skip .extend_from_slice
-        //     let mut clipped_lattice: Vec<bool> = Vec::new();
-        //     // Iterate over each 'row', skipping the padding
-        //     for y in pad..(n_y - pad) {
-        //         // Iterate over each 'column', skipping the padding
-        //         for x in pad..(n_x - pad) {
-        //             let i_cell: usize = x + y * n_x;
-        //             clipped_lattice.push(lattice[i_cell]);
-        //         }
-        //     }
-        //     clipped_lattices.push(clipped_lattice);
-        // }
-        let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
+        let mut clipped_lattices = Vec::new();
         // Step through each of the recorded lattices
         // (from 0 to n_lattices-1 inclusively)
-        let mut c = 0;
         for lattice in lattices {
-            // Prepare an empty lattice of pruned size
-            // .chunks_exact .take .skip .extend_from_slice
-            // println!(
-            //     "{} {} => {n_x} {n_y} {:?}",
-            //     params.n_x,
-            //     params.n_y,
-            //     lattice.len()
-            // );
-            let l: Vec<_> = lattice
+            let clipped_lattice: Vec<_> = lattice
                 .chunks(n_x)
                 .skip(pad)
                 .take(params.n_y)
-                .map(|chunk| chunk.iter().skip(pad).take(params.n_x).collect::<Vec<_>>())
+                .map(|chunk| {
+                    chunk
+                        .into_iter()
+                        .skip(pad)
+                        .take(params.n_x)
+                        .collect::<Vec<_>>()
+                })
+                .into_iter()
+                .flatten()
+                .map(|&v| v)
                 .collect();
-            println!("{c}: {} => {:?}", l.len(), l);
-            c = c + 1;
-            let mut clipped_lattice: Vec<bool> = Vec::new();
-            // Iterate over each 'row', skipping the padding
-            for y in pad..(n_y - pad) {
-                // Iterate over each 'column', skipping the padding
-                for x in pad..(n_x - pad) {
-                    let i_cell: usize = x + y * n_x;
-                    clipped_lattice.push(lattice[i_cell]);
-                }
-            }
             clipped_lattices.push(clipped_lattice);
         }
-        // Return the runtime, the number of recorded (time slice) lattices
+
+        // Return the run time, the number of recorded (time slice) lattices
         // (which always includes the initial lattice at t=0), and a vector
         // of lattice vectors.
-
         (duration, n_lattices, clipped_lattices)
     } else {
-        // Return the runtime, the number of recorded (time slice) lattices
-        // (which always includes the initial lattice at t=0), and a vector
-        // of lattice vectors.
 
         (duration, n_lattices, lattices)
     }

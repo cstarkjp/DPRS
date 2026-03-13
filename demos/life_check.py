@@ -5,8 +5,8 @@ print(f"\n{sim}\n")
 class Parameters:
     dim: int = sim.Dimension.D2
     processing: int = sim.Processing.Parallel
-    n_x: int = 2
-    n_y: int = 3
+    n_x: int = 10_000
+    n_y: int = 10_000
     n_z: int = 1
     p: float = 0.5
     n_iterations: int = 100
