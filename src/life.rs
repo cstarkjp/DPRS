@@ -46,7 +46,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     let life = LifeModel::default();
     // Buffer lattice edges
     let pad: usize = match params.do_buffering {
-        true => 2,
+        true => 1,
         false => 0,
     };
     let n_x: usize = params.n_x + pad * 2;
@@ -111,9 +111,24 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
         let mut clipped_lattices: Vec<Vec<bool>> = Vec::new();
         // Step through each of the recorded lattices
         // (from 0 to n_lattices-1 inclusively)
+        let mut c = 0;
         for lattice in lattices {
             // Prepare an empty lattice of pruned size
             // .chunks_exact .take .skip .extend_from_slice
+            // println!(
+            //     "{} {} => {n_x} {n_y} {:?}",
+            //     params.n_x,
+            //     params.n_y,
+            //     lattice.len()
+            // );
+            let l: Vec<_> = lattice
+                .chunks(n_x)
+                .skip(pad)
+                .take(params.n_y)
+                .map(|chunk| chunk.iter().skip(pad).take(params.n_x).collect::<Vec<_>>())
+                .collect();
+            println!("{c}: {} => {:?}", l.len(), l);
+            c = c + 1;
             let mut clipped_lattice: Vec<bool> = Vec::new();
             // Iterate over each 'row', skipping the padding
             for y in pad..(n_y - pad) {
