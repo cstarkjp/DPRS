@@ -19,6 +19,8 @@ mod sim {
     #[pymodule_export]
     pub use crate::parameters::Topology;
     #[pymodule_export]
+    pub use crate::parameters::BoundaryCondition;
+    #[pymodule_export]
     pub use crate::parameters::Processing;
 
     #[pyfunction]

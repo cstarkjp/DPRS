@@ -3,7 +3,7 @@
 // //!
 use pyo3::{FromPyObject, pyclass};
 
-/// Lattice dimension, auto-computed from presence of n_y, n_z kwarg parameters.
+/// Lattice dimension.
 #[derive(PartialEq, Debug, Clone)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Dimension {
@@ -12,12 +12,21 @@ pub enum Dimension {
     D3,
 }
 
-/// Lattice dimension, auto-computed from presence of n_y, n_z kwarg parameters.
+/// Edge topology.
 #[derive(PartialEq, Debug, Clone)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Topology {
     Unspecified,
+    Open,
     Periodic,
+}
+
+/// Edge boundary conditions.
+#[derive(PartialEq, Debug, Clone)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum BoundaryCondition {
+    Unspecified,
+    Floating,
     Pinned,
     Extended,   // NYI
     Reflecting, // NYI
@@ -39,9 +48,12 @@ pub struct Parameters {
     pub n_x: usize,
     pub n_y: usize,
     pub n_z: usize,
-    pub edge_topology_x: (Topology, Topology),
-    pub edge_topology_y: (Topology, Topology),
-    pub edge_topology_z: (Topology, Topology),
+    pub edge_topology_x: Topology,
+    pub edge_topology_y: Topology,
+    pub edge_topology_z: Topology,
+    pub edge_bc_x: (BoundaryCondition, BoundaryCondition),
+    pub edge_bc_y: (BoundaryCondition, BoundaryCondition),
+    pub edge_bc_z: (BoundaryCondition, BoundaryCondition),
     pub edge_values_x: (bool, bool),
     pub edge_values_y: (bool, bool),
     pub edge_values_z: (bool, bool),
