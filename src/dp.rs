@@ -144,9 +144,9 @@ pub fn compute<M: Model2D>(
 
     // Evolve the lattice for n_iterations
     //
-    // Note: the second "apply_boundary_topology" is unnecessary.
-    // It's only there for now to ensure the t-sliced lattices show this
-    // boundary topology step is working (or not).
+    // Note: the second "apply_edge_topology" etc are unnecessary.
+    // It's only there for now to ensure the t-sliced lattices show whether
+    // boundary topology/condition step is working or not.
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
