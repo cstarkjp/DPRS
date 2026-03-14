@@ -24,7 +24,7 @@ impl Model2D for DPModel {
     fn cell_update(&self, coin_toss: bool, cell_nbrhood: &[bool; 9]) -> Self::Cell {
         let n_occupied_neighbors = cell_nbrhood.iter().map(|b| *b as usize).sum::<usize>();
 
-        n_occupied_neighbors >= 1
+        coin_toss && (n_occupied_neighbors >= 1)
     }
 }
 
