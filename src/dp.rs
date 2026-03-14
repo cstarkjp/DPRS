@@ -25,6 +25,7 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Edge y vals: {:?}", params.edge_values_y);
     println!("Edge z vals: {:?}", params.edge_values_z);
     println!("Probability: {}", params.p);
+    println!("Random seed: {}", params.seed);
     println!("Iterations:  {}", params.n_iterations);
     println!("Sample rate: {}", params.sample_rate);
     println!("Threads:     {}", params.n_threads);
@@ -80,6 +81,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
 
     // Do the simulation
     let (n_lattices, lattices) = pool.install(|| {
+        // println!("{:?}", std::thread::current());
         compute(
             lattice_model_2d,
             &mut rng(),
