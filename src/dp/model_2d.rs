@@ -201,7 +201,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         let n_x = self.n_x;
         let n_y = self.n_y;
 
-        // Apply bottom x-edge boundary topology
+        // Apply bottom x-edge b.c.
         match params.edge_bc_x.0 {
             BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
                 // No edge values need be imposed
@@ -213,7 +213,7 @@ impl<M: Model2D> LatticeModel2D<M> {
             _ => todo!(),
         };
 
-        // Apply top x-edge boundary topology
+        // Apply top x-edge b.c.
         match params.edge_bc_x.1 {
             BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
                 // No edge values need be imposed
@@ -225,7 +225,7 @@ impl<M: Model2D> LatticeModel2D<M> {
             _ => todo!(),
         };
 
-        // Apply left y-edge boundary topology
+        // Apply left y-edge b.c.
         match params.edge_bc_y.0 {
             BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
                 // No edge values need be imposed
@@ -237,7 +237,7 @@ impl<M: Model2D> LatticeModel2D<M> {
             _ => todo!(),
         };
 
-        // Apply right y-edge boundary topology
+        // Apply right y-edge b.c.
         match params.edge_bc_y.1 {
             BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
                 // No edge values need be imposed
