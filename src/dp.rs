@@ -15,6 +15,12 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!();
     println!("Dimension:   {:?}", params.dim);
     println!("Grid shape:  {:?}", (params.n_x, params.n_y, params.n_z));
+    println!("Topology x:  {:?}", params.edge_topology_x);
+    println!("Topology y:  {:?}", params.edge_topology_y);
+    println!("Topology z:  {:?}", params.edge_topology_z);
+    println!("Edge x vals: {:?}", params.edge_values_x);
+    println!("Edge y vals: {:?}", params.edge_values_y);
+    println!("Edge z vals: {:?}", params.edge_values_z);
     println!("Probability: {}", params.p);
     println!("Iterations:  {}", params.n_iterations);
     println!("Sample rate: {}", params.sample_rate);
@@ -167,6 +173,7 @@ pub fn compute<M: Model2D>(
                     .apply_boundary_topology(&params)
                     .next_iteration_serial()
                     .apply_boundary_topology(&params);
+                // lattice_model[0]=1;
                 if i % sample_rate == 0 {
                     lattices.push(lattice_model.lattice().clone());
                 };

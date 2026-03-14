@@ -20,6 +20,9 @@ impl Model2D for DPModel {
         rng.sample(StandardUniform)
     }
 
+    // fn set_cell() {
+    // }
+
     /// TODO: DP2d
     /// Count the neighbours given the three rows of cells.
     ///

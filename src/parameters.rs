@@ -18,8 +18,8 @@ pub enum Dimension {
 pub enum Topology {
     Auto,
     Periodic,
-    Extended, // NYI
-    Pinned, // NYI
+    Extended,   // NYI
+    Pinned,     // NYI
     Reflecting, // NYI
 }
 
@@ -42,6 +42,9 @@ pub struct Parameters {
     pub edge_topology_x: (Topology, Topology),
     pub edge_topology_y: (Topology, Topology),
     pub edge_topology_z: (Topology, Topology),
+    pub edge_values_x: (bool, bool),
+    pub edge_values_y: (bool, bool),
+    pub edge_values_z: (bool, bool),
     pub p: f64,
     pub n_iterations: usize,
     pub sample_rate: usize,

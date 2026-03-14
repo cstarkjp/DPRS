@@ -11,6 +11,9 @@ class Parameters:
     edge_topology_x = (sim.Topology.Periodic, sim.Topology.Auto)
     edge_topology_y = (sim.Topology.Periodic, sim.Topology.Auto)
     edge_topology_z = (sim.Topology.Auto, sim.Topology.Auto)
+    edge_values_x = (False, False)
+    edge_values_y = (False, False)
+    edge_values_z = (False, False)
     p: float = 0.5
     n_iterations: int = 100
     sample_rate: int = 10

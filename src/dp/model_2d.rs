@@ -91,6 +91,10 @@ impl<M: Model2D> LatticeModel2D<M> {
         x + self.n_x * y
     }
 
+    // pub fn set_value(&mut self, new_value: <M as Model2D>::Cell) {
+    //     self.value = new_value;
+    // }
+
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn randomize<R: Rng>(mut self, rng: &mut R) -> Self {
@@ -101,17 +105,51 @@ impl<M: Model2D> LatticeModel2D<M> {
     }
 
     /// Enforce periodic edge topology along the x edges (i.e., in y axis direction)
-    fn periodic_x_edge_values(&self, lattice: &mut Vec<M::Cell>, y_from: usize, y_to: usize) {
+    fn periodic_x_edge_values(
+        &self,
+        lattice: &mut Vec<<M as Model2D>::Cell>,
+        y_from: usize,
+        y_to: usize,
+    ) {
         let n_x = self.n_x;
         for x in 0..n_x {
             lattice[self.i_cell(x, y_to)] = lattice[self.i_cell(x, y_from)];
         }
     }
     /// Enforce periodic edge topology along the y edges (i.e., in x axis direction)
-    fn periodic_y_edge_values(&self, lattice: &mut Vec<M::Cell>, x_from: usize, x_to: usize) {
+    fn periodic_y_edge_values(
+        &self,
+        lattice: &mut Vec<<M as Model2D>::Cell>,
+        x_from: usize,
+        x_to: usize,
+    ) {
         let n_y = self.n_y;
         for y in 0..n_y {
             lattice[self.i_cell(x_to, y)] = lattice[self.i_cell(x_from, y)];
+        }
+    }
+    /// Enforce constant-value edge topology along the x edge (i.e., in y axis direction)
+    fn pinned_x_edge_values(
+        &self,
+        lattice: &mut Vec<<M as Model2D>::Cell>,
+        y: usize,
+        pinned_value: <M as Model2D>::Cell,
+    ) {
+        let n_x = self.n_x;
+        for x in 0..n_x {
+            lattice[self.i_cell(x, y)] = pinned_value;
+        }
+    }
+    /// Enforce constant-value edge topology along the y edge (i.e., in x axis direction)
+    fn pinned_y_edge_values(
+        &self,
+        lattice: &mut Vec<<M as Model2D>::Cell>,
+        x: usize,
+        pinned_value: <M as Model2D>::Cell,
+    ) {
+        let n_y = self.n_y;
+        for y in 0..n_y {
+            lattice[self.i_cell(x, y)] = pinned_value;
         }
     }
 
@@ -134,6 +172,11 @@ impl<M: Model2D> LatticeModel2D<M> {
                     "y edge: for periodic topology, the opposite edge must be specified as periodic or auto."
                 );
             }
+            (Topology::Pinned, _) => {
+                todo!();
+                // self.pinned_x_edge_values(&mut new_lattice, 0, params.edge_topology_x.0 );
+                // self.pinned_x_edge_values(&mut new_lattice, n_y - 1, params.edge_topology_x.1 );
+            }
             _ => todo!(),
         };
         // Apply x-edge boundary topology
@@ -149,6 +192,11 @@ impl<M: Model2D> LatticeModel2D<M> {
                 panic!(
                     "x edge: or periodic topology, the opposite edge must be specified as periodic or auto."
                 );
+            }
+            (Topology::Pinned, _) => {
+                todo!();
+                // self.pinned_y_edge_values(&mut new_lattice, 0, params.edge_topology_y.0);
+                // self.pinned_y_edge_values(&mut new_lattice, n_x - 1,  params.edge_topology_y.1);
             }
             _ => todo!(),
         };
@@ -247,7 +295,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
 
         // Find the cell that is up and to the left
-        let above_start = (row - 1) * self.n_x;
+        let above_start = self.i_cell(0, row - 1); //(row - 1) * self.n_x;
 
         // Iterate over every cell in the row skipping the first and last
         //
@@ -260,12 +308,12 @@ impl<M: Model2D> LatticeModel2D<M> {
             lattice_row.iter_mut().skip(1).take(self.n_x - 2).zip(
                 self.lattice.split_at(above_start).1.windows(3).zip(
                     self.lattice
-                        .split_at(self.i_cell(above_start, 1))
+                        .split_at(above_start + self.n_x)
                         .1
                         .windows(3)
                         .zip(
                             self.lattice
-                                .split_at(self.i_cell(above_start, 2))
+                                .split_at(above_start + 2 * self.n_x)
                                 .1
                                 .windows(3),
                         ),
