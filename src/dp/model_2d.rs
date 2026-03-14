@@ -111,12 +111,16 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
+    /// Enforce edge topology specifications
     pub fn apply_boundary_topology(mut self, params: &Parameters) -> Self {
         let mut new_lattice: Vec<<M as Model2D>::Cell> = self.lattice().clone();
         let n_x = self.n_x;
         let n_y = self.n_y;
         // Apply y-edge boundary topology
         match params.edge_topology_y {
+            (Topology::Auto, Topology::Auto) => {
+                // No edge topology specified
+            }
             (Topology::Periodic | Topology::Auto, Topology::Periodic | Topology::Auto) => {
                 self.periodic_y_edge_values(&mut new_lattice, n_x - 2, 0);
                 self.periodic_y_edge_values(&mut new_lattice, 1, n_x - 1);
@@ -126,10 +130,13 @@ impl<M: Model2D> LatticeModel2D<M> {
                     "y edge: for periodic topology, the opposite edge must be specified as periodic or auto."
                 );
             }
-            _ => {} // _ => todo!()
+            _ => todo!(),
         };
         // Apply x-edge boundary topology
         match params.edge_topology_x {
+            (Topology::Auto, Topology::Auto) => {
+                // No edge topology specified
+            }
             (Topology::Periodic | Topology::Auto, Topology::Periodic | Topology::Auto) => {
                 self.periodic_x_edge_values(&mut new_lattice, n_y - 2, 0);
                 self.periodic_x_edge_values(&mut new_lattice, 1, n_y - 1);
@@ -139,7 +146,7 @@ impl<M: Model2D> LatticeModel2D<M> {
                     "x edge: or periodic topology, the opposite edge must be specified as periodic or auto."
                 );
             }
-            _ => {} // _ => todo!()
+            _ => todo!(),
         };
 
         self.lattice = new_lattice;
