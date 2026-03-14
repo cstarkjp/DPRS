@@ -38,7 +38,7 @@ pub enum BoundaryCondition {
 pub enum Processing {
     Serial,
     Parallel,
-    ParallelChunked,
+    ParallelChunked, // Only applies to Life sim
 }
 
 /// Model parameter bundle derived from Python Parameters class instance.
@@ -58,6 +58,7 @@ pub struct Parameters {
     pub edge_values_y: (bool, bool),
     pub edge_values_z: (bool, bool),
     pub p: f64,
+    pub seed: usize,
     pub n_iterations: usize,
     pub sample_rate: usize,
     pub processing: Processing,

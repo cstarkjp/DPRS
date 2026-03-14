@@ -7,7 +7,7 @@ mod model_2d;
 use crate::parameters::{Parameters, Processing};
 use dp_model_2d::DPModel;
 use model_2d::{LatticeModel2D, Model2D};
-use rand::rng;
+use rand::{Rng, rng};
 use std::time::Instant;
 
 /// Entry point to this module.
@@ -25,6 +25,7 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Edge y vals: {:?}", params.edge_values_y);
     println!("Edge z vals: {:?}", params.edge_values_z);
     println!("Probability: {}", params.p);
+    println!("Random seed: {}", params.seed);
     println!("Iterations:  {}", params.n_iterations);
     println!("Sample rate: {}", params.sample_rate);
     println!("Threads:     {}", params.n_threads);
@@ -32,19 +33,13 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Buffering:   {}", params.do_buffering);
     println!();
 
-    let (t_serial, _, _) = run_simulation(&params, &Processing::Serial);
+    let (t_serial, n_lattices, lattices) = run_simulation(&params, &Processing::Serial);
     println!("Serial:   {:4.3}s", t_serial);
 
     let (t_parallel, _, _) = run_simulation(&params, &Processing::Parallel);
     println!("Parallel: {:4.3}s", t_parallel);
 
-    let (t_parallel_chunked, n_lattices, lattices) =
-        run_simulation(&params, &Processing::ParallelChunked);
-    println!("Chunked:  {:4.3}s", t_parallel_chunked);
-    println!();
-
     println!("Parallel speedup => {:.2}x", t_serial / t_parallel);
-    println!("Chunked speedup =>  {:.2}x", t_serial / t_parallel_chunked);
     println!();
 
     (n_lattices, lattices)
@@ -64,7 +59,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     let n_y: usize = pruned_n_y + pad * 2;
     let lattice_model_2d: LatticeModel2D<DPModel> =
         LatticeModel2D::new(dp, n_x, n_y, params.edge_values_x, params.edge_values_y)
-            .randomize(&mut rng());
+            .randomize(params.p, &mut rng());
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
@@ -77,7 +72,8 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     // the parallelized runs.
     let serial_skip: usize = match processing {
         Processing::Serial => params.serial_skip,
-        Processing::Parallel | Processing::ParallelChunked => 1,
+        Processing::Parallel => 1,
+        _ => todo!(),
     };
 
     // Start the timer
@@ -85,8 +81,10 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
 
     // Do the simulation
     let (n_lattices, lattices) = pool.install(|| {
+        // println!("{:?}", std::thread::current());
         compute(
             lattice_model_2d,
+            &mut rng(),
             processing,
             &params,
             params.n_iterations / serial_skip,
@@ -122,15 +120,18 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
 }
 
 /// Run a simulation for n_iterations, either serially or in parallel
-pub fn compute<M: Model2D>(
+pub fn compute<M: Model2D, R: Rng>(
     lattice_model: LatticeModel2D<M>,
+    rng: &mut R,
     processing: &Processing,
     params: &Parameters,
     n_iterations: usize,
     sample_rate: usize,
 ) -> (usize, Vec<Vec<<M as Model2D>::Cell>>) {
     // Create a model lattice plus metadata
-    let mut lattice_model = lattice_model;
+    let mut lattice_model = lattice_model
+        .apply_edge_topology(&params)
+        .apply_boundary_conditions(&params);
 
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
@@ -144,9 +145,9 @@ pub fn compute<M: Model2D>(
 
     // Evolve the lattice for n_iterations
     //
-    // Note: the second "apply_boundary_topology" is unnecessary.
-    // It's only there for now to ensure the t-sliced lattices show this
-    // boundary topology step is working (or not).
+    // Note: the second "apply_edge_topology" etc are unnecessary.
+    // It's only there for now to ensure the t-sliced lattices show whether
+    // boundary topology/condition step is working or not.
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
@@ -154,7 +155,7 @@ pub fn compute<M: Model2D>(
                 lattice_model = lattice_model
                     .apply_edge_topology(&params)
                     .apply_boundary_conditions(&params)
-                    .next_iteration_serial()
+                    .next_iteration_serial(params.p, rng)
                     .apply_edge_topology(&params) // Can cut
                     .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
@@ -167,7 +168,7 @@ pub fn compute<M: Model2D>(
                 lattice_model = lattice_model
                     .apply_edge_topology(&params)
                     .apply_boundary_conditions(&params)
-                    .next_iteration_serial()
+                    .next_iteration_serial(params.p, rng)
                     .apply_edge_topology(&params) // Can cut
                     .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
@@ -175,23 +176,9 @@ pub fn compute<M: Model2D>(
                 };
             }
         }
-        Processing::ParallelChunked => {
-            for i in 1..(n_iterations + 1) {
-                lattice_model = lattice_model
-                    .apply_edge_topology(&params)
-                    .apply_boundary_conditions(&params)
-                    .next_iteration_serial()
-                    .apply_edge_topology(&params) // Can cut
-                    .apply_boundary_conditions(&params); // Can cut
-                // lattice_model[0]=1;
-                if i % sample_rate == 0 {
-                    lattices.push(lattice_model.lattice().clone());
-                };
-            }
-        }
+        _ => todo!(),
     };
     assert!(n_lattices == lattices.len());
-    // println!("n_lattices:  {} = {}", lattices.len(), n_lattices);
 
     (n_lattices, lattices)
 }

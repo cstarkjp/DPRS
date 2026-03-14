@@ -12,35 +12,19 @@ use super::Model2D;
 pub struct DPModel();
 
 // Implement Model2D trait for DPModel.
-// In other words, implement 2d grid interactions such that we can run a
-// "Game of DP" sim.
 impl Model2D for DPModel {
     type Cell = bool;
-    fn randomize_cell<R: Rng>(&self, rng: &mut R) -> Self::Cell {
-        rng.sample(StandardUniform)
+    fn randomize_cell<R: Rng>(&self, p: f64, rng: &mut R) -> Self::Cell {
+        rng.random_bool(p)
     }
 
-    // fn set_cell() {
-    // }
+    /// DP rule: this cell will become occupied if:
+    ///  (1) a coin toss with probability p says it *may* be occupied
+    ///  (2) if one of the 9 neighborhood + here cells were previously occupied
+    fn cell_update(&self, coin_toss: bool, cell_nbrhood: &[bool; 9]) -> Self::Cell {
+        let n_occupied_neighbors = cell_nbrhood.iter().map(|b| *b as usize).sum::<usize>();
 
-    /// TODO: DP2d
-    /// Count the neighbours given the three rows of cells.
-    ///
-    /// As they are arrays there needs to be no range checking
-    /// (not that there is in release anyway...)
-    fn next_cell(&self, above: &[bool; 3], middle: &[bool; 3], below: &[bool; 3]) -> Self::Cell {
-        // Count the neighbors
-        //  - the cells in the three *arrays* that we are using.
-        let n_alive_neighbors = above.iter().map(|b| *b as usize).sum::<usize>()
-            + below.iter().map(|b| *b as usize).sum::<usize>()
-            + { if middle[0] { 1 } else { 0 } }
-            + { if middle[2] { 1 } else { 0 } };
-
-        if middle[1] {
-            (2..=3).contains(&n_alive_neighbors)
-        } else {
-            (2..=2).contains(&n_alive_neighbors)
-        }
+        n_occupied_neighbors >= 1
     }
 }
 
@@ -51,13 +35,13 @@ fn test_dp() {
     use rand::rng;
 
     let dp = DPModel::default();
-    let mut lm1 =
-        LatticeModel2D::new(dp, 200, 200, (false, false), (false, false)).randomize(&mut rng());
+    let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false))
+        .randomize(0.5, &mut rng());
     let mut lm2 = lm1.clone();
 
     for _ in 0..100 {
-        lm1 = lm1.next_iteration_serial();
-        lm2 = lm2.next_iteration_parallel();
+        lm1 = lm1.next_iteration_serial(0.5, &mut rng());
+        lm2 = lm2.next_iteration_parallel(0.5, &mut rng());
 
         assert_eq!(lm1.lattice(), lm2.lattice());
     }
