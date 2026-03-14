@@ -86,6 +86,11 @@ impl<M: Model2D> LatticeModel2D<M> {
         self.n_x * self.n_y
     }
 
+    /// Compute the cell index of a given x,y coordinate.
+    fn i_cell(&self, x: usize, y: usize) -> usize {
+        x + self.n_x * y
+    }
+
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn randomize<R: Rng>(mut self, rng: &mut R) -> Self {
@@ -99,15 +104,14 @@ impl<M: Model2D> LatticeModel2D<M> {
     fn periodic_x_edge_values(&self, lattice: &mut Vec<M::Cell>, y_from: usize, y_to: usize) {
         let n_x = self.n_x;
         for x in 0..n_x {
-            lattice[x + n_x * y_to] = lattice[x + n_x * y_from];
+            lattice[self.i_cell(x, y_to)] = lattice[self.i_cell(x, y_from)];
         }
     }
     /// Enforce periodic edge topology along the y edges (i.e., in x axis direction)
     fn periodic_y_edge_values(&self, lattice: &mut Vec<M::Cell>, x_from: usize, x_to: usize) {
-        let n_x = self.n_x;
         let n_y = self.n_y;
         for y in 0..n_y {
-            lattice[x_to + n_x * y] = lattice[x_from + n_x * y];
+            lattice[self.i_cell(x_to, y)] = lattice[self.i_cell(x_from, y)];
         }
     }
 
