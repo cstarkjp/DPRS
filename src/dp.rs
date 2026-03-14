@@ -18,6 +18,9 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Topology x:  {:?}", params.edge_topology_x);
     println!("Topology y:  {:?}", params.edge_topology_y);
     println!("Topology z:  {:?}", params.edge_topology_z);
+    println!("Edge x b.c.: {:?}", params.edge_bc_x);
+    println!("Edge y b.c.: {:?}", params.edge_bc_y);
+    println!("Edge z b.c.: {:?}", params.edge_bc_z);
     println!("Edge x vals: {:?}", params.edge_values_x);
     println!("Edge y vals: {:?}", params.edge_values_y);
     println!("Edge z vals: {:?}", params.edge_values_z);
@@ -149,9 +152,11 @@ pub fn compute<M: Model2D>(
             for i in 1..(n_iterations + 1) {
                 // TODO: implement periodic etc edge buffering
                 lattice_model = lattice_model
-                    .apply_boundary_topology(&params)
+                    .apply_edge_topology(&params)
+                    .apply_boundary_conditions(&params)
                     .next_iteration_serial()
-                    .apply_boundary_topology(&params);
+                    .apply_edge_topology(&params) // Can cut
+                    .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
                     lattices.push(lattice_model.lattice().clone());
                 };
@@ -160,9 +165,11 @@ pub fn compute<M: Model2D>(
         Processing::Parallel => {
             for i in 1..(n_iterations + 1) {
                 lattice_model = lattice_model
-                    .apply_boundary_topology(&params)
+                    .apply_edge_topology(&params)
+                    .apply_boundary_conditions(&params)
                     .next_iteration_serial()
-                    .apply_boundary_topology(&params);
+                    .apply_edge_topology(&params) // Can cut
+                    .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
                     lattices.push(lattice_model.lattice().clone());
                 };
@@ -171,9 +178,11 @@ pub fn compute<M: Model2D>(
         Processing::ParallelChunked => {
             for i in 1..(n_iterations + 1) {
                 lattice_model = lattice_model
-                    .apply_boundary_topology(&params)
+                    .apply_edge_topology(&params)
+                    .apply_boundary_conditions(&params)
                     .next_iteration_serial()
-                    .apply_boundary_topology(&params);
+                    .apply_edge_topology(&params) // Can cut
+                    .apply_boundary_conditions(&params); // Can cut
                 // lattice_model[0]=1;
                 if i % sample_rate == 0 {
                     lattices.push(lattice_model.lattice().clone());

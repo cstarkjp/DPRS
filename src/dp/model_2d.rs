@@ -5,7 +5,7 @@
 use rand::Rng;
 use rayon::prelude::*;
 
-use crate::parameters::{Parameters, Topology};
+use crate::parameters::{BoundaryCondition, Parameters, Topology};
 
 /// The trait required for a model to run in 2D.
 ///
@@ -164,75 +164,89 @@ impl<M: Model2D> LatticeModel2D<M> {
     }
 
     /// Enforce edge topology specifications
-    pub fn apply_boundary_topology(mut self, params: &Parameters) -> Self {
+    pub fn apply_edge_topology(mut self, params: &Parameters) -> Self {
         let mut new_lattice: Vec<<M as Model2D>::Cell> = self.lattice().clone();
         let n_x = self.n_x;
         let n_y = self.n_y;
 
-        // Apply bottom x-edge boundary topology
-        match params.edge_topology_x.0 {
-            Topology::Unspecified => {
-                // No edge topology specified
-            }
-            Topology::Periodic => {
-                self.periodic_x_edge_values(&mut new_lattice, n_y - 2, 0);
-            }
-            Topology::Pinned => {
-                println!("Pinning bottom x edge");
-                self.pinned_x_edge_values(&mut new_lattice, 0, self.edge_values_x.0);
-            }
-            _ => todo!(),
-        };
-
-        // Apply top x-edge boundary topology
-        match params.edge_topology_x.1 {
-            Topology::Unspecified => {
+        // Apply x-edge boundary topology
+        match params.edge_topology_x {
+            Topology::Unspecified | Topology::Open => {
                 // No edge topology specified
             }
             Topology::Periodic => {
                 self.periodic_x_edge_values(&mut new_lattice, n_y - 2, 0);
                 self.periodic_x_edge_values(&mut new_lattice, 1, n_y - 1);
             }
-            Topology::Pinned => {
-                println!("Pinning top x edge");
-                self.pinned_x_edge_values(&mut new_lattice, n_y - 1, self.edge_values_x.1);
-            }
-            _ => todo!(),
         };
 
-        // Apply left y-edge boundary topology
-        match params.edge_topology_y.0 {
-            Topology::Unspecified => {
-                // No edge topology specified
-            }
-            Topology::Periodic => {
-                self.periodic_y_edge_values(&mut new_lattice, 1, n_x - 1);
-            }
-            Topology::Pinned => {
-                // println!("Pinning left y edge");
-                self.pinned_y_edge_values(&mut new_lattice, 0, self.edge_values_y.0);
-            }
-            _ => {
-                println!("x edge topology  not implemented yet")
-            }
-        };
-
-        // Apply right y-edge boundary topology
-        match params.edge_topology_y.1 {
-            Topology::Unspecified => {
+        // Apply y-edge boundary topology
+        match params.edge_topology_y {
+            Topology::Unspecified | Topology::Open => {
                 // No edge topology specified
             }
             Topology::Periodic => {
                 self.periodic_y_edge_values(&mut new_lattice, n_x - 2, 0);
                 self.periodic_y_edge_values(&mut new_lattice, 1, n_x - 1);
             }
-            Topology::Pinned => {
+        };
+
+        self.lattice = new_lattice;
+        self
+    }
+
+    /// Enforce edge boundary conditions
+    pub fn apply_boundary_conditions(mut self, params: &Parameters) -> Self {
+        let mut new_lattice: Vec<<M as Model2D>::Cell> = self.lattice().clone();
+        let n_x = self.n_x;
+        let n_y = self.n_y;
+
+        // Apply bottom x-edge b.c.
+        match params.edge_bc_x.0 {
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
+                // No edge values need be imposed
+            }
+            BoundaryCondition::Pinned => {
+                println!("Pinning bottom x edge");
+                self.pinned_x_edge_values(&mut new_lattice, 0, self.edge_values_x.0);
+            }
+            _ => todo!(),
+        };
+
+        // Apply top x-edge b.c.
+        match params.edge_bc_x.1 {
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
+                // No edge values need be imposed
+            }
+            BoundaryCondition::Pinned => {
+                println!("Pinning top x edge");
+                self.pinned_x_edge_values(&mut new_lattice, n_y - 1, self.edge_values_x.1);
+            }
+            _ => todo!(),
+        };
+
+        // Apply left y-edge b.c.
+        match params.edge_bc_y.0 {
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
+                // No edge values need be imposed
+            }
+            BoundaryCondition::Pinned => {
+                // println!("Pinning left y edge");
+                self.pinned_y_edge_values(&mut new_lattice, 0, self.edge_values_y.0);
+            }
+            _ => todo!(),
+        };
+
+        // Apply right y-edge b.c.
+        match params.edge_bc_y.1 {
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
+                // No edge values need be imposed
+            }
+            BoundaryCondition::Pinned => {
                 // println!("Pinning right y edge");
                 self.pinned_y_edge_values(&mut new_lattice, n_x - 1, self.edge_values_y.1);
             }
-            _ => {
-                println!("x edge topology  not implemented yet")
-            }
+            _ => todo!(),
         };
 
         self.lattice = new_lattice;
