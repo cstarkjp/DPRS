@@ -23,7 +23,7 @@ pub trait Model2D: Sync {
     ///
     type Cell: Default + std::fmt::Debug + Copy + Send + Sync;
     /// TODO: DP2d
-    fn randomize_cell<R: Rng>(&self, rng: &mut R) -> Self::Cell;
+    fn randomize_cell<R: Rng>(&self, p: f64, rng: &mut R) -> Self::Cell;
     /// TODO: DP2d
     fn cell_update(&self, coin_toss: bool, cell_nbrhood: &[Self::Cell; 9]) -> Self::Cell;
 }
@@ -121,9 +121,9 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
-    pub fn randomize<R: Rng>(mut self, rng: &mut R) -> Self {
+    pub fn randomize<R: Rng>(mut self, p: f64, rng: &mut R) -> Self {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.model.randomize_cell(rng))
+            .map(|_| self.model.randomize_cell(p, rng))
             .collect();
         self
     }
@@ -269,13 +269,13 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// TODO: DP2d
     /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(mut self, rng: &mut R, p: f64) -> Self {
+    pub fn next_iteration_serial<R: Rng>(mut self, p: f64, rng: &mut R) -> Self {
         let new_lattice = (0..self.n_cells())
             .map(|i_cell| {
                 let x = i_cell % self.n_x;
                 let y = i_cell / self.n_x;
                 if x > 0 && y > 0 && x < self.n_x - 1 && y < self.n_y - 1 {
-                    self.successor_cell(x, y, rng, p)
+                    self.successor_cell(x, y, p, rng)
                 } else {
                     M::Cell::default()
                 }
@@ -288,7 +288,7 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// TODO: DP2d
     /// Check that this i_th cell -> cell(x,y) is a successor cell
-    fn successor_cell<R: Rng>(&self, x: usize, y: usize, rng: &mut R, p: f64) -> M::Cell {
+    fn successor_cell<R: Rng>(&self, x: usize, y: usize, p: f64, rng: &mut R) -> M::Cell {
         // println!("successor_cell {x} {y}");
         let cell_nbrhood = self.cell_nbrhood(x, y);
         // Need to generate a coin toss here
@@ -299,7 +299,7 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// TODO: DP2d
     /// Evolve the grid by one iteration using chunked parallel processing.
-    pub fn next_iteration_parallel<R: Rng>(mut self, rng: &mut R, p: f64) -> Self {
+    pub fn next_iteration_parallel<R: Rng>(mut self, p: f64, rng: &mut R) -> Self {
         let mut new_lattice = vec![M::Cell::default(); self.lattice.len()];
         // Placeholder
         let coin_tosses: Vec<bool> = (0..self.n_x).map(|_| rng.random_bool(p)).collect();

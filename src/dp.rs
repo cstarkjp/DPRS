@@ -32,10 +32,10 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Buffering:   {}", params.do_buffering);
     println!();
 
-    let (t_serial, _, _) = run_simulation(&params, &Processing::Serial);
+    let (t_serial, n_lattices, lattices) = run_simulation(&params, &Processing::Serial);
     println!("Serial:   {:4.3}s", t_serial);
 
-    let (t_parallel, n_lattices, lattices) = run_simulation(&params, &Processing::Parallel);
+    let (t_parallel, _, _) = run_simulation(&params, &Processing::Parallel);
     println!("Parallel: {:4.3}s", t_parallel);
 
     println!("Parallel speedup => {:.2}x", t_serial / t_parallel);
@@ -58,7 +58,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     let n_y: usize = pruned_n_y + pad * 2;
     let lattice_model_2d: LatticeModel2D<DPModel> =
         LatticeModel2D::new(dp, n_x, n_y, params.edge_values_x, params.edge_values_y)
-            .randomize(&mut rng());
+            .randomize(params.p, &mut rng());
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
@@ -72,7 +72,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     let serial_skip: usize = match processing {
         Processing::Serial => params.serial_skip,
         Processing::Parallel => 1,
-        _ => todo!()
+        _ => todo!(),
     };
 
     // Start the timer
@@ -127,7 +127,9 @@ pub fn compute<M: Model2D, R: Rng>(
     sample_rate: usize,
 ) -> (usize, Vec<Vec<<M as Model2D>::Cell>>) {
     // Create a model lattice plus metadata
-    let mut lattice_model = lattice_model;
+    let mut lattice_model = lattice_model
+        .apply_edge_topology(&params)
+        .apply_boundary_conditions(&params);
 
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
@@ -151,7 +153,7 @@ pub fn compute<M: Model2D, R: Rng>(
                 lattice_model = lattice_model
                     .apply_edge_topology(&params)
                     .apply_boundary_conditions(&params)
-                    .next_iteration_serial(rng, params.p)
+                    .next_iteration_serial(params.p, rng)
                     .apply_edge_topology(&params) // Can cut
                     .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
@@ -164,7 +166,7 @@ pub fn compute<M: Model2D, R: Rng>(
                 lattice_model = lattice_model
                     .apply_edge_topology(&params)
                     .apply_boundary_conditions(&params)
-                    .next_iteration_serial(rng, params.p)
+                    .next_iteration_serial(params.p, rng)
                     .apply_edge_topology(&params) // Can cut
                     .apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
@@ -172,7 +174,7 @@ pub fn compute<M: Model2D, R: Rng>(
                 };
             }
         }
-        _ => todo!()
+        _ => todo!(),
     };
     assert!(n_lattices == lattices.len());
 
