@@ -1,22 +1,41 @@
-# Integration of Rust and Python
+# Directed Percolation in Rust (and Python)
 
-Some notes on how to wrap a Python package around fast, parallelized Rust code. Parallelization is achieved using `Rayon`.
+In this project, we implement directed percolation (DP) and similar lattice  models in Rust. The Rust code is accessed via a Python wrapper to make experimentation as convenient as possible. Jupyter notebooks are used to implement the Python-wrapped simulations.
+
+
+We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). 
+
+
+
+Fast run times are achieved through parallelization using the [`Rayon`](https://docs.rs/rayon/latest/rayon/) crate. 
+We anticipate boosting performance further with GPU-compute using [`wgpu`](https://wgpu.rs/).
+
 
 ## Demos
 
-The example Rust code wrapped here is Conway's "Game of Life" cellular automata (CA) model in a simplified version of the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life). The following Jupyter notebook demonstrates this CA in action:
+### DP
 
- - [`life` demo](notebooks/life_2d.ipynb)
+A directed-percolation model, together with a series of related models, are in development. A prototype of this model can be found demonstrated here:
 
-You'll see two parallelization strategies tested in this notebook, with the best speed-up at around 60x compared to the serial processing version.
+ - [DP demo in 2d](notebooks/dp_2d.ipynb)
 
-A directed-percolation model based on this CA demo, together with a series of related models, are in development. A prototype of this DP model can be found demonstrated here:
 
- - [`dp` demo in 2d](notebooks/dp_2d.ipynb)
+### Life
+
+Early in the project, we worked with
+Conway's "Game of Life" cellular automata (CA) model, and we simplified the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life). The following Jupyter notebook demonstrates this CA in action:
+
+ - [life demo](notebooks/life_2d.ipynb)
+
+You'll see two parallelization strategies tested in this notebook, with the best speed-up at around 60x compared to the serial processing version. 
+
+Take a look at early commits if you want to see a streamlined version of the code base that just implements this demo.
 
 
 
 ## Recipe for wrapping Rust with Python
+
+Here are some notes on how to wrap a Python package around fast, parallelized Rust code. 
 
 Create a mixed Rust-Python project:
 
