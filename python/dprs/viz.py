@@ -44,8 +44,12 @@ class Viz:
     fdict: dict[Any, Any]
     font_family: str
 
-    def __init__(self, dpi: int = 100, font_size: int = 11) -> None:
-        """Initialize."""
+    def __init__(self, dpi: int = 150, font_size: int = 11) -> None:
+        """
+        Instantiate the visualization class and set some figure parameters.
+        
+        Set a standard font size and font family, choosing Arial if possible.
+        """
         self.dpi = dpi
         self.font_size = font_size
         self.fdict = {}
@@ -65,9 +69,8 @@ class Viz:
         """
         Initialize a Pyplot figure.
 
-        Set its size and dpi, set the font size,
-        choose the Arial font family if possible,
-        and append it to the figures dictionary.
+        Set its size and dpi. Append it to the figures dictionary.
+
 
         Args:
             fig_name:
@@ -111,10 +114,8 @@ class Viz:
         Plot colorized image of lattice.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
-        # fig = plt.figure()
-
+        plt.title(title)
         color_map = ListedColormap(((0.9, 0.9, 0.9,), (0.65, 0, 0.65),))
-
         x = (lattices.shape[0] if x is None else x)
         y = (lattices.shape[1] if y is None else y)
         plt.imshow(
@@ -133,4 +134,4 @@ class Viz:
         plt.xlabel(r"$x$")
         plt.ylabel(r"$y$")
         plt.grid(ls=":")
-        plt.close()
+        # plt.close()
