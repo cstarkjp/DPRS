@@ -3,7 +3,8 @@
 // //!
 
 // use rand::distr::Bernoulli;
-use rand::{Rng, RngExt};
+use rand::Rng;
+use rand::rngs::StdRng;
 use rayon::prelude::*;
 
 use crate::parameters::{BoundaryCondition, Parameters, Topology};
@@ -22,10 +23,22 @@ pub trait Model2D: Sync {
     /// the array of cells is accessed by many threads at once.
     ///
     type Cell: Default + std::fmt::Debug + Copy + Send + Sync;
-    fn randomize_cell<R: Rng>(&self, p: f64, rng: &mut R) -> Self::Cell;
-    fn cell_update(&self, coin_toss: bool, cell_nbrhood: &[Self::Cell; 9]) -> Self::Cell;
+    fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::Cell;
+    fn cell_update<R: Rng>(
+        &self,
+        rng: &mut R,
+        p: f64,
+        cell_nbrhood: &[Self::Cell; 9],
+    ) -> Self::Cell;
     /// TODO: DP2d
-    fn row_update(&self, rows: &Vec<Vec<Self::Cell>>, coin_tosses: Vec<bool>) -> Vec<Self::Cell>;
+    fn row_update<R: Rng>(
+        &self,
+        rng: &mut R,
+        p: f64,
+        y: usize,
+        row: &[Self::Cell],
+        // cell_nbrhood: &[Self::Cell; 9],
+    );
 }
 
 /// Model lattice in 2d.
@@ -99,9 +112,9 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
-    pub fn randomized_lattice<R: Rng>(&mut self, p: f64, rng: &mut R) {
+    pub fn randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.model.randomize_cell(p, rng))
+            .map(|_| self.model.randomize_cell(rng, p))
             .collect();
     }
 
@@ -226,6 +239,23 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
+    /// Evolve the grid by one iteration using serial processing.
+    pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R, p: f64) {
+        self.lattice = (0..self.n_cells())
+            .map(|i_cell| {
+                let (is_in_bounds, x, y) = self.is_in_bounds(i_cell);
+                let updated_cell = if is_in_bounds {
+                    let nbrhood = self.cell_nbrhood(x, y);
+                    self.model.cell_update(&mut rng, p, &nbrhood)
+                } else {
+                    M::Cell::default()
+                };
+
+                updated_cell
+            })
+            .collect();
+    }
+
     /// Cell values tripled across (x-1:x+1, y)
     fn cell_nbrhood(&self, x: usize, y: usize) -> [<M as Model2D>::Cell; 9] {
         let nbrhood = [
@@ -243,38 +273,41 @@ impl<M: Model2D> LatticeModel2D<M> {
         nbrhood
     }
 
-    /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(&mut self, p: f64, rng: &mut R) {
-        self.lattice = (0..self.n_cells())
-            .map(|i_cell| {
-                let x = i_cell % self.n_x;
-                let y = i_cell / self.n_x;
-                if x > 0 && y > 0 && x < self.n_x - 1 && y < self.n_y - 1 {
-                    let cell_nbrhood = self.cell_nbrhood(x, y);
-                    let coin_toss = rng.random_bool(p);
+    /// Check (x,y) coordinate is within lattice bounds
+    fn is_in_bounds_xy(&self, x: usize, y: usize) -> bool {
+        x > 0 && y > 0 && x < self.n_x - 1 && y < self.n_y - 1
+    }
 
-                    self.model.cell_update(coin_toss, &cell_nbrhood)
-                } else {
-                    M::Cell::default()
-                }
-            })
-            .collect();
+    /// Check cell index is within lattice bounds; return this test and (x, y)
+    fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize) {
+        let x = i_cell % self.n_x;
+        let y = i_cell / self.n_x;
+
+        (self.is_in_bounds_xy(x, y), x, y)
     }
 
     /// TODO: DP2d
     /// Evolve the grid by one iteration using chunked parallel processing.
-    pub fn next_iteration_parallel<R: Rng>(&mut self, p: f64, rng: &mut R) {
-        let mut new_lattice = vec![M::Cell::default(); self.lattice.len()];
-        // Placeholder
-        let coin_tosses: Vec<bool> = (0..self.n_x).map(|_| rng.random_bool(p)).collect();
-        // println!("next_iteration_parallel()");
-        new_lattice
+    /// TODO: Does it make sense to pass the probability p like this?
+    /// Wouldn't it be better to set it on the model struct?
+    pub fn next_iteration_parallel(&mut self, rngs: &mut Vec<StdRng>, p: f64) {
+        let mut updated_lattice = vec![M::Cell::default(); self.lattice.len()];
+        // Split the lattice into n_y rows each of length n_x and
+        // update these rows in parallel using par_chunks_mut().
+        // Before passing to next_row() to perform the update,
+        // enumerate each row, zip each pair together with one of the RNGs,
+        // and then omit the first and last rows.
+        updated_lattice
             .par_chunks_mut(self.n_x)
             .enumerate()
-            .skip(1) // Avoid having to return if row=0 or row=n_y-1
+            .zip(rngs)
+            .skip(1)
             .take(self.n_y - 2)
-            .for_each(|(row, lattice)| self.next_row(row, lattice, coin_tosses.clone()));
-        self.lattice = new_lattice;
+            .for_each(|((y, row), mut rng)| self.next_row(p, row, y, &mut rng));
+
+        // Only replace the lattice with the updated version once all the rows
+        // have been updated.
+        self.lattice = updated_lattice;
     }
 
     /// TODO: DP2d
@@ -285,15 +318,9 @@ impl<M: Model2D> LatticeModel2D<M> {
     /// row, and those in the row below
     ///
     /// By using iterators we can guarantee safe access without (unnecessary) range checks.
-    pub fn next_row(&self, row: usize, lattice_row: &mut [M::Cell], _coin_tosses: Vec<bool>) {
-        // Bounds check: would not be necessary if correct set of rows were passed
-        // if row == 0 || row == self.n_y - 1 {
-        //     return;
-        // }
-        // println!("next_row()");
-
+    pub fn next_row<R: Rng>(&self, p: f64, row: &mut [M::Cell], y: usize, rng: &mut R) {
         // Find the cell that is up and to the left
-        let above_start = self.i_cell(0, row - 1);
+        let above_start = self.i_cell(0, y - 1);
 
         // Iterate over every cell in the row skipping the first and last
         //
@@ -303,7 +330,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         //   the second is starting just left of this cell through to the one to the right
         //   the third is starting at two rows down from'above_start', i.e. below left through to below right
         for (lattice_cell, (from_up_left, (from_left, from_below_left))) in
-            lattice_row.iter_mut().skip(1).take(self.n_x - 2).zip(
+            row.iter_mut().skip(1).take(self.n_x - 2).zip(
                 self.lattice.split_at(above_start).1.windows(3).zip(
                     self.lattice
                         .split_at(above_start + self.n_x)
@@ -328,8 +355,7 @@ impl<M: Model2D> LatticeModel2D<M> {
             let cell_nbrhood = cell_nbrhood.as_array::<9>().unwrap();
 
             // Need to generate a coin toss here
-            let coin_toss = true;
-            *lattice_cell = self.model.cell_update(coin_toss, cell_nbrhood);
+            *lattice_cell = self.model.cell_update(rng, p, cell_nbrhood);
         }
     }
 }

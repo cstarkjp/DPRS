@@ -62,7 +62,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
         LatticeModel2D::new(dp, n_x, n_y, params.edge_values_x, params.edge_values_y);
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lattice_model_2d.randomized_lattice(params.p, &mut rng);
+    lattice_model_2d.randomized_lattice(&mut rng, params.p);
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
@@ -136,6 +136,12 @@ pub fn compute<M: Model2D, R: Rng>(
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 
+    // // TODO: should not repeat pad calc here!
+    // let pad: usize = match params.do_buffering {
+    //     true => 1,
+    //     false => 0,
+    // };
+
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices = Vec::new();
@@ -157,7 +163,7 @@ pub fn compute<M: Model2D, R: Rng>(
                 // TODO: implement periodic etc edge buffering
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
-                lm.next_iteration_serial(params.p, rng);
+                lm.next_iteration_serial(rng, params.p);
                 lm.apply_edge_topology(&params); // Can cut
                 lm.apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
@@ -166,10 +172,21 @@ pub fn compute<M: Model2D, R: Rng>(
             }
         }
         Processing::Parallel => {
+            // Create a vector of RNGs of length n_y,
+            // i.e., of length = number of lattice rows,
+            // each seeded by params.seed + their index.
+            // Each RNG element of this vec will be used,
+            // one per row, to generate coin tosses for DP cell updates.
+            // NB: this could be shortened by 2 (pad width) but we'll
+            // keep it full length for now just in case we need buffer RNGs.
+            let mut rngs: Vec<StdRng> = (0..params.n_y)
+                .into_iter()
+                .map(|s| StdRng::seed_from_u64((params.seed + s) as u64))
+                .collect();
             for i in 1..(n_iterations + 1) {
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
-                lm.next_iteration_parallel(params.p, rng);
+                lm.next_iteration_parallel(&mut rngs, params.p);
                 lm.apply_edge_topology(&params); // Can cut
                 lm.apply_boundary_conditions(&params); // Can cut
                 if i % sample_rate == 0 {
