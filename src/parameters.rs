@@ -32,7 +32,7 @@ pub enum BoundaryCondition {
     Reflecting, // NYI
 }
 
-
+/// For now, Rust-side only DP state
 #[derive(Default, PartialEq, Clone, Copy, Debug)]
 pub enum DPState {
     #[default]

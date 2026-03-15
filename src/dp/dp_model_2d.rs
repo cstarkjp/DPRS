@@ -2,11 +2,9 @@
 // //!
 // //!
 
-use rand::{Rng, RngExt};
-
-use crate::parameters::DPState;
-
 use super::Model2D;
+use crate::parameters::DPState;
+use rand::{Rng, RngExt};
 
 /// DPModel implements the Model2D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
