@@ -25,7 +25,7 @@ A directed-percolation model, together with a series of related models, are in d
 Early in the project, we worked with
 Conway's "Game of Life" cellular automata (CA) model, and we simplified the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life). The following Jupyter notebook demonstrates this CA in action:
 
- - [life demo](notebooks/life_2d.ipynb)
+ - ["Game of Life" demo](notebooks/life_2d.ipynb)
 
 You'll see two parallelization strategies tested in this notebook, with the best speed-up at around 60x compared to the serial processing version. 
 
