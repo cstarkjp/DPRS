@@ -134,4 +134,4 @@ class Viz:
         plt.xlabel(r"$x$")
         plt.ylabel(r"$y$")
         plt.grid(ls=":")
-        plt.close()
+        # plt.close()
