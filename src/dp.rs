@@ -181,7 +181,7 @@ pub fn compute<M: Model2D, R: Rng>(
             // keep it full length for now just in case we need buffer RNGs.
             let mut rngs: Vec<StdRng> = (0..params.n_y)
                 .into_iter()
-                .map(|s| StdRng::seed_from_u64((params.seed + s) as u64))
+                .map(|s| StdRng::seed_from_u64((params.seed * s + s) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
                 lm.apply_edge_topology(&params);

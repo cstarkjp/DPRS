@@ -20,24 +20,12 @@ impl Model2D for DPModel {
     /// DP rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
     ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    fn cell_update<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::Cell; 9]) -> Self::Cell {
+    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::Cell; 9]) -> Self::Cell {
         // let n_occupied_neighbors = cell_nbrhood.iter().map(|b| *b as usize).sum::<usize>();
         let is_any_nbr_occupied = nbrhood.iter().any(|&b| b);
         let do_survive = rng.random_bool(p);
 
         is_any_nbr_occupied & do_survive
-    }
-
-    /// TODO: DP2d
-    /// Calculate the next cells for just one row
-    ///
-    /// This zips across the row (unless it is the top or bottom row) using
-    /// windows onto the lattice for the cells in the row above, those in this
-    /// row, and those in the row below
-    ///
-    /// By using iterators we can guarantee safe access without (unnecessary) range checks.
-    fn row_update<R: Rng>(&self, rng: &mut R, p: f64, y: usize, row: &[Self::Cell]) {
-        // let _v = vec![false; row.len()];
     }
 }
 

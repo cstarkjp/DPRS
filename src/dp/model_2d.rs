@@ -24,21 +24,7 @@ pub trait Model2D: Sync {
     ///
     type Cell: Default + std::fmt::Debug + Copy + Send + Sync;
     fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::Cell;
-    fn cell_update<R: Rng>(
-        &self,
-        rng: &mut R,
-        p: f64,
-        cell_nbrhood: &[Self::Cell; 9],
-    ) -> Self::Cell;
-    /// TODO: DP2d
-    fn row_update<R: Rng>(
-        &self,
-        rng: &mut R,
-        p: f64,
-        y: usize,
-        row: &[Self::Cell],
-        // cell_nbrhood: &[Self::Cell; 9],
-    );
+    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::Cell; 9]) -> Self::Cell;
 }
 
 /// Model lattice in 2d.
@@ -246,7 +232,7 @@ impl<M: Model2D> LatticeModel2D<M> {
                 let (is_in_bounds, x, y) = self.is_in_bounds(i_cell);
                 let updated_cell = if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    self.model.cell_update(&mut rng, p, &nbrhood)
+                    self.model.update_cell(&mut rng, p, &nbrhood)
                 } else {
                     M::Cell::default()
                 };
@@ -312,26 +298,32 @@ impl<M: Model2D> LatticeModel2D<M> {
 
     /// TODO: DP2d
     /// Calculate the next cells for just one row
+    ///
+    /// This zips across the row (unless it is the top or bottom row) using
+    /// windows onto the lattice for the cells in the row above, those in this
+    /// row, and those in the row below
+    ///
+    /// By using iterators we can guarantee safe access without (unnecessary) range checks.
     pub fn row_update<R: Rng>(&self, rng: &mut R, p: f64, y: usize, row: &mut [M::Cell]) {
         let i_up = self.i_cell(0, y + 1);
-        let i_mid = self.i_cell(0, y + 0);
-        let i_down = self.i_cell(0, y - 1);
-        let row_len = self.n_x - 2; // .skip(1).take(row_len)
+        let i_md = self.i_cell(0, y + 0);
+        let i_dn = self.i_cell(0, y - 1);
+        let row_len = self.n_x - 2;
         let lattice = &self.lattice;
-        for (cell, (down, (mid, up))) in row.iter_mut().zip(
-            lattice.split_at(i_down).1.windows(3).zip(
+        for (cell, (dn, (md, up))) in row.iter_mut().skip(1).take(row_len).zip(
+            lattice.split_at(i_dn).1.windows(3).zip(
                 lattice
-                    .split_at(i_mid)
+                    .split_at(i_md)
                     .1
                     .windows(3)
                     .zip(lattice.split_at(i_up).1.windows(3)),
             ),
         ) {
             let nbrhood = [
-                up[0], up[1], up[2], mid[0], mid[1], mid[2], down[0], down[1], down[2],
+                up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
             ];
             let nbrhood = nbrhood.as_array::<9>().unwrap();
-            *cell = self.model.cell_update(rng, p, nbrhood);
+            *cell = self.model.update_cell(rng, p, nbrhood);
         }
     }
 }
