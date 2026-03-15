@@ -32,11 +32,12 @@ pub enum BoundaryCondition {
     Reflecting, // NYI
 }
 
-#[derive(PartialEq, Debug, Clone)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum CellStateDP {
+
+#[derive(Default, PartialEq, Clone, Copy, Debug)]
+pub enum DPState {
+    #[default]
     Empty,
-    Occupied
+    Occupied,
 }
 
 /// Choice of processing type: will become a Py-passable parameter.
