@@ -12,22 +12,35 @@ use pyo3::prelude::*;
 mod sim {
     use super::*;
 
-    // #[pymodule_export]
-    pub use crate::parameters::Parameters;
-    #[pymodule_export]
-    pub use crate::parameters::Dimension;
-    #[pymodule_export]
-    pub use crate::parameters::Topology;
     #[pymodule_export]
     pub use crate::parameters::BoundaryCondition;
+    use crate::parameters::DPState;
+    #[pymodule_export]
+    pub use crate::parameters::Dimension;
+    pub use crate::parameters::Parameters;
     #[pymodule_export]
     pub use crate::parameters::Processing;
+    #[pymodule_export]
+    pub use crate::parameters::Topology;
 
     #[pyfunction]
     fn dp(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>)> {
         let (n_lattices, lattices) = sim_dp(params);
+        // Quick and dirty translation layer between DPState and bool
+        // lattice cell types.
+        let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
+        for lattice in lattices {
+            let bool_lattice: Vec<bool> = lattice
+                .iter()
+                .map(|&state| match state {
+                    DPState::Empty => false,
+                    DPState::Occupied => true,
+                })
+                .collect();
+            bool_lattices.push(bool_lattice.clone());
+        }
 
-        Ok((n_lattices, lattices))
+        Ok((n_lattices, bool_lattices))
     }
 
     #[pyfunction]
