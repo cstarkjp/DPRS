@@ -32,11 +32,19 @@ pub enum BoundaryCondition {
     Reflecting, // NYI
 }
 
-#[derive(PartialEq, Debug, Clone)]
+/// For now, Rust-side only DP state
+#[derive(Default, PartialEq, Clone, Copy, Debug)]
 #[pyclass(from_py_object, eq, eq_int)]
-pub enum CellStateDP {
+#[repr(u8)]
+pub enum DPState {
+    #[default]
     Empty,
-    Occupied
+    Occupied,
+}
+
+#[test]
+fn guarantee_dpstate_is_u8() {
+    assert_eq!(std::mem::size_of::<DPState>(), 1, "DPState must be a byte");
 }
 
 /// Choice of processing type: will become a Py-passable parameter.
@@ -72,4 +80,13 @@ pub struct Parameters {
     pub n_threads: usize,
     pub serial_skip: usize,
     pub do_buffering: bool,
+}
+
+impl Parameters {
+    pub fn edge_topo_is_periodic_x(&self) -> bool {
+        matches![self.edge_topology_x, Topology::Periodic]
+    }
+    pub fn edge_topo_is_periodic_y(&self) -> bool {
+        matches![self.edge_topology_y, Topology::Periodic]
+    }
 }

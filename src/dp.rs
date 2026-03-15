@@ -4,7 +4,7 @@
 
 mod dp_model_2d;
 mod model_2d;
-use crate::parameters::{Parameters, Processing};
+use crate::parameters::{DPState, Parameters, Processing};
 use dp_model_2d::DPModel;
 use model_2d::{LatticeModel2D, Model2D};
 use rand::rngs::StdRng;
@@ -12,7 +12,7 @@ use rand::{Rng, SeedableRng};
 use std::time::Instant;
 
 /// Entry point to this module.
-pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
+pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>) {
     println!();
     println!("Dimension:   {:?}", params.dim);
     println!("Grid shape:  {:?}", (params.n_x, params.n_y, params.n_z));
@@ -47,7 +47,7 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<bool>>) {
 }
 
 /// Run a simulation and record how long the computation takes.
-fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<bool>>) {
+fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, Vec<Vec<DPState>>) {
     let dp = DPModel::default();
     // Buffer lattice edges
     let pad: usize = match params.do_buffering {
@@ -58,8 +58,13 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     let pruned_n_y = params.n_y;
     let n_x: usize = pruned_n_x + pad * 2;
     let n_y: usize = pruned_n_y + pad * 2;
-    let mut lattice_model_2d: LatticeModel2D<DPModel> =
-        LatticeModel2D::new(dp, n_x, n_y, params.edge_values_x, params.edge_values_y);
+    let mut lattice_model_2d: LatticeModel2D<DPModel> = LatticeModel2D::new(
+        dp,
+        n_x,
+        n_y,
+        (DPState::Empty, DPState::Empty),
+        (DPState::Empty, DPState::Empty),
+    );
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
     lattice_model_2d.randomized_lattice(&mut rng, params.p);
@@ -130,7 +135,7 @@ pub fn compute<M: Model2D, R: Rng>(
     params: &Parameters,
     n_iterations: usize,
     sample_rate: usize,
-) -> (usize, Vec<Vec<<M as Model2D>::Cell>>) {
+) -> (usize, Vec<Vec<<M as Model2D>::State>>) {
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
     lm.apply_edge_topology(&params);

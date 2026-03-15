@@ -2,9 +2,9 @@
 // //!
 // //!
 
-use rand::{Rng, RngExt};
-
 use super::Model2D;
+use crate::parameters::DPState;
+use rand::{Rng, RngExt};
 
 /// DPModel implements the Model2D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
@@ -12,20 +12,30 @@ pub struct DPModel();
 
 // Implement Model2D trait for DPModel.
 impl Model2D for DPModel {
-    type Cell = bool;
-    fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::Cell {
-        rng.random_bool(p)
+    type State = DPState;
+
+    fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
+        match rng.random_bool(p) {
+            false => DPState::Empty,
+            true => DPState::Occupied,
+        }
     }
 
     /// DP rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
     ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::Cell; 9]) -> Self::Cell {
-        // let n_occupied_neighbors = cell_nbrhood.iter().map(|b| *b as usize).sum::<usize>();
-        let is_any_nbr_occupied = nbrhood.iter().any(|&b| b);
+    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 9]) -> Self::State {
+        let is_any_nbr_occupied = nbrhood.iter().any(|&state| match state {
+            DPState::Empty => false,
+            DPState::Occupied => true,
+        });
         let do_survive = rng.random_bool(p);
 
-        is_any_nbr_occupied & do_survive
+        let do_activate = is_any_nbr_occupied & do_survive;
+        match do_activate {
+            false => DPState::Empty,
+            true => DPState::Occupied,
+        }
     }
 }
 
