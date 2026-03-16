@@ -156,7 +156,7 @@ class Viz:
         ρ_mean: NDArray = tracking[1][i_offset:]
         ρ_mean_fn = lambda t: ρ_mean_ref*t**(-δ)
         plt.plot(
-            t, ρ_mean, lw=0.5, color="k",
+            t, ρ_mean, lw=0.4, color="k",
         )
         plt.plot(
             t, ρ_mean_fn(t), color="blue", alpha=0.5, 

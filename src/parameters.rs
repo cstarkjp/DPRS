@@ -85,6 +85,7 @@ pub enum Processing {
 #[derive(FromPyObject, Debug, Clone)]
 pub struct Parameters {
     pub p: f64,
+    pub p0: f64,
     pub seed: usize,
     pub n_iterations: usize,
     pub dim: Dimension,
@@ -163,6 +164,7 @@ impl Parameters {
     pub fn print(&self) {
         println!();
         println!("Probability: {}", self.p);
+        println!("Prob @t=0:   {}", self.p0);
         println!("Random seed: {}", self.seed);
         println!("Iterations:  {}", self.n_iterations);
         println!("Dimension:   {:?}", self.dim);
