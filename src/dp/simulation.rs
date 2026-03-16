@@ -17,7 +17,7 @@ pub fn simulation<C: CellModel2D, R: Rng>(
     params: &Parameters,
     n_iterations: usize,
     sample_rate: usize,
-) -> (usize, Vec<Vec<<C as CellModel2D>::State>>) {
+) -> (usize, Vec<Vec<<C as CellModel2D>::State>>, Vec<Vec<f64>>) {
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
     lm.apply_edge_topology(&params);
@@ -32,8 +32,14 @@ pub fn simulation<C: CellModel2D, R: Rng>(
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices = Vec::new();
+    let mut tracking = Vec::new();
+    let t_track = Vec::new();
+    let rho_mean_track = Vec::new();
     // Record the initial lattice
     lattices.push(lm.lattice().clone());
+    tracking.push(t_track);
+    tracking.push(rho_mean_track);
+    tracking[0].push(0.0);
     // We aren't going to worry about the lattice type being Cell
     //  - instead we're going to leave it up to pyo3 to convert
     // the lattice vector into a Python list as it thinks fit.
@@ -56,6 +62,11 @@ pub fn simulation<C: CellModel2D, R: Rng>(
                 if i % sample_rate == 0 {
                     lattices.push(lm.lattice().clone());
                 };
+                let t = i as f64;
+                // let rho_mean = lm.lattice().iter().sum();
+                let _rho_mean = lm.lattice()[0];
+                tracking[0].push(t);
+                // tracking[0].push(rho_mean);
             }
         }
         Processing::Parallel => {
@@ -80,11 +91,13 @@ pub fn simulation<C: CellModel2D, R: Rng>(
                 if i % sample_rate == 0 {
                     lattices.push(lm.lattice().clone());
                 };
+                let t = i as f64;
+                tracking[0].push(t);
             }
         }
         _ => todo!(),
     };
     assert!(n_lattices == lattices.len());
 
-    (n_lattices, lattices)
+    (n_lattices, lattices, tracking)
 }

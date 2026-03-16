@@ -13,28 +13,32 @@ pub struct DPModel2D();
 impl CellModel2D for DPModel2D {
     type State = DPState;
 
-    fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
-        match rng.random_bool(p) {
+    fn from_bool_to_state(b: bool) -> Self::State {
+        match b {
             false => DPState::Empty,
             true => DPState::Occupied,
         }
     }
 
+    // Sample Bernoulli distribution with probability p to randomize cell state.
+    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
+        let b = rng.random_bool(p);
+
+        Self::from_bool_to_state(b)
+    }
+
     /// DP rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
     ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 9]) -> Self::State {
+    fn update_state<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 9]) -> Self::State {
         let is_any_nbr_occupied = nbrhood.iter().any(|&state| match state {
             DPState::Empty => false,
             DPState::Occupied => true,
         });
         let do_survive = rng.random_bool(p);
-
         let do_activate = is_any_nbr_occupied & do_survive;
-        match do_activate {
-            false => DPState::Empty,
-            true => DPState::Occupied,
-        }
+
+        Self::from_bool_to_state(do_activate)
     }
 }
 

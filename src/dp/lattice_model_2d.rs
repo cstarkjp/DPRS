@@ -78,7 +78,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     /// from a de-facto Bernoulli distribution.
     pub fn randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_cell(rng, p))
+            .map(|_| self.cell_model.randomize_state(rng, p))
             .collect();
     }
 
@@ -195,7 +195,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
                 let (is_in_bounds, x, y) = self.is_in_bounds(i_cell);
                 let updated_cell = if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    self.cell_model.update_cell(&mut rng, p, &nbrhood)
+                    self.cell_model.update_state(&mut rng, p, &nbrhood)
                 } else {
                     C::State::default()
                 };
@@ -285,7 +285,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
                 up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
             ];
             let nbrhood = nbrhood.as_array::<9>().unwrap();
-            *cell = self.cell_model.update_cell(rng, p, nbrhood);
+            *cell = self.cell_model.update_state(rng, p, nbrhood);
         }
     }
 }

@@ -18,6 +18,7 @@ pub trait CellModel2D: Sync {
     /// the array of cells is accessed by many threads at once.
     ///
     type State: Default + std::fmt::Debug + Copy + Send + Sync;
-    fn randomize_cell<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
-    fn update_cell<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 9]) -> Self::State;
+    fn from_bool_to_state(b: bool) -> Self::State;
+    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
+    fn update_state<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 9]) -> Self::State;
 }

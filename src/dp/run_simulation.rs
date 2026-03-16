@@ -15,7 +15,7 @@ use std::time::Instant;
 pub fn run_simulation(
     params: &Parameters,
     processing: &Processing,
-) -> (f64, usize, Vec<Vec<DPState>>) {
+) -> (f64, usize, Vec<Vec<DPState>>, Vec<Vec<f64>>) {
     let dp = DPModel2D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
@@ -56,7 +56,7 @@ pub fn run_simulation(
     let time = Instant::now();
 
     // Do the simulation
-    let (n_lattices, lattices) = pool.install(|| {
+    let (n_lattices, lattices, tracking) = pool.install(|| {
         // println!("{:?}", std::thread::current());
         simulation(
             lattice_model_2d,
@@ -89,8 +89,8 @@ pub fn run_simulation(
         // Return the run time, the number of recorded (time slice) lattices
         // (which always includes the initial lattice at t=0), and a vector
         // of lattice vectors.
-        (duration, n_lattices, pruned_lattices)
+        (duration, n_lattices, pruned_lattices, tracking)
     } else {
-        (duration, n_lattices, lattices)
+        (duration, n_lattices, lattices, tracking)
     }
 }

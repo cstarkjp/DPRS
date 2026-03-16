@@ -24,8 +24,8 @@ mod sim {
     use crate::parameters::Topology;
 
     #[pyfunction]
-    fn dp(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>)> {
-        let (n_lattices, lattices) = sim_dp(params);
+    fn dp(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>)> {
+        let (n_lattices, lattices, tracking) = sim_dp(params);
         // Quick and dirty translation layer between DPState and bool
         // lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
@@ -40,7 +40,7 @@ mod sim {
             bool_lattices.push(bool_lattice.clone());
         }
 
-        Ok((n_lattices, bool_lattices))
+        Ok((n_lattices, bool_lattices, tracking))
     }
 
     #[pyfunction]
