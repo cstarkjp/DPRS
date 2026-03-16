@@ -2,8 +2,7 @@
 // //!
 // //!
 
-use super::CellModel2D;
-use crate::parameters::DPState;
+use crate::{dp::cell_model_2d::CellModel2D, parameters::DPState};
 use rand::{Rng, RngExt};
 
 /// DPModel2D implements the CellModel2D trait, plus these.

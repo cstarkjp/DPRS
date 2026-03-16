@@ -59,6 +59,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     ///
     /// This is the 'deconstructor', used after simulation to take the lattice
     /// (and potentially the model, if that is useful too).
+    #[allow(dead_code)]
     pub fn take(self) -> (C, Vec<C::State>) {
         (self.cell_model, self.lattice)
     }
