@@ -5,12 +5,12 @@
 use rand::Rng;
 use rayon::prelude::*;
 
-use crate::parameters::{BoundaryCondition, Parameters};
+use crate::parameters::Parameters;
 
 /// The trait required for a model to run in 2D.
 ///
 /// This must be [Sync] as the model can be accessed by
-/// different threads at the same time in the parallel working
+/// different threads at the same time in the parallel working.
 pub trait Model2D: Sync {
     /// The value in each cell.
     ///
@@ -32,12 +32,10 @@ pub trait Model2D: Sync {
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct LatticeModel2D<M: Model2D> {
-    /// The model that provides the cells and the mapping between 3x3 grids of
-    /// cells in one time step and the next.
+    /// The model that provides the cells and the mapping between
+    /// 3x3 cell neighborhoods in one time step and the next.
     model: M,
-    /// The number of 'column's in the lattice
     n_x: usize,
-    /// The number of 'row's in the lattice
     n_y: usize,
     /// This used to be public, but is not now; it is an internal data structure
     /// that might be handled differently in the future.
@@ -52,7 +50,7 @@ pub struct LatticeModel2D<M: Model2D> {
 
 /// Lattice model methods.
 impl<M: Model2D> LatticeModel2D<M> {
-    /// Create a fresh grid (vector of booleans) with all values=false,
+    /// Create a fresh grid (vector of M::State cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn new(
         model: M,
@@ -71,7 +69,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
-    /// Borrow the lattice
+    /// Borrow the lattice.
     pub fn lattice(&self) -> &Vec<M::State> {
         &self.lattice
     }
@@ -102,24 +100,24 @@ impl<M: Model2D> LatticeModel2D<M> {
             .collect();
     }
 
-    /// Enforce edge topology specifications
+    /// Enforce edge topology specifications.
     pub fn apply_edge_topology(&mut self, params: &Parameters) {
         // Apply x-edge boundary topology
-        if params.edge_topo_is_periodic_x() {
+        if params.edge_topology_is_periodic_x() {
             let n_y = self.n_y;
             self.periodic_x_edges(n_y - 2, 0);
             self.periodic_x_edges(1, n_y - 1);
         }
 
         // Apply y-edge boundary topology
-        if params.edge_topo_is_periodic_y() {
+        if params.edge_topology_is_periodic_y() {
             let n_x = self.n_x;
             self.periodic_y_edges(n_x - 2, 0);
             self.periodic_y_edges(1, n_x - 1);
         }
     }
 
-    /// Enforce periodic edge topology along the x edges (i.e., in y axis direction)
+    /// Enforce periodic edge topology along the x edges (i.e., in y axis direction).
     fn periodic_x_edges(&mut self, y_from: usize, y_to: usize) {
         let n_x = self.n_x;
         // TODO: Rustify
@@ -130,7 +128,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
-    /// Enforce periodic edge topology along the y edges (i.e., in x axis direction)
+    /// Enforce periodic edge topology along the y edges (i.e., in x axis direction).
     fn periodic_y_edges(&mut self, x_from: usize, x_to: usize) {
         let n_y = self.n_y;
         // TODO: Rustify
@@ -141,62 +139,54 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
-    /// Enforce edge boundary conditions
+    /// Enforce edge boundary conditions.
     pub fn apply_boundary_conditions(&mut self, params: &Parameters) {
         // let new_lattice: Vec<<M as Model2D>::State> = self.lattice().clone();
         let n_x = self.n_x;
         let n_y = self.n_y;
 
         // Apply bottom x-edge b.c.
-        match params.edge_bc_x.0 {
-            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
-                // No edge values need be imposed
-            }
-            BoundaryCondition::Pinned => {
-                println!("Pinning bottom x edge");
-                self.pinned_x_edge_values(0, self.edge_values_x.0);
-            }
-            _ => todo!(),
-        };
+        if params.edge_boundary_is_unconstrained_x0() {
+            // No edge values need be imposed
+        } else if params.edge_boundary_is_pinned_x0() {
+            // println!("Pinning bottom x edge");
+            self.pinned_x_edge_values(0, self.edge_values_x.0);
+        } else {
+            todo!();
+        }
 
         // Apply top x-edge b.c.
-        match params.edge_bc_x.1 {
-            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
-                // No edge values need be imposed
-            }
-            BoundaryCondition::Pinned => {
-                println!("Pinning top x edge");
-                self.pinned_x_edge_values(n_y - 1, self.edge_values_x.1);
-            }
-            _ => todo!(),
-        };
+        if params.edge_boundary_is_unconstrained_x1() {
+            // No edge values need be imposed
+        } else if params.edge_boundary_is_pinned_x1() {
+            // println!("Pinning top x edge");
+            self.pinned_x_edge_values(n_y - 1, self.edge_values_x.1);
+        } else {
+            todo!();
+        }
 
         // Apply left y-edge b.c.
-        match params.edge_bc_y.0 {
-            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
-                // No edge values need be imposed
-            }
-            BoundaryCondition::Pinned => {
-                // println!("Pinning left y edge");
-                self.pinned_y_edge_values(0, self.edge_values_y.0);
-            }
-            _ => todo!(),
-        };
+        if params.edge_boundary_is_unconstrained_y0() {
+            // No edge values need be imposed
+        } else if params.edge_boundary_is_pinned_y0() {
+            // println!("Pinning left y edge");
+            self.pinned_y_edge_values(0, self.edge_values_y.0);
+        } else {
+            todo!();
+        }
 
         // Apply right y-edge b.c.
-        match params.edge_bc_y.1 {
-            BoundaryCondition::Unspecified | BoundaryCondition::Floating => {
-                // No edge values need be imposed
-            }
-            BoundaryCondition::Pinned => {
-                // println!("Pinning right y edge");
-                self.pinned_y_edge_values(n_x - 1, self.edge_values_y.1);
-            }
-            _ => todo!(),
-        };
+        if params.edge_boundary_is_unconstrained_y1() {
+            // No edge values need be imposed
+        } else if params.edge_boundary_is_pinned_y1() {
+            // println!("Pinning right y edge");
+            self.pinned_y_edge_values(n_x - 1, self.edge_values_y.1);
+        } else {
+            todo!();
+        }
     }
 
-    /// Enforce constant-value edge b.c. along a x edge
+    /// Enforce constant-value edge b.c. along a x edge.
     fn pinned_x_edge_values(&mut self, y: usize, pinned_value: <M as Model2D>::State) {
         let n_x = self.n_x;
         // TODO: Rustify
@@ -206,7 +196,7 @@ impl<M: Model2D> LatticeModel2D<M> {
         }
     }
 
-    /// Enforce constant-value edge b.c. along a y edge
+    /// Enforce constant-value edge b.c. along a y edge.
     fn pinned_y_edge_values(&mut self, x: usize, pinned_value: <M as Model2D>::State) {
         let n_y = self.n_y;
         // TODO: Rustify
@@ -233,7 +223,7 @@ impl<M: Model2D> LatticeModel2D<M> {
             .collect();
     }
 
-    /// Cell values tripled across (x-1:x+1, y)
+    /// Cell values tripled across (x-1:x+1, y).
     fn cell_nbrhood(&self, x: usize, y: usize) -> [<M as Model2D>::State; 9] {
         let nbrhood = [
             self.lattice[self.i_cell(x - 1, y + 1)],
@@ -250,12 +240,12 @@ impl<M: Model2D> LatticeModel2D<M> {
         nbrhood
     }
 
-    /// Check (x,y) coordinate is within lattice bounds
+    /// Check (x,y) coordinate is within lattice bounds.
     fn is_in_bounds_xy(&self, x: usize, y: usize) -> bool {
         x > 0 && y > 0 && x < self.n_x - 1 && y < self.n_y - 1
     }
 
-    /// Check cell index is within lattice bounds; return this test and (x, y)
+    /// Check cell index is within lattice bounds; return this test and (x, y).
     fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize) {
         let x = i_cell % self.n_x;
         let y = i_cell / self.n_x;
