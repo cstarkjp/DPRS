@@ -35,8 +35,7 @@ pub fn run_simulation(
     );
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    // Testing hard-wired p0 = 0.3 for initial lattice
-    lattice_model_2d.randomized_lattice(&mut rng, params.p0); //params.p);
+    lattice_model_2d.randomized_lattice(&mut rng, params.p0);
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
