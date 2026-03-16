@@ -88,43 +88,76 @@ impl Parameters {
     pub fn edge_topology_is_periodic_x(&self) -> bool {
         matches![self.edge_topology_x, Topology::Periodic]
     }
+    
     pub fn edge_topology_is_periodic_y(&self) -> bool {
         matches![self.edge_topology_y, Topology::Periodic]
     }
+
     pub fn edge_boundary_is_unconstrained_x0(&self) -> bool {
         matches![
             self.edge_bc_x.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
+
     pub fn edge_boundary_is_unconstrained_x1(&self) -> bool {
         matches![
             self.edge_bc_x.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
+
     pub fn edge_boundary_is_unconstrained_y0(&self) -> bool {
         matches![
             self.edge_bc_y.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
+
     pub fn edge_boundary_is_unconstrained_y1(&self) -> bool {
         matches![
             self.edge_bc_y.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
+
     pub fn edge_boundary_is_pinned_x0(&self) -> bool {
         matches![self.edge_bc_x.0, BoundaryCondition::Pinned]
     }
+
     pub fn edge_boundary_is_pinned_x1(&self) -> bool {
         matches![self.edge_bc_x.1, BoundaryCondition::Pinned]
     }
+
     pub fn edge_boundary_is_pinned_y0(&self) -> bool {
         matches![self.edge_bc_y.0, BoundaryCondition::Pinned]
     }
+
     pub fn edge_boundary_is_pinned_y1(&self) -> bool {
         matches![self.edge_bc_y.1, BoundaryCondition::Pinned]
+    }
+
+    pub fn print(&self) {
+        println!();
+        println!("Probability: {}", self.p);
+        println!("Random seed: {}", self.seed);
+        println!("Iterations:  {}", self.n_iterations);
+        println!("Dimension:   {:?}", self.dim);
+        println!("Grid shape:  {:?}", (self.n_x, self.n_y, self.n_z));
+        println!("Topology x:  {:?}", self.edge_topology_x);
+        println!("Topology y:  {:?}", self.edge_topology_y);
+        println!("Topology z:  {:?}", self.edge_topology_z);
+        println!("Edge x b.c.: {:?}", self.edge_bc_x);
+        println!("Edge y b.c.: {:?}", self.edge_bc_y);
+        println!("Edge z b.c.: {:?}", self.edge_bc_z);
+        println!("Edge x vals: {:?}", self.edge_values_x);
+        println!("Edge y vals: {:?}", self.edge_values_y);
+        println!("Edge z vals: {:?}", self.edge_values_z);
+        println!("Processing:  {:?}", self.processing);
+        println!("Sample rate: {}", self.sample_rate);
+        println!("Threads:     {}", self.n_threads);
+        println!("Serial skip: {}", self.serial_skip);
+        println!("Buffering:   {}", self.do_buffering);
+        println!();
     }
 }
