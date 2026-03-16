@@ -43,15 +43,6 @@ pub fn run_simulation(
         .build()
         .unwrap();
 
-    // Serial processing is (obvs) slow, so scale down the number of iterations
-    // according to 'serial_skip' so that its runtime approaches that of
-    // the parallelized runs.
-    let serial_skip: usize = match processing {
-        Processing::Serial => params.serial_skip,
-        Processing::Parallel => 1,
-        _ => todo!(),
-    };
-
     // Start the timer
     let time = Instant::now();
 
@@ -62,12 +53,12 @@ pub fn run_simulation(
             &mut rng,
             processing,
             &params,
-            params.n_iterations / serial_skip,
+            params.n_iterations,
             params.sample_rate,
         )
     });
     // Stop the clock
-    let duration: f64 = time.elapsed().as_secs_f64() * (serial_skip as f64);
+    let duration: f64 = time.elapsed().as_secs_f64();
 
     // If needed, remove edge buffering before returning the lattice time-slices.
     let lattices = if params.do_edge_buffering {

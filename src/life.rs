@@ -19,7 +19,7 @@ pub fn sim_life(params: Parameters) -> (usize, Vec<Vec<bool>>) {
     println!("Iterations:  {}", params.n_iterations);
     println!("Sample rate: {}", params.sample_rate);
     println!("Threads:     {}", params.n_threads);
-    println!("Serial skip: {}", params.serial_skip);
+    // println!("Serial skip: {}", params.serial_skip);
     println!("Buffering:   {}", params.do_edge_buffering);
     println!();
 
@@ -66,7 +66,7 @@ fn run_simulation(params: &Parameters, processing: &Processing) -> (f64, usize, 
     // according to 'serial_skip' so that its runtime approaches that of
     // the parallelized runs.
     let serial_skip: usize = match processing {
-        Processing::Serial => params.serial_skip,
+        Processing::Serial => 50,
         Processing::Parallel | Processing::ParallelChunked => 1,
     };
 

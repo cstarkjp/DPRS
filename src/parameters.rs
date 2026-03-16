@@ -104,7 +104,6 @@ pub struct Parameters {
     pub processing: Processing,
     pub sample_rate: usize,
     pub n_threads: usize,
-    pub serial_skip: usize,
 }
 
 /// Edge topology and boundary condition checking.
@@ -181,7 +180,6 @@ impl Parameters {
         println!("Processing:  {:?}", self.processing);
         println!("Sample rate: {}", self.sample_rate);
         println!("Threads:     {}", self.n_threads);
-        println!("Serial skip: {}", self.serial_skip);
         println!();
     }
 }
