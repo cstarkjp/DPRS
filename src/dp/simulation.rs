@@ -23,12 +23,6 @@ pub fn simulation<C: CellModel2D, R: Rng>(
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 
-    // // TODO: should not repeat pad calc here!
-    // let pad: usize = match params.do_buffering {
-    //     true => 1,
-    //     false => 0,
-    // };
-
     // Set up a recording of lattice evolution
     let n_lattices = n_iterations / sample_rate + 1;
     let mut lattices = Vec::new();
@@ -55,7 +49,6 @@ pub fn simulation<C: CellModel2D, R: Rng>(
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                // TODO: implement periodic etc edge buffering
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
                 lm.next_iteration_serial(rng, params.p);
@@ -98,7 +91,6 @@ pub fn simulation<C: CellModel2D, R: Rng>(
                 tracking[1].push(rho_mean);
             }
         }
-        _ => todo!(),
     };
     assert!(n_lattices == lattices.len());
 

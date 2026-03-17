@@ -16,7 +16,6 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>, Vec<Vec<f64>>, f
     let (t_run_time, n_lattices, lattices, tracking) = match params.processing {
         Processing::Serial => run_simulation(&params, &Processing::Serial),
         Processing::Parallel => run_simulation(&params, &Processing::Parallel),
-        _ => todo!(),
     };
     match params.processing {
         Processing::Serial => println!(
@@ -27,7 +26,6 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>, Vec<Vec<f64>>, f
             "Simulation run time (parallel processing): {:4.3}s",
             t_run_time
         ),
-        _ => todo!(),
     };
 
     (n_lattices, lattices, tracking, t_run_time)

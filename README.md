@@ -20,18 +20,6 @@ A directed-percolation model, together with a series of related models, are in d
  - [DP demo in 2d](notebooks/dp_2d.ipynb)
 
 
-### Life
-
-Early in the project, we worked with
-Conway's "Game of Life" cellular automata (CA) model, and we simplified the [demo  provided by the `Rayon` developers](https://github.com/rayon-rs/rayon/tree/main/rayon-demo/src/life). The following Jupyter notebook demonstrates this CA in action:
-
- - ["Game of Life" demo](notebooks/life_2d.ipynb)
-
-You'll see two parallelization strategies tested in this notebook, with the best speed-up at around 60x compared to the serial processing version. 
-
-Take a look at early commits if you want to see a streamlined version of the code base that just implements this demo.
-
-
 
 ## Recipe for wrapping Rust with Python
 
@@ -74,12 +62,6 @@ Implement `src/lib.rs`. The Python module can follow this naming pattern:
         use super::*;
         #[pyfunction]
         fn dp(x: usize, y: usize, n: usize) -> PyResult<String> {
-            println!("{x} {y} {n}");
-            run(x, y, n);
-            Ok("Done".to_string())
-        }
-        #[pyfunction]
-        fn life(x: usize, y: usize, n: usize) -> PyResult<String> {
             println!("{x} {y} {n}");
             run(x, y, n);
             Ok("Done".to_string())

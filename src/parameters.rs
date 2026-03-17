@@ -78,7 +78,6 @@ fn guarantee_dpstate_is_u8() {
 pub enum Processing {
     Serial,
     Parallel,
-    ParallelChunked, // Only applies to Life sim
 }
 
 /// Model parameter bundle derived from Python Parameters class instance.

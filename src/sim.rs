@@ -3,10 +3,9 @@
 // //!
 
 use crate::dp::sim_dp;
-use crate::life::sim_life;
 use pyo3::prelude::*;
 
-/// Python wrapping around DP, "Game of Life" lattice models.
+/// Python wrapping around DP lattice models.
 #[pymodule]
 // #[pyo3(name = "sim")]
 mod sim {
@@ -33,12 +32,5 @@ mod sim {
         }
 
         Ok((n_lattices, bool_lattices, tracking, t_run_time))
-    }
-
-    #[pyfunction]
-    fn life(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>)> {
-        let (n_lattices, lattices) = sim_life(params);
-
-        Ok((n_lattices, lattices))
     }
 }
