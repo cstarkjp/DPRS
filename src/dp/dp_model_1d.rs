@@ -2,15 +2,15 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_2d::CellModel2D, parameters::DPState};
+use crate::{dp::cell_model_1d::CellModel1D, parameters::DPState};
 use rand::{Rng, RngExt};
 
 /// DPModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DPModel2D();
+pub struct DPModel1D();
 
-// Implement CellModel2D trait for DPModel.
-impl CellModel2D for DPModel2D {
+// Implement CellModel1D trait for DPModel.
+impl CellModel1D for DPModel1D {
     type State = DPState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
@@ -49,11 +49,11 @@ impl CellModel2D for DPModel2D {
 // /// Minimal testing.
 // #[test]
 // fn test_dp() {
-//     use super::LatticeModel2D;
+//     use super::LatticeModel1D;
 //     use rand::rng;
 
 //     let dp = DPModel::default();
-//     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
+//     let mut lm1 = LatticeModel1D::new(dp, 200, 200, (false, false), (false, false));
 //     lm1.randomized_lattice(&mut rng(), 0.5);
 //     let mut lm2 = lm1.clone();
 
