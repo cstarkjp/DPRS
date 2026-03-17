@@ -12,11 +12,13 @@
         <meta name="author" content="Colin P. Stark">
       
       
-        <link rel="canonical" href="https://cstarkjp.github.io/DPRS/HOWTO/">
+        <link rel="canonical" href="https://cstarkjp.github.io/DPRS/demos-reference/">
       
       
-        <link rel="prev" href="../demos-reference/">
+        <link rel="prev" href="..">
       
+      
+        <link rel="next" href="../HOWTO/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>How-to - DPRS</title>
+        <title>Demos - DPRS</title>
       
     
     
@@ -92,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#recipe-for-wrapping-rust-with-python" class="md-skip">
+        <a href="#demos" class="md-skip">
           Skip to content
         </a>
       
@@ -125,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How-to
+              Demos
             
           </span>
         </div>
@@ -270,9 +272,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../demos-reference/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -289,11 +293,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../HOWTO/" class="md-tabs__link">
         
   
   
@@ -381,10 +383,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../demos-reference/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demos
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -400,6 +429,37 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DP
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -408,19 +468,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../HOWTO/" class="md-nav__link">
         
   
   
@@ -436,7 +487,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -461,6 +511,25 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DP
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -480,83 +549,24 @@
     
       
     
-    <a href="https://github.com/cstarkjp/DPRS/raw/main/docs/HOWTO.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/cstarkjp/DPRS/raw/main/docs/demos-reference.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="recipe-for-wrapping-rust-with-python">Recipe for wrapping Rust with Python<a class="headerlink" href="#recipe-for-wrapping-rust-with-python" title="Permanent link">¶</a></h1>
-<p>Here are some notes on how to wrap a Python package around fast, parallelized Rust code. </p>
-<p>Create a mixed Rust-Python project:</p>
-<div class="language-text highlight"><pre><span></span><code>maturin new dprs -b pyo3
-</code></pre></div>
-<p>and then, if you want, rename the directory <code>dprs/</code>, to e.g. <code>DPRS/</code>. In principle, this will become the name of your <code>pip</code> package.
-Enter this directory, <code>cd DPRS/</code>.</p>
-<p>Create a Python virtual environment using <code>uv</code>, activate it, and install whatever Python libraries are going to be needed:</p>
-<div class="language-text highlight"><pre><span></span><code>uv venv --python=3.14
-source .venv/bin/activate
-uv pip install maturin ipython numpy
-</code></pre></div>
-<p>Set up the minimal elements of a Python package:</p>
-<div class="language-text highlight"><pre><span></span><code>mkdir -p python/dprs
-touch python/dprs/__init__.py
-</code></pre></div>
-<p>Add the requisite Rust packages, e.g.,</p>
-<div class="language-text highlight"><pre><span></span><code>cargo add rayon rand
-</code></pre></div>
-<p>Check <code>Cargo.toml</code>  to ensure that these crate dependencies have been added (see <a href="">https://www.maturin.rs/tutorial.html</a>):</p>
-<div class="language-text highlight"><pre><span></span><code>[dependencies]
-pyo3 = "0.27.0"
-rand = "0.10.0"
-rayon = "1.11.0"
-</code></pre></div>
-<p>Implement <code>src/lib.rs</code>. The Python module can follow this naming pattern:</p>
-<div class="language-text highlight"><pre><span></span><code>#[pymodule]
-mod sim {
-    use super::*;
-    #[pyfunction]
-    fn dp(x: usize, y: usize, n: usize) -&gt; PyResult&lt;String&gt; {
-        println!("{x} {y} {n}");
-        run(x, y, n);
-        Ok("Done".to_string())
-    }
-}
-</code></pre></div>
-<p>For this to build correctly, mod <code>pyproject.toml</code> like this:</p>
-<div class="language-text highlight"><pre><span></span><code>[tool.maturin]
-python-source = "python"
-module-name = "dprs.sim"
-</code></pre></div>
-<p>Add <code>&lt;path&gt;/DPRS/python</code> to VS Code's extra paths for Pylance.</p>
-<p>Compile the Rust and build a Python binary:</p>
-<div class="language-text highlight"><pre><span></span><code>maturin develop --release
-</code></pre></div>
-<p>which writes to e.g. <code>&lt;path&gt;/DPRS/.venv/lib/python3.14/site-packages/dprs/dprs.cpython-314-darwin.so</code>.</p>
-<p>Build a Python wheel:</p>
-<div class="language-text highlight"><pre><span></span><code>maturin build --release
-</code></pre></div>
-<p>which writes to e.g. <code>&lt;path&gt;/DPRS/target/wheels/dprs-0.1.0-cp314-cp314-macosx_11_0_arm64.whl</code> as well as creating <code>dylib</code> file in 'target/maturin' etc.</p>
-<p>Then install the Python wheel into the local venv using <code>uv pip</code>:</p>
-<div class="language-text highlight"><pre><span></span><code>uv pip install target/wheels/*.whl
-</code></pre></div>
-<p>Create a Python demo script, and maybe also a Jupyter notebook to match, e.g.,:</p>
-<div class="language-text highlight"><pre><span></span><code>mkdir demos
-touch demos/check.py
-</code></pre></div>
-<p>Put at least the following into <code>demo.py</code>:</p>
-<div class="language-text highlight"><pre><span></span><code>from dprs import sim
-print(sim)
-
-n_x = 1_000
-n_y = n_x
-n_iterations = 200
-
-sim.dp(n_x, n_y, n_iterations)
-</code></pre></div>
-<p>The <code>DPRS</code> folder tree should now look like this, more or less:</p>
-<p><figure id="_figure-1"><img alt="folder tree" src="../tree.jpg"><figcaption>Figure 1: folder tree</figcaption></figure></p>
+<h1 id="demos">Demos<a class="headerlink" href="#demos" title="Permanent link">¶</a></h1>
+<p>For now, only DP has been implemented.  A series of related models are in development.</p>
+<h2 id="dp">DP<a class="headerlink" href="#dp" title="Permanent link">¶</a></h2>
+<p>Directed-percolation model simulations in 2d are demonstrated in the following Jupyter notebook:</p>
+<ul>
+<li><a href="https://github.com/cstarkjp/DPRS/tree/main/notebooks/dp_2d.ipynb">Jupyter demo</a></li>
+</ul>
+<p>and pure Python demos can be found here:</p>
+<ul>
+<li><a href="https://github.com/cstarkjp/DPRS/tree/main/demos/">Python demos</a></li>
+</ul>
 
 
 
@@ -590,7 +600,7 @@ sim.dp(n_x, n_y, n_iterations)
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../demos-reference/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Demos">
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -600,11 +610,27 @@ sim.dp(n_x, n_y, n_iterations)
                 Previous
               </span>
               <div class="md-ellipsis">
-                Demos
+                Home
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../HOWTO/" class="md-footer__link md-footer__link--next" aria-label="Next: How-to">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                How-to
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     

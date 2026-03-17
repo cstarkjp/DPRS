@@ -16,6 +16,8 @@
       
       
       
+        <link rel="next" href="demos-reference/">
+      
       
         
       
@@ -266,6 +268,44 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="demos-reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Demos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="HOWTO/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How-to
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -387,38 +427,64 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#demos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Demos
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Demos">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dp" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DP
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="demos-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Demos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="HOWTO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -457,34 +523,6 @@
       
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#demos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Demos
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Demos">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dp" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DP
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -529,46 +567,8 @@
 <p>We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). </p>
 <p>Fast run times are achieved through parallelization using the <a href="https://docs.rs/rayon/latest/rayon/"><code>Rayon</code></a> crate. 
 We anticipate boosting performance further with GPU-compute using <a href="https://wgpu.rs/"><code>wgpu</code></a>.</p>
+<p>See <a href="demos-reference/">here</a> for some demos.</p>
 <p>See <a href="HOWTO/">here</a> for some rough "how-to" notes on wrapping Rust with Python.</p>
-<h2 id="demos">Demos<a class="headerlink" href="#demos" title="Permanent link">¶</a></h2>
-<p>For now, only DP has been implemented.  A series of related models are in development.</p>
-<h3 id="dp">DP<a class="headerlink" href="#dp" title="Permanent link">¶</a></h3>
-<p>Directed-percolation model simulations in 2d are demonstrated in the following Jupyter notebook:</p>
-<ul>
-<li><a href="https://github.com/cstarkjp/DPRS/tree/main/notebooks/dp_2d.ipynb">Jupyter demo</a></li>
-</ul>
-<p>and pure Python demos can be found here:</p>
-<ul>
-<li><a href="https://github.com/cstarkjp/DPRS/tree/main/demos/">Python demos</a></li>
-</ul>
-<!-- The  [`dprs` package ](https://pypi.org/project/dprs/) provides software tools to integrate a time-dependent density field described by DPRS equations of directed-percolation type. It can be extended to solve DPRS equations of absorbing phase transition (APT) type.
-
-!!! note "This is a work in progress"
-    `dprs` is under active development as part of a research effort.
-    If you are interested in using it, or even better, interested in
-    collaborating in its development, please contact the maintainer cstarkjp@gmail.com.
-
-[Directed percolation (DP)](references.md) is the _type example_ of a non-equilibrium, absorbing phase transition. Its DPRS equation is:
-$$
-    \partial_t\rho
-    =
-    a \rho
-    -
-    b \rho^2
-    +
-    D \nabla^2 \rho
-    +
-    \eta\sqrt{\rho}\,\xi
-$$
-where $\rho(\mathbf{x},t)$ is a fluctuating meso-scale field  evolving nonlinearly (with coefficients $a$ and $b$) subject to diffusion (with rate $D$) and multiplicative white noise $\sqrt{\rho}\,\xi(\mathbf{x},t)$ (with amplitude $\eta$).
-
-![Plot of grid-averaged density $\overline{\rho}(t)$ versus time, for an ensemble of simulations with $a$ taking values ranging symmetrically about criticality $a_c \approx 1.8857$ by up to $\Delta{a}=\pm 0.01$.](images/ρ_t_loglog_reduced.png)
-<!-- /// caption
-Plot of grid-averaged density $\overline{\rho}(t)$ versus time, for an ensemble of simulations with $a$ taking values ranging symmetrically about criticality $a_c \approx 1.8857$ by up to $\Delta{a}=\pm 0.01$.
-/// -->
-
-<!-- The `dprs` integrator employs the operator-splitting method originated largely by [Dornic et al (2005)](references.md). The software tools are implemented as a [`pip`-installable Python package](https://pypi.org/project/dprs/) with a C++ core, a set of [Jupyter notebooks](https://github.com/cstarkjp/DPRS/tree/main/simulation/dp), and related [Python scripts](https://github.com/cstarkjp/DPRS/tree/main/python). -->
-<p>→</p>
 
 
 
@@ -597,6 +597,28 @@ Plot of grid-averaged density $\overline{\rho}(t)$ versus time, for an ensemble 
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+        
+          
+          <a href="demos-reference/" class="md-footer__link md-footer__link--next" aria-label="Next: Demos">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Demos
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
