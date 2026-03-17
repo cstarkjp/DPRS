@@ -16,9 +16,7 @@ from dprs import sim
 
 warnings.filterwarnings("ignore")
 
-__all__ = [
-    "Viz"
-]
+__all__ = ["Viz"]
 
 class Viz:
     """
@@ -26,38 +24,31 @@ class Viz:
 
     Args:
         dpi:
-            resolution for rasterized images
+            set resolution for rasterized images
         font_size:
-            general font size
+            set mpl default font size
+        font_family:
+            set mpl default font family
 
     Attributes:
         dpi (int):
-            resolution for rasterized images
-        font_size (int):
-            general font size
+            rasterization resolution
         fdict  (dict):
             dictionary to which each figure is appended as it is generated
     """
 
     dpi: int
-    font_size: int
     fdict: dict[Any, Any]
-    font_family: str
 
-    def __init__(self, dpi: int = 150, font_size: int = 11) -> None:
-        """
-        Instantiate the visualization class and set some figure parameters.
-        
-        Set a standard font size and font family, choosing Arial if possible.
-        """
+    def __init__(
+            self, dpi: int=150, font_size: int=11, font_family="Arial",
+        ) -> None:
         self.dpi = dpi
-        self.font_size = font_size
         self.fdict = {}
-        self.font_family = "Arial" #if "Arial" in self.get_fonts() else "Helvetica"
         try:
-            mpl.rc("font", size=self.font_size, family=self.font_family)
+            mpl.rc("font", size=font_size, family=font_family)
         except:
-            mpl.rc("font", size=self.font_size, family="")
+            mpl.rc("font", size=font_size, family="")
 
 
     def create_figure(
@@ -69,7 +60,7 @@ class Viz:
         """
         Initialize a Pyplot figure.
 
-        Set its size and dpi. Append it to the figures dictionary.
+        Set its size and DPI. Append it to the figures dictionary.
 
 
         Args:

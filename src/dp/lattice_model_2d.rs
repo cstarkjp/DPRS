@@ -144,8 +144,6 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         } else if params.edge_boundary_is_pinned_x0() {
             // println!("Pinning bottom x edge");
             self.pinned_x_edge_values(0, self.edge_values_x.0);
-        } else {
-            todo!();
         }
 
         // Apply top x-edge b.c.
@@ -154,8 +152,6 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         } else if params.edge_boundary_is_pinned_x1() {
             // println!("Pinning top x edge");
             self.pinned_x_edge_values(n_y - 1, self.edge_values_x.1);
-        } else {
-            todo!();
         }
 
         // Apply left y-edge b.c.
@@ -164,8 +160,6 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         } else if params.edge_boundary_is_pinned_y0() {
             // println!("Pinning left y edge");
             self.pinned_y_edge_values(0, self.edge_values_y.0);
-        } else {
-            todo!();
         }
 
         // Apply right y-edge b.c.
@@ -174,8 +168,6 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         } else if params.edge_boundary_is_pinned_y1() {
             // println!("Pinning right y edge");
             self.pinned_y_edge_values(n_x - 1, self.edge_values_y.1);
-        } else {
-            todo!();
         }
     }
 

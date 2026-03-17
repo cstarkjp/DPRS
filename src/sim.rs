@@ -25,8 +25,7 @@ mod sim {
     #[pyfunction]
     fn dp(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
         let (n_lattices, lattices, tracking, t_run_time) = sim_dp(params);
-        // Quick and dirty translation layer between DPState and bool
-        // lattice cell types.
+        // Translation layer between DPState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {
             let bool_lattice = lattice.iter().map(|s| (*s).into()).collect();
