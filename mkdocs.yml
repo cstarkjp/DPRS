@@ -113,8 +113,8 @@ nav:
     # - Navigation: navigation.md
     # - Software design: software-design.md
     # - How to install: how-to-install.md
-    - Demos: demos-reference.md
-    - How-to: HOWTO.md
+    - Some DP demos: demos-reference.md
+    - How to wrap Rust in Python: HOWTO.md
     # - Simulation tools: 
     #   - simulation-tools/index.md
     #   - Notebooks:
