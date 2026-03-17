@@ -524,7 +524,7 @@
 <a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml/badge.svg?style=cache-control=no-cache"></a>
 <a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache"></a></p>
 <p>In this project, we implement directed percolation (DP) and similar lattice  models in Rust. The Rust code is accessed via a Python wrapper to make experimentation as convenient as possible. Jupyter notebooks are used to implement the Python-wrapped simulations. </p>
-<p><img src="https://github.com/cstarkjp/DPRS/blob/mkdocs/docs/images/%CF%81mean_p0p163145_s1_nx30000_ny30000.png" width="400"></p>
+<p><figure id="_figure-1"><img alt="t-decay of mean ρ, for p=0.163145, nx=30,000, ny=30,000, t=50,000" src="images/%CF%81mean_p0p163145_s1_nx30000_ny30000.png" width="300"><figcaption>Figure 1: t-decay of mean ρ, for p=0.163145, nx=30,000, ny=30,000, t=50,000</figcaption></figure></p>
 <p>We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). </p>
 <p>Fast run times are achieved through parallelization using the <a href="https://docs.rs/rayon/latest/rayon/"><code>Rayon</code></a> crate. 
 We anticipate boosting performance further with GPU-compute using <a href="https://wgpu.rs/"><code>wgpu</code></a>.</p>
@@ -532,7 +532,8 @@ We anticipate boosting performance further with GPU-compute using <a href="https
 <h2 id="demos">Demos<a class="headerlink" href="#demos" title="Permanent link">¶</a></h2>
 <p>For now, only DP has been implemented.  A series of related models are in development.</p>
 <h3 id="dp">DP<a class="headerlink" href="#dp" title="Permanent link">¶</a></h3>
-<p><figure id="_figure-1"><img alt="t-decay of mean ρ, for p=0.163145, nx=30,000, ny=30,000, t=50,000" src="images/%CF%81mean_p0p163145_s1_nx30000_ny30000.png"><figcaption>Figure 1: t-decay of mean ρ, for p=0.163145, nx=30,000, ny=30,000, t=50,000</figcaption></figure></p>
+<!-- ![t-decay of mean ρ, for p=0.163145, nx=30,000, ny=30,000, t=50,000](images/ρmean_p0p163145_s1_nx30000_ny30000.png){width=300} -->
+
 <p>Directed-percolation model simulations in 2d are demonstrated in the following Jupyter notebook:</p>
 <ul>
 <li><a href="https://github.com/cstarkjp/DPRS/tree/main/notebooks/dp_2d.ipynb">Jupyter demo</a></li>
