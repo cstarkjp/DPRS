@@ -110,37 +110,8 @@ extra:
 
 nav:
     - Home: index.md
-    # - Navigation: navigation.md
-    # - Software design: software-design.md
-    # - How to install: how-to-install.md
     - Some DP demos: demos-reference.md
     - How to wrap Rust in Python: HOWTO.md
-    # - Simulation tools: 
-    #   - simulation-tools/index.md
-    #   - Notebooks:
-    #       - dp/DPSimulationDirect.ipynb: simulation-tools/dp-DPSimulationDirect-ipynb-reference.md
-    #       - dp/DPSimulation.ipynb: simulation-tools/dp-DPSimulation-ipynb-reference.md
-    #       - dp/DPEnsemble.ipynb: simulation-tools/dp-DPEnsembleSimulation-ipynb-reference.md
-    #   - Scripts:
-    #       - dp/dp_simulation.py: simulation-tools/dp-simulation-py-reference.md
-    #       - dp/dp_ensemble_simulation.py: simulation-tools/dp-ensemble_simulation-py-reference.md
-    #       - dp/dp_batch_ensemble.py: simulation-tools/dp-batch_ensemble-py-reference.md
-    #   - JSON info files: 
-    #       - Example: simulation-tools/info-reference.md
-    # - Python modules: 
-    #     - python-modules/index.md
-    #     - base:
-    #       - base/file.py: python-modules/file-reference.md 
-    #       - base/serialize.py: python-modules/serialize-reference.md 
-    #       - base/utils.py: python-modules/utils-reference.md 
-    #       - base/viz.py: python-modules/viz-reference.md
-    #     - dp:
-    #       - dp/ensemble.py: python-modules/ensemble-reference.md
-    #       - dp/simulation.py: python-modules/simulation-reference.md
-    #       - dp/vizdp.py: python-modules/vizdp-reference.md
-    # - C++ source: 
-    #   - cplusplus-source/index.md
-    #   # - cplusplus-source/cplusplus.md
     # - References: references.md
 
 # https://analog-garage.github.io/mkdocstrings-python-xref/latest/
