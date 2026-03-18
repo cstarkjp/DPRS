@@ -36,12 +36,11 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>, Vec<Vec<f64>>, f
             run_simulation_2d::run_simulation(&params, &Processing::Parallel)
         }
         (Processing::Serial, Dimension::D3) => {
-            run_simulation_2d::run_simulation(&params, &Processing::Serial)
+            run_simulation_3d::run_simulation(&params, &Processing::Serial)
         }
         (Processing::Parallel, Dimension::D3) => {
-            run_simulation_2d::run_simulation(&params, &Processing::Parallel)
+            run_simulation_3d::run_simulation(&params, &Processing::Parallel)
         }
-        _ => todo!(),
     };
     match params.processing {
         Processing::Serial => println!(

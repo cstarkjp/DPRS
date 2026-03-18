@@ -12,7 +12,7 @@ use rayon::prelude::*;
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel2D<C: CellModel3D> {
+pub struct LatticeModel3D<C: CellModel3D> {
     /// The model that provides the cells and the mapping between
     /// 3x3x3 cell neighborhoods in one time step and the next.
     cell_model: C,
@@ -26,7 +26,7 @@ pub struct LatticeModel2D<C: CellModel3D> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel3D> LatticeModel2D<C> {
+impl<C: CellModel3D> LatticeModel3D<C> {
     /// Create a fresh grid (vector of C::State cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn new(
@@ -211,7 +211,7 @@ impl<C: CellModel3D> LatticeModel2D<C> {
         }
     }
 
-    /// Enforce constant-value edge b.c. along a yz edge.
+    /// Enforce constant-value edge b.c. along a yz face.
     fn pin_axis_ends_x(&mut self, x: usize, pinned_value: <C as CellModel3D>::State) {
         let n_y = self.n_y;
         let n_z = self.n_z;
@@ -223,7 +223,7 @@ impl<C: CellModel3D> LatticeModel2D<C> {
         }
     }
 
-    /// Enforce constant-value edge b.c. along an xz edge.
+    /// Enforce constant-value edge b.c. along an xz face.
     fn pin_axis_ends_y(&mut self, y: usize, pinned_value: <C as CellModel3D>::State) {
         let n_x = self.n_x;
         let n_z = self.n_z;
@@ -235,7 +235,7 @@ impl<C: CellModel3D> LatticeModel2D<C> {
         }
     }
 
-    /// Enforce constant-value edge b.c. along an xz edge.
+    /// Enforce constant-value edge b.c. along an xy face.
     fn pin_axis_ends_z(&mut self, z: usize, pinned_value: <C as CellModel3D>::State) {
         let n_x = self.n_x;
         let n_y = self.n_y;
@@ -300,8 +300,8 @@ impl<C: CellModel3D> LatticeModel2D<C> {
     }
 
     /// Check (x,y) coordinate is within lattice bounds.
-    fn is_in_bounds_xy(&self, x: usize, y: usize) -> bool {
-        x > 0 && y > 0 && x < self.n_x - 1 && y < self.n_y - 1
+    fn is_in_bounds_xyz(&self, x: usize, y: usize, z: usize) -> bool {
+        x > 0 && y > 0 && z > 0 && x < (self.n_x - 1) && y < (self.n_y - 1) && z < (self.n_z - 1)
     }
 
     /// Check cell index is within lattice bounds; return this test and (x, y).
@@ -343,7 +343,14 @@ impl<C: CellModel3D> LatticeModel2D<C> {
     ///
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
-    pub fn update_layer<R: Rng>(&self, rng: &mut R, p: f64, y: usize, z: usize, row: &mut [C::State]) {
+    pub fn update_layer<R: Rng>(
+        &self,
+        rng: &mut R,
+        p: f64,
+        y: usize,
+        z: usize,
+        row: &mut [C::State],
+    ) {
         let lattice = &self.lattice;
         let row_span = self.n_x - 2;
         let i_md = self.i_cell(0, y, z);
