@@ -693,7 +693,7 @@
 
 
 
-        <p>Dummy declaration: shadows definitio in Rust.</p>
+        <p>Dummy declaration: shadows definition in Rust.</p>
 
           
 
@@ -767,12 +767,13 @@
 
     <div class="doc doc-contents first">
 
+        <p>Generate a string summarizing the sim for file naming.</p>
+
           </backlinks>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>python/dprs/utils.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-74">74</a></span>
-<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-75">75</a></span>
 <span class="normal"><a href="#__codelineno-0-76">76</a></span>
 <span class="normal"><a href="#__codelineno-0-77">77</a></span>
 <span class="normal"><a href="#__codelineno-0-78">78</a></span>
@@ -787,23 +788,26 @@
 <span class="normal"><a href="#__codelineno-0-87">87</a></span>
 <span class="normal"><a href="#__codelineno-0-88">88</a></span>
 <span class="normal"><a href="#__codelineno-0-89">89</a></span>
-<span class="normal"><a href="#__codelineno-0-90">90</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_name</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i_slice</span><span class="p">:</span> <span class="nb">int</span><span class="o">|</span><span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> 
-</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="k">return</span> <span class="p">(</span>
-</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a>          <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s2">"</span>
-</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_p</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">p</span><span class="si">:</span><span class="s2">0.6f</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span>
-</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_s</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">seed</span><span class="si">}</span><span class="s2">"</span>
-</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_nx</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_x</span><span class="si">}</span><span class="s2">"</span>
-</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="o">+</span> <span class="p">(</span>
-</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a>            <span class="sa">f</span><span class="s2">"_ny</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_y</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">n_y</span><span class="o">&gt;</span><span class="mi">1</span>
-</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a>            <span class="k">else</span> <span class="s2">""</span>
-</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a>        <span class="p">)</span>        
-</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="o">+</span> <span class="p">(</span>
-</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a>            <span class="sa">f</span><span class="s2">"_nz</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_z</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">n_z</span><span class="o">&gt;</span><span class="mi">1</span>
-</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a>            <span class="k">else</span> <span class="s2">""</span>
-</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>        <span class="p">)</span>        
-</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a>        <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"_i</span><span class="si">{</span><span class="n">i_slice</span><span class="o">*</span><span class="n">parameters</span><span class="o">.</span><span class="n">sample_rate</span><span class="si">:</span><span class="s2">0</span><span class="si">{</span><span class="mi">5</span><span class="si">}}</span><span class="s2">"</span> 
-</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a>           <span class="k">if</span> <span class="n">i_slice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
-</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-90">90</a></span>
+<span class="normal"><a href="#__codelineno-0-91">91</a></span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_name</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i_slice</span><span class="p">:</span> <span class="nb">int</span><span class="o">|</span><span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> 
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="w">    </span><span class="sd">"""Generate a string summarizing the sim for file naming."""</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="k">return</span> <span class="p">(</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a>          <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">variable</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_p</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">p</span><span class="si">:</span><span class="s2">0.6f</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_s</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">seed</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="o">+</span> <span class="sa">f</span><span class="s2">"_nx</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_x</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a>        <span class="o">+</span> <span class="p">(</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a>            <span class="sa">f</span><span class="s2">"_ny</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_y</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">n_y</span><span class="o">&gt;</span><span class="mi">1</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a>            <span class="k">else</span> <span class="s2">""</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a>        <span class="p">)</span>        
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a>        <span class="o">+</span> <span class="p">(</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>            <span class="sa">f</span><span class="s2">"_nz</span><span class="si">{</span><span class="n">parameters</span><span class="o">.</span><span class="n">n_z</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">n_z</span><span class="o">&gt;</span><span class="mi">1</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a>            <span class="k">else</span> <span class="s2">""</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a>        <span class="p">)</span>        
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"_i</span><span class="si">{</span><span class="n">i_slice</span><span class="o">*</span><span class="n">parameters</span><span class="o">.</span><span class="n">sample_rate</span><span class="si">:</span><span class="s2">0</span><span class="si">{</span><span class="mi">5</span><span class="si">}}</span><span class="s2">"</span> 
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a>           <span class="k">if</span> <span class="n">i_slice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
