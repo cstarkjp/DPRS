@@ -7,7 +7,7 @@ class Parameters:
     n_x: int = 300
     n_y: int = 300
     n_z: int = 300
-    p: float = 0.163145
+    p: float = 0.05
     p0: float = 0.99
     seed: int = 1
     n_iterations: int = 1_000
