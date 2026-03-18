@@ -48,50 +48,53 @@ unavailable processing continues regardless.
 #    DeprecationWarning: `magic(...)` is deprecated since IPython 0.13 
 #    (warning added in 8.1), use run_line_magic(magic_name, parameter_s).
 
-from IPython import get_ipython #type: ignore
-
-def check_is_ipython() -> bool:
-    """Check if we are running an IPython kernel from Jupyter etc."""
-    try:
-        if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
+try:
+    from IPython import get_ipython #type: ignore
+        
+    def check_is_ipython() -> bool:
+        """Check if we are running an IPython kernel from Jupyter etc."""
+        try:
+            if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
+                return False
+        except ImportError:
             return False
-    except ImportError:
-        return False
-    except AttributeError:
-        return False
-    return True
+        except AttributeError:
+            return False
+        return True
 
 
-is_python: bool = check_is_ipython()
+    is_python: bool = check_is_ipython()
 
-if is_python:
-    try:
-        # get_ipython().magic("config InlineBackend.figure_format = 'retina'")
-        get_ipython().run_line_magic(
-            "config", 
-            "InlineBackend.figure_format = 'retina'",
-        )
-    except NameError:
-        pass
+    if is_python:
+        try:
+            # get_ipython().magic("config InlineBackend.figure_format = 'retina'")
+            get_ipython().run_line_magic(
+                "config", 
+                "InlineBackend.figure_format = 'retina'",
+            )
+        except NameError:
+            pass
 
-    try:
-        # get_ipython().magic("matplotlib inline")
-        get_ipython().run_line_magic("matplotlib", "inline",)
-    except NameError:
-        pass
+        try:
+            # get_ipython().magic("matplotlib inline")
+            get_ipython().run_line_magic("matplotlib", "inline",)
+        except NameError:
+            pass
 
 
-    try:
-        # get_ipython().magic("load_ext autoreload")
-        # get_ipython().magic("autoreload 2")
-        get_ipython().run_line_magic("load_ext", "autoreload",)
-        get_ipython().run_line_magic("autoreload", "2",)
-        # get_ipython().magic('aimport '+package_name)
-    except NameError as error:
-        print(
-            "Error trying to invoke get_ipython(), "
-            + "possibly because not running IPython:",
-            error,
-        )
-    # except:
-    #     print('Possibly benign error trying to config autoreload')
+        try:
+            # get_ipython().magic("load_ext autoreload")
+            # get_ipython().magic("autoreload 2")
+            get_ipython().run_line_magic("load_ext", "autoreload",)
+            get_ipython().run_line_magic("autoreload", "2",)
+            # get_ipython().magic('aimport '+package_name)
+        except NameError as error:
+            print(
+                "Error trying to invoke get_ipython(), "
+                + "possibly because not running IPython:",
+                error,
+            )
+        # except:
+        #     print('Possibly benign error trying to config autoreload')
+except:
+    pass
