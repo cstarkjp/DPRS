@@ -1,4 +1,5 @@
 import os
+from functools import partial
 import numpy as np
 from scipy.stats import linregress
 import matplotlib.pyplot as plt

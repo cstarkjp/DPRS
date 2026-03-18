@@ -19,8 +19,8 @@ pub struct LatticeModel2D<C: CellModel2D> {
     n_x: usize,
     n_y: usize,
     lattice: Vec<C::State>,
-    edge_values_x: (C::State, C::State),
-    edge_values_y: (C::State, C::State),
+    end_values_y: (C::State, C::State),
+    end_values_x: (C::State, C::State),
 }
 
 /// Lattice model methods.
@@ -31,16 +31,16 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         cell_model: C,
         n_x: usize,
         n_y: usize,
-        edge_values_x: (C::State, C::State),
-        edge_values_y: (C::State, C::State),
+        end_values_y: (C::State, C::State),
+        end_values_x: (C::State, C::State),
     ) -> Self {
         Self {
             cell_model,
             n_x,
             n_y,
             lattice: vec![C::State::default(); n_x * n_y],
-            edge_values_x,
-            edge_values_y,
+            end_values_y,
+            end_values_x,
         }
     }
 
@@ -89,39 +89,37 @@ impl<C: CellModel2D> LatticeModel2D<C> {
 
     /// Enforce edge topology specifications.
     pub fn apply_edge_topology(&mut self, params: &Parameters) {
-        // Apply x-edge boundary topology
-        if params.edge_topology_is_periodic_x() {
-            let n_y = self.n_y;
-            self.periodic_x_edges(n_y - 2, 0);
-            self.periodic_x_edges(1, n_y - 1);
+        // Apply x_axis termini topology
+        if params.x_axis_topology_is_periodic() {
+            let n_x = self.n_x;
+            self.make_axis_periodic_x(n_x - 2, 0);
+            self.make_axis_periodic_x(1, n_x - 1);
         }
 
-        // Apply y-edge boundary topology
-        if params.edge_topology_is_periodic_y() {
-            let n_x = self.n_x;
-            self.periodic_y_edges(n_x - 2, 0);
-            self.periodic_y_edges(1, n_x - 1);
+        // Apply y_axis termini topology
+        if params.y_axis_topology_is_periodic() {
+            let n_y = self.n_y;
+            self.make_axis_periodic_y(n_y - 2, 0);
+            self.make_axis_periodic_y(1, n_y - 1);
         }
     }
 
-    /// Enforce periodic edge topology along the x edges (i.e., in y axis direction).
-    fn periodic_x_edges(&mut self, y_from: usize, y_to: usize) {
-        let n_x = self.n_x;
-        // TODO: Rustify
-        for x in 0..n_x {
-            let i_from = self.i_cell(x, y_to);
-            let i_to = self.i_cell(x, y_from);
+    /// Enforce periodic edge topology for the x-axis, i.e., along the y edges.
+    fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
+        let n_y = self.n_y;
+        for y in 0..n_y {
+            let i_from = self.i_cell(x_from, y);
+            let i_to = self.i_cell(x_to, y);
             self.lattice[i_to] = self.lattice[i_from];
         }
     }
 
-    /// Enforce periodic edge topology along the y edges (i.e., in x axis direction).
-    fn periodic_y_edges(&mut self, x_from: usize, x_to: usize) {
-        let n_y = self.n_y;
-        // TODO: Rustify
-        for y in 0..n_y {
-            let i_from = self.i_cell(x_from, y);
-            let i_to = self.i_cell(x_to, y);
+    /// Enforce periodic edge topology for the y-axis, i.e., along the x edges.
+    fn make_axis_periodic_y(&mut self, y_from: usize, y_to: usize) {
+        let n_x = self.n_x;
+        for x in 0..n_x {
+            let i_from = self.i_cell(x, y_to);
+            let i_to = self.i_cell(x, y_from);
             self.lattice[i_to] = self.lattice[i_from];
         }
     }
@@ -132,54 +130,52 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         let n_x = self.n_x;
         let n_y = self.n_y;
 
-        // Apply bottom x-edge b.c.
-        if params.edge_boundary_is_unconstrained_x0() {
-            // No edge values need be imposed
-        } else if params.edge_boundary_is_pinned_x0() {
-            // println!("Pinning bottom x edge");
-            self.pinned_x_edge_values(0, self.edge_values_x.0);
-        }
-
-        // Apply top x-edge b.c.
-        if params.edge_boundary_is_unconstrained_x1() {
-            // No edge values need be imposed
-        } else if params.edge_boundary_is_pinned_x1() {
-            // println!("Pinning top x edge");
-            self.pinned_x_edge_values(n_y - 1, self.edge_values_x.1);
-        }
-
         // Apply left y-edge b.c.
-        if params.edge_boundary_is_unconstrained_y0() {
+        if params.axis_is_unconstrained_x0() {
             // No edge values need be imposed
-        } else if params.edge_boundary_is_pinned_y0() {
+        } else if params.axis_is_pinned_x0() {
             // println!("Pinning left y edge");
-            self.pinned_y_edge_values(0, self.edge_values_y.0);
+            self.pin_axis_ends_x(0, self.end_values_x.0);
         }
 
         // Apply right y-edge b.c.
-        if params.edge_boundary_is_unconstrained_y1() {
+        if params.axis_is_unconstrained_x1() {
             // No edge values need be imposed
-        } else if params.edge_boundary_is_pinned_y1() {
+        } else if params.axis_is_pinned_x1() {
             // println!("Pinning right y edge");
-            self.pinned_y_edge_values(n_x - 1, self.edge_values_y.1);
+            self.pin_axis_ends_x(n_x - 1, self.end_values_x.1);
+        }
+
+        // Apply bottom x-edge b.c.
+        if params.axis_is_unconstrained_y0() {
+            // No edge values need be imposed
+        } else if params.axis_is_pinned_y0() {
+            // println!("Pinning bottom x edge");
+            self.pin_axis_ends_y(0, self.end_values_y.0);
+        }
+
+        // Apply top x-edge b.c.
+        if params.axis_is_unconstrained_y1() {
+            // No edge values need be imposed
+        } else if params.axis_is_pinned_y1() {
+            // println!("Pinning top x edge");
+            self.pin_axis_ends_y(n_y - 1, self.end_values_y.1);
         }
     }
 
-    /// Enforce constant-value edge b.c. along a x edge.
-    fn pinned_x_edge_values(&mut self, y: usize, pinned_value: <C as CellModel2D>::State) {
-        let n_x = self.n_x;
-        // TODO: Rustify
-        for x in 0..n_x {
+    /// Enforce constant-value edge b.c. along a y edge.
+    fn pin_axis_ends_x(&mut self, x: usize, pinned_value: <C as CellModel2D>::State) {
+        let n_y = self.n_y;
+        for y in 0..n_y {
             let i_cell = self.i_cell(x, y);
             self.lattice[i_cell] = pinned_value;
         }
     }
 
-    /// Enforce constant-value edge b.c. along a y edge.
-    fn pinned_y_edge_values(&mut self, x: usize, pinned_value: <C as CellModel2D>::State) {
-        let n_y = self.n_y;
-        // TODO: Rustify
-        for y in 0..n_y {
+    /// Enforce constant-value edge b.c. along an x edge.
+    fn pin_axis_ends_y(&mut self, y: usize, pinned_value: <C as CellModel2D>::State) {
+        let n_x = self.n_x;
+        for x in 0..n_x {
             let i_cell = self.i_cell(x, y);
             self.lattice[i_cell] = pinned_value;
         }
@@ -264,11 +260,11 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
     pub fn update_row<R: Rng>(&self, rng: &mut R, p: f64, y: usize, row: &mut [C::State]) {
-        let i_md = self.i_cell(0, y + 0);
+        let lattice = &self.lattice;
+        let row_span = self.n_x - 2;
+        let i_md = self.i_cell(0, y);
         let i_up = i_md + self.n_x;
         let i_dn = i_md - self.n_x;
-        let row_span = self.n_x - 2;
-        let lattice = &self.lattice;
         for (cell, (dn, (md, up))) in row.iter_mut().skip(1).take(row_span).zip(
             lattice.split_at(i_dn).1.windows(3).zip(
                 lattice

@@ -92,15 +92,15 @@ pub struct Parameters {
     pub n_x: usize,
     pub n_y: usize,
     pub n_z: usize,
-    pub edge_topology_x: Topology,
-    pub edge_topology_y: Topology,
-    pub edge_topology_z: Topology,
-    pub edge_bc_x: (BoundaryCondition, BoundaryCondition),
-    pub edge_bc_y: (BoundaryCondition, BoundaryCondition),
-    pub edge_bc_z: (BoundaryCondition, BoundaryCondition),
-    pub edge_values_x: (bool, bool),
-    pub edge_values_y: (bool, bool),
-    pub edge_values_z: (bool, bool),
+    pub axis_topology_x: Topology,
+    pub axis_topology_y: Topology,
+    pub axis_topology_z: Topology,
+    pub axis_bcs_x: (BoundaryCondition, BoundaryCondition),
+    pub axis_bcs_y: (BoundaryCondition, BoundaryCondition),
+    pub axis_bcs_z: (BoundaryCondition, BoundaryCondition),
+    pub axis_bc_values_x: (bool, bool),
+    pub axis_bc_values_y: (bool, bool),
+    pub axis_bc_values_z: (bool, bool),
     pub do_edge_buffering: bool,
     pub processing: Processing,
     pub n_threads: usize,
@@ -108,56 +108,56 @@ pub struct Parameters {
 
 /// Edge topology and boundary condition checking.
 impl Parameters {
-    pub fn edge_topology_is_periodic_x(&self) -> bool {
-        matches![self.edge_topology_x, Topology::Periodic]
+    pub fn x_axis_topology_is_periodic(&self) -> bool {
+        matches![self.axis_topology_x, Topology::Periodic]
     }
 
-    pub fn edge_topology_is_periodic_y(&self) -> bool {
-        matches![self.edge_topology_y, Topology::Periodic]
+    pub fn y_axis_topology_is_periodic(&self) -> bool {
+        matches![self.axis_topology_y, Topology::Periodic]
     }
 
-    pub fn edge_boundary_is_unconstrained_x0(&self) -> bool {
+    pub fn axis_is_unconstrained_x0(&self) -> bool {
         matches![
-            self.edge_bc_x.0,
+            self.axis_bcs_x.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn edge_boundary_is_unconstrained_x1(&self) -> bool {
+    pub fn axis_is_unconstrained_x1(&self) -> bool {
         matches![
-            self.edge_bc_x.1,
+            self.axis_bcs_x.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn edge_boundary_is_unconstrained_y0(&self) -> bool {
+    pub fn axis_is_unconstrained_y0(&self) -> bool {
         matches![
-            self.edge_bc_y.0,
+            self.axis_bcs_y.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn edge_boundary_is_unconstrained_y1(&self) -> bool {
+    pub fn axis_is_unconstrained_y1(&self) -> bool {
         matches![
-            self.edge_bc_y.1,
+            self.axis_bcs_y.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn edge_boundary_is_pinned_x0(&self) -> bool {
-        matches![self.edge_bc_x.0, BoundaryCondition::Pinned]
+    pub fn axis_is_pinned_y0(&self) -> bool {
+        matches![self.axis_bcs_x.0, BoundaryCondition::Pinned]
     }
 
-    pub fn edge_boundary_is_pinned_x1(&self) -> bool {
-        matches![self.edge_bc_x.1, BoundaryCondition::Pinned]
+    pub fn axis_is_pinned_y1(&self) -> bool {
+        matches![self.axis_bcs_x.1, BoundaryCondition::Pinned]
     }
 
-    pub fn edge_boundary_is_pinned_y0(&self) -> bool {
-        matches![self.edge_bc_y.0, BoundaryCondition::Pinned]
+    pub fn axis_is_pinned_x0(&self) -> bool {
+        matches![self.axis_bcs_y.0, BoundaryCondition::Pinned]
     }
 
-    pub fn edge_boundary_is_pinned_y1(&self) -> bool {
-        matches![self.edge_bc_y.1, BoundaryCondition::Pinned]
+    pub fn axis_is_pinned_x1(&self) -> bool {
+        matches![self.axis_bcs_y.1, BoundaryCondition::Pinned]
     }
 
     pub fn print(&self) {
@@ -169,15 +169,15 @@ impl Parameters {
         println!("Sample rate: {}", self.sample_rate);
         println!("Dimension:   {:?}", self.dim);
         println!("Grid shape:  {:?}", (self.n_x, self.n_y, self.n_z));
-        println!("Topology x:  {:?}", self.edge_topology_x);
-        println!("Topology y:  {:?}", self.edge_topology_y);
-        println!("Topology z:  {:?}", self.edge_topology_z);
-        println!("Edge x b.c.: {:?}", self.edge_bc_x);
-        println!("Edge y b.c.: {:?}", self.edge_bc_y);
-        println!("Edge z b.c.: {:?}", self.edge_bc_z);
-        println!("Edge x vals: {:?}", self.edge_values_x);
-        println!("Edge y vals: {:?}", self.edge_values_y);
-        println!("Edge z vals: {:?}", self.edge_values_z);
+        println!("Topology x:  {:?}", self.axis_topology_x);
+        println!("Topology y:  {:?}", self.axis_topology_y);
+        println!("Topology z:  {:?}", self.axis_topology_z);
+        println!("Axis BCs x:  {:?}", self.axis_bcs_x);
+        println!("Axis BCs y:  {:?}", self.axis_bcs_y);
+        println!("Axis BCs z:  {:?}", self.axis_bcs_z);
+        println!("BC values x: {:?}", self.axis_bc_values_x);
+        println!("BC values y: {:?}", self.axis_bc_values_y);
+        println!("BC values z: {:?}", self.axis_bc_values_z);
         println!("Edge buffer: {}", self.do_edge_buffering);
         println!("Processing:  {:?}", self.processing);
         println!("Num threads: {}", self.n_threads);

@@ -90,13 +90,49 @@ class Viz:
         fig.set_dpi(dpi_)
         return fig
 
+    def image_lattice_history(
+            self,
+            name: str,
+            title: str,
+            lattices: NDArray|None, 
+            p: sim.Parameters,
+            x: int | None=None, 
+            t: int | None=None,
+            fig_size: tuple[float,float]=(6,4,),
+        ) -> tuple[Figure, Any]:
+        """
+        Plot colorized image of 1d lattice history.
+        """
+        _ = self.create_figure(fig_name=name, fig_size=fig_size,)
+        plt.title(title, fontdict={"fontsize": 11.5})
+        color_map = ListedColormap(((0.9, 0.9, 0.9,), (0.65, 0, 0.65),))
+        x = (lattices.shape[0] if x is None else min(x, lattices.shape[0]))
+        t = (lattices.shape[1] if t is None else min(t, lattices.shape[1]))
+        plt.imshow(
+            lattices[0:x, 0:t, ].T, 
+            vmin=0, vmax=1,
+            cmap=color_map, 
+            # origin="lower",
+        )
+        color_bar = plt.colorbar(
+            ticks=(0.25, 0.75,), 
+            shrink=0.5*(t/x)**0.25, 
+            aspect=15,
+            label="cell state",
+        )
+        color_bar.set_ticklabels((0, 1,),)
+        plt.xlabel(r"$x$")
+        plt.ylabel(r"$t$")
+        plt.grid(ls=":")
+        # plt.close()
+
     def image_lattice(
             self,
             name: str,
             title: str,
-            lattices: NDArray, 
+            lattices: NDArray|None, 
             p: sim.Parameters,
-            i_lattice: int=0, 
+            i_lattice: int | None = 0, 
             x: int | None=None, 
             y: int | None=None,
             fig_size: tuple[float,float]=(6,4,),
@@ -136,23 +172,25 @@ class Viz:
             δ: float, 
             ρ_mean_ref: float,
             fig_size: tuple[float,float]=(6,4,),
+            i_offset: int=3,
+            do_ref_curve: bool=True,
         ) -> tuple[Figure, Any]:
         """
         Plot time evolution of mean order parameter.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
         plt.title(title, fontdict={"fontsize": 13})
-        i_offset: int = 3
         t: NDArray = tracking[0][i_offset:]
         ρ_mean: NDArray = tracking[1][i_offset:]
         ρ_mean_fn = lambda t: ρ_mean_ref*t**(-δ)
         plt.plot(
             t, ρ_mean, lw=0.4, color="k",
         )
-        plt.plot(
-            t, ρ_mean_fn(t), color="blue", alpha=0.5, 
-            label=r"$\widebar\rho(t) \sim t^{-\delta}$" + rf"$\quad\delta={δ}$",
-        )
+        if do_ref_curve:
+            plt.plot(
+                t, ρ_mean_fn(t), color="blue", alpha=0.5, 
+                label=r"$\widebar\rho(t) \sim t^{-\delta}$" + rf"$\quad\delta={δ}$",
+            )
         plt.legend()
         axes = plt.gca()
         axes.autoscale(enable=True, axis="both", tight=True)

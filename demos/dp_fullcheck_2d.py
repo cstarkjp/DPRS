@@ -15,15 +15,15 @@ class Parameters:
     n_x: int = 5_000
     n_y: int = 5_000
     n_z: int = 1
-    edge_topology_x = sim.Topology.Periodic
-    edge_topology_y = sim.Topology.Periodic
-    edge_topology_z = sim.Topology.Unspecified
-    edge_bc_x = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
-    edge_bc_y = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
-    edge_bc_z = (sim.BoundaryCondition.Unspecified, sim.BoundaryCondition.Unspecified)
-    edge_values_x = (True, True)
-    edge_values_y = (True, True)
-    edge_values_z = (False, False)
+    axis_topology_x = sim.Topology.Periodic
+    axis_topology_y = sim.Topology.Periodic
+    axis_topology_z = sim.Topology.Unspecified
+    axis_bcs_x = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
+    axis_bcs_y = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
+    axis_bcs_z = (sim.BoundaryCondition.Unspecified, sim.BoundaryCondition.Unspecified)
+    axis_bc_values_x = (True, True)
+    axis_bc_values_y = (True, True)
+    axis_bc_values_z = (False, False)
     do_edge_buffering: bool = True
     processing = sim.Processing.Parallel
     n_threads: int = 16
@@ -42,10 +42,10 @@ lattices: NDArray = np.array(raw_lattices, dtype=np.bool,).reshape(
 ).T
 tracking: NDArray = np.array(raw_tracking, dtype=np.float64,) 
 
-i_offset: int = parameters.n_iterations//2
+i_offset: int = parameters.n_iterations//3
 t: NDArray = tracking[0][i_offset:]
 ρ_mean: NDArray = tracking[1][i_offset:]
-(slope, intercept, r_value, p_value, std_err) \
+(exponent, scale, r_value, p_value, std_err) \
     = linregress(np.log(t), np.log(ρ_mean))
 
-print(rf"Estimated t-decay exponent:  δ = {slope:0.4f}")
+print(rf"Estimated t-decay exponent:  δ = {exponent:0.3f}")
