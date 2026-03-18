@@ -5,14 +5,14 @@ print(f"\n{sim}")
 
 class Parameters:
     dim = sim.Dimension.D3
-    n_x: int = 300
-    n_y: int = 300
-    n_z: int = 300
+    n_x: int = 100
+    n_y: int = 100
+    n_z: int = 100
     p: float = 0.05
     p0: float = 0.99
     seed: int = 1
-    n_iterations: int = 1_000
-    sample_rate: int  = 1_000
+    n_iterations: int = 1_00
+    sample_rate: int  = 1_00
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Periodic
     axis_topology_z = sim.Topology.Periodic
@@ -23,7 +23,7 @@ class Parameters:
     axis_bc_values_y = (DP.OCCUPIED.state, DP.OCCUPIED.state)
     axis_bc_values_z = (DP.OCCUPIED.state, DP.OCCUPIED.state)
     do_edge_buffering: bool = True
-    processing = sim.Processing.Parallel
+    processing = sim.Processing.Serial
     n_threads: int = 16
 parameters = Parameters()
 
