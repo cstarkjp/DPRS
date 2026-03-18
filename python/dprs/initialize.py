@@ -3,36 +3,15 @@ Configure to run in `IPython`_.
 
 ---------------------------------------------------------------------
 
-Sets up `IPython`_ environment if we're running
+Sets up `IPython`_ environment if e.g. we're running
 in a `Jupyter notebook`_ or `Jupyter QtConsole`_.
 
  - prepares Matplotlib to display inline and (for Macs)
    at a 'retina' resolution -- if this
    is not available, a benign error report (currently disabled)
    is made and progress continues
- - enables automatic reloading of :py:mod:`salt`
-   (in case the code has been modded) when
+ - enables automatic reloading (in case the code has been modded) when
    a notebook is re-run in-situ
-
----------------------------------------------------------------------
-
-Requires `Matplotlib`_ and `IPython`_.
-
-Uses IPython extensions `autoreload`_.
-
-The  `autoreload`_ extension forces the parent package to be reloaded on
-restart. This makes code modding and subsequent rerunning of a notebook
-smooth and seamless. It is not needed for normal operation, and if
-unavailable processing continues regardless.
-
----------------------------------------------------------------------
-
-.. _Matplotlib: https://matplotlib.org/
-.. _autoreload:
-    https://ipython.readthedocs.io/en/stable/config/extensions/autoreload.html
-.. _IPython: https://ipython.readthedocs.io/en/stable/
-.. _Jupyter notebook: https://jupyter-notebook.readthedocs.io/en/stable/
-.. _Jupyter QtConsole: https://qtconsole.readthedocs.io/en/stable/
 """
 
 # import logging
