@@ -116,6 +116,10 @@ impl Parameters {
         matches![self.axis_topology_y, Topology::Periodic]
     }
 
+    pub fn z_axis_topology_is_periodic(&self) -> bool {
+        matches![self.axis_topology_z, Topology::Periodic]
+    }
+
     pub fn axis_is_unconstrained_x0(&self) -> bool {
         matches![
             self.axis_bcs_x.0,
@@ -144,20 +148,42 @@ impl Parameters {
         ]
     }
 
-    pub fn axis_is_pinned_y0(&self) -> bool {
-        matches![self.axis_bcs_x.0, BoundaryCondition::Pinned]
+    pub fn axis_is_unconstrained_z0(&self) -> bool {
+        matches![
+            self.axis_bcs_z.0,
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating
+        ]
     }
 
-    pub fn axis_is_pinned_y1(&self) -> bool {
-        matches![self.axis_bcs_x.1, BoundaryCondition::Pinned]
+    pub fn axis_is_unconstrained_z1(&self) -> bool {
+        matches![
+            self.axis_bcs_z.1,
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating
+        ]
     }
 
     pub fn axis_is_pinned_x0(&self) -> bool {
-        matches![self.axis_bcs_y.0, BoundaryCondition::Pinned]
+        matches![self.axis_bcs_x.0, BoundaryCondition::Pinned]
     }
 
     pub fn axis_is_pinned_x1(&self) -> bool {
+        matches![self.axis_bcs_x.1, BoundaryCondition::Pinned]
+    }
+
+    pub fn axis_is_pinned_y0(&self) -> bool {
+        matches![self.axis_bcs_y.0, BoundaryCondition::Pinned]
+    }
+
+    pub fn axis_is_pinned_y1(&self) -> bool {
         matches![self.axis_bcs_y.1, BoundaryCondition::Pinned]
+    }
+
+    pub fn axis_is_pinned_z0(&self) -> bool {
+        matches![self.axis_bcs_z.0, BoundaryCondition::Pinned]
+    }
+
+    pub fn axis_is_pinned_z1(&self) -> bool {
+        matches![self.axis_bcs_z.1, BoundaryCondition::Pinned]
     }
 
     pub fn print(&self) {

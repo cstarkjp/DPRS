@@ -4,14 +4,19 @@
 
 mod cell_model_1d;
 mod cell_model_2d;
+mod cell_model_3d;
 mod dp_model_1d;
 mod dp_model_2d;
+mod dp_model_3d;
 mod lattice_model_1d;
 mod lattice_model_2d;
+mod lattice_model_3d;
 mod run_simulation_1d;
 mod run_simulation_2d;
+mod run_simulation_3d;
 mod simulation_1d;
 mod simulation_2d;
+mod simulation_3d;
 use crate::parameters::{DPState, Dimension, Parameters, Processing};
 
 /// Entry point to this module.
@@ -28,6 +33,12 @@ pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>, Vec<Vec<f64>>, f
             run_simulation_2d::run_simulation(&params, &Processing::Serial)
         }
         (Processing::Parallel, Dimension::D2) => {
+            run_simulation_2d::run_simulation(&params, &Processing::Parallel)
+        }
+        (Processing::Serial, Dimension::D3) => {
+            run_simulation_2d::run_simulation(&params, &Processing::Serial)
+        }
+        (Processing::Parallel, Dimension::D3) => {
             run_simulation_2d::run_simulation(&params, &Processing::Parallel)
         }
         _ => todo!(),
