@@ -15,15 +15,22 @@ See [here](docs/HOWTO.md) for some rough "how-to" notes on wrapping Rust with Py
 
 For now, only DP has been implemented.  A series of related models are in development.
 
-### DP
 
 ![2d DP $t$-decay of mean order parameter $\overline\rho(t)$, for $p_c \approx p=0.163145$, $n_x=30000$, $n_y=30000$, $t=50000$](docs/images/ρmean_p0p163145_s1_nx30000_ny30000.png)
 
-Directed-percolation model simulations in 2d are demonstrated in the following Jupyter notebook:
+### DP
 
- - [Jupyter demo](notebooks/dp_2d.ipynb)
+DP model simulations are demonstrated in the following Jupyter notebooks:
 
-and pure Python demos can be found here:
+- [**1d DP** for a small lattice, to visualize $t$ evolution](notebooks/dp_1d_quick.ipynb)
+
+- [**1d DP** for a large lattice and large number of iterations, to validate $t$-decay of $\overline\rho(t)$ ](notebooks/dp_1d.ipynb)
+
+- [**2d DP** for a large lattice and large number of iterations, to validate $t$-decay of $\overline\rho(t)$ ](dp_2d.ipynb)
+
+Related pure-Python demos can be found here:
 
  - [Python demos](demos/)
+
+
 
