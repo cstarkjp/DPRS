@@ -304,10 +304,13 @@ impl<C: CellModel3D> LatticeModel3D<C> {
         x > 0 && y > 0 && z > 0 && x < (self.n_x - 1) && y < (self.n_y - 1) && z < (self.n_z - 1)
     }
 
-    /// Check cell index is within lattice bounds; return this test and (x, y).
-    fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize) {
+    /// Check cell index is within lattice bounds; return this test and (x, y, z).
+    fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize, usize) {
+        // TODO: 3d update needed
+
         let x = i_cell % self.n_x;
         let y = i_cell / self.n_x;
+        let z = i_cell;
 
         (self.is_in_bounds_xyz(x, y, z), x, y, z)
     }
@@ -316,6 +319,9 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     /// TODO: Does it make sense to pass the probability p like this?
     /// Wouldn't it be better to set it on the model struct?
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R], p: f64) {
+        // TODO: 3d update needed
+        let z = 0;
+
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
         // Split the lattice into n_y rows each of length n_x and
         // update these rows in parallel using par_chunks_mut().
@@ -343,7 +349,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     ///
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
-    pub fn update_layer<R: Rng>(
+    pub fn update_row<R: Rng>(
         &self,
         rng: &mut R,
         p: f64,
@@ -351,6 +357,8 @@ impl<C: CellModel3D> LatticeModel3D<C> {
         z: usize,
         row: &mut [C::State],
     ) {
+        // TODO: 3d update needed
+
         let lattice = &self.lattice;
         let row_span = self.n_x - 2;
         let i_md = self.i_cell(0, y, z);
