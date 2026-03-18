@@ -172,31 +172,29 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         // Before passing to next_row() to perform the update,
         // enumerate each row, zip each pair together with one of the RNGs,
         // and then omit the first and last rows.
+        let chunk_length = self.n_x / 10;
         updated_lattice
-            .par_chunks_mut(self.n_x)
+            .par_chunks_mut(chunk_length)
             .zip(rngs)
             .for_each(|(row, rng)| self.update_row(rng, p, row));
 
-        // Only replace the lattice with the updated version once all the rows
-        // have been updated.
         self.lattice = updated_lattice;
     }
 
     /// Update a row of cells.
     ///
-    /// This zips across the row using windows onto the lattice for the cells
-    /// in the row above, those in this row, and those in the row below.
+    /// This zips across the row using 3-cell windows centred on each cell.
     ///
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
     pub fn update_row<R: Rng>(&self, rng: &mut R, p: f64, row: &mut [C::State]) {
-        let i_md = self.i_cell(0);
-        let row_span = self.n_x - 2;
         let lattice = &self.lattice;
+        let row_span = self.n_x - 2;
         for (cell, md) in row
             .iter_mut()
+            .skip(1)
             .take(row_span)
-            .zip(lattice.split_at(i_md).1.windows(3))
+            .zip(lattice.windows(3))
         {
             let nbrhood = [md[0], md[1], md[2]];
             let nbrhood = nbrhood.as_array::<3>().unwrap();
