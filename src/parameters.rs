@@ -108,36 +108,36 @@ pub struct Parameters {
 
 /// Edge topology and boundary condition checking.
 impl Parameters {
-    pub fn y_axis_topology_is_periodic(&self) -> bool {
+    pub fn x_axis_topology_is_periodic(&self) -> bool {
         matches![self.axis_topology_x, Topology::Periodic]
     }
 
-    pub fn x_axis_topology_is_periodic(&self) -> bool {
+    pub fn y_axis_topology_is_periodic(&self) -> bool {
         matches![self.axis_topology_y, Topology::Periodic]
     }
 
-    pub fn axis_is_unconstrained_y0(&self) -> bool {
+    pub fn axis_is_unconstrained_x0(&self) -> bool {
         matches![
             self.axis_bcs_x.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn axis_is_unconstrained_y1(&self) -> bool {
+    pub fn axis_is_unconstrained_x1(&self) -> bool {
         matches![
             self.axis_bcs_x.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn axis_is_unconstrained_x0(&self) -> bool {
+    pub fn axis_is_unconstrained_y0(&self) -> bool {
         matches![
             self.axis_bcs_y.0,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
         ]
     }
 
-    pub fn axis_is_unconstrained_x1(&self) -> bool {
+    pub fn axis_is_unconstrained_y1(&self) -> bool {
         matches![
             self.axis_bcs_y.1,
             BoundaryCondition::Unspecified | BoundaryCondition::Floating
