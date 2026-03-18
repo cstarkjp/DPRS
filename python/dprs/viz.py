@@ -112,7 +112,7 @@ class Viz:
             lattices[0:x, 0:t, ].T, 
             vmin=0, vmax=1,
             cmap=color_map, 
-            # origin="lower",
+            extent=(0, x, t-0.5, -0.5),
         )
         color_bar = plt.colorbar(
             ticks=(0.25, 0.75,), 
@@ -150,10 +150,11 @@ class Viz:
             vmin=0, vmax=1,
             cmap=color_map, 
             origin="lower",
+            extent=(0, x, y, 0),
         )
         color_bar = plt.colorbar(
             ticks=(0.25, 0.75,), 
-            shrink=0.5*(p.n_y/p.n_x)**0.25, 
+            shrink=0.5*(y/x)**0.25, 
             aspect=15,
             label="cell state",
         )
