@@ -1,3 +1,6 @@
 # Python modules
 
-For now, navigate using the tab bar/drop-down menu.
+
+- [utils.py](utils-reference.md)
+
+- [viz.py](viz-reference.md)
