@@ -13,7 +13,23 @@
          <lastmod>2026-03-18</lastmod>
     </url>
     <url>
+         <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/python-demos/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
          <loc>https://cstarkjp.github.io/DPRS/python-modules/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/python-modules/utils-reference/</loc>
+         <lastmod>2026-03-18</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/python-modules/viz-reference/</loc>
          <lastmod>2026-03-18</lastmod>
     </url>
 </urlset>

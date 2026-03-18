@@ -41,7 +41,7 @@ class Viz:
     fdict: dict[Any, Any]
 
     def __init__(
-            self, dpi: int=150, font_size: int=11, font_family="Arial",
+            self, dpi: int=150, font_size: int=11, font_family: str="Arial",
         ) -> None:
         self.dpi = dpi
         self.fdict = {}
