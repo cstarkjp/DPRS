@@ -44,11 +44,12 @@ unavailable processing continues regardless.
 # Force module to reload
 
 # https://ipython.readthedocs.io/en/stable/api/generated/IPython.core.getipython.html
-# <ipython-input-2-5aa624c5c899>:1:   
-#    DeprecationWarning: `magic(...)` is deprecated since IPython 0.13 
+# <ipython-input-2-5aa624c5c899>:1:
+#    DeprecationWarning: `magic(...)` is deprecated since IPython 0.13
 #    (warning added in 8.1), use run_line_magic(magic_name, parameter_s).
 
-from IPython import get_ipython #type: ignore
+from IPython import get_ipython  # type: ignore
+
 
 def check_is_ipython() -> bool:
     """Check if we are running an IPython kernel from Jupyter etc."""
@@ -68,7 +69,7 @@ if is_python:
     try:
         # get_ipython().magic("config InlineBackend.figure_format = 'retina'")
         get_ipython().run_line_magic(
-            "config", 
+            "config",
             "InlineBackend.figure_format = 'retina'",
         )
     except NameError:
@@ -76,16 +77,24 @@ if is_python:
 
     try:
         # get_ipython().magic("matplotlib inline")
-        get_ipython().run_line_magic("matplotlib", "inline",)
+        get_ipython().run_line_magic(
+            "matplotlib",
+            "inline",
+        )
     except NameError:
         pass
-
 
     try:
         # get_ipython().magic("load_ext autoreload")
         # get_ipython().magic("autoreload 2")
-        get_ipython().run_line_magic("load_ext", "autoreload",)
-        get_ipython().run_line_magic("autoreload", "2",)
+        get_ipython().run_line_magic(
+            "load_ext",
+            "autoreload",
+        )
+        get_ipython().run_line_magic(
+            "autoreload",
+            "2",
+        )
         # get_ipython().magic('aimport '+package_name)
     except NameError as error:
         print(

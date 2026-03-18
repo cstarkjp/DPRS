@@ -1,7 +1,17 @@
-from dprs import sim
+import pathlib
+import sys
+
+this_dir = pathlib.Path(__file__).parent.parent.resolve()
+sys.path.append(this_dir.joinpath("target", "release").__str__())
+sys.path.append(this_dir.joinpath("python").__str__())
+print(sys.path)
+import sim
+
+# from dprs import sim
 from dprs.utils import DP
 
 print(f"\n{sim}")
+
 
 class Parameters:
     dim = sim.Dimension.D3
@@ -12,7 +22,7 @@ class Parameters:
     p0: float = 0.99
     seed: int = 1
     n_iterations: int = 1_000
-    sample_rate: int  = 1_000
+    sample_rate: int = 1_000
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Periodic
     axis_topology_z = sim.Topology.Periodic
@@ -25,6 +35,8 @@ class Parameters:
     do_edge_buffering: bool = True
     processing = sim.Processing.Parallel
     n_threads: int = 16
+
+
 parameters = Parameters()
 
 _ = sim.dp(parameters)
