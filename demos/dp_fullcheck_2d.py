@@ -42,10 +42,10 @@ lattices: NDArray = np.array(raw_lattices, dtype=np.bool,).reshape(
 ).T
 tracking: NDArray = np.array(raw_tracking, dtype=np.float64,) 
 
-i_offset: int = parameters.n_iterations//2
+i_offset: int = parameters.n_iterations//3
 t: NDArray = tracking[0][i_offset:]
 ρ_mean: NDArray = tracking[1][i_offset:]
-(slope, intercept, r_value, p_value, std_err) \
+(exponent, scale, r_value, p_value, std_err) \
     = linregress(np.log(t), np.log(ρ_mean))
 
-print(rf"Estimated t-decay exponent:  δ = {slope:0.4f}")
+print(rf"Estimated t-decay exponent:  δ = {exponent:0.3f}")

@@ -136,23 +136,25 @@ class Viz:
             δ: float, 
             ρ_mean_ref: float,
             fig_size: tuple[float,float]=(6,4,),
+            i_offset: int=3,
+            do_ref_curve: bool=True,
         ) -> tuple[Figure, Any]:
         """
         Plot time evolution of mean order parameter.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
         plt.title(title, fontdict={"fontsize": 13})
-        i_offset: int = 3
         t: NDArray = tracking[0][i_offset:]
         ρ_mean: NDArray = tracking[1][i_offset:]
         ρ_mean_fn = lambda t: ρ_mean_ref*t**(-δ)
         plt.plot(
             t, ρ_mean, lw=0.4, color="k",
         )
-        plt.plot(
-            t, ρ_mean_fn(t), color="blue", alpha=0.5, 
-            label=r"$\widebar\rho(t) \sim t^{-\delta}$" + rf"$\quad\delta={δ}$",
-        )
+        if do_ref_curve:
+            plt.plot(
+                t, ρ_mean_fn(t), color="blue", alpha=0.5, 
+                label=r"$\widebar\rho(t) \sim t^{-\delta}$" + rf"$\quad\delta={δ}$",
+            )
         plt.legend()
         axes = plt.gca()
         axes.autoscale(enable=True, axis="both", tight=True)
