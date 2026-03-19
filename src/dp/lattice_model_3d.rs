@@ -2,7 +2,10 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_3d::CellModel3D, parameters::Parameters};
+use crate::{
+    dp::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
+    parameters::Parameters,
+};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -53,6 +56,11 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     /// Borrow the lattice.
     pub fn lattice(&self) -> &Vec<C::State> {
         &self.lattice
+    }
+
+    /// Borrow the lattice mutably.
+    pub fn lattice_mut(&mut self) -> &mut [C::State] {
+        &mut self.lattice
     }
 
     /// Take the model and the lattice, destroying the rest of the model.
@@ -265,38 +273,20 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     }
 
     /// Cell values triple-triple-tripled across (x-1:x+1, y-1:y+1, z-1:z+1).
-    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> [<C as CellModel3D>::State; 27] {
-        let nbrhood = [
-            self.lattice[self.i_cell(x - 1, y + 1, z + 1)],
-            self.lattice[self.i_cell(x + 0, y + 1, z + 1)],
-            self.lattice[self.i_cell(x + 1, y + 1, z + 1)],
-            self.lattice[self.i_cell(x - 1, y + 0, z + 1)],
-            self.lattice[self.i_cell(x + 0, y + 0, z + 1)],
-            self.lattice[self.i_cell(x + 1, y + 0, z + 1)],
-            self.lattice[self.i_cell(x - 1, y - 1, z + 1)],
-            self.lattice[self.i_cell(x + 0, y - 1, z + 1)],
-            self.lattice[self.i_cell(x + 1, y - 1, z + 1)],
-            self.lattice[self.i_cell(x - 1, y + 1, z + 0)],
-            self.lattice[self.i_cell(x + 0, y + 1, z + 0)],
-            self.lattice[self.i_cell(x + 1, y + 1, z + 0)],
-            self.lattice[self.i_cell(x - 1, y + 0, z + 0)],
-            self.lattice[self.i_cell(x + 0, y + 0, z + 0)],
-            self.lattice[self.i_cell(x + 1, y + 0, z + 0)],
-            self.lattice[self.i_cell(x - 1, y - 1, z + 0)],
-            self.lattice[self.i_cell(x + 0, y - 1, z + 0)],
-            self.lattice[self.i_cell(x + 1, y - 1, z + 0)],
-            self.lattice[self.i_cell(x - 1, y + 1, z - 1)],
-            self.lattice[self.i_cell(x + 0, y + 1, z - 1)],
-            self.lattice[self.i_cell(x + 1, y + 1, z - 1)],
-            self.lattice[self.i_cell(x - 1, y + 0, z - 1)],
-            self.lattice[self.i_cell(x + 0, y + 0, z - 1)],
-            self.lattice[self.i_cell(x + 1, y + 0, z - 1)],
-            self.lattice[self.i_cell(x - 1, y - 1, z - 1)],
-            self.lattice[self.i_cell(x + 0, y - 1, z - 1)],
-            self.lattice[self.i_cell(x + 1, y - 1, z - 1)],
-        ];
-
-        nbrhood
+    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> Nbrhood3D<C> {
+        assert!(
+            x > 0,
+            "X must be within the border to generate a neighborhood"
+        );
+        assert!(
+            y > 0,
+            "Y must be within the border to generate a neighborhood"
+        );
+        assert!(
+            z > 0,
+            "Z must be within the border to generate a neighborhood"
+        );
+        Nbrhood3D::new(&self.lattice, (x, y, z), self.n_x, self.n_y)
     }
 
     /// Check (x,y,z) coordinate is within lattice bounds.
@@ -357,27 +347,19 @@ impl<C: CellModel3D> LatticeModel3D<C> {
         z: usize,
         row: &mut [C::State],
     ) {
-        // TODO: 3d update needed
-
-        let lattice = &self.lattice;
         let row_span = self.n_x - 2;
-        let i_md = self.i_cell(0, y, z);
-        let i_up = i_md + self.n_x;
-        let i_dn = i_md - self.n_x;
-        for (cell, (dn, (md, up))) in row.iter_mut().skip(1).take(row_span).zip(
-            lattice.split_at(i_dn).1.windows(3).zip(
-                lattice
-                    .split_at(i_md)
-                    .1
-                    .windows(3)
-                    .zip(lattice.split_at(i_up).1.windows(3)),
-            ),
-        ) {
-            let nbrhood = [
-                up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
-            ];
-            let nbrhood = nbrhood.as_array::<27>().unwrap();
-            *cell = self.cell_model.update_state(rng, p, nbrhood);
+        let Some(mut lattice_window) =
+            RowIterator3D::new(&self.lattice, (1, y, z), self.n_x, self.n_y)
+        else {
+            return;
+        };
+        for cell in row.iter_mut().skip(1).take(row_span) {
+            *cell = self
+                .cell_model
+                .update_state(rng, p, lattice_window.nbrhood());
+            if !lattice_window.next() {
+                break;
+            }
         }
     }
 }

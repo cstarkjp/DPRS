@@ -3,20 +3,27 @@
 // //!
 
 mod cell_model_1d;
-mod cell_model_2d;
-mod cell_model_3d;
 mod dp_model_1d;
-mod dp_model_2d;
-mod dp_model_3d;
 mod lattice_model_1d;
-mod lattice_model_2d;
-mod lattice_model_3d;
 mod run_simulation_1d;
-mod run_simulation_2d;
-mod run_simulation_3d;
 mod simulation_1d;
+
+mod cell_model_2d;
+mod dp_model_2d;
+mod lattice_model_2d;
+mod run_simulation_2d;
 mod simulation_2d;
+
+mod cell_model_3d;
+mod dp_model_3d;
+mod lattice_model_3d;
+mod nbrhood_3d;
+mod run_simulation_3d;
 mod simulation_3d;
+pub use cell_model_3d::CellModel3D;
+pub use lattice_model_3d::LatticeModel3D;
+pub use nbrhood_3d::{Nbrhood3D, RowIterator3D};
+
 use crate::parameters::{DPState, Dimension, Parameters, Processing};
 
 /// Entry point to this module.

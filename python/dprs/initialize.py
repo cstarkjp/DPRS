@@ -44,8 +44,8 @@ unavailable processing continues regardless.
 # Force module to reload
 
 # https://ipython.readthedocs.io/en/stable/api/generated/IPython.core.getipython.html
-# <ipython-input-2-5aa624c5c899>:1:   
-#    DeprecationWarning: `magic(...)` is deprecated since IPython 0.13 
+# <ipython-input-2-5aa624c5c899>:1:
+#    DeprecationWarning: `magic(...)` is deprecated since IPython 0.13
 #    (warning added in 8.1), use run_line_magic(magic_name, parameter_s).
 
 try:

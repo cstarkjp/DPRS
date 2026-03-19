@@ -4,6 +4,8 @@
 
 use rand::Rng;
 
+use super::Nbrhood3D;
+
 /// The trait required for a model to run in 2D.
 ///
 /// This must be [Sync] as the model can be accessed by
@@ -21,5 +23,5 @@ pub trait CellModel3D: Sync {
     fn from_bool_to_state(b: &bool) -> Self::State;
     fn from_state_to_bool(state: &Self::State) -> bool;
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
-    fn update_state<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 27]) -> Self::State;
+    fn update_state<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &Nbrhood3D<Self>) -> Self::State;
 }
