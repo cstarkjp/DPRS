@@ -133,7 +133,7 @@ fn test_sim() {
     let (n_lattices, lattices, tracking) = crate::dp::simulation_3d(
         lm,
         &mut StdRng::seed_from_u64(1),
-        &Processing::Serial,
+        &Processing::Parallel,
         &parameters,
         parameters.n_iterations,
         parameters.sample_rate,
