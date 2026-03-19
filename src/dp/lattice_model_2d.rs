@@ -276,8 +276,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             let nbrhood = [
                 up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
             ];
-            let nbrhood = nbrhood.as_array::<9>().unwrap();
-            *cell = self.cell_model.update_state(rng, p, nbrhood);
+            *cell = self.cell_model.update_state(rng, p, &nbrhood);
         }
     }
 }
