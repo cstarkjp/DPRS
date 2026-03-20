@@ -309,56 +309,57 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     /// TODO: Does it make sense to pass the probability p like this?
     /// Wouldn't it be better to set it on the model struct?
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R], p: f64) {
-        // TODO: 3d update needed
-        let z = 0;
-
+        assert!(
+            rngs.len() >= self.n_z,
+            "Must have at least n_z RNGs supplied to 3D parallel iteration"
+        );
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
-        // Split the lattice into n_y rows each of length n_x and
-        // update these rows in parallel using par_chunks_mut().
-        // Before passing to next_row() to perform the update,
-        // enumerate each row, zip each pair together with one of the RNGs,
-        // and then omit the first and last rows.
-        let n_rows = self.n_y - 2;
+        // Split the lattice into n_z layers each of size n_x*n_y and update
+        // these layers in parallel using par_chunks_mut(). Before passing to
+        // next_layer() to perform the update, enumerate (to get 'z'), zip each
+        // pair together with one of the RNGs, and then omit the first and last
+        // layers.
+        let n_layers = self.n_z - 2;
         updated_lattice
-            .par_chunks_mut(self.n_x)
+            .par_chunks_mut(self.n_x * self.n_y)
             .enumerate()
             .zip(rngs)
             .skip(1)
-            .take(n_rows)
-            .for_each(|((y, row), rng)| self.update_row(rng, p, y, z, row));
+            .take(n_layers)
+            .for_each(|((z, layer), rng)| self.update_layer(rng, p, z, layer));
 
         // Only replace the lattice with the updated version once all the rows
         // have been updated.
         self.lattice = updated_lattice;
     }
 
-    /// Update a row of cells.
+    /// Update a layer of cells (as in a single Z)
     ///
-    /// This zips across the row using windows onto the lattice for the cells
-    /// in the row above, those in this row, and those in the row below.
+    /// This iterates over the layer one row at a time (skipping the first and last rows)
     ///
-    /// By using iterators we can guarantee safe access without (unnecessary)
-    /// range checks.
-    pub fn update_row<R: Rng>(
-        &self,
-        rng: &mut R,
-        p: f64,
-        y: usize,
-        z: usize,
-        row: &mut [C::State],
-    ) {
+    /// Each row is handled with a [RowIterator3D] which efficiently moves along
+    /// a row gathering new neighbors into its neighborhood, dropping older ones
+    /// out.
+    pub fn update_layer<R: Rng>(&self, rng: &mut R, p: f64, z: usize, layer: &mut [C::State]) {
         let row_span = self.n_x - 2;
-        let Some(mut lattice_window) =
-            RowIterator3D::new(&self.lattice, (1, y, z), self.n_x, self.n_y)
-        else {
-            return;
-        };
-        for cell in row.iter_mut().skip(1).take(row_span) {
-            *cell = self
-                .cell_model
-                .update_state(rng, p, lattice_window.nbrhood());
-            if !lattice_window.next() {
-                break;
+        for (y, row) in layer
+            .chunks_exact_mut(self.n_x)
+            .enumerate()
+            .skip(1)
+            .take(self.n_y - 2)
+        {
+            let Some(mut lattice_window) =
+                RowIterator3D::new(&self.lattice, (1, y, z), self.n_x, self.n_y)
+            else {
+                return;
+            };
+            for cell in row.iter_mut().skip(1).take(row_span) {
+                *cell = self
+                    .cell_model
+                    .update_state(rng, p, lattice_window.nbrhood());
+                if !lattice_window.next() {
+                    break;
+                }
             }
         }
     }

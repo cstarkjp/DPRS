@@ -10,10 +10,14 @@ use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 /// Simulate DP model for n_iterations, either serially or in parallel
+///
+/// Returns the number of lattices sampled, the sampled lattices, and tracking
+/// which is a Vec with first entry a vec of iteration numbers and the second
+/// entry a vec of mean density for the respective iteration
 pub fn simulation<C: CellModel3D, R: Rng>(
     lattice_model: LatticeModel3D<C>,
-    rng: &mut R,
-    processing: &Processing,
+    rng: &mut R,             /* Should be removed - serial should create its own */
+    processing: &Processing, /* Should not be a reference */
     params: &Parameters,
     n_iterations: usize,
     sample_rate: usize,
@@ -64,15 +68,15 @@ pub fn simulation<C: CellModel3D, R: Rng>(
             }
         }
         Processing::Parallel => {
-            // Create a vector of RNGs of length n_y,
-            // i.e., of length = number of lattice rows,
+            // Create a vector of RNGs of length n_z,
+            // i.e., of length = number of lattice 'layers',
             // each seeded by params.seed + their index.
             // Each RNG element of this vec will be used,
-            // one per row, to generate coin tosses for DP cell updates.
+            // one per layer, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
             assert!(params.seed > 0);
-            let mut rngs: Vec<StdRng> = (0..params.n_y)
+            let mut rngs: Vec<StdRng> = (0..params.n_z)
                 .into_iter()
                 .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
                 .collect();

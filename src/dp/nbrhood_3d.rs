@@ -107,7 +107,7 @@ pub struct RowIterator3D<'a, C: CellModel3D> {
     /// The 'next' function must move one along the 'X'; to achieve this from a
     /// 'windows' method on a slice that is of n_x by n_y by n_z with Z major, X
     /// minor, this just requires `windows(...)'
-    row_iter: std::slice::Windows<'a, C::State>,
+    row_iter: std::iter::Take<std::slice::Windows<'a, C::State>>,
     /// The most recent window produce by row_iter
     lattice_window: Option<&'a [C::State]>,
     n_x: usize,
@@ -122,9 +122,25 @@ impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
         n_x: usize,
         n_y: usize,
     ) -> Option<Self> {
+        assert!(xyz.0 > 0, "X must be in range 0..n_x-2");
+        assert!(xyz.1 > 0, "Y must be in range 0..n_y-2");
+        assert!(xyz.2 > 0, "Z must be in range 0..n_z-2");
+
         let window_size = 1 + 2 * (1 + n_x + n_x * n_y);
         let window_start = (xyz.0 - 1) + (xyz.1 - 1) * n_x + (xyz.2 - 1) * (n_x * n_y);
-        let mut row_iter = lattice.split_at(window_start).1.windows(window_size);
+        assert!(
+            window_start + window_size <= lattice.len(),
+            "XYZ must be in the correct range, so the window does not extend beyond the lattice"
+        );
+        // eprintln!(
+        //            "Window at {xyz:?} given n_x:{n_x} n_y:{n_y}:{} is @{window_start}+{window_size}",
+        //            lattice.len()
+        //        );
+        let mut row_iter = lattice
+            .split_at(window_start)
+            .1
+            .windows(window_size)
+            .take(n_x - 1 - xyz.0);
 
         if let Some(lattice_window) = row_iter.next() {
             let mut nbrhood = Nbrhood3D::default();

@@ -5,29 +5,40 @@ use pyo3::{FromPyObject, pyclass};
 use std::convert::From;
 
 /// Lattice dimension.
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Dimension {
+    #[default]
     D1,
     D2,
     D3,
 }
 
 /// Edge topology.
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Topology {
+    /// No copying etc is done from one edge to another
     Unspecified,
+    /// No copying etc is done from one edge to another
+    #[default]
     Open,
+    /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
     Periodic,
 }
 
-/// Edge boundary conditions.
-#[derive(PartialEq, Debug, Clone)]
+/// Edge boundary conditions
+///
+/// This is in essence what is around the outside of the lattice
+#[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum BoundaryCondition {
     Unspecified,
+    /// The outside of the lattice could be anything
+    #[default]
     Floating,
+    /// The boundary is pinned to a fixed value, so 0 and/or n-1 are written to
+    /// the specified value
     Pinned,
     Extended,   // NYI
     Reflecting, // NYI
@@ -73,15 +84,16 @@ fn guarantee_dpstate_is_u8() {
 }
 
 /// Choice of processing type: will become a Py-passable parameter.
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Processing {
+    #[default]
     Serial,
     Parallel,
 }
 
 /// Model parameter bundle derived from Python Parameters class instance.
-#[derive(FromPyObject, Debug, Clone)]
+#[derive(FromPyObject, Debug, Clone, Default)]
 pub struct Parameters {
     pub dim: Dimension,
     pub n_x: usize,
