@@ -22,7 +22,7 @@ For now, only DP has been implemented.  A series of related models are in develo
 
 DP model simulations are demonstrated in the following Jupyter notebooks:
 
-- [**1d DP** for a small lattice, to visualize $t$ evolution](notebooks/dp_1d_quick.ipynb)
+- [**1d DP** for a small lattice, to visualize t evolution](notebooks/dp_1d_quick.ipynb)
 
 - [**1d DP** for a large lattice and large number of iterations, to validate t-decay of mean ρ(t)](notebooks/dp_1d.ipynb)
 
