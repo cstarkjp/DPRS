@@ -9,8 +9,6 @@ name: PyPI
 #   release:
 #     types: [published]
 
-# Turn CI off for now (including for PRs!) for invoking push to 
-# master branch, which will never exist
 on:
   push:
     branches:
