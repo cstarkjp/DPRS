@@ -38,8 +38,8 @@ documentation = "https://cstarkjp.github.io/DPRS"
 python-source = "python"
 module-name = "dprs.sim"
 
-[tool.uv]
-required-version = "0.10.11"
+# [tool.uv]
+# required-version = "0.10.11"
 
 ## Development Status :: 2 - Pre-Alpha 
 ## Development Status :: 3 - Alpha
