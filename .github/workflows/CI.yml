@@ -12,9 +12,9 @@ on:
     branches:
       - testpypi
       # - master
-  #   tags:
-  #     - '*'
-  # pull_request:
+    tags:
+      - '*'
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -124,8 +124,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: macos-15-intel
-            target: x86_64
+          # - runner: macos-15-intel
+          #   target: x86_64
           - runner: macos-latest
             target: aarch64
     steps:
