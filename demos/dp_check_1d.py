@@ -12,7 +12,7 @@ class Parameters:
     p0: float = 0.99
     seed: int = 1
     n_iterations: int = 1_000
-    sample_rate: int  = 1_000
+    sample_rate: int  = 1_00
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Unspecified
     axis_topology_z = sim.Topology.Unspecified
