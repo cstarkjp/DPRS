@@ -10,8 +10,8 @@ name: CI
 on:
   push:
     branches:
-      - testpypi
-      # - master
+      # - testpypi
+      - master
     tags:
       - '*'
   pull_request:
