@@ -88,4 +88,4 @@ Put at least the following into `demo.py`:
 
 The `DPRS` folder tree should now look like this, more or less:
 
-![folder tree](tree.jpg)
+![folder tree](images/tree.jpg)
