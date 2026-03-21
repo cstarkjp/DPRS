@@ -895,11 +895,10 @@
 <h1 id="dprs"><a href="https://pypi.org/project/dprs/"><strong>DPRS</strong></a><a class="headerlink" href="#dprs" title="Permanent link">¶</a></h1>
 <h3 id="directed-percolation-type-models-in-rust"><em>Directed percolation-type models in Rust</em><a class="headerlink" href="#directed-percolation-type-models-in-rust" title="Permanent link">¶</a></h3>
 <!-- [![](https://github.com/cstarkjp/DPRS/actions/workflows/publish-pypi.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/publish-pypi.yml)
-[![](https://github.com/cstarkjp/DPRS/actions/workflows/publish-testpypi.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/publish-testpypi.yml)
-[![](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml)
-[![](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml)
-[![](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml) -->
-
+[![](https://github.com/cstarkjp/DPRS/actions/workflows/publish-testpypi.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/publish-testpypi.yml) -->
+<p><a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml/badge.svg?style=cache-control=no-cache"></a>
+<a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml/badge.svg?style=cache-control=no-cache"></a>
+<a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache"></a></p>
 <p>In this project, we implement directed percolation (DP) and similar lattice  models in Rust. The <a href="https://github.com/cstarkjp/DPRS/tree/main/src">Rust code</a> is accessed via a <a href="https://github.com/cstarkjp/DPRS/tree/main/src/sim.rs">Python wrapper</a> to make experimentation as convenient as possible. Jupyter notebooks are used to implement the Python-wrapped simulations. </p>
 <p><figure id="_figure-1"><img alt="1d DP evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)" src="images/lattice_p0p538910_s5_nx300.png" width="600"><figcaption>Figure 1: 1d DP evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)</figcaption></figure></p>
 <p>We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). </p>
