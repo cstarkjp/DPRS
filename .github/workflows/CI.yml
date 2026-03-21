@@ -9,12 +9,12 @@ name: CI
 # master branch, which will never exist
 on:
   push:
-    # branches:
-    #   # - testpypi
+    branches:
+      - testpypi
     #   - master
     tags:
       - '*'
-  pull_request:
+  # pull_request:
   workflow_dispatch:
 
 permissions:
