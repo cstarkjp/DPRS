@@ -10,12 +10,12 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - testpypi
       # - master
   #   tags:
   #     - '*'
   # pull_request:
-  # workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
   contents: read
