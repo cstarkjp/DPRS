@@ -16,7 +16,7 @@ pub fn run_simulation(
     params: &Parameters,
     processing: &Processing,
 ) -> (f64, usize, Vec<Vec<DPState>>, Vec<Vec<f64>>) {
-    let dp = DPModel1D::default();
+    let dp_cell_model = DPModel1D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
         true => 1,
@@ -25,7 +25,7 @@ pub fn run_simulation(
     let pruned_n_x = params.n_x;
     let n_x: usize = pruned_n_x + pad * 2;
     let mut lattice_model_1d: LatticeModel1D<DPModel1D> =
-        LatticeModel1D::new(dp, n_x, (DPState::Empty, DPState::Empty));
+        LatticeModel1D::new(dp_cell_model, n_x, (DPState::Empty, DPState::Empty));
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
     lattice_model_1d.randomized_lattice(&mut rng, params.p0);

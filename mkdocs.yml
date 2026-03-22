@@ -112,8 +112,6 @@ extra:
 nav:
     - Home: index.md
     # - Navigation: navigation.md
-    - Some DP demos: demos-reference.md
-    - How to wrap Rust in Python: HOWTO.md
     - Jupyter notebooks: 
         - jupyter-notebooks/index.md
     - Python demos: 
@@ -122,6 +120,7 @@ nav:
         - python-modules/index.md
         - python-modules/viz-reference.md
         - python-modules/utils-reference.md
+    - Wrapping Rust with Python: HOWTO.md
     # - References: references.md
 
 # https://analog-garage.github.io/mkdocstrings-python-xref/latest/

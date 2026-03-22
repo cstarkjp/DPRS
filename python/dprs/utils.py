@@ -53,10 +53,13 @@ class DP(Enum):
         elif self is DP.OCCUPIED:
             return True
 
-def make_title(parameters: Parameters, i_slice: int|None = None): 
+def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
     """Generate a string summarizing the sim for entitling plots."""
     return (
-        rf"$p={parameters.p:0.6f}$"
+        (
+            rf"$p={parameters.p:0.7f}$" if parameters.dim==sim.Dimension.D3
+            else rf"$p={parameters.p:0.6f}$"
+        )
         + rf"   $s={parameters.seed}$"
         + rf"   $n_x={parameters.n_x}$"
         + (
@@ -67,15 +70,21 @@ def make_title(parameters: Parameters, i_slice: int|None = None):
             rf"   $n_z={parameters.n_z}$" if parameters.n_z>1
            else ""
         )
-        + (rf"   $i={i_slice*parameters.sample_rate:0{5}}$" 
+        + ("\n" + rf"$i={i_slice*parameters.sample_rate:0{5}}$" 
            if i_slice is not None else "")
+        + (rf"   $z={z_slice}$" 
+           if z_slice is not None else "")
     )
 
 def make_name(parameters: Parameters, variable: str, i_slice: int|None = None): 
     """Generate a string summarizing the sim for file naming."""
     return (
           f"{variable}"
-        + f"_p{parameters.p:0.6f}".replace(".", "p")
+        + (
+            f"_p{parameters.p:0.7f}".replace(".", "p") 
+                if parameters.dim==sim.Dimension.D3
+            else f"_p{parameters.p:0.6f}".replace(".", "p")
+        )
         + f"_s{parameters.seed}"
         + f"_nx{parameters.n_x}"
         + (

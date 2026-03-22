@@ -16,7 +16,7 @@ pub fn run_simulation(
     params: &Parameters,
     processing: &Processing,
 ) -> (f64, usize, Vec<Vec<DPState>>, Vec<Vec<f64>>) {
-    let dp = DPModel3D::default();
+    let dp_cell_model = DPModel3D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
         true => 1,
@@ -29,7 +29,7 @@ pub fn run_simulation(
     let n_y: usize = pruned_n_y + pad * 2;
     let n_z: usize = pruned_n_z + pad * 2;
     let mut lattice_model_3d: LatticeModel3D<DPModel3D> = LatticeModel3D::new(
-        dp,
+        dp_cell_model,
         n_x,
         n_y,
         n_z,
@@ -73,8 +73,20 @@ pub fn run_simulation(
             .into_iter()
             .map(|lattice| {
                 let mut pruned_lattice = vec![];
-                for c in lattice.chunks(n_x).skip(pad).take(pruned_n_y) {
-                    pruned_lattice.extend_from_slice(&c[pad..(pad + pruned_n_x)]);
+                // Break lattice into layers (chunks of length n_x*n_y),
+                //   - skip first chunk = "face" buffer
+                //   - take pruned_n_z chunks = all non-padded layers
+                //   - break lattice into rows (chunks of length n_x),
+                //     iterating over each reference:
+                //       - skip the initial edge buffer (pad wide)
+                //       - take all but the final edge puffer (pruned_n_y cells)
+                //          - iterate over these refs to append to pruned_lattice
+                //            using extend_from_slice() to do so
+                let n_cells_per_layer = n_x * n_y;
+                for layer in lattice.chunks(n_cells_per_layer).skip(pad).take(pruned_n_z) {
+                    for cells in layer.chunks(n_x).skip(pad).take(pruned_n_y) {
+                        pruned_lattice.extend_from_slice(&cells[pad..(pad + pruned_n_x)]);
+                    }
                 }
                 pruned_lattice
             })

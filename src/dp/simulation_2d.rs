@@ -49,14 +49,12 @@ pub fn simulation<C: CellModel2D, R: Rng>(
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
                 lm.next_iteration_serial(rng, params.p);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
                 if i % sample_rate == 0 {
                     lattices.push(lm.lattice().clone());
                 };
+                lm.apply_edge_topology(&params);
+                lm.apply_boundary_conditions(&params);
                 let t = i as f64;
                 tracking[0].push(t);
                 let rho_mean = lm.mean();
@@ -76,8 +74,8 @@ pub fn simulation<C: CellModel2D, R: Rng>(
                 .into_iter()
                 .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
                 .collect();
-            lm.apply_edge_topology(&params);
-            lm.apply_boundary_conditions(&params);
+            // lm.apply_edge_topology(&params);
+            // lm.apply_boundary_conditions(&params);
             for i in 1..(n_iterations + 1) {
                 lm.next_iteration_parallel(&mut rngs, params.p);
                 lm.apply_edge_topology(&params);

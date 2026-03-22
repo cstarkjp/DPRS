@@ -135,6 +135,7 @@ class Viz:
             i_lattice: int | None = 0, 
             x: int | None=None, 
             y: int | None=None,
+            z: int | None=None,
             fig_size: tuple[float,float]=(6,4,),
         ) -> tuple[Figure, Any]:
         """
@@ -145,12 +146,17 @@ class Viz:
         color_map = ListedColormap(((0.9, 0.9, 0.9,), (0.65, 0, 0.65),))
         x = (lattices.shape[0] if x is None else min(x, lattices.shape[0]))
         y = (lattices.shape[1] if y is None else min(y, lattices.shape[1]))
+        z = (lattices.shape[2] if z is None else min(z, lattices.shape[2]))
+        if p.dim == sim.Dimension.D3:
+            lattice_slice = lattices[0:x, 0:y, z, i_lattice,].T
+        else:
+            lattice_slice = lattices[0:x, 0:y, i_lattice,].T
         plt.imshow(
-            lattices[0:x, 0:y, i_lattice,].T, 
+            lattice_slice, 
             vmin=0, vmax=1,
             cmap=color_map, 
             origin="lower",
-            extent=(0, x, y, 0),
+            extent=(0, x, 0, y),
         )
         color_bar = plt.colorbar(
             ticks=(0.25, 0.75,), 
