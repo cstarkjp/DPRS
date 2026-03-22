@@ -49,8 +49,6 @@ pub fn simulation<C: CellModel1D, R: Rng>(
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
                 lm.next_iteration_serial(rng, params.p);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
@@ -77,8 +75,6 @@ pub fn simulation<C: CellModel1D, R: Rng>(
                 .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
                 lm.next_iteration_parallel(&mut rngs, params.p);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);

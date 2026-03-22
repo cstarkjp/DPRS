@@ -130,7 +130,7 @@ fn test_sim() {
     for (i, l) in lm.lattice_mut().iter_mut().enumerate() {
         *l = value(&parameters, i, None, false);
     }
-    let (n_lattices, lattices, tracking) = crate::dp::simulation_3d(
+    let (_, lattices, _) = crate::dp::simulation_3d(
         lm,
         &mut StdRng::seed_from_u64(1),
         &Processing::Parallel,
