@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::dp::{cell_model_3d, lattice_model_3d};
+use crate::dk::{cell_model_3d, lattice_model_3d};
 use crate::parameters::{Parameters, Processing};
 use cell_model_3d::CellModel3D;
 // use indicatif::ProgressBar;
@@ -11,7 +11,7 @@ use lattice_model_3d::LatticeModel3D;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
-/// Simulate DP model for n_iterations, either serially or in parallel
+/// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel
 ///
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
@@ -51,7 +51,7 @@ pub fn simulation<C: CellModel3D, R: Rng>(
     // We aren't going to worry about the lattice type being Cell
     //  - instead we're going to leave it up to pyo3 to convert
     // the lattice vector into a Python list as it thinks fit.
-    // This happens (magically) on exiting sim_dp() back to Python.
+    // This happens (magically) on exiting sim_dk() back to Python.
 
     // Evolve the lattice for n_iterations
     //

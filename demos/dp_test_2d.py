@@ -29,4 +29,4 @@ class Parameters:
     n_threads: int = 16
 parameters = Parameters()
 
-_ = sim.dp(parameters)
+_ = sim.dk(parameters)

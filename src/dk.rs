@@ -29,7 +29,7 @@ pub use simulation_3d::simulation as simulation_3d;
 use crate::parameters::{Dimension, DualState, Parameters, Processing};
 
 /// Entry point to this module.
-pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
+pub fn sim_dk(params: Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
     params.print();
     println!();
     let (t_run_time, n_lattices, lattices, tracking) = match (&params.processing, &params.dim) {

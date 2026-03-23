@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::dp::sim_dp;
+use crate::dk::sim_dk;
 use pyo3::prelude::*;
 
 /// Python wrapping around DP lattice models.
@@ -22,8 +22,8 @@ mod sim {
     use crate::parameters::Topology;
 
     #[pyfunction]
-    fn dp(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        let (n_lattices, lattices, tracking, t_run_time) = sim_dp(params);
+    fn dk(params: Parameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
+        let (n_lattices, lattices, tracking, t_run_time) = sim_dk(params);
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {

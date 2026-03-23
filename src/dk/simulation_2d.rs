@@ -2,22 +2,22 @@
 // //!
 // //!
 
-use crate::dp::{cell_model_1d, lattice_model_1d};
+use crate::dk::{cell_model_2d, lattice_model_2d};
 use crate::parameters::{Parameters, Processing};
-use cell_model_1d::CellModel1D;
-use lattice_model_1d::LatticeModel1D;
+use cell_model_2d::CellModel2D;
+use lattice_model_2d::LatticeModel2D;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
-/// Simulate DP model for n_iterations, either serially or in parallel
-pub fn simulation<C: CellModel1D, R: Rng>(
-    lattice_model: LatticeModel1D<C>,
+/// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel
+pub fn simulation<C: CellModel2D, R: Rng>(
+    lattice_model: LatticeModel2D<C>,
     rng: &mut R,
     processing: &Processing,
     params: &Parameters,
     n_iterations: usize,
     sample_period: usize,
-) -> (usize, Vec<Vec<<C as CellModel1D>::State>>, Vec<Vec<f64>>) {
+) -> (usize, Vec<Vec<<C as CellModel2D>::State>>, Vec<Vec<f64>>) {
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
     lm.apply_edge_topology(&params);
@@ -42,7 +42,7 @@ pub fn simulation<C: CellModel1D, R: Rng>(
     // We aren't going to worry about the lattice type being Cell
     //  - instead we're going to leave it up to pyo3 to convert
     // the lattice vector into a Python list as it thinks fit.
-    // This happens (magically) on exiting sim_dp() back to Python.
+    // This happens (magically) on exiting sim_dk() back to Python.
 
     // Evolve the lattice for n_iterations
     //
@@ -53,11 +53,11 @@ pub fn simulation<C: CellModel1D, R: Rng>(
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
                 lm.next_iteration_serial(rng, params.p);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
+                lm.apply_edge_topology(&params);
+                lm.apply_boundary_conditions(&params);
                 let t = i as f64;
                 tracking[0].push(t);
                 let rho_mean = lm.mean();
@@ -77,6 +77,8 @@ pub fn simulation<C: CellModel1D, R: Rng>(
                 .into_iter()
                 .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
                 .collect();
+            // lm.apply_edge_topology(&params);
+            // lm.apply_boundary_conditions(&params);
             for i in 1..(n_iterations + 1) {
                 lm.next_iteration_parallel(&mut rngs, params.p);
                 lm.apply_edge_topology(&params);

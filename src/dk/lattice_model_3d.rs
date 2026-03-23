@@ -3,7 +3,7 @@
 // //!
 
 use crate::{
-    dp::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
+    dk::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
     parameters::Parameters,
 };
 use rand::Rng;

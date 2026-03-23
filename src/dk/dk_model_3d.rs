@@ -2,15 +2,18 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_1d::CellModel1D, parameters::DualState};
+use crate::{
+    dk::{Nbrhood3D, cell_model_3d::CellModel3D},
+    parameters::DualState,
+};
 use rand::{Rng, RngExt};
 
 /// DKModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DKModel1D();
+pub struct DKModel3D();
 
-// Implement CellModel1D trait for DKModel.
-impl CellModel1D for DKModel1D {
+// Implement CellModel3D trait for DKModel.
+impl CellModel3D for DKModel3D {
     type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
@@ -36,12 +39,12 @@ impl CellModel1D for DKModel1D {
 
     /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
-    ///  (2) if one of the 3 neighborhood + here cells were previously occupied
+    ///  (2) if one of the 9 neighborhood + here cells were previously occupied
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         p: f64,
-        nbrhood: &[Self::State; 3],
+        nbrhood: &Nbrhood3D<Self>,
     ) -> Self::State {
         let is_any_nbr_occupied = nbrhood.iter().any(Self::from_state_to_bool);
         let do_survive = rng.random_bool(p);

@@ -84,7 +84,7 @@ Put at least the following into `demo.py`:
     n_y = n_x
     n_iterations = 200
 
-    sim.dp(n_x, n_y, n_iterations)
+    sim.dk(n_x, n_y, n_iterations)
 
 The `DPRS` folder tree should now look like this, more or less:
 

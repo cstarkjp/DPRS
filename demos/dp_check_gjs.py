@@ -45,5 +45,5 @@ parameters = Parameters()
 
 print(f"\n{sim}\n")
 # help(sim)
-(n_lattices, raw_lattices, raw_tracking, t_run_time) = sim.dp(parameters)
+(n_lattices, raw_lattices, raw_tracking, t_run_time) = sim.dk(parameters)
 print(f"Total number of lattice time slices = {n_lattices}\n")

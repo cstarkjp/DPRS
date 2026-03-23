@@ -42,4 +42,4 @@ class Parameters:
 
 parameters = Parameters()
 
-_ = sim.dp(parameters)
+_ = sim.dk(parameters)
