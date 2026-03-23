@@ -24,10 +24,11 @@ class Parameters():
     n_y: int
     n_z: int
     p_0: float
-    p_initial: float
-    seed: int
     n_iterations: int
     sample_period: int
+    initial_condition: sim.InitialCondition.Randomized
+    p_initial: float
+    random_seed: int
     axis_topology_x: sim.Topology
     axis_topology_y: sim.Topology
     axis_topology_z: sim.Topology
@@ -61,7 +62,7 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
             rf"$p={parameters.p_0:0.7f}$" if parameters.dim==sim.Dimension.D3
             else rf"$p={parameters.p_0:0.6f}$"
         )
-        + rf"   $s={parameters.seed}$"
+        + rf"   $s={parameters.random_seed}$"
         + (
             rf"   $n_x={parameters.n_x}$" if parameters.n_x>=10000
             else rf"   $n_x={parameters.n_x}$"
@@ -89,7 +90,7 @@ def make_name(parameters: Parameters, variable: str, i_slice: int|None = None):
                 if parameters.dim==sim.Dimension.D3
             else f"_p{parameters.p_0:0.6f}".replace(".", "p")
         )
-        + f"_s{parameters.seed}"
+        + f"_s{parameters.random_seed}"
         + f"_nx{parameters.n_x}"
         + (
             f"_ny{parameters.n_y}" if parameters.n_y>1

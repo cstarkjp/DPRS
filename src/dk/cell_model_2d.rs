@@ -18,6 +18,9 @@ pub trait CellModel2D: Sync {
     /// the array of cells is accessed by many threads at once.
     ///
     type State: Default + std::fmt::Debug + Copy + Send + Sync;
+    #[allow(dead_code)]
+    fn empty_state() -> Self::State;
+    fn occupied_state() -> Self::State;
     fn from_bool_to_state(b: &bool) -> Self::State;
     fn from_state_to_bool(state: &Self::State) -> bool;
     fn from_state_to_usize(state: &Self::State) -> usize;

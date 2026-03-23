@@ -12,6 +12,14 @@ struct Model3D();
 
 impl CellModel3D for Model3D {
     type State = isize;
+
+    fn empty_state() -> Self::State {
+        0
+    }
+    fn occupied_state() -> Self::State {
+        1
+    }
+
     fn from_bool_to_state(b: &bool) -> Self::State {
         *b as isize
     }
@@ -113,7 +121,7 @@ fn test_sim() {
     parameters.n_z = 20;
     parameters.n_iterations = 40;
     parameters.sample_period = 3;
-    parameters.seed = 1;
+    parameters.random_seed = 1;
     parameters.axis_topology_x = Topology::Open;
     parameters.axis_topology_y = Topology::Open;
     parameters.axis_topology_z = Topology::Open;

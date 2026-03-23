@@ -71,10 +71,17 @@ impl<C: CellModel1D> LatticeModel1D<C> {
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
-    pub fn randomize_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
+    pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
         self.lattice = (0..self.n_cells())
             .map(|_| self.cell_model.randomize_state(rng, p))
             .collect();
+    }
+
+    /// Seed the simulation with a central patch.
+    pub fn create_seeded_lattice(&mut self) {
+        self.lattice = (0..self.n_cells()).map(|_| C::State::default()).collect();
+        let i = self.i_cell(self.n_cells() / 2);
+        self.lattice[i] = C::occupied_state();
     }
 
     /// Enforce edge topology specifications.

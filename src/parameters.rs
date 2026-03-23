@@ -38,6 +38,17 @@ pub enum Topology {
     Periodic,
 }
 
+/// Initial lattice condition.
+/// TODO: implement CentralSeed, meaning only a small central portion of 
+/// the lattice is assigned to be occupied at t=0.
+#[derive(PartialEq, Debug, Clone, Default)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum InitialCondition {
+    #[default]
+    Randomized,
+    CentralSeed,
+}
+
 /// Edge boundary conditions
 ///
 /// This is in essence what is around the outside of the lattice
@@ -53,6 +64,15 @@ pub enum BoundaryCondition {
     Pinned,
     Extended,   // NYI
     Reflecting, // NYI
+}
+
+/// Choice of processing type: will become a Py-passable parameter.
+#[derive(PartialEq, Debug, Clone, Default)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum Processing {
+    #[default]
+    Serial,
+    Parallel,
 }
 
 /// Cell state behavior for DP.
@@ -102,15 +122,6 @@ fn guarantee_dpstate_is_u8() {
     );
 }
 
-/// Choice of processing type: will become a Py-passable parameter.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum Processing {
-    #[default]
-    Serial,
-    Parallel,
-}
-
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
 pub struct Parameters {
@@ -120,10 +131,11 @@ pub struct Parameters {
     pub n_y: usize,
     pub n_z: usize,
     pub p_0: f64,
-    pub p_initial: f64,
-    pub seed: usize,
     pub n_iterations: usize,
     pub sample_period: usize,
+    pub initial_condition: InitialCondition,
+    pub p_initial: f64,
+    pub random_seed: usize,
     pub axis_topology_x: Topology,
     pub axis_topology_y: Topology,
     pub axis_topology_z: Topology,
@@ -224,10 +236,11 @@ impl Parameters {
         println!("Dimension:     {:?}", self.dim);
         println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
         println!("Probability:   {}", self.p_0);
-        println!("Initial prob.: {}", self.p_initial);
-        println!("Random seed:   {}", self.seed);
         println!("Iterations:    {}", self.n_iterations);
         println!("Sample period: {}", self.sample_period);
+        println!("Initial cond.: {:?}", self.initial_condition);
+        println!("Initial prob.: {}", self.p_initial);
+        println!("Random seed:   {}", self.random_seed);
         println!("Topology x:    {:?}", self.axis_topology_x);
         println!("Topology y:    {:?}", self.axis_topology_y);
         println!("Topology z:    {:?}", self.axis_topology_z);

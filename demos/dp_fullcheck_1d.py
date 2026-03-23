@@ -16,10 +16,11 @@ class Parameters:
     n_y: int = 1
     n_z: int = 1
     p_0: float = 0.538910
-    p_initial: float = 0.99
-    seed: int = 5
     n_iterations: int = 1000
     sample_period: int  = 0
+    initial_condition = sim.InitialCondition.Randomized
+    p_initial: float = 0.99
+    random_seed: int = 5
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Unspecified
     axis_topology_z = sim.Topology.Unspecified

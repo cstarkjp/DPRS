@@ -13,6 +13,14 @@ pub struct GrowthModel2D();
 impl CellModel2D for GrowthModel2D {
     type State = DualState;
 
+    fn empty_state() -> Self::State {
+        DualState::Occupied
+    }
+
+    fn occupied_state() -> Self::State {
+        DualState::Occupied
+    }
+
     fn from_bool_to_state(b: &bool) -> Self::State {
         match b {
             false => DualState::Empty,
@@ -86,7 +94,7 @@ impl CellModel2D for GrowthModel2D {
 
 //     let dp = GrowthModel::default();
 //     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
-//     lm1.randomize_lattice(&mut rng(), 0.5);
+//     lm1.create_randomized_lattice(&mut rng(), 0.5);
 //     let mut lm2 = lm1.clone();
 
 //     for _ in 0..100 {

@@ -3,7 +3,7 @@
 // //!
 
 use crate::dk::{cell_model_2d, lattice_model_2d};
-use crate::parameters::{Parameters, Processing};
+use crate::parameters::{InitialCondition, Parameters, Processing};
 use cell_model_2d::CellModel2D;
 use lattice_model_2d::LatticeModel2D;
 use rand::SeedableRng;
@@ -23,8 +23,16 @@ pub fn simulation<C: CellModel2D>(
 ) -> (usize, Vec<Vec<<C as CellModel2D>::State>>, Vec<Vec<f64>>) {
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
-    let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lm.randomize_lattice(&mut rng, params.p_initial);
+    let mut rng = StdRng::seed_from_u64(params.random_seed as u64);
+    match params.initial_condition {
+        InitialCondition::Randomized => {
+            lm.create_randomized_lattice(&mut rng, params.p_initial);
+        }
+        InitialCondition::CentralSeed => {
+            // TODO
+            lm.create_seeded_lattice();
+        }
+    }
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 
@@ -72,15 +80,15 @@ pub fn simulation<C: CellModel2D>(
         Processing::Parallel => {
             // Create a vector of RNGs of length n_y,
             // i.e., of length = number of lattice rows,
-            // each seeded by params.seed + their index.
+            // each seeded by params.random_seed + their index.
             // Each RNG element of this vec will be used,
             // one per row, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(params.seed > 0);
+            assert!(params.random_seed > 0);
             let mut rngs: Vec<StdRng> = (0..params.n_y)
                 .into_iter()
-                .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
+                .map(|s| StdRng::seed_from_u64((params.random_seed * (s + 1)) as u64))
                 .collect();
             // lm.apply_edge_topology(&params);
             // lm.apply_boundary_conditions(&params);

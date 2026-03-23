@@ -3,7 +3,7 @@
 // //!
 
 use crate::dk::{cell_model_3d, lattice_model_3d};
-use crate::parameters::{Parameters, Processing};
+use crate::parameters::{InitialCondition, Parameters, Processing};
 use cell_model_3d::CellModel3D;
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
@@ -26,8 +26,16 @@ pub fn simulation<C: CellModel3D>(
     // progress_bar.update(1)?;
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
-    let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lm.randomize_lattice(&mut rng, params.p_initial);
+    let mut rng = StdRng::seed_from_u64(params.random_seed as u64);
+    match params.initial_condition {
+        InitialCondition::Randomized => {
+            lm.create_randomized_lattice(&mut rng, params.p_initial);
+        }
+        InitialCondition::CentralSeed => {
+            // TODO
+            lm.create_seeded_lattice();
+        }
+    }
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 
@@ -76,16 +84,16 @@ pub fn simulation<C: CellModel3D>(
         Processing::Parallel => {
             // Create a vector of RNGs of length n_z,
             // i.e., of length = number of lattice 'layers',
-            // each seeded by params.seed + their index.
+            // each seeded by params.random_seed + their index.
             // Each RNG element of this vec will be used,
             // one per layer, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(params.seed > 0);
+            assert!(params.random_seed > 0);
             // Allow for edge padding by adding two here
             let mut rngs: Vec<StdRng> = (0..params.n_z + 2)
                 .into_iter()
-                .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
+                .map(|s| StdRng::seed_from_u64((params.random_seed * (s + 1)) as u64))
                 .collect();
             // let progress_bar = ProgressBar::new((n_iterations + 1).try_into().unwrap());
             for i in 1..(n_iterations + 1) {

@@ -13,6 +13,14 @@ pub struct GrowthModel1D();
 impl CellModel1D for GrowthModel1D {
     type State = DualState;
 
+    fn empty_state() -> Self::State {
+        DualState::Occupied
+    }
+
+    fn occupied_state() -> Self::State {
+        DualState::Occupied
+    }
+
     fn from_bool_to_state(b: &bool) -> Self::State {
         match b {
             false => DualState::Empty,
@@ -55,7 +63,7 @@ impl CellModel1D for GrowthModel1D {
             .sum();
         let has_nearest_neighbor = Self::from_state_to_bool(&nbrhood[1]);
         let p1 = p;
-        let p2 = p/1.4142135623730951;
+        let p2 = p / 1.4142135623730951;
         let do_survive = (n_neighbors > 0 && rng.random_bool(p2))
             | (has_nearest_neighbor && rng.random_bool(p1));
         // let do_survive = (n_neighbors > 0 && rng.random_bool(p1))
