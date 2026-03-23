@@ -15,12 +15,13 @@ We anticipate boosting performance further with GPU-compute using [`wgpu`](https
 
 See [here](docs/HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python.
 
-## Demos
-
-For now, only a simplified form of Domany-Kinzel has been implemented.  A series of related models are in development.
-
 
 ![2d DP-class, simplified Domany-Kinzel t-decay of mean order parameter mean ρ(t), for p_c ~ p=0.163145, n_x=30000, n_y=30000, t=50000](https://raw.githubusercontent.com/cstarkjp/DPRS/main/docs/images/ρmean_p0p163145_s1_nx30000_ny30000.png)
+
+## Demos
+
+<!-- For now, only a simplified form of Domany-Kinzel has been implemented.  A series of related models are in development. -->
+
 
 ### Domany-Kinzel
 
