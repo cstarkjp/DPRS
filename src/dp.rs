@@ -3,19 +3,19 @@
 // //!
 
 mod cell_model_1d;
-mod dp_model_1d;
+mod dk_model_1d;
 mod lattice_model_1d;
 mod run_simulation_1d;
 mod simulation_1d;
 
 mod cell_model_2d;
-mod dp_model_2d;
+mod dk_model_2d;
 mod lattice_model_2d;
 mod run_simulation_2d;
 mod simulation_2d;
 
 mod cell_model_3d;
-mod dp_model_3d;
+mod dk_model_3d;
 mod lattice_model_3d;
 mod nbrhood_3d;
 mod run_simulation_3d;

@@ -7,7 +7,7 @@
 
 try:
     from dprs import sim
-    from dprs.utils import DP
+    from dprs.utils import DUAL
 except Exception:
     import pathlib
     import sys

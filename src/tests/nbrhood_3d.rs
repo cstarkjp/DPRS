@@ -20,7 +20,7 @@ impl CellModel3D for Model3D {
     fn randomize_state<R: rand::Rng>(&self, _rng: &mut R, _p: f64) -> Self::State {
         0
     }
-    fn update_state<R: rand::Rng>(
+    fn simplistic_dk_update_state<R: rand::Rng>(
         &self,
         _rng: &mut R,
         _p: f64,

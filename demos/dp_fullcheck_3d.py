@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 from dprs import sim
 from dprs.viz import Viz
-from dprs.utils import make_name, make_title, DP
+from dprs.utils import make_name, make_title, DUAL
 
 print(f"\n{sim}")
 

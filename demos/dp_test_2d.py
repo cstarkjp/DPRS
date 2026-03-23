@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dprs import sim
-from dprs.utils import DP
+from dprs.utils import DUAL
 
 print(f"\n{sim}")
 

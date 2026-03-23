@@ -128,7 +128,8 @@ impl<C: CellModel1D> LatticeModel1D<C> {
                 let (is_in_bounds, x) = self.is_in_bounds(i_cell);
                 let updated_cell = if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x);
-                    self.cell_model.update_state(&mut rng, p, &nbrhood)
+                    self.cell_model
+                        .simplistic_dk_update_state(&mut rng, p, &nbrhood)
                 } else {
                     C::State::default()
                 };
@@ -197,7 +198,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         {
             let nbrhood = [md[0], md[1], md[2]];
             let nbrhood = nbrhood.as_array::<3>().unwrap();
-            *cell = self.cell_model.update_state(rng, p, nbrhood);
+            *cell = self.cell_model.simplistic_dk_update_state(rng, p, nbrhood);
         }
     }
 }

@@ -21,5 +21,10 @@ pub trait CellModel1D: Sync {
     fn from_bool_to_state(b: &bool) -> Self::State;
     fn from_state_to_bool(state: &Self::State) -> bool;
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
-    fn update_state<R: Rng>(&self, rng: &mut R, p: f64, nbrhood: &[Self::State; 3]) -> Self::State;
+    fn simplistic_dk_update_state<R: Rng>(
+        &self,
+        rng: &mut R,
+        p: f64,
+        nbrhood: &[Self::State; 3],
+    ) -> Self::State;
 }

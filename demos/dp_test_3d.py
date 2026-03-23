@@ -11,7 +11,7 @@ try:
     import sim #type: ignore
 except Exception:
     from dprs import sim
-    from dprs.utils import DP
+    from dprs.utils import DUAL
 
 print(f"\n{sim}")
 

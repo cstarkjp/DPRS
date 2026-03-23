@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dprs import sim
-from dprs.utils import DP
+from dprs.utils import DUAL
 
 print(f"\n{sim}")
 
@@ -13,8 +13,8 @@ class Parameters:
     p: float = 0.538910
     p0: float = 0.99
     seed: int = 5
-    n_iterations: int = 1000
-    sample_period: int  = 1000
+    n_iterations: int = 100
+    sample_period: int  = 100
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Unspecified
     axis_topology_z = sim.Topology.Unspecified
