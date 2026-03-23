@@ -28,7 +28,7 @@ pub fn run(
         LatticeModel1D::new(dp_cell_model, n_x, (DualState::Empty, DualState::Empty));
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lattice_model_1d.randomized_lattice(&mut rng, params.p0);
+    lattice_model_1d.randomize_lattice(&mut rng, params.p0);
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()

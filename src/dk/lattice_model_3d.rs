@@ -95,7 +95,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
-    pub fn randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
+    pub fn randomize_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
         self.lattice = (0..self.n_cells())
             .map(|_| self.cell_model.randomize_state(rng, p))
             .collect();

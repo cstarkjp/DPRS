@@ -24,7 +24,7 @@ pub fn simulation<C: CellModel2D>(
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lm.randomized_lattice(&mut rng, params.p0);
+    lm.randomize_lattice(&mut rng, params.p0);
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 

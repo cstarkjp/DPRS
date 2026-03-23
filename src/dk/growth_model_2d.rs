@@ -59,7 +59,7 @@ impl CellModel2D for GrowthModel2D {
 
 //     let dp = GrowthModel::default();
 //     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
-//     lm1.randomized_lattice(&mut rng(), 0.5);
+//     lm1.randomize_lattice(&mut rng(), 0.5);
 //     let mut lm2 = lm1.clone();
 
 //     for _ in 0..100 {
