@@ -15,6 +15,8 @@ mod sim {
     use crate::parameters::BoundaryCondition;
     #[pymodule_export]
     use crate::parameters::Dimension;
+    #[pymodule_export]
+    use crate::parameters::GrowthModel;
     use crate::parameters::Parameters;
     #[pymodule_export]
     use crate::parameters::Processing;

@@ -4,6 +4,19 @@
 use pyo3::{FromPyObject, pyclass};
 use std::convert::From;
 
+
+/// Lattice growth model type.
+#[derive(PartialEq, Debug, Clone, Default)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum GrowthModel {
+    #[default]
+    SimplifiedDomanyKinzel,
+    DomanyKinzel,
+    ContactProcess,
+    PairContactProcess,
+    TwoSpeciesContactProcess,
+}
+
 /// Lattice dimension.
 #[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
@@ -99,6 +112,7 @@ pub enum Processing {
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
 pub struct Parameters {
+    pub growth_model: GrowthModel,
     pub dim: Dimension,
     pub n_x: usize,
     pub n_y: usize,
@@ -204,25 +218,26 @@ impl Parameters {
 
     pub fn print(&self) {
         println!();
-        println!("Dimension:   {:?}", self.dim);
-        println!("Grid shape:  {:?}", (self.n_x, self.n_y, self.n_z));
-        println!("Probability: {}", self.p);
-        println!("Prob @t=0:   {}", self.p0);
-        println!("Random seed: {}", self.seed);
-        println!("Iterations:  {}", self.n_iterations);
-        println!("Sampling:    {}", self.sample_period);
-        println!("Topology x:  {:?}", self.axis_topology_x);
-        println!("Topology y:  {:?}", self.axis_topology_y);
-        println!("Topology z:  {:?}", self.axis_topology_z);
-        println!("Axis BCs x:  {:?}", self.axis_bcs_x);
-        println!("Axis BCs y:  {:?}", self.axis_bcs_y);
-        println!("Axis BCs z:  {:?}", self.axis_bcs_z);
-        println!("BC values x: {:?}", self.axis_bc_values_x);
-        println!("BC values y: {:?}", self.axis_bc_values_y);
-        println!("BC values z: {:?}", self.axis_bc_values_z);
-        println!("Edge buffer: {}", self.do_edge_buffering);
-        println!("Processing:  {:?}", self.processing);
-        println!("Num threads: {}", self.n_threads);
+        println!("Growth model:  {:?}", self.growth_model);
+        println!("Dimension:     {:?}", self.dim);
+        println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
+        println!("Probability:   {}", self.p);
+        println!("Prob. @t=0:    {}", self.p0);
+        println!("Random seed:   {}", self.seed);
+        println!("Iterations:    {}", self.n_iterations);
+        println!("Sample period: {}", self.sample_period);
+        println!("Topology x:    {:?}", self.axis_topology_x);
+        println!("Topology y:    {:?}", self.axis_topology_y);
+        println!("Topology z:    {:?}", self.axis_topology_z);
+        println!("Axis BCs x:    {:?}", self.axis_bcs_x);
+        println!("Axis BCs y:    {:?}", self.axis_bcs_y);
+        println!("Axis BCs z:    {:?}", self.axis_bcs_z);
+        println!("BC values x:   {:?}", self.axis_bc_values_x);
+        println!("BC values y:   {:?}", self.axis_bc_values_y);
+        println!("BC values z:   {:?}", self.axis_bc_values_z);
+        println!("Edge buffer:   {}", self.do_edge_buffering);
+        println!("Processing:    {:?}", self.processing);
+        println!("Num. threads:  {}", self.n_threads);
         println!();
     }
 }
