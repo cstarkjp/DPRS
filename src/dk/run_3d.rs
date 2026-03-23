@@ -11,7 +11,7 @@ use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
 pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let dp_cell_model = GrowthModel3D::default();
+    let dk_cell_model = GrowthModel3D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
         true => 1,
@@ -24,7 +24,7 @@ pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64
     let n_y: usize = pruned_n_y + pad * 2;
     let n_z: usize = pruned_n_z + pad * 2;
     let lattice_model_3d: LatticeModel3D<GrowthModel3D> = LatticeModel3D::new(
-        dp_cell_model,
+        dk_cell_model,
         n_x,
         n_y,
         n_z,

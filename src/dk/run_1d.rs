@@ -11,7 +11,7 @@ use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
 pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let dp_cell_model = GrowthModel1D::default();
+    let dk_cell_model = GrowthModel1D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
         true => 1,
@@ -20,7 +20,7 @@ pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64
     let pruned_n_x = params.n_x;
     let n_x: usize = pruned_n_x + pad * 2;
     let lattice_model_1d: LatticeModel1D<GrowthModel1D> =
-        LatticeModel1D::new(dp_cell_model, n_x, (DualState::Empty, DualState::Empty));
+        LatticeModel1D::new(dk_cell_model, n_x, (DualState::Empty, DualState::Empty));
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
