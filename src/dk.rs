@@ -29,15 +29,15 @@ pub use simulation_3d::simulation as simulation_3d;
 use crate::parameters::{Dimension, DualState, Parameters, Processing};
 
 /// Entry point to this module.
-pub fn sim_dk(params: Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
-    params.print();
+pub fn sim_dk(parameters: Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
+    parameters.print();
     println!();
-    let (t_run_time, n_lattices, lattices, tracking) = match &params.dim {
-        Dimension::D1 => run_1d::run(&params),
-        Dimension::D2 => run_2d::run(&params),
-        Dimension::D3 => run_3d::run(&params),
+    let (t_run_time, n_lattices, lattices, tracking) = match &parameters.dim {
+        Dimension::D1 => run_1d::run(&parameters),
+        Dimension::D2 => run_2d::run(&parameters),
+        Dimension::D3 => run_3d::run(&parameters),
     };
-    match params.processing {
+    match parameters.processing {
         Processing::Serial => println!(
             "Simulation run time (serial processing): {:4.3}s",
             t_run_time
