@@ -31,6 +31,7 @@ use crate::parameters::{DPState, Dimension, Parameters, Processing};
 /// Entry point to this module.
 pub fn sim_dp(params: Parameters) -> (usize, Vec<Vec<DPState>>, Vec<Vec<f64>>, f64) {
     params.print();
+    println!();
     let (t_run_time, n_lattices, lattices, tracking) = match (&params.processing, &params.dim) {
         (Processing::Serial, Dimension::D1) => {
             run_simulation_1d::run_simulation(&params, &Processing::Serial)

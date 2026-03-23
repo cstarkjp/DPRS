@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pathlib
 import sys
 
@@ -6,10 +8,10 @@ try:
     sys.path.append(this_dir.joinpath("target", "release").__str__())
     sys.path.append(this_dir.joinpath("python").__str__())
     print(sys.path)
-    import sim
+    import sim #type: ignore
 except Exception:
     from dprs import sim
-from dprs.utils import DP
+    from dprs.utils import DP
 
 print(f"\n{sim}")
 
@@ -22,8 +24,8 @@ class Parameters:
     p: float = 0.05
     p0: float = 0.99
     seed: int = 1
-    n_iterations: int = 1_00
-    sample_rate: int  = 1_00
+    n_iterations: int = 1000
+    sample_period: int  = 0
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Periodic
     axis_topology_z = sim.Topology.Periodic

@@ -1,4 +1,4 @@
-# [**DPRS**](https://pypi.org/project/dprs/)
+# [**DPRS PyPI package**](https://pypi.org/project/dprs/)
 
 ###  _Directed percolation-type models in Rust_
 

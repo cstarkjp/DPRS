@@ -10,24 +10,24 @@ from dprs.utils import make_name, make_title, DP
 print(f"\n{sim}")
 
 class Parameters:
-    dim = sim.Dimension.D2
-    n_x: int = 1000
-    n_y: int = 1000
-    n_z: int = 1
-    p: float = 0.163145
+    dim = sim.Dimension.D3
+    n_x: int = 200
+    n_y: int = 200
+    n_z: int = 200
+    p: float = 0.0482745
     p0: float = 0.99
-    seed: int = 1
+    seed: int = 2
     n_iterations: int = 1000
     sample_period: int  = 1000
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Periodic
-    axis_topology_z = sim.Topology.Unspecified
+    axis_topology_z = sim.Topology.Periodic
     axis_bcs_x = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
     axis_bcs_y = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
-    axis_bcs_z = (sim.BoundaryCondition.Unspecified, sim.BoundaryCondition.Unspecified)
+    axis_bcs_z = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
     axis_bc_values_x = (DP.OCCUPIED.state, DP.OCCUPIED.state)
     axis_bc_values_y = (DP.OCCUPIED.state, DP.OCCUPIED.state)
-    axis_bc_values_z = (DP.EMPTY.state, DP.EMPTY.state)
+    axis_bc_values_z = (DP.OCCUPIED.state, DP.OCCUPIED.state)
     do_edge_buffering: bool = True
     processing = sim.Processing.Parallel
     n_threads: int = 16
@@ -44,7 +44,7 @@ t_run_time: float
 lattices: NDArray
 if n_lattices>0:
     lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
-        n_lattices, parameters.n_y, parameters.n_x,
+        n_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
     ).T
 else:
     lattices = np.zeros((0,))
@@ -53,20 +53,24 @@ tracking: NDArray = np.array(raw_tracking, dtype=np.float64,)
 viz = Viz(dpi=250)
 i_slice: int
 name: str
+z_slice: int = parameters.n_z//2
 image_lattice = partial(
     viz.image_lattice,
     lattices=lattices, 
     p=parameters, 
-    x=min(300, parameters.n_x),
-    y=min(200, parameters.n_y),
+    x=min(parameters.n_x, 100),
+    y=min(parameters.n_y, 100),
+    z=z_slice,
     fig_size=(6, 4,),
 )
 if n_lattices>0:
     i_slice = 0
-    name = make_name(parameters, "lattice", i_slice,)
+    name = make_name(parameters, "lattice", i_slice, )
     print(name)
     image_lattice(
-        name=name, title=make_title(parameters, i_slice), i_lattice=i_slice,
+        name=name, 
+        title=make_title(parameters, i_slice, z_slice), 
+        i_lattice=i_slice,
     )
     plt.show()
 if n_lattices>=1:
@@ -74,12 +78,14 @@ if n_lattices>=1:
     name = make_name(parameters, "lattice", i_slice,)
     print(name)
     image_lattice(
-        name=name, title=make_title(parameters, i_slice), i_lattice=i_slice,
+        name=name, 
+        title=make_title(parameters, i_slice, z_slice), 
+        i_lattice=i_slice,
     )
     plt.show()
 
-δ = 0.45051
-ρ_mean_ref = 0.238
+δ = 0.7324
+ρ_mean_ref = 0.116
 name = make_name(parameters, "ρmean", None, )
 print(name)
 viz.plot_ρmean(
