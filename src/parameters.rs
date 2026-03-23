@@ -39,7 +39,7 @@ pub enum Topology {
 }
 
 /// Initial lattice condition.
-/// TODO: implement CentralSeed, meaning only a small central portion of 
+/// TODO: implement CentralSeed, meaning only a small central portion of
 /// the lattice is assigned to be occupied at t=0.
 #[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]

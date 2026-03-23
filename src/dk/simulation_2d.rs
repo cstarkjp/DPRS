@@ -16,12 +16,12 @@ use rand::rngs::StdRng;
 /// entry a vec of mean density for the respective iteration.
 pub fn simulation<C: CellModel2D>(
     lattice_model: LatticeModel2D<C>,
-    processing: Processing,
     params: &Parameters,
-    n_iterations: usize,
-    sample_period: usize,
 ) -> (usize, Vec<Vec<<C as CellModel2D>::State>>, Vec<Vec<f64>>) {
     // Create a model lattice plus metadata
+    let n_iterations: usize = params.n_iterations;
+    let sample_period: usize = params.sample_period;
+    let processing: Processing = params.processing.clone();
     let mut lm = lattice_model;
     let mut rng = StdRng::seed_from_u64(params.random_seed as u64);
     match params.initial_condition {
@@ -29,7 +29,6 @@ pub fn simulation<C: CellModel2D>(
             lm.create_randomized_lattice(&mut rng, params.p_initial);
         }
         InitialCondition::CentralSeed => {
-            // TODO
             lm.create_seeded_lattice();
         }
     }
