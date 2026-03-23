@@ -10,14 +10,6 @@ crate-type = ["cdylib"]
 
 # Latest coupled dependency for PyO3 and numpy is 0.28.0/0.28.0
 [dependencies]
-# indicatif = "0.18.4"
-# kdam = "0.6.4"
-# pgbar = "0.3.1"
 pyo3 = "0.28.2"
 rand = "0.10.0"
 rayon = "1.11.0"
-# GitHub CI sometimes fails for Windows builds: this *may* fix the issue
-# sys = "0.0.1"
-# Best to avoid these if we want to keep things simple
-# numpy = "0.28.0"
-# ndarray = "0.17.2"
