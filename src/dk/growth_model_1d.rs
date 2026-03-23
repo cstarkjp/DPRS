@@ -5,12 +5,12 @@
 use crate::{dk::cell_model_1d::CellModel1D, parameters::DualState};
 use rand::{Rng, RngExt};
 
-/// DKModel1D implements the CellModel1D trait, plus these.
+/// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DKModel1D();
+pub struct GrowthModel1D();
 
-// Implement CellModel1D trait for DKModel.
-impl CellModel1D for DKModel1D {
+// Implement CellModel1D trait for GrowthModel.
+impl CellModel1D for GrowthModel1D {
     type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {

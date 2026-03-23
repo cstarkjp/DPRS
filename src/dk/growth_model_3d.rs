@@ -8,12 +8,12 @@ use crate::{
 };
 use rand::{Rng, RngExt};
 
-/// DKModel1D implements the CellModel1D trait, plus these.
+/// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DKModel3D();
+pub struct GrowthModel3D();
 
-// Implement CellModel3D trait for DKModel.
-impl CellModel3D for DKModel3D {
+// Implement CellModel3D trait for GrowthModel.
+impl CellModel3D for GrowthModel3D {
     type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {

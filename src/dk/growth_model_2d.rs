@@ -5,12 +5,12 @@
 use crate::{dk::cell_model_2d::CellModel2D, parameters::DualState};
 use rand::{Rng, RngExt};
 
-/// DKModel1D implements the CellModel1D trait, plus these.
+/// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DKModel2D();
+pub struct GrowthModel2D();
 
-// Implement CellModel2D trait for DKModel.
-impl CellModel2D for DKModel2D {
+// Implement CellModel2D trait for GrowthModel.
+impl CellModel2D for GrowthModel2D {
     type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
@@ -57,7 +57,7 @@ impl CellModel2D for DKModel2D {
 //     use super::LatticeModel2D;
 //     use rand::rng;
 
-//     let dp = DKModel::default();
+//     let dp = GrowthModel::default();
 //     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
 //     lm1.randomized_lattice(&mut rng(), 0.5);
 //     let mut lm2 = lm1.clone();

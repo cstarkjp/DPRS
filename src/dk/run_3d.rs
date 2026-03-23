@@ -5,7 +5,7 @@
 use crate::dk::simulation_3d::simulation;
 use crate::dk::{growth_model_3d, lattice_model_3d};
 use crate::parameters::{DualState, Parameters, Processing};
-use growth_model_3d::DKModel3D;
+use growth_model_3d::GrowthModel3D;
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -16,7 +16,7 @@ pub fn run(
     params: &Parameters,
     processing: &Processing,
 ) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let dp_cell_model = DKModel3D::default();
+    let dp_cell_model = GrowthModel3D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
         true => 1,
@@ -28,7 +28,7 @@ pub fn run(
     let n_x: usize = pruned_n_x + pad * 2;
     let n_y: usize = pruned_n_y + pad * 2;
     let n_z: usize = pruned_n_z + pad * 2;
-    let mut lattice_model_3d: LatticeModel3D<DKModel3D> = LatticeModel3D::new(
+    let mut lattice_model_3d: LatticeModel3D<GrowthModel3D> = LatticeModel3D::new(
         dp_cell_model,
         n_x,
         n_y,
