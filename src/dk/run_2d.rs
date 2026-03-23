@@ -4,16 +4,13 @@
 
 use crate::dk::simulation_2d::simulation;
 use crate::dk::{growth_model_2d, lattice_model_2d};
-use crate::parameters::{DualState, Parameters, Processing};
+use crate::parameters::{DualState, Parameters};
 use growth_model_2d::GrowthModel2D;
 use lattice_model_2d::LatticeModel2D;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
-pub fn run(
-    params: &Parameters,
-    processing: Processing,
-) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
     let dp_cell_model = GrowthModel2D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
@@ -42,15 +39,7 @@ pub fn run(
     let time = Instant::now();
 
     // Do the simulation
-    let (n_lattices, lattices, tracking) = pool.install(|| {
-        simulation(
-            lattice_model_2d,
-            processing,
-            &params,
-            params.n_iterations,
-            params.sample_period,
-        )
-    });
+    let (n_lattices, lattices, tracking) = pool.install(|| simulation(lattice_model_2d, &params));
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 

@@ -4,16 +4,13 @@
 
 use crate::dk::simulation_3d::simulation;
 use crate::dk::{growth_model_3d, lattice_model_3d};
-use crate::parameters::{DualState, Parameters, Processing};
+use crate::parameters::{DualState, Parameters};
 use growth_model_3d::GrowthModel3D;
 use lattice_model_3d::LatticeModel3D;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
-pub fn run(
-    params: &Parameters,
-    processing: Processing,
-) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
     let dp_cell_model = GrowthModel3D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
@@ -46,16 +43,7 @@ pub fn run(
     let time = Instant::now();
 
     // Do the simulation
-    let (n_lattices, lattices, tracking) = pool.install(|| {
-        simulation(
-            lattice_model_3d,
-            // &mut rng,
-            processing,
-            &params,
-            params.n_iterations,
-            params.sample_period,
-        )
-    });
+    let (n_lattices, lattices, tracking) = pool.install(|| simulation(lattice_model_3d, &params));
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 
