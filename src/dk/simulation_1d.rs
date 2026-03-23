@@ -15,33 +15,33 @@ use rand::rngs::StdRng;
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation(params: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let pad: usize = match params.do_edge_buffering {
+pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+    let pad: usize = match parameters.do_edge_buffering {
         true => 1,
         false => 0,
     };
-    let pruned_n_x = params.n_x;
+    let pruned_n_x = parameters.n_x;
     let n_x: usize = pruned_n_x + pad * 2;
     let mut lm = LatticeModel1D::new(
         GrowthModel1D::default(),
         n_x,
         (DualState::Empty, DualState::Empty),
     );
-    let mut rng = StdRng::seed_from_u64(params.random_seed as u64);
-    match params.initial_condition {
+    let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
+    match parameters.initial_condition {
         InitialCondition::Randomized => {
-            lm.create_randomized_lattice(&mut rng, params.p_initial);
+            lm.create_randomized_lattice(&mut rng, parameters.p_initial);
         }
         InitialCondition::CentralSeed => {
             lm.create_seeded_lattice();
         }
     }
-    lm.apply_edge_topology(&params);
-    lm.apply_boundary_conditions(&params);
+    lm.apply_edge_topology(&parameters);
+    lm.apply_boundary_conditions(&parameters);
 
     // Set up a recording of lattice evolution, or suppress
-    let n_iterations: usize = params.n_iterations;
-    let sample_period: usize = params.sample_period;
+    let n_iterations: usize = parameters.n_iterations;
+    let sample_period: usize = parameters.sample_period;
     let n_lattices = match sample_period > 0 {
         true => n_iterations / sample_period + 1,
         false => 0,
@@ -67,12 +67,12 @@ pub fn simulation(params: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f
     // Note: the second "apply_edge_topology" etc are unnecessary.
     // It's only there for now to ensure the t-sliced lattices show whether
     // boundary topology/condition step is working or not.
-    match params.processing {
+    match parameters.processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                lm.next_iteration_serial(&mut rng, params.p_0);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
+                lm.next_iteration_serial(&mut rng, parameters.p_0);
+                lm.apply_edge_topology(&parameters);
+                lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
@@ -85,20 +85,20 @@ pub fn simulation(params: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f
         Processing::Parallel => {
             // Create a vector of RNGs of length n_y,
             // i.e., of length = number of lattice rows,
-            // each seeded by params.random_seed + their index.
+            // each seeded by parameters.random_seed + their index.
             // Each RNG element of this vec will be used,
             // one per row, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(params.random_seed > 0);
-            let mut rngs: Vec<StdRng> = (0..params.n_y)
+            assert!(parameters.random_seed > 0);
+            let mut rngs: Vec<StdRng> = (0..parameters.n_y)
                 .into_iter()
-                .map(|s| StdRng::seed_from_u64((params.random_seed * (s + 1)) as u64))
+                .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
-                lm.next_iteration_parallel(&mut rngs, params.p_0);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
+                lm.next_iteration_parallel(&mut rngs, parameters.p_0);
+                lm.apply_edge_topology(&parameters);
+                lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
