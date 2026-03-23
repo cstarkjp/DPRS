@@ -48,13 +48,13 @@ pub enum BoundaryCondition {
 #[derive(Default, PartialEq, Clone, Copy, Debug)]
 #[pyclass(from_py_object, eq, eq_int)]
 #[repr(u8)]
-pub enum DPState {
+pub enum DualState {
     #[default]
     Empty,
     Occupied,
 }
 
-impl From<bool> for DPState {
+impl From<bool> for DualState {
     fn from(b: bool) -> Self {
         match b {
             false => Self::Empty,
@@ -63,24 +63,28 @@ impl From<bool> for DPState {
     }
 }
 
-impl From<DPState> for bool {
-    fn from(state: DPState) -> bool {
-        matches![state, DPState::Occupied]
+impl From<DualState> for bool {
+    fn from(state: DualState) -> bool {
+        matches![state, DualState::Occupied]
     }
 }
 
-impl From<DPState> for f64 {
-    fn from(state: DPState) -> f64 {
-        let b = matches![state, DPState::Occupied];
+impl From<DualState> for f64 {
+    fn from(state: DualState) -> f64 {
+        let b = matches![state, DualState::Occupied];
 
         (b as usize) as f64
     }
 }
 
-/// Test the DPState var is a byte.
+/// Test the DualState var is a byte.
 #[test]
 fn guarantee_dpstate_is_u8() {
-    assert_eq!(std::mem::size_of::<DPState>(), 1, "DPState must be a byte");
+    assert_eq!(
+        std::mem::size_of::<DualState>(),
+        1,
+        "DualState must be a byte"
+    );
 }
 
 /// Choice of processing type: will become a Py-passable parameter.

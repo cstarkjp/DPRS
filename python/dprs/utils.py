@@ -9,7 +9,7 @@ from dprs import sim
 warnings.filterwarnings("ignore")
 
 __all__ = [
-    "DP",
+    "DUAL",
     "Parameters"
     "make_title",
     "make_name",
@@ -40,7 +40,7 @@ class Parameters():
     processing: sim.Processing
     n_threads: int
 
-class DP(Enum):
+class DUAL(Enum):
     """Abstract DP cell state."""
     EMPTY = False
     OCCUPIED = True
@@ -48,9 +48,9 @@ class DP(Enum):
     @property
     def state(self):
         """Convert to boolean."""
-        if self is DP.EMPTY:
+        if self is DUAL.EMPTY:
             return False
-        elif self is DP.OCCUPIED:
+        elif self is DUAL.OCCUPIED:
             return True
 
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
