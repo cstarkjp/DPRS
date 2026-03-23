@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_1d::CellModel1D, parameters::Parameters};
+use crate::{dk::cell_model_1d::CellModel1D, parameters::Parameters};
 use rand::Rng;
 use rayon::prelude::*;
 

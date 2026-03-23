@@ -40,7 +40,7 @@ n_lattices: int
 raw_lattices: list[list[bool]] 
 raw_tracking: list[list, list]
 t_run_time: float
-(n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dp(parameters)
+(n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dk(parameters)
 lattices: NDArray
 if n_lattices>0:
     lattices = np.array(raw_lattices, dtype=np.bool,).reshape(

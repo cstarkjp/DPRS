@@ -2,7 +2,7 @@ use rand::SeedableRng;
 use rand::rngs::StdRng;
 
 use crate::{
-    dp::{CellModel3D, LatticeModel3D, Nbrhood3D, RowIterator3D},
+    dk::{CellModel3D, LatticeModel3D, Nbrhood3D, RowIterator3D},
     parameters::{BoundaryCondition, Dimension, Parameters, Processing, Topology},
 };
 
@@ -131,7 +131,7 @@ fn test_sim() {
     for (i, l) in lm.lattice_mut().iter_mut().enumerate() {
         *l = value(&parameters, i, None, false);
     }
-    let (_, lattices, _) = crate::dp::simulation_3d(
+    let (_, lattices, _) = crate::dk::simulation_3d(
         lm,
         &mut StdRng::seed_from_u64(1),
         &Processing::Parallel,

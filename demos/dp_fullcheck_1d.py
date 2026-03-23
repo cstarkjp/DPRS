@@ -40,7 +40,7 @@ n_lattices: int
 raw_lattices: list[list[bool]] 
 raw_tracking: list[list, list]
 t_run_time: float
-(n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dp(parameters)
+(n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dk(parameters)
 print(f"Total number of lattice time slices = {n_lattices}\n")
 tracking: NDArray = np.array(raw_tracking, dtype=np.float64,) 
 

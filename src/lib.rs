@@ -3,7 +3,7 @@
 // //!
 
 // Imports
-pub mod dp;
+pub mod dk;
 pub mod parameters;
 mod sim;
 

@@ -2,17 +2,17 @@
 // //!
 // //!
 
-use crate::dp::simulation_3d::simulation;
-use crate::dp::{dk_model_3d, lattice_model_3d};
+use crate::dk::simulation_3d::simulation;
+use crate::dk::{growth_model_3d, lattice_model_3d};
 use crate::parameters::{DualState, Parameters, Processing};
-use dk_model_3d::DKModel3D;
+use growth_model_3d::DKModel3D;
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
-pub fn run_simulation(
+pub fn run(
     params: &Parameters,
     processing: &Processing,
 ) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
