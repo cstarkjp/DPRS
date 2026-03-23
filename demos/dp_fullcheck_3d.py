@@ -10,13 +10,13 @@ from dprs.utils import make_name, make_title, DUAL
 print(f"\n{sim}")
 
 class Parameters:
-    growth_model = sim.GrowthModel.SimplifiedDomanyKinzel
+    growth_model = sim.GrowthModel.DomanyKinzel
     dim = sim.Dimension.D3
     n_x: int = 200
     n_y: int = 200
     n_z: int = 200
-    p: float = 0.0482745
-    p0: float = 0.99
+    p_0: float = 0.0482745
+    p_initial: float = 0.99
     seed: int = 2
     n_iterations: int = 1000
     sample_period: int  = 1000

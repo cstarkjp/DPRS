@@ -17,13 +17,13 @@ print(f"\n{sim}")
 
 
 class Parameters:
-    growth_model = sim.GrowthModel.SimplifiedDomanyKinzel
+    growth_model = sim.GrowthModel.DomanyKinzel
     dim = sim.Dimension.D3
     n_x: int = 100
     n_y: int = 100
     n_z: int = 100
-    p: float = 0.05
-    p0: float = 0.99
+    p_0: float = 0.05
+    p_initial: float = 0.99
     seed: int = 1
     n_iterations: int = 1000
     sample_period: int  = 0

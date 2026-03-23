@@ -18,13 +18,13 @@ except Exception:
 
 
 class Parameters:
-    growth_model = sim.GrowthModel.SimplifiedDomanyKinzel
+    growth_model = sim.GrowthModel.DomanyKinzel
     dim = sim.Dimension.D2
     n_x: int = 1_000
     n_y: int = 1_000
     n_z: int = 1
-    p: float = 0.163145
-    p0: float = 0.99
+    p_0: float = 0.163145
+    p_initial: float = 0.99
     seed: int = 1
     n_iterations: int = 1000
     sample_period: int  = 1000
