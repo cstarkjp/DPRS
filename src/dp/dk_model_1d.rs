@@ -9,7 +9,7 @@ use rand::{Rng, RngExt};
 #[derive(Clone, Copy, Default, Debug)]
 pub struct DKModel1D();
 
-// Implement CellModel1D trait for DPModel.
+// Implement CellModel1D trait for DKModel.
 impl CellModel1D for DKModel1D {
     type State = DualState;
 

@@ -9,7 +9,7 @@ use rand::{Rng, RngExt};
 #[derive(Clone, Copy, Default, Debug)]
 pub struct DKModel2D();
 
-// Implement CellModel2D trait for DPModel.
+// Implement CellModel2D trait for DKModel.
 impl CellModel2D for DKModel2D {
     type State = DualState;
 
@@ -57,7 +57,7 @@ impl CellModel2D for DKModel2D {
 //     use super::LatticeModel2D;
 //     use rand::rng;
 
-//     let dp = DPModel::default();
+//     let dp = DKModel::default();
 //     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
 //     lm1.randomized_lattice(&mut rng(), 0.5);
 //     let mut lm2 = lm1.clone();

@@ -12,7 +12,7 @@ use rand::{Rng, RngExt};
 #[derive(Clone, Copy, Default, Debug)]
 pub struct DKModel3D();
 
-// Implement CellModel3D trait for DPModel.
+// Implement CellModel3D trait for DKModel.
 impl CellModel3D for DKModel3D {
     type State = DualState;
 
