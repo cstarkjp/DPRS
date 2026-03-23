@@ -7,8 +7,6 @@ use crate::dk::{growth_model_1d, lattice_model_1d};
 use crate::parameters::{DualState, Parameters, Processing};
 use growth_model_1d::GrowthModel1D;
 use lattice_model_1d::LatticeModel1D;
-use rand::SeedableRng;
-use rand::rngs::StdRng;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
@@ -24,11 +22,8 @@ pub fn run(
     };
     let pruned_n_x = params.n_x;
     let n_x: usize = pruned_n_x + pad * 2;
-    let mut lattice_model_1d: LatticeModel1D<GrowthModel1D> =
+    let lattice_model_1d: LatticeModel1D<GrowthModel1D> =
         LatticeModel1D::new(dp_cell_model, n_x, (DualState::Empty, DualState::Empty));
-
-    let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lattice_model_1d.randomize_lattice(&mut rng, params.p0);
 
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()

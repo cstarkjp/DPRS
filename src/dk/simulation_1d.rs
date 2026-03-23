@@ -24,7 +24,7 @@ pub fn simulation<C: CellModel1D>(
     // Create a model lattice plus metadata
     let mut lm = lattice_model;
     let mut rng = StdRng::seed_from_u64(params.seed as u64);
-    lm.randomize_lattice(&mut rng, params.p0);
+    lm.randomize_lattice(&mut rng, params.p_initial);
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
 
@@ -57,7 +57,7 @@ pub fn simulation<C: CellModel1D>(
     match processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                lm.next_iteration_serial(&mut rng, params.p);
+                lm.next_iteration_serial(&mut rng, params.p_0);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
                 if sample_period > 0 && i % sample_period == 0 {
@@ -83,7 +83,7 @@ pub fn simulation<C: CellModel1D>(
                 .map(|s| StdRng::seed_from_u64((params.seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
-                lm.next_iteration_parallel(&mut rngs, params.p);
+                lm.next_iteration_parallel(&mut rngs, params.p_0);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
                 if sample_period > 0 && i % sample_period == 0 {

@@ -18,13 +18,13 @@ __all__ = [
 @dataclass
 class Parameters(): 
     """Dummy declaration: shadows definition in Rust."""
-    growth_model: sim.GrowthModel.SimplifiedDomanyKinzel
+    growth_model: sim.GrowthModel.DomanyKinzel
     dim: sim.Dimension.D1
     n_x: int
     n_y: int
     n_z: int
-    p: float
-    p0: float
+    p_0: float
+    p_initial: float
     seed: int
     n_iterations: int
     sample_period: int
@@ -58,8 +58,8 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
     """Generate a string summarizing the sim for entitling plots."""
     return (
         (
-            rf"$p={parameters.p:0.7f}$" if parameters.dim==sim.Dimension.D3
-            else rf"$p={parameters.p:0.6f}$"
+            rf"$p={parameters.p_0:0.7f}$" if parameters.dim==sim.Dimension.D3
+            else rf"$p={parameters.p_0:0.6f}$"
         )
         + rf"   $s={parameters.seed}$"
         + (
@@ -85,9 +85,9 @@ def make_name(parameters: Parameters, variable: str, i_slice: int|None = None):
     return (
           f"{variable}"
         + (
-            f"_p{parameters.p:0.7f}".replace(".", "p") 
+            f"_p{parameters.p_0:0.7f}".replace(".", "p") 
                 if parameters.dim==sim.Dimension.D3
-            else f"_p{parameters.p:0.6f}".replace(".", "p")
+            else f"_p{parameters.p_0:0.6f}".replace(".", "p")
         )
         + f"_s{parameters.seed}"
         + f"_nx{parameters.n_x}"

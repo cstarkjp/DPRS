@@ -4,13 +4,11 @@
 use pyo3::{FromPyObject, pyclass};
 use std::convert::From;
 
-
 /// Lattice growth model type.
 #[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum GrowthModel {
     #[default]
-    SimplifiedDomanyKinzel,
     DomanyKinzel,
     ContactProcess,
     PairContactProcess,
@@ -117,8 +115,8 @@ pub struct Parameters {
     pub n_x: usize,
     pub n_y: usize,
     pub n_z: usize,
-    pub p: f64,
-    pub p0: f64,
+    pub p_0: f64,
+    pub p_initial: f64,
     pub seed: usize,
     pub n_iterations: usize,
     pub sample_period: usize,
@@ -221,8 +219,8 @@ impl Parameters {
         println!("Growth model:  {:?}", self.growth_model);
         println!("Dimension:     {:?}", self.dim);
         println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
-        println!("Probability:   {}", self.p);
-        println!("Prob. @t=0:    {}", self.p0);
+        println!("Probability:   {}", self.p_0);
+        println!("Initial prob.: {}", self.p_initial);
         println!("Random seed:   {}", self.seed);
         println!("Iterations:    {}", self.n_iterations);
         println!("Sample period: {}", self.sample_period);
