@@ -7,27 +7,27 @@ use crate::parameters::{DualState, Parameters};
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
-pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+pub fn run(parameters: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
-        .num_threads(params.n_threads)
+        .num_threads(parameters.n_threads)
         .build()
         .unwrap();
     // Start the timer
     let time = Instant::now();
     // Do the simulation
-    let (n_lattices, lattices, tracking) = pool.install(|| simulation(&params));
+    let (n_lattices, lattices, tracking) = pool.install(|| simulation(&parameters));
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 
     // If needed, remove edge buffering before returning the lattice time-slices.
     // Buffer lattice edges
-    let pad: usize = match params.do_edge_buffering {
+    let pad: usize = match parameters.do_edge_buffering {
         true => 1,
         false => 0,
     };
-    let pruned_n_x = params.n_x;
-    let lattices = if params.do_edge_buffering {
+    let pruned_n_x = parameters.n_x;
+    let lattices = if parameters.do_edge_buffering {
         // Step through each of the recorded lattices, pruning off by 'pad'
         // at each edge, returning the pruned lattices
         lattices
