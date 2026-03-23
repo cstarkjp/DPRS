@@ -31,10 +31,10 @@ jobs:
           cd $HOME/work/DPRS/DPRS
           ls -l .     
           python -m unittest discover tests
-      - name: Run demo dp_check_1d.py in Python
+      - name: Run demo dp_test_1d.py in Python
         run: |
           cd $HOME/work/DPRS/DPRS/demos
-          python dp_check_1d.py
+          python dp_test_1d.py
       # - name: Run DemoDP.ipynb in IPython
       #   run: |
       #     cd $HOME/work/DPRS/DPRS/demos

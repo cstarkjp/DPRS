@@ -111,7 +111,7 @@ fn test_sim() {
     parameters.n_y = 15;
     parameters.n_z = 20;
     parameters.n_iterations = 40;
-    parameters.sample_rate = 3;
+    parameters.sample_period = 3;
     parameters.seed = 1;
     parameters.axis_topology_x = Topology::Open;
     parameters.axis_topology_y = Topology::Open;
@@ -137,7 +137,7 @@ fn test_sim() {
         &Processing::Parallel,
         &parameters,
         parameters.n_iterations,
-        parameters.sample_rate,
+        parameters.sample_period,
     );
     assert_eq!(
         &lattices[0],
@@ -148,7 +148,7 @@ fn test_sim() {
     for (iter, l) in lattices.iter().enumerate().skip(1) {
         for (i, c) in l.iter().enumerate() {
             // m is 1 for max of nbrhod (+-1); 2 for max of nbrhood(+-2); etc
-            let m = (iter * parameters.sample_rate) as i8;
+            let m = (iter * parameters.sample_period) as i8;
             if value(&parameters, i, Some((0, 0, 0)), true) == 0 {
                 assert_eq!(
                     *c, 0,

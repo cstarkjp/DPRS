@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from dprs import sim
 from dprs.utils import DP
 
@@ -11,8 +13,8 @@ class Parameters:
     p: float = 0.163145
     p0: float = 0.99
     seed: int = 1
-    n_iterations: int = 1_000
-    sample_rate: int  = 1_000
+    n_iterations: int = 1000
+    sample_period: int  = 1000
     axis_topology_x = sim.Topology.Periodic
     axis_topology_y = sim.Topology.Periodic
     axis_topology_z = sim.Topology.Unspecified

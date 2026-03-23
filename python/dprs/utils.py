@@ -26,7 +26,7 @@ class Parameters():
     p0: float
     seed: int
     n_iterations: int
-    sample_rate: int
+    sample_period: int
     axis_topology_x: sim.Topology
     axis_topology_y: sim.Topology
     axis_topology_z: sim.Topology
@@ -73,7 +73,7 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
             rf"   $n_z={parameters.n_z}$" if parameters.n_z>1
            else ""
         )
-        + ("\n" + rf"$i={i_slice*parameters.sample_rate:0{5}}$" 
+        + ("\n" + rf"$i={i_slice*parameters.sample_period:0{5}}$" 
            if i_slice is not None else "")
         + (rf"   $z={z_slice}$" 
            if z_slice is not None else "")
@@ -98,6 +98,6 @@ def make_name(parameters: Parameters, variable: str, i_slice: int|None = None):
             f"_nz{parameters.n_z}" if parameters.n_z>1
             else ""
         )        
-        + (f"_i{i_slice*parameters.sample_rate:0{5}}" 
+        + (f"_i{i_slice*parameters.sample_period:0{5}}" 
            if i_slice is not None else "")
     )

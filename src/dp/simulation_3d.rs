@@ -22,7 +22,7 @@ pub fn simulation<C: CellModel3D, R: Rng>(
     processing: &Processing, /* Should not be a reference */
     params: &Parameters,
     n_iterations: usize,
-    sample_rate: usize,
+    sample_period: usize,
 ) -> (usize, Vec<Vec<<C as CellModel3D>::State>>, Vec<Vec<f64>>) {
     // Create a progress bar
     // let mut progress_bar = tqdm!(total = n_iterations+1);
@@ -33,8 +33,8 @@ pub fn simulation<C: CellModel3D, R: Rng>(
     lm.apply_boundary_conditions(&params);
 
     // Set up a recording of lattice evolution, or suppress
-    let n_lattices = match sample_rate > 0 {
-        true => n_iterations / sample_rate + 1,
+    let n_lattices = match sample_period > 0 {
+        true => n_iterations / sample_period + 1,
         false => 0,
     };
     let mut lattices = Vec::new();
@@ -65,7 +65,7 @@ pub fn simulation<C: CellModel3D, R: Rng>(
                 lm.next_iteration_serial(rng, params.p);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
-                if sample_rate > 0 && i % sample_rate == 0 {
+                if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
                 let t = i as f64;
@@ -95,7 +95,7 @@ pub fn simulation<C: CellModel3D, R: Rng>(
                 lm.next_iteration_parallel(&mut rngs, params.p);
                 lm.apply_edge_topology(&params);
                 lm.apply_boundary_conditions(&params);
-                if sample_rate > 0 && (i % sample_rate) == 0 {
+                if sample_period > 0 && (i % sample_period) == 0 {
                     lattices.push(lm.lattice().clone());
                 };
                 let t = i as f64;

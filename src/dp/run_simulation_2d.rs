@@ -54,7 +54,7 @@ pub fn run_simulation(
             processing,
             &params,
             params.n_iterations,
-            params.sample_rate,
+            params.sample_period,
         )
     });
     // Stop the clock

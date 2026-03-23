@@ -103,7 +103,7 @@ pub struct Parameters {
     pub p0: f64,
     pub seed: usize,
     pub n_iterations: usize,
-    pub sample_rate: usize,
+    pub sample_period: usize,
     pub axis_topology_x: Topology,
     pub axis_topology_y: Topology,
     pub axis_topology_z: Topology,
@@ -206,7 +206,7 @@ impl Parameters {
         println!("Prob @t=0:   {}", self.p0);
         println!("Random seed: {}", self.seed);
         println!("Iterations:  {}", self.n_iterations);
-        println!("Sample rate: {}", self.sample_rate);
+        println!("Sampling:    {}", self.sample_period);
         println!("Topology x:  {:?}", self.axis_topology_x);
         println!("Topology y:  {:?}", self.axis_topology_y);
         println!("Topology z:  {:?}", self.axis_topology_z);
