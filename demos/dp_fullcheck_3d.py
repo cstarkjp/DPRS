@@ -25,9 +25,9 @@ class Parameters:
     axis_bcs_x = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
     axis_bcs_y = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
     axis_bcs_z = (sim.BoundaryCondition.Floating, sim.BoundaryCondition.Floating)
-    axis_bc_values_x = (DP.OCCUPIED.state, DP.OCCUPIED.state)
-    axis_bc_values_y = (DP.OCCUPIED.state, DP.OCCUPIED.state)
-    axis_bc_values_z = (DP.OCCUPIED.state, DP.OCCUPIED.state)
+    axis_bc_values_x = (DUAL.OCCUPIED.state, DUAL.OCCUPIED.state)
+    axis_bc_values_y = (DUAL.OCCUPIED.state, DUAL.OCCUPIED.state)
+    axis_bc_values_z = (DUAL.OCCUPIED.state, DUAL.OCCUPIED.state)
     do_edge_buffering: bool = True
     processing = sim.Processing.Parallel
     n_threads: int = 16

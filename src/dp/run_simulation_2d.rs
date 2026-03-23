@@ -4,7 +4,7 @@
 
 use crate::dp::simulation_2d::simulation;
 use crate::dp::{dp_model_2d, lattice_model_2d};
-use crate::parameters::{DPState, Parameters, Processing};
+use crate::parameters::{DualState, Parameters, Processing};
 use dp_model_2d::DPModel2D;
 use lattice_model_2d::LatticeModel2D;
 use rand::SeedableRng;
@@ -15,7 +15,7 @@ use std::time::Instant;
 pub fn run_simulation(
     params: &Parameters,
     processing: &Processing,
-) -> (f64, usize, Vec<Vec<DPState>>, Vec<Vec<f64>>) {
+) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
     let dp_cell_model = DPModel2D::default();
     // Buffer lattice edges
     let pad: usize = match params.do_edge_buffering {
@@ -30,8 +30,8 @@ pub fn run_simulation(
         dp_cell_model,
         n_x,
         n_y,
-        (DPState::Empty, DPState::Empty),
-        (DPState::Empty, DPState::Empty),
+        (DualState::Empty, DualState::Empty),
+        (DualState::Empty, DualState::Empty),
     );
 
     let mut rng = StdRng::seed_from_u64(params.seed as u64);

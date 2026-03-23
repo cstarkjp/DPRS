@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_2d::CellModel2D, parameters::DPState};
+use crate::{dp::cell_model_2d::CellModel2D, parameters::DualState};
 use rand::{Rng, RngExt};
 
 /// DPModel1D implements the CellModel1D trait, plus these.
@@ -11,19 +11,19 @@ pub struct DPModel2D();
 
 // Implement CellModel2D trait for DPModel.
 impl CellModel2D for DPModel2D {
-    type State = DPState;
+    type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
         match b {
-            false => DPState::Empty,
-            true => DPState::Occupied,
+            false => DualState::Empty,
+            true => DualState::Occupied,
         }
     }
 
     fn from_state_to_bool(state: &Self::State) -> bool {
         match state {
-            DPState::Empty => false,
-            DPState::Occupied => true,
+            DualState::Empty => false,
+            DualState::Occupied => true,
         }
     }
 

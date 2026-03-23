@@ -4,7 +4,7 @@
 
 use crate::{
     dp::{Nbrhood3D, cell_model_3d::CellModel3D},
-    parameters::DPState,
+    parameters::DualState,
 };
 use rand::{Rng, RngExt};
 
@@ -14,19 +14,19 @@ pub struct DPModel3D();
 
 // Implement CellModel3D trait for DPModel.
 impl CellModel3D for DPModel3D {
-    type State = DPState;
+    type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
         match b {
-            false => DPState::Empty,
-            true => DPState::Occupied,
+            false => DualState::Empty,
+            true => DualState::Occupied,
         }
     }
 
     fn from_state_to_bool(state: &Self::State) -> bool {
         match state {
-            DPState::Empty => false,
-            DPState::Occupied => true,
+            DualState::Empty => false,
+            DualState::Occupied => true,
         }
     }
 
