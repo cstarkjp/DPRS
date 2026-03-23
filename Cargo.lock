@@ -91,7 +91,7 @@ checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
 name = "dprs"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "indicatif",
  "kdam",
@@ -99,7 +99,6 @@ dependencies = [
  "pyo3",
  "rand",
  "rayon",
- "sys",
 ]
 
 [[package]]
@@ -280,12 +279,6 @@ name = "once_cell"
 version = "1.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
-
-[[package]]
-name = "osi"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d18958727bf5316d271c96c59773c7277c1b28dfa5be746fe59ef75df995209c"
 
 [[package]]
 name = "pgbar"
@@ -522,15 +515,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "sys"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a1abe1badb950937867938994e23d187a0ae95923441bfb4c3142528f727174"
-dependencies = [
- "osi",
 ]
 
 [[package]]

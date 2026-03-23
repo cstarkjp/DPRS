@@ -1,6 +1,6 @@
 [package]
 name = "dprs"
-version = "0.1.16"
+version = "0.1.17"
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,7 +17,7 @@ pyo3 = "0.28.2"
 rand = "0.10.0"
 rayon = "1.11.0"
 # GitHub CI sometimes fails for Windows builds: this *may* fix the issue
-sys = "0.0.1"
+# sys = "0.0.1"
 # Best to avoid these if we want to keep things simple
 # numpy = "0.28.0"
 # ndarray = "0.17.2"
