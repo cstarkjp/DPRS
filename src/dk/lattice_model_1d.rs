@@ -190,15 +190,16 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     pub fn update_row<R: Rng>(&self, rng: &mut R, p: f64, row: &mut [C::State]) {
         let lattice = &self.lattice;
         let row_span = self.n_x - 2;
-        for (cell, md) in row
+        for (cell, window) in row
             .iter_mut()
             .skip(1)
             .take(row_span)
             .zip(lattice.windows(3))
         {
-            let nbrhood = [md[0], md[1], md[2]];
+            let nbrhood = [window[0], window[1], window[2]];
             let nbrhood = nbrhood.as_array::<3>().unwrap();
-            *cell = self.cell_model.simplistic_dk_update_state(rng, p, nbrhood);
+            *cell = self.cell_model.adapted_dk_update_state(rng, p, nbrhood);
+            // *cell = self.cell_model.simplistic_dk_update_state(rng, p, nbrhood);
         }
     }
 }

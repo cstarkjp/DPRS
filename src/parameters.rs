@@ -65,6 +65,10 @@ pub enum DualState {
     Occupied,
 }
 
+// impl DualState {
+//     const VALUES: [Self; 2] = [Self::Empty, Self::Occupied];
+// }
+
 impl From<bool> for DualState {
     fn from(b: bool) -> Self {
         match b {

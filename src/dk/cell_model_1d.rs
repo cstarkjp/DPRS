@@ -20,7 +20,15 @@ pub trait CellModel1D: Sync {
     type State: Default + std::fmt::Debug + Copy + Send + Sync;
     fn from_bool_to_state(b: &bool) -> Self::State;
     fn from_state_to_bool(state: &Self::State) -> bool;
+    fn from_state_to_usize(state: &Self::State) -> usize;
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
+    #[allow(dead_code)]
+    fn adapted_dk_update_state<R: Rng>(
+        &self,
+        rng: &mut R,
+        p: f64,
+        nbrhood: &[Self::State; 3],
+    ) -> Self::State;
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
