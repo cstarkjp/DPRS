@@ -2,15 +2,18 @@
 // //!
 // //!
 
-use crate::{dp::cell_model_2d::CellModel2D, parameters::DualState};
+use crate::{
+    dp::{Nbrhood3D, cell_model_3d::CellModel3D},
+    parameters::DualState,
+};
 use rand::{Rng, RngExt};
 
-/// DPModel1D implements the CellModel1D trait, plus these.
+/// DKModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct DPModel2D();
+pub struct DKModel3D();
 
-// Implement CellModel2D trait for DPModel.
-impl CellModel2D for DPModel2D {
+// Implement CellModel3D trait for DPModel.
+impl CellModel3D for DKModel3D {
     type State = DualState;
 
     fn from_bool_to_state(b: &bool) -> Self::State {
@@ -41,7 +44,7 @@ impl CellModel2D for DPModel2D {
         &self,
         rng: &mut R,
         p: f64,
-        nbrhood: &[Self::State; 9],
+        nbrhood: &Nbrhood3D<Self>,
     ) -> Self::State {
         let is_any_nbr_occupied = nbrhood.iter().any(Self::from_state_to_bool);
         let do_survive = rng.random_bool(p);
@@ -50,23 +53,3 @@ impl CellModel2D for DPModel2D {
         Self::from_bool_to_state(&do_activate)
     }
 }
-
-// /// Minimal testing.
-// #[test]
-// fn test_dp() {
-//     use super::LatticeModel2D;
-//     use rand::rng;
-
-//     let dp = DPModel::default();
-//     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
-//     lm1.randomized_lattice(&mut rng(), 0.5);
-//     let mut lm2 = lm1.clone();
-
-//     for _ in 0..100 {
-//         lm1.next_iteration_serial(&mut rng(), 0.5);
-//         // TODO: pass RNGs vec
-//         lm2.next_iteration_parallel(&mut rng(), 0.5);
-
-//         assert_eq!(lm1.lattice(), lm2.lattice());
-//     }
-// }
