@@ -3,25 +3,11 @@
 // //!
 
 use crate::dk::simulation_1d::simulation;
-use crate::dk::{growth_model_1d, lattice_model_1d};
 use crate::parameters::{DualState, Parameters};
-use growth_model_1d::GrowthModel1D;
-use lattice_model_1d::LatticeModel1D;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
 pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let dk_cell_model = GrowthModel1D::default();
-    // Buffer lattice edges
-    let pad: usize = match params.do_edge_buffering {
-        true => 1,
-        false => 0,
-    };
-    let pruned_n_x = params.n_x;
-    let n_x: usize = pruned_n_x + pad * 2;
-    let lattice_model_1d: LatticeModel1D<GrowthModel1D> =
-        LatticeModel1D::new(dk_cell_model, n_x, (DualState::Empty, DualState::Empty));
-
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(params.n_threads)
@@ -32,11 +18,17 @@ pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64
     let time = Instant::now();
 
     // Do the simulation
-    let (n_lattices, lattices, tracking) = pool.install(|| simulation(lattice_model_1d, &params));
+    let (n_lattices, lattices, tracking) = pool.install(|| simulation(&params));
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 
     // If needed, remove edge buffering before returning the lattice time-slices.
+    // Buffer lattice edges
+    let pad: usize = match params.do_edge_buffering {
+        true => 1,
+        false => 0,
+    };
+    let pruned_n_x = params.n_x;
     let lattices = if params.do_edge_buffering {
         // Step through each of the recorded lattices, pruning off by 'pad'
         // at each edge, returning the pruned lattices
