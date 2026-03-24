@@ -10,22 +10,25 @@ use crate::{
 #[derive(Debug)]
 struct Model3D();
 
+#[derive(Debug,Default, Clone, Copy, PartialEq)]
+struct CellState(isize);
+
+impl std::convert::From<bool> for CellState {
+    fn from(b: bool) -> Self {
+        CellState(b as isize)
+    }
+}
+impl std::convert::From<CellState> for bool {
+    fn from(c: CellState) -> bool§ {
+        c.0 != 0
+    }
+}
+
 impl CellModel3D for Model3D {
-    type State = isize;
+    type State = CellState;
+    const EMPTY: CellState = CellState(0);
+    const OCCUPIED: CellState = CellState(1);
 
-    fn empty_state() -> Self::State {
-        0
-    }
-    fn occupied_state() -> Self::State {
-        1
-    }
-
-    fn from_bool_to_state(b: &bool) -> Self::State {
-        *b as isize
-    }
-    fn from_state_to_bool(state: &Self::State) -> bool {
-        *state != 0
-    }
     fn randomize_state<R: rand::Rng>(&self, _rng: &mut R, _p: f64) -> Self::State {
         0
     }

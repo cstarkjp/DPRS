@@ -65,11 +65,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
 
     /// Compute the mean cell occupancy
     pub fn mean(&self) -> f64 {
-        let total: usize = self
-            .lattice()
-            .iter()
-            .map(|&s| C::from_state_to_bool(&s) as usize)
-            .sum();
+        let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
 
         (total as f64) / (self.n_cells() as f64)
     }
@@ -91,7 +87,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     pub fn create_seeded_lattice(&mut self) {
         self.lattice = (0..self.n_cells()).map(|_| C::State::default()).collect();
         let i = self.i_cell(self.n_x / 2, self.n_y / 2);
-        self.lattice[i] = C::occupied_state();
+        self.lattice[i] = C::OCCUPIED;
     }
 
     /// Enforce edge topology specifications.

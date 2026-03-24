@@ -19,13 +19,6 @@ impl CellModel3D for GrowthModel3D {
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
 
-    // Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
-        let b = rng.random_bool(p);
-
-        Self::from_bool_to_state(&b)
-    }
-
     /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
     ///  (2) if one of the 9 neighborhood + here cells were previously occupied
@@ -35,10 +28,10 @@ impl CellModel3D for GrowthModel3D {
         p: f64,
         nbrhood: &Nbrhood3D<Self>,
     ) -> Self::State {
-        let is_any_nbr_occupied = nbrhood.iter().any(Self::from_state_to_bool);
+        let is_any_nbr_occupied = nbrhood.is_any_occupied();
         let do_survive = rng.random_bool(p);
         let do_activate = is_any_nbr_occupied & do_survive;
 
-        Self::from_bool_to_state(&do_activate)
+        do_activate.into()
     }
 }

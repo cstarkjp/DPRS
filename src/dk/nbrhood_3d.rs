@@ -93,6 +93,11 @@ impl<C: CellModel3D + ?Sized> Nbrhood3D<C> {
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &C::State> {
         self.nbrhood.iter()
     }
+
+    /// Return true if any of the neighborhood is occupied
+    pub fn is_any_occupied(&self) -> bool {
+        self.nbrhood.iter().any(|s| (*s).into())
+    }
 }
 
 /// An iterator over a lattice centred on a cell (x,y,z), with a 'move X by +1' method

@@ -15,13 +15,6 @@ impl CellModel1D for GrowthModel1D {
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
 
-    // Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
-        let b = rng.random_bool(p);
-
-        Self::from_bool_to_state(&b)
-    }
-
     /// Adapted Domany-Kinzel rule: this cell will become occupied if...
     fn adapted_dk_update_state<R: Rng>(
         &self,
@@ -34,7 +27,7 @@ impl CellModel1D for GrowthModel1D {
             .map(|s| Self::from_state_to_usize(s))
             .into_iter()
             .sum();
-        let has_nearest_neighbor = Self::from_state_to_bool(&nbrhood[1]);
+        let has_nearest_neighbor = nbrhood[1].into();
         let p1 = p;
         let p2 = p / 1.4142135623730951;
         let do_survive = (n_neighbors > 0 && rng.random_bool(p2))
@@ -48,7 +41,7 @@ impl CellModel1D for GrowthModel1D {
         //     | (has_nearest_neighbor && n_neighbors == 2 && rng.random_bool(p2))
         //     | (has_nearest_neighbor && n_neighbors == 3 && rng.random_bool(p3));
 
-        Self::from_bool_to_state(&do_survive)
+        do_survive.into()
     }
 
     /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
@@ -60,9 +53,9 @@ impl CellModel1D for GrowthModel1D {
         p: f64,
         nbrhood: &[Self::State; 3],
     ) -> Self::State {
-        let is_any_nbr_occupied = nbrhood.iter().any(Self::from_state_to_bool);
+        let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
         let do_survive = is_any_nbr_occupied & rng.random_bool(p);
 
-        Self::from_bool_to_state(&do_survive)
+        do_survive.into()
     }
 }

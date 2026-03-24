@@ -1,8 +1,4 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use rand::Rng;
+use rand::{Rng, RngExt};
 
 /// The trait required for a model to run in 1D.
 ///
@@ -17,35 +13,23 @@ pub trait CellModel1D: Sync {
     /// This must be [Sync] to support the 'parallel' versions;
     /// the array of cells is accessed by many threads at once.
     ///
-    type State: Default + std::fmt::Debug + Copy + Send + Sync + PartialEq;
+    type State: Default + std::fmt::Debug + Copy + Send + Sync + PartialEq + From<bool> + Into<bool>;
+
+    /// The value of State for an empty cell
+    #[allow(dead_code)]
     const EMPTY: Self::State;
+
+    /// The value of State for an occupied cell
     const OCCUPIED: Self::State;
 
-    #[allow(dead_code)]
-    fn empty_state() -> Self::State {
-        Self::EMPTY
-    }
-
-    fn occupied_state() -> Self::State {
-        Self::OCCUPIED
-    }
-
-    fn from_bool_to_state(b: &bool) -> Self::State {
-        match b {
-            false => Self::EMPTY,
-            true => Self::OCCUPIED,
-        }
-    }
-
-    fn from_state_to_bool(state: &Self::State) -> bool {
-        state == &Self::OCCUPIED
-    }
-
     fn from_state_to_usize(state: &Self::State) -> usize {
-        Self::from_state_to_bool(state) as usize
+        (*state).into() as usize
     }
 
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
+    /// Sample Bernoulli distribution with probability p to randomize cell state.
+    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
+        rng.random_bool(p).into()
+    }
 
     #[allow(dead_code)]
     fn adapted_dk_update_state<R: Rng>(
