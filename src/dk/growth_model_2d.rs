@@ -12,35 +12,8 @@ pub struct GrowthModel2D();
 // Implement CellModel2D trait for GrowthModel2D.
 impl CellModel2D for GrowthModel2D {
     type State = DualState;
-
-    fn empty_state() -> Self::State {
-        DualState::Occupied
-    }
-
-    fn occupied_state() -> Self::State {
-        DualState::Occupied
-    }
-
-    fn from_bool_to_state(b: &bool) -> Self::State {
-        match b {
-            false => DualState::Empty,
-            true => DualState::Occupied,
-        }
-    }
-
-    fn from_state_to_bool(state: &Self::State) -> bool {
-        match state {
-            DualState::Empty => false,
-            DualState::Occupied => true,
-        }
-    }
-
-    fn from_state_to_usize(state: &Self::State) -> usize {
-        match state {
-            DualState::Empty => 0,
-            DualState::Occupied => 1,
-        }
-    }
+    const EMPTY: DualState = DualState::Empty;
+    const OCCUPIED: DualState = DualState::Occupied;
 
     // Sample Bernoulli distribution with probability p to randomize cell state.
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {

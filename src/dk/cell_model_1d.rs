@@ -17,14 +17,36 @@ pub trait CellModel1D: Sync {
     /// This must be [Sync] to support the 'parallel' versions;
     /// the array of cells is accessed by many threads at once.
     ///
-    type State: Default + std::fmt::Debug + Copy + Send + Sync;
+    type State: Default + std::fmt::Debug + Copy + Send + Sync + PartialEq;
+    const EMPTY: Self::State;
+    const OCCUPIED: Self::State;
+
     #[allow(dead_code)]
-    fn empty_state() -> Self::State;
-    fn occupied_state() -> Self::State;
-    fn from_bool_to_state(b: &bool) -> Self::State;
-    fn from_state_to_bool(state: &Self::State) -> bool;
-    fn from_state_to_usize(state: &Self::State) -> usize;
+    fn empty_state() -> Self::State {
+        Self::EMPTY
+    }
+
+    fn occupied_state() -> Self::State {
+        Self::OCCUPIED
+    }
+
+    fn from_bool_to_state(b: &bool) -> Self::State {
+        match b {
+            false => Self::EMPTY,
+            true => Self::OCCUPIED,
+        }
+    }
+
+    fn from_state_to_bool(state: &Self::State) -> bool {
+        state == &Self::OCCUPIED
+    }
+
+    fn from_state_to_usize(state: &Self::State) -> usize {
+        Self::from_state_to_bool(state) as usize
+    }
+
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State;
+
     #[allow(dead_code)]
     fn adapted_dk_update_state<R: Rng>(
         &self,
@@ -32,6 +54,7 @@ pub trait CellModel1D: Sync {
         p: f64,
         nbrhood: &[Self::State; 3],
     ) -> Self::State;
+
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
