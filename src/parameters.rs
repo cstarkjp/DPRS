@@ -47,6 +47,7 @@ pub enum InitialCondition {
     #[default]
     Randomized,
     CentralSeed,
+    Preserved,
 }
 
 /// Edge boundary conditions

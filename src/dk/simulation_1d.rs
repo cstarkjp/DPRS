@@ -35,6 +35,7 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
         InitialCondition::CentralSeed => {
             lm.create_seeded_lattice();
         }
+        InitialCondition::Preserved => {}
     }
     lm.apply_edge_topology(&parameters);
     lm.apply_boundary_conditions(&parameters);

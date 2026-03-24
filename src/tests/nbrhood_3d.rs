@@ -10,17 +10,37 @@ use crate::{
 #[derive(Debug)]
 struct Model3D();
 
-#[derive(Debug,Default, Clone, Copy, PartialEq)]
+#[derive(Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 struct CellState(isize);
+
+impl std::fmt::Debug for CellState {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(fmt)
+    }
+}
 
 impl std::convert::From<bool> for CellState {
     fn from(b: bool) -> Self {
         CellState(b as isize)
     }
 }
+
 impl std::convert::From<CellState> for bool {
-    fn from(c: CellState) -> bool§ {
+    fn from(c: CellState) -> bool {
         c.0 != 0
+    }
+}
+
+impl std::convert::From<isize> for CellState {
+    fn from(b: isize) -> Self {
+        CellState(b)
+    }
+}
+
+impl std::ops::Deref for CellState {
+    type Target = isize;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
@@ -29,9 +49,6 @@ impl CellModel3D for Model3D {
     const EMPTY: CellState = CellState(0);
     const OCCUPIED: CellState = CellState(1);
 
-    fn randomize_state<R: rand::Rng>(&self, _rng: &mut R, _p: f64) -> Self::State {
-        0
-    }
     fn simplistic_dk_update_state<R: rand::Rng>(
         &self,
         _rng: &mut R,
@@ -48,7 +65,7 @@ fn value(
     i: usize,
     opt_dxyz: Option<(i8, i8, i8)>,
     zero_edge: bool,
-) -> isize {
+) -> CellState {
     let mut x = (i % parameters.n_x) as isize;
     let mut y = ((i / parameters.n_x) % parameters.n_y) as isize;
     let mut z = ((i / parameters.n_x) / parameters.n_y) as isize;
@@ -62,11 +79,11 @@ fn value(
                 || !(1..(parameters.n_y as isize - 1)).contains(&y)
                 || !(1..(parameters.n_z as isize - 1)).contains(&z)
             {
-                return 0;
+                return 0.into();
             }
         }
     };
-    10 + x + y * 7 + z * 13
+    (10 + x + y * 7 + z * 13).into()
 }
 
 #[test]
@@ -80,7 +97,15 @@ fn test_dp() {
     parameters.n_y = n_y;
     parameters.n_z = n_z;
 
-    let mut lm = LatticeModel3D::new(Model3D(), n_x, n_y, n_z, (0, 0), (1, 1), (2, 2));
+    let mut lm = LatticeModel3D::new(
+        Model3D(),
+        n_x,
+        n_y,
+        n_z,
+        (0.into(), 0.into()),
+        (1.into(), 1.into()),
+        (2.into(), 2.into()),
+    );
     for (i, l) in lm.lattice_mut().iter_mut().enumerate() {
         *l = value(&parameters, i, None, false);
     }
@@ -132,14 +157,15 @@ fn test_sim() {
     parameters.axis_bcs_y = (BoundaryCondition::Pinned, BoundaryCondition::Pinned);
     parameters.axis_bcs_z = (BoundaryCondition::Pinned, BoundaryCondition::Pinned);
     parameters.processing = Processing::Parallel;
+    parameters.initial_condition = crate::parameters::InitialCondition::Preserved;
     let mut lm = LatticeModel3D::new(
         Model3D(),
         parameters.n_x,
         parameters.n_y,
         parameters.n_z,
-        (0, 0), // End values have to match 'value'
-        (0, 0),
-        (0, 0),
+        (0.into(), 0.into()), // End values have to match 'value'
+        (0.into(), 0.into()),
+        (0.into(), 0.into()),
     );
     for (i, l) in lm.lattice_mut().iter_mut().enumerate() {
         *l = value(&parameters, i, None, false);
@@ -149,26 +175,29 @@ fn test_sim() {
         // &mut StdRng::seed_from_u64(1),
         &parameters,
     );
+
     assert_eq!(
         &lattices[0],
         &(0..parameters.n_x * parameters.n_y * parameters.n_z)
             .map(|i| value(&parameters, i, Some((0, 0, 0)), true))
             .collect::<Vec<_>>()
     );
+
     for (iter, l) in lattices.iter().enumerate().skip(1) {
         for (i, c) in l.iter().enumerate() {
             // m is 1 for max of nbrhod (+-1); 2 for max of nbrhood(+-2); etc
             let m = (iter * parameters.sample_period) as i8;
-            if value(&parameters, i, Some((0, 0, 0)), true) == 0 {
+            if value(&parameters, i, Some((0, 0, 0)), true) == 0.into() {
                 assert_eq!(
-                    *c, 0,
+                    *c,
+                    0.into(),
                     "Value at {i} for iteration {iter} should be edge of 0"
                 );
             } else {
                 let max = ((-m)..=m)
                     .flat_map(|dx| ((-m)..=m).map(move |dy| (dx, dy)))
                     .flat_map(|dxy| ((-m)..=m).map(move |dz| (dxy, dz)))
-                    .fold(0, |acc, ((dx, dy), dz)| {
+                    .fold(0.into(), |acc: CellState, ((dx, dy), dz)| {
                         acc.max(value(&parameters, i, Some((dx, dy, dz)), true))
                     });
                 // eprintln!("{i}:{max}:{c}");

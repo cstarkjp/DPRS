@@ -34,6 +34,7 @@ pub fn simulation<C: CellModel3D>(
         InitialCondition::CentralSeed => {
             lm.create_seeded_lattice();
         }
+        InitialCondition::Preserved => {}
     }
     lm.apply_edge_topology(&params);
     lm.apply_boundary_conditions(&params);
