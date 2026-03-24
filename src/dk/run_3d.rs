@@ -3,36 +3,11 @@
 // //!
 
 use crate::dk::simulation_3d::simulation;
-use crate::dk::{growth_model_3d, lattice_model_3d};
 use crate::parameters::{DualState, Parameters};
-use growth_model_3d::GrowthModel3D;
-use lattice_model_3d::LatticeModel3D;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
 pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
-    let dk_cell_model = GrowthModel3D::default();
-    // Buffer lattice edges
-    let pad: usize = match params.do_edge_buffering {
-        true => 1,
-        false => 0,
-    };
-    let pruned_n_x = params.n_x;
-    let pruned_n_y = params.n_y;
-    let pruned_n_z = params.n_z;
-    let n_x: usize = pruned_n_x + pad * 2;
-    let n_y: usize = pruned_n_y + pad * 2;
-    let n_z: usize = pruned_n_z + pad * 2;
-    let lattice_model_3d: LatticeModel3D<GrowthModel3D> = LatticeModel3D::new(
-        dk_cell_model,
-        n_x,
-        n_y,
-        n_z,
-        (DualState::Empty, DualState::Empty),
-        (DualState::Empty, DualState::Empty),
-        (DualState::Empty, DualState::Empty),
-    );
-
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(params.n_threads)
@@ -43,11 +18,21 @@ pub fn run(params: &Parameters) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64
     let time = Instant::now();
 
     // Do the simulation
-    let (n_lattices, lattices, tracking) = pool.install(|| simulation(lattice_model_3d, &params));
+    let (n_lattices, lattices, tracking) = pool.install(|| simulation(&params));
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 
     // If needed, remove edge buffering before returning the lattice time-slices.
+    // Buffer lattice edges
+    let pad: usize = match params.do_edge_buffering {
+        true => 1,
+        false => 0,
+    };
+    let pruned_n_x = params.n_x;
+    let pruned_n_y = params.n_y;
+    let pruned_n_z = params.n_z;
+    let n_x: usize = pruned_n_x + pad * 2;
+    let n_y: usize = pruned_n_y + pad * 2;
     let lattices = if params.do_edge_buffering {
         // Step through each of the recorded lattices, pruning off by 'pad'
         // at each edge, returning the pruned lattices

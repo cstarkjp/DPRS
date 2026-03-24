@@ -2,9 +2,9 @@
 // //!
 // //!
 
-use crate::dk::{cell_model_3d, lattice_model_3d};
-use crate::parameters::{InitialCondition, Parameters, Processing};
-use cell_model_3d::CellModel3D;
+use super::growth_model_3d::GrowthModel3D;
+use crate::dk::lattice_model_3d;
+use crate::parameters::{DualState, InitialCondition, Parameters, Processing};
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -14,30 +14,41 @@ use rand::rngs::StdRng;
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation<C: CellModel3D>(
-    lattice_model: LatticeModel3D<C>,
-    params: &Parameters,
-) -> (usize, Vec<Vec<<C as CellModel3D>::State>>, Vec<Vec<f64>>) {
-    // Create a progress bar
-    // let mut progress_bar = tqdm!(total = n_iterations+1);
-    // progress_bar.update(1)?;
-    // Create a model lattice plus metadata
-    let n_iterations: usize = params.n_iterations;
-    let sample_period: usize = params.sample_period;
-    let processing: Processing = params.processing.clone();
-    let mut lm = lattice_model;
-    let mut rng = StdRng::seed_from_u64(params.random_seed as u64);
-    match params.initial_condition {
+pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+    let pad: usize = match parameters.do_edge_buffering {
+        true => 1,
+        false => 0,
+    };
+    let pruned_n_x = parameters.n_x;
+    let pruned_n_y = parameters.n_y;
+    let pruned_n_z = parameters.n_z;
+    let n_x: usize = pruned_n_x + pad * 2;
+    let n_y: usize = pruned_n_y + pad * 2;
+    let n_z: usize = pruned_n_z + pad * 2;
+    let mut lm = LatticeModel3D::new(
+        GrowthModel3D::default(),
+        n_x,
+        n_y,
+        n_z,
+        (DualState::Empty, DualState::Empty),
+        (DualState::Empty, DualState::Empty),
+        (DualState::Empty, DualState::Empty),
+    );
+
+    let n_iterations: usize = parameters.n_iterations;
+    let sample_period: usize = parameters.sample_period;
+    let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
+    match parameters.initial_condition {
         InitialCondition::Randomized => {
-            lm.create_randomized_lattice(&mut rng, params.p_initial);
+            lm.create_randomized_lattice(&mut rng, parameters.p_initial);
         }
         InitialCondition::CentralSeed => {
             lm.create_seeded_lattice();
         }
         InitialCondition::Preserved => {}
     }
-    lm.apply_edge_topology(&params);
-    lm.apply_boundary_conditions(&params);
+    lm.apply_edge_topology(&parameters);
+    lm.apply_boundary_conditions(&parameters);
 
     // Set up a recording of lattice evolution, or suppress
     let n_lattices = match sample_period > 0 {
@@ -65,13 +76,13 @@ pub fn simulation<C: CellModel3D>(
     // Note: the second "apply_edge_topology" etc are unnecessary.
     // It's only there for now to ensure the t-sliced lattices show whether
     // boundary topology/condition step is working or not.
-    match processing {
+    match parameters.processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
                 // for i in tqdm!(1..(n_iterations + 1)) {
-                lm.next_iteration_serial(&mut rng, params.p_0);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
+                lm.next_iteration_serial(&mut rng, parameters.p_0);
+                lm.apply_edge_topology(&parameters);
+                lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
@@ -89,19 +100,19 @@ pub fn simulation<C: CellModel3D>(
             // one per layer, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(params.random_seed > 0);
+            assert!(parameters.random_seed > 0);
             // Allow for edge padding by adding two here
-            let mut rngs: Vec<StdRng> = (0..params.n_z + 2)
+            let mut rngs: Vec<StdRng> = (0..parameters.n_z + 2)
                 .into_iter()
-                .map(|s| StdRng::seed_from_u64((params.random_seed * (s + 1)) as u64))
+                .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             // let progress_bar = ProgressBar::new((n_iterations + 1).try_into().unwrap());
             for i in 1..(n_iterations + 1) {
                 // progress_bar.inc(1);
                 // for i in tqdm!(1..(n_iterations + 1)) {
-                lm.next_iteration_parallel(&mut rngs, params.p_0);
-                lm.apply_edge_topology(&params);
-                lm.apply_boundary_conditions(&params);
+                lm.next_iteration_parallel(&mut rngs, parameters.p_0);
+                lm.apply_edge_topology(&parameters);
+                lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && (i % sample_period) == 0 {
                     lattices.push(lm.lattice().clone());
                 };

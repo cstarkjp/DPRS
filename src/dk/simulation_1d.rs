@@ -4,7 +4,8 @@
 
 use super::growth_model_1d::GrowthModel1D;
 use crate::dk::lattice_model_1d;
-use crate::parameters::{DualState, InitialCondition, Parameters, Processing};
+use crate::parameters::DualState;
+use crate::parameters::{InitialCondition, Parameters, Processing};
 use lattice_model_1d::LatticeModel1D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -26,9 +27,6 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
         n_x,
         (DualState::Empty, DualState::Empty),
     );
-
-    let n_iterations: usize = parameters.n_iterations;
-    let sample_period: usize = parameters.sample_period;
     let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {
@@ -43,6 +41,8 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
     lm.apply_boundary_conditions(&parameters);
 
     // Set up a recording of lattice evolution, or suppress
+    let n_iterations: usize = parameters.n_iterations;
+    let sample_period: usize = parameters.sample_period;
     let n_lattices = match sample_period > 0 {
         true => n_iterations / sample_period + 1,
         false => 0,
