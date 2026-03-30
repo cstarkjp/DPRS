@@ -15,7 +15,8 @@ class Parameters:
     n_x: int = 200
     n_y: int = 200
     n_z: int = 200
-    p_0: float = 0.0482745
+    p_1: float = 0.0482745
+    p_2: float = 0
     n_iterations: int = 1000
     sample_period: int  = 1000
     initial_condition = sim.InitialCondition.Randomized

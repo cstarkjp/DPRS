@@ -79,7 +79,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     /// from a de-facto Bernoulli distribution.
     pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_state(rng, p))
+            .map(|_| self.cell_model.randomize_initial_state(rng, p))
             .collect();
     }
 

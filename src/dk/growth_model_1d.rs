@@ -7,7 +7,13 @@ use rand::{Rng, RngExt};
 
 /// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Default, Debug)]
-pub struct GrowthModel1D();
+pub struct GrowthModel1D {
+    pub p_1: f64,
+    pub p_2: f64,
+    pub p_initial: f64,
+    #[allow(dead_code)]
+    pub iteration: usize,
+}
 
 // Implement CellModel1D trait for GrowthModel.
 impl CellModel1D for GrowthModel1D {
@@ -15,11 +21,15 @@ impl CellModel1D for GrowthModel1D {
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
 
+    /// Sample Bernoulli distribution with probability p to randomize cell state.
+    fn randomize_initial_state<R: Rng>(&self, rng: &mut R) -> Self::State {
+        rng.random_bool(self.p_initial).into()
+    }
+
     /// Adapted Domany-Kinzel rule: this cell will become occupied if...
     fn adapted_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
-        p: f64,
         nbrhood: &[Self::State; 3],
     ) -> Self::State {
         let n_neighbors: usize = nbrhood
@@ -28,10 +38,11 @@ impl CellModel1D for GrowthModel1D {
             .into_iter()
             .sum();
         let has_nearest_neighbor = nbrhood[1].into();
-        let p1 = p;
-        let p2 = p / 1.4142135623730951;
-        let do_survive = (n_neighbors > 0 && rng.random_bool(p2))
-            | (has_nearest_neighbor && rng.random_bool(p1));
+        // TODO
+        let p_1 = self.p_1;
+        let p_2 = p_1 / 1.4142135623730951;
+        let do_survive = (n_neighbors > 0 && rng.random_bool(p_2))
+            | (has_nearest_neighbor && rng.random_bool(p_1));
         // let do_survive = (n_neighbors > 0 && rng.random_bool(p1))
         //     | (has_nearest_neighbor && n_neighbors > 1 && rng.random_bool(p2));
         // let p1 = p;
@@ -50,9 +61,10 @@ impl CellModel1D for GrowthModel1D {
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
-        p: f64,
+        // p: f64,
         nbrhood: &[Self::State; 3],
     ) -> Self::State {
+        let p = self.p_1;
         let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
         let do_survive = is_any_nbr_occupied & rng.random_bool(p);
 

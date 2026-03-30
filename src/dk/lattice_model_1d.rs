@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_1d::CellModel1D, parameters::Parameters};
+use crate::{dk::cell_model_1d::CellModel1D, parameters::{BoundaryCondition, Parameters, Topology}};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -19,6 +19,11 @@ pub struct LatticeModel1D<C: CellModel1D> {
     n_x: usize,
     lattice: Vec<C::State>,
     end_values_x: (C::State, C::State),
+    // From Parameters
+    // axis_topology_x: Topology,
+    // axis_bcs_x: (BoundaryCondition, BoundaryCondition),
+    // axis_bc_values_x: (bool, bool),
+    // do_edge_buffering: bool,
 }
 
 /// Lattice model methods.
@@ -67,9 +72,9 @@ impl<C: CellModel1D> LatticeModel1D<C> {
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
-    pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R, p: f64) {
+    pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_state(rng, p))
+            .map(|_| self.cell_model.randomize_initial_state(rng))
             .collect();
     }
 
@@ -125,14 +130,14 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     }
 
     /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R, p: f64) {
+    pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R) {
         self.lattice = (0..self.n_cells())
             .map(|i_cell| {
                 let (is_in_bounds, x) = self.is_in_bounds(i_cell);
                 let updated_cell = if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x);
                     self.cell_model
-                        .simplistic_dk_update_state(&mut rng, p, &nbrhood)
+                        .simplistic_dk_update_state(&mut rng, &nbrhood)
                 } else {
                     C::State::default()
                 };
@@ -168,7 +173,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     /// Evolve the grid by one iteration using chunked parallel processing.
     /// TODO: Does it make sense to pass the probability p like this?
     /// Wouldn't it be better to set it on the model struct?
-    pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R], p: f64) {
+    pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
         // Split the lattice into n_y rows each of length n_x and
         // update these rows in parallel using par_chunks_mut().
@@ -179,7 +184,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         updated_lattice
             .par_chunks_mut(chunk_length)
             .zip(rngs)
-            .for_each(|(chunk, rng)| self.update_row(rng, p, chunk));
+            .for_each(|(chunk, rng)| self.update_row(rng, chunk));
 
         self.lattice = updated_lattice;
     }
@@ -190,7 +195,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     ///
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
-    pub fn update_row<R: Rng>(&self, rng: &mut R, p: f64, row: &mut [C::State]) {
+    pub fn update_row<R: Rng>(&self, rng: &mut R, row: &mut [C::State]) {
         let lattice = &self.lattice;
         let row_span = self.n_x - 2;
         for (cell, window) in row
@@ -201,7 +206,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         {
             let nbrhood = [window[0], window[1], window[2]];
             let nbrhood = nbrhood.as_array::<3>().unwrap();
-            *cell = self.cell_model.adapted_dk_update_state(rng, p, nbrhood);
+            *cell = self.cell_model.adapted_dk_update_state(rng, nbrhood);
             // *cell = self.cell_model.simplistic_dk_update_state(rng, p, nbrhood);
         }
     }

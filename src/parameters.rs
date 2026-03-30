@@ -26,7 +26,7 @@ pub enum Dimension {
 }
 
 /// Edge topology.
-#[derive(PartialEq, Debug, Clone, Default)]
+#[derive(Eq, PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Topology {
     /// No copying etc is done from one edge to another
@@ -53,7 +53,7 @@ pub enum InitialCondition {
 /// Edge boundary conditions
 ///
 /// This is in essence what is around the outside of the lattice
-#[derive(PartialEq, Debug, Clone, Default)]
+#[derive(Eq, PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum BoundaryCondition {
     Unspecified,
@@ -131,7 +131,8 @@ pub struct Parameters {
     pub n_x: usize,
     pub n_y: usize,
     pub n_z: usize,
-    pub p_0: f64,
+    pub p_1: f64,
+    pub p_2: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -236,7 +237,8 @@ impl Parameters {
         println!("Growth model:  {:?}", self.growth_model);
         println!("Dimension:     {:?}", self.dim);
         println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
-        println!("Probability:   {}", self.p_0);
+        println!("Prob. p_1:     {}", self.p_1);
+        println!("Prob. p_2:     {}", self.p_2);
         println!("Iterations:    {}", self.n_iterations);
         println!("Sample period: {}", self.sample_period);
         println!("Initial cond.: {:?}", self.initial_condition);

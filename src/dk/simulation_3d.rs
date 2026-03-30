@@ -80,7 +80,7 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
                 // for i in tqdm!(1..(n_iterations + 1)) {
-                lm.next_iteration_serial(&mut rng, parameters.p_0);
+                lm.next_iteration_serial(&mut rng, parameters.p_1);
                 lm.apply_edge_topology(&parameters);
                 lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && i % sample_period == 0 {
@@ -110,7 +110,7 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
             for i in 1..(n_iterations + 1) {
                 // progress_bar.inc(1);
                 // for i in tqdm!(1..(n_iterations + 1)) {
-                lm.next_iteration_parallel(&mut rngs, parameters.p_0);
+                lm.next_iteration_parallel(&mut rngs, parameters.p_1);
                 lm.apply_edge_topology(&parameters);
                 lm.apply_boundary_conditions(&parameters);
                 if sample_period > 0 && (i % sample_period) == 0 {

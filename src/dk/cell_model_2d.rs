@@ -27,7 +27,7 @@ pub trait CellModel2D: Sync {
     }
 
     /// Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
+    fn randomize_initial_state<R: Rng>(&self, rng: &mut R, p: f64) -> Self::State {
         rng.random_bool(p).into()
     }
 
