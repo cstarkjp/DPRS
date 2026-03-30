@@ -9,10 +9,22 @@ use rand::{Rng, RngExt};
 #[derive(Clone, Copy, Default, Debug)]
 pub struct GrowthModel1D {
     pub p_1: f64,
+    #[allow(dead_code)]
     pub p_2: f64,
     pub p_initial: f64,
     #[allow(dead_code)]
     pub iteration: usize,
+}
+
+impl GrowthModel1D {
+    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize) -> Self {
+        Self {
+            p_1,
+            p_2,
+            p_initial,
+            iteration,
+        }
+    }
 }
 
 // Implement CellModel1D trait for GrowthModel.

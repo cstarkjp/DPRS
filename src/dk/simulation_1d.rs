@@ -24,13 +24,18 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
     let n_x: usize = pruned_n_x + pad * 2;
 
     // Growth model and parameters
-    let mut gm = GrowthModel1D::default();
-    gm.p_1 = parameters.p_1;
-    gm.p_2 = parameters.p_2;
-    gm.p_initial = parameters.p_initial;
-    gm.iteration = 0;
+    let mut growth_model =
+        GrowthModel1D::new(parameters.p_1, parameters.p_2, parameters.p_initial, 0);
+    let mut lm = LatticeModel1D::new(
+        growth_model,
+        n_x,
+        (DualState::Empty, DualState::Empty),
+        parameters.axis_topology_x.clone(),
+        parameters.axis_bcs_x.clone(),
+        parameters.axis_bc_values_x.clone(),
+        parameters.do_edge_buffering,
+    );
 
-    let mut lm = LatticeModel1D::new(gm, n_x, (DualState::Empty, DualState::Empty));
     let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {
@@ -41,8 +46,8 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
         }
         InitialCondition::Preserved => {}
     }
-    lm.apply_edge_topology(&parameters);
-    lm.apply_boundary_conditions(&parameters);
+    lm.apply_edge_topology();
+    lm.apply_boundary_conditions();
 
     // Set up a recording of lattice evolution, or suppress
     let n_iterations: usize = parameters.n_iterations;
@@ -75,10 +80,11 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
     match parameters.processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                gm.iteration += 1;
+                // Probably should be an increment function
+                growth_model.iteration += 1;
                 lm.next_iteration_serial(&mut rng);
-                lm.apply_edge_topology(&parameters);
-                lm.apply_boundary_conditions(&parameters);
+                lm.apply_edge_topology();
+                lm.apply_boundary_conditions();
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
@@ -102,10 +108,11 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
                 .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
-                gm.iteration += 1;
+                // Probably should be an increment function
+                growth_model.iteration += 1;
                 lm.next_iteration_parallel(&mut rngs);
-                lm.apply_edge_topology(&parameters);
-                lm.apply_boundary_conditions(&parameters);
+                lm.apply_edge_topology();
+                lm.apply_boundary_conditions();
                 if sample_period > 0 && i % sample_period == 0 {
                     lattices.push(lm.lattice().clone());
                 };
@@ -116,7 +123,7 @@ pub fn simulation(parameters: &Parameters) -> (usize, Vec<Vec<DualState>>, Vec<V
             }
         }
     };
-    assert!(n_iterations == gm.iteration);
+    assert!(n_iterations == growth_model.iteration);
     assert!(n_lattices == 0 || n_lattices == lattices.len());
 
     (n_lattices, lattices, tracking)

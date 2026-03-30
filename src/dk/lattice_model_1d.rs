@@ -2,7 +2,10 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_1d::CellModel1D, parameters::{BoundaryCondition, Parameters, Topology}};
+use crate::{
+    dk::cell_model_1d::CellModel1D,
+    parameters::{BoundaryCondition, Topology},
+};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -20,22 +23,34 @@ pub struct LatticeModel1D<C: CellModel1D> {
     lattice: Vec<C::State>,
     end_values_x: (C::State, C::State),
     // From Parameters
-    // axis_topology_x: Topology,
-    // axis_bcs_x: (BoundaryCondition, BoundaryCondition),
-    // axis_bc_values_x: (bool, bool),
-    // do_edge_buffering: bool,
+    axis_topology_x: Topology,
+    axis_bcs_x: (BoundaryCondition, BoundaryCondition),
+    axis_bc_values_x: (bool, bool),
+    do_edge_buffering: bool,
 }
 
 /// Lattice model methods.
 impl<C: CellModel1D> LatticeModel1D<C> {
     /// Create a fresh grid (vector of C::State cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn new(cell_model: C, n_x: usize, end_values_y: (C::State, C::State)) -> Self {
+    pub fn new(
+        cell_model: C,
+        n_x: usize,
+        end_values_x: (C::State, C::State),
+        axis_topology_x: Topology,
+        axis_bcs_x: (BoundaryCondition, BoundaryCondition),
+        axis_bc_values_x: (bool, bool),
+        do_edge_buffering: bool,
+    ) -> Self {
         Self {
             cell_model,
             n_x,
             lattice: vec![C::State::default(); n_x],
-            end_values_x: end_values_y,
+            end_values_x: end_values_x,
+            axis_topology_x,
+            axis_bcs_x,
+            axis_bc_values_x,
+            do_edge_buffering,
         }
     }
 
@@ -86,9 +101,9 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     }
 
     /// Enforce edge topology specifications.
-    pub fn apply_edge_topology(&mut self, params: &Parameters) {
+    pub fn apply_edge_topology(&mut self) {
         // Apply x-axis termini topology
-        if params.x_axis_topology_is_periodic() {
+        if self.x_axis_topology_is_periodic() {
             let n_x = self.n_x;
             self.make_axis_periodic_x(n_x - 2, 0);
             self.make_axis_periodic_x(1, n_x - 1);
@@ -102,22 +117,48 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         self.lattice[i_to] = self.lattice[i_from];
     }
 
+    fn x_axis_topology_is_periodic(&self) -> bool {
+        matches![self.axis_topology_x, Topology::Periodic]
+    }
+
+    fn axis_is_unconstrained_x0(&self) -> bool {
+        matches![
+            self.axis_bcs_x.0,
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating
+        ]
+    }
+
+    fn axis_is_unconstrained_x1(&self) -> bool {
+        matches![
+            self.axis_bcs_x.1,
+            BoundaryCondition::Unspecified | BoundaryCondition::Floating
+        ]
+    }
+
+    fn axis_is_pinned_x0(&self) -> bool {
+        matches![self.axis_bcs_x.0, BoundaryCondition::Pinned]
+    }
+
+    fn axis_is_pinned_x1(&self) -> bool {
+        matches![self.axis_bcs_x.1, BoundaryCondition::Pinned]
+    }
+
     /// Enforce edge boundary conditions.
-    pub fn apply_boundary_conditions(&mut self, params: &Parameters) {
+    pub fn apply_boundary_conditions(&mut self) {
         let n_x = self.n_x;
 
         // Apply left y-edge b.c.
-        if params.axis_is_unconstrained_x0() {
+        if self.axis_is_unconstrained_x0() {
             // No edge values need be imposed
-        } else if params.axis_is_pinned_x0() {
+        } else if self.axis_is_pinned_x0() {
             // println!("Pinning left end");
             self.pin_axis_ends_x(0, self.end_values_x.1);
         }
 
         // Apply right y-edge b.c.
-        if params.axis_is_unconstrained_x1() {
+        if self.axis_is_unconstrained_x1() {
             // No edge values need be imposed
-        } else if params.axis_is_pinned_x1() {
+        } else if self.axis_is_pinned_x1() {
             // println!("Pinning right end");
             self.pin_axis_ends_x(n_x - 1, self.end_values_x.1);
         }
