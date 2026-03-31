@@ -29,8 +29,8 @@ pub use run_2d::Run2D;
 pub use run_3d::Run3D;
 
 use crate::{
-    py_parameters::{Dimension, DualState, Processing},
-    sim_parameters::SimParameters,
+    py_parameters::{Dimension, Processing},
+    sim_parameters::{DualState, SimParameters},
 };
 
 /// Entry point to this module.

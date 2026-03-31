@@ -7,6 +7,52 @@ use crate::py_parameters::{
     Topology,
 };
 
+/// Cell state behavior for DP.
+#[derive(Default, PartialEq, Clone, Copy, Debug)]
+#[repr(u8)]
+pub enum DualState {
+    #[default]
+    Empty,
+    Occupied,
+}
+
+// impl DualState {
+//     const VALUES: [Self; 2] = [Self::Empty, Self::Occupied];
+// }
+
+impl From<bool> for DualState {
+    fn from(b: bool) -> Self {
+        match b {
+            false => Self::Empty,
+            true => Self::Occupied,
+        }
+    }
+}
+
+impl From<DualState> for bool {
+    fn from(state: DualState) -> bool {
+        matches![state, DualState::Occupied]
+    }
+}
+
+impl From<DualState> for f64 {
+    fn from(state: DualState) -> f64 {
+        let b = matches![state, DualState::Occupied];
+
+        (b as usize) as f64
+    }
+}
+
+/// Test the DualState var is a byte.
+#[test]
+fn guarantee_dpstate_is_u8() {
+    assert_eq!(
+        std::mem::size_of::<DualState>(),
+        1,
+        "DualState must be a byte"
+    );
+}
+
 /// Mirror Python-side parameter bundle.
 #[derive(Debug, Clone, Default)]
 pub struct SimParameters {

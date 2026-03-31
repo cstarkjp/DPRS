@@ -3,8 +3,7 @@
 // //!
 
 use crate::dk::simulation_1d::simulation;
-use crate::py_parameters::DualState;
-use crate::sim_parameters::SimParameters;
+use crate::sim_parameters::{DualState, SimParameters};
 use std::time::Instant;
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
@@ -15,7 +14,9 @@ pub struct Run1D {
 
 impl Run1D {
     pub fn new(parameters: &SimParameters) -> Self {
-        Self { parameters: parameters.clone() }
+        Self {
+            parameters: parameters.clone(),
+        }
     }
 
     /// Run a simulation and record how long the computation takes.
