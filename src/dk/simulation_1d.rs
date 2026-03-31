@@ -9,6 +9,8 @@ use lattice_model_1d::LatticeModel1D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 
+/// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
+///
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
