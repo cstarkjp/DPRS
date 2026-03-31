@@ -30,9 +30,9 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
         growth_model,
         n_x,
         (DualState::Empty, DualState::Empty),
-        parameters.axis_topology_x.clone(),
-        parameters.axis_bcs_x.clone(),
-        parameters.axis_bc_values_x.clone(),
+        parameters.axis_topology_x,
+        parameters.axis_bcs_x,
+        parameters.axis_bc_values_x,
         parameters.do_edge_buffering,
     );
 
@@ -104,7 +104,6 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
             // keep it full length for now just in case we need buffer RNGs.
             assert!(parameters.random_seed > 0);
             let mut rngs: Vec<StdRng> = (0..parameters.n_y)
-                .into_iter()
                 .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
