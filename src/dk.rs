@@ -21,14 +21,13 @@ mod nbrhood_3d;
 mod run_3d;
 mod simulation_3d;
 
+use crate::sim_parameters::{Dimension, DualState, Processing, SimParameters};
 pub use cell_model_3d::CellModel3D;
 pub use lattice_model_3d::LatticeModel3D;
 pub use nbrhood_3d::{Nbrhood3D, RowIterator3D};
 pub use run_1d::Run1D;
 pub use run_2d::Run2D;
 pub use run_3d::Run3D;
-
-use crate::sim_parameters::{Dimension, DualState, Processing, SimParameters};
 
 /// Entry point to this module.
 pub fn sim_dk(sim_parameters: SimParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
@@ -47,16 +46,11 @@ pub fn sim_dk(sim_parameters: SimParameters) -> (usize, Vec<Vec<DualState>>, Vec
             run_3d.run()
         }
     };
-    match sim_parameters.processing {
-        Processing::Serial => println!(
-            "Simulation run time (serial processing): {:4.3}s",
-            t_run_time
-        ),
-        Processing::Parallel => println!(
-            "Simulation run time (parallel processing): {:4.3}s",
-            t_run_time
-        ),
+    let processing: &'static str = match sim_parameters.processing {
+        Processing::Serial => "serial",
+        Processing::Parallel => "parallel",
     };
+    println!("Simulation run time ({processing}): {:4.3}s", t_run_time);
 
     (n_lattices, lattices, tracking, t_run_time)
 }

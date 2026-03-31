@@ -14,14 +14,14 @@ mod sim {
     #[pymodule_export]
     use crate::py_parameters::BoundaryCondition;
     #[pymodule_export]
+    use crate::py_parameters::Dimension;
+    #[pymodule_export]
     use crate::py_parameters::GrowthModelChoice;
     #[pymodule_export]
     use crate::py_parameters::InitialCondition;
     #[pymodule_export]
-    use crate::py_parameters::Dimension;
-    use crate::py_parameters::PyParameters;
-    #[pymodule_export]
     use crate::py_parameters::Processing;
+    use crate::py_parameters::PyParameters;
     #[pymodule_export]
     use crate::py_parameters::Topology;
     use crate::sim_parameters::SimParameters;
