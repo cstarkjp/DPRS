@@ -4,8 +4,7 @@
 
 use super::growth_model_1d::GrowthModel1D;
 use crate::dk::lattice_model_1d;
-use crate::py_parameters::{InitialCondition, Processing};
-use crate::sim_parameters::{SimParameters, DualState};
+use crate::sim_parameters::{DualState, InitialCondition, Processing, SimParameters};
 use lattice_model_1d::LatticeModel1D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;

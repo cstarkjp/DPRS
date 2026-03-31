@@ -6,6 +6,7 @@ use crate::dk::{CellModel3D, Nbrhood3D};
 use rand::RngExt;
 
 #[derive(Clone, Copy, Debug)]
+#[allow(dead_code)]
 struct Model3D {
     pub p_1: f64,
     #[allow(dead_code)]
@@ -15,6 +16,7 @@ struct Model3D {
     pub iteration: usize,
 }
 
+#[allow(dead_code)]
 impl Model3D {
     pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize) -> Self {
         Self {

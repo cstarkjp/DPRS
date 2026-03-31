@@ -1,6 +1,9 @@
-use rand::Rng;
+// #![warn(missing_docs)]
+// //!
+// //!
 
 use super::Nbrhood3D;
+use rand::Rng;
 
 /// The trait required for a model to run in 3D.
 ///

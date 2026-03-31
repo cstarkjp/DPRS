@@ -3,8 +3,7 @@
 // //!
 
 use crate::{
-    dk::cell_model_1d::CellModel1D,
-    py_parameters::{BoundaryCondition, Topology},
+    dk::cell_model_1d::CellModel1D, sim_parameters::BoundaryCondition, sim_parameters::Topology,
 };
 use rand::Rng;
 use rayon::prelude::*;
