@@ -16,7 +16,7 @@ mod sim {
     #[pymodule_export]
     use crate::py_parameters::Dimension;
     #[pymodule_export]
-    use crate::py_parameters::GrowthModel;
+    use crate::py_parameters::GrowthModelChoice;
     #[pymodule_export]
     use crate::py_parameters::InitialCondition;
     #[pymodule_export]

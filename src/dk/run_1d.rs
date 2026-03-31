@@ -14,8 +14,8 @@ pub struct Run1D {
 }
 
 impl Run1D {
-    pub fn new(parameters: SimParameters) -> Self {
-        Self { parameters }
+    pub fn new(parameters: &SimParameters) -> Self {
+        Self { parameters: parameters.clone() }
     }
 
     /// Run a simulation and record how long the computation takes.

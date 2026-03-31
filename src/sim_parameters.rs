@@ -3,13 +3,14 @@
 // //!
 
 use crate::py_parameters::{
-    BoundaryCondition, Dimension, GrowthModel, InitialCondition, Processing, PyParameters, Topology,
+    BoundaryCondition, Dimension, GrowthModelChoice, InitialCondition, Processing, PyParameters,
+    Topology,
 };
 
 /// Mirror Python-side parameter bundle.
 #[derive(Debug, Clone, Default)]
 pub struct SimParameters {
-    pub growth_model: GrowthModel,
+    pub growth_model_choice: GrowthModelChoice,
     pub dim: Dimension,
     pub n_x: usize,
     pub n_y: usize,
@@ -41,7 +42,7 @@ impl SimParameters {
     pub fn fill(parameters: &PyParameters) -> Self {
         let p = parameters.clone();
         Self {
-            growth_model: p.growth_model,
+            growth_model_choice: p.growth_model_choice,
             dim: p.dim,
             n_x: p.n_x,
             n_y: p.n_y,
@@ -71,7 +72,7 @@ impl SimParameters {
     /// Report simulation parameters.
     pub fn print(&self) {
         println!();
-        println!("Growth model:  {:?}", self.growth_model);
+        println!("Growth model:  {:?}", self.growth_model_choice);
         println!("Dimension:     {:?}", self.dim);
         println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
         println!("Prob. p_1:     {}", self.p_1);

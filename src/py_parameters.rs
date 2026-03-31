@@ -7,7 +7,7 @@ use std::convert::From;
 /// Lattice growth model type.
 #[derive(PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
-pub enum GrowthModel {
+pub enum GrowthModelChoice {
     #[default]
     DomanyKinzel,
     ContactProcess,
@@ -126,7 +126,7 @@ fn guarantee_dpstate_is_u8() {
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
 pub struct PyParameters {
-    pub growth_model: GrowthModel,
+    pub growth_model_choice: GrowthModelChoice,
     pub dim: Dimension,
     pub n_x: usize,
     pub n_y: usize,
@@ -156,7 +156,7 @@ pub struct PyParameters {
 impl PyParameters {
     pub fn print(&self) {
         println!();
-        println!("Growth model:  {:?}", self.growth_model);
+        println!("Growth model:  {:?}", self.growth_model_choice);
         println!("Dimension:     {:?}", self.dim);
         println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
         println!("Prob. p_1:     {}", self.p_1);

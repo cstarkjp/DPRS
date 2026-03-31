@@ -37,21 +37,21 @@ use crate::{
 pub fn sim_dk(py_parameters: PyParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
     let sim_parameters = SimParameters::fill(&py_parameters);
     sim_parameters.print();
-    let (t_run_time, n_lattices, lattices, tracking) = match &py_parameters.dim {
+    let (t_run_time, n_lattices, lattices, tracking) = match &sim_parameters.dim {
         Dimension::D1 => {
-            let run_1d = Run1D::new(sim_parameters);
+            let run_1d = Run1D::new(&sim_parameters);
             run_1d.run()
         }
         Dimension::D2 => {
-            let run_2d = Run2D::new(sim_parameters);
+            let run_2d = Run2D::new(&sim_parameters);
             run_2d.run()
         }
         Dimension::D3 => {
-            let run_3d = Run3D::new(sim_parameters);
+            let run_3d = Run3D::new(&sim_parameters);
             run_3d.run()
         }
     };
-    match py_parameters.processing {
+    match &sim_parameters.processing {
         Processing::Serial => println!(
             "Simulation run time (serial processing): {:4.3}s",
             t_run_time

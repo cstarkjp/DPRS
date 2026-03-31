@@ -6,7 +6,7 @@ from dprs.utils import DUAL
 print(f"\n{sim}")
 
 class Parameters:
-    growth_model = sim.GrowthModel.DomanyKinzel
+    growth_model_choice = sim.GrowthModelChoice.DomanyKinzel
     dim = sim.Dimension.D1
     n_x: int = 1_000_000
     n_y: int = 1
