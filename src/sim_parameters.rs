@@ -27,6 +27,15 @@ pub enum Processing {
     Parallel,
 }
 
+impl std::fmt::Display for Processing {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Processing::Serial => write!(fmt, "serial"),
+            Processing::Parallel => write!(fmt, "parallel"),
+        }
+    }
+}
+
 /// Initial lattice condition.
 #[derive(PartialEq, Debug, Clone, Default)]
 pub enum InitialCondition {
