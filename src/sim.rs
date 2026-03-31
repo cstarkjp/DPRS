@@ -12,18 +12,18 @@ mod sim {
     use super::*;
 
     #[pymodule_export]
-    use crate::parameters::BoundaryCondition;
+    use crate::py_parameters::BoundaryCondition;
     #[pymodule_export]
-    use crate::parameters::Dimension;
+    use crate::py_parameters::Dimension;
     #[pymodule_export]
-    use crate::parameters::GrowthModel;
+    use crate::py_parameters::GrowthModel;
     #[pymodule_export]
-    use crate::parameters::InitialCondition;
+    use crate::py_parameters::InitialCondition;
     #[pymodule_export]
-    use crate::parameters::Processing;
-    use crate::parameters::PyParameters;
+    use crate::py_parameters::Processing;
+    use crate::py_parameters::PyParameters;
     #[pymodule_export]
-    use crate::parameters::Topology;
+    use crate::py_parameters::Topology;
 
     #[pyfunction]
     fn dk(params: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {

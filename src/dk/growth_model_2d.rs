@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_2d::CellModel2D, parameters::DualState};
+use crate::{dk::cell_model_2d::CellModel2D, py_parameters::DualState};
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.

@@ -4,7 +4,7 @@
 
 use crate::{
     dk::{Nbrhood3D, cell_model_3d::CellModel3D},
-    parameters::DualState,
+    py_parameters::DualState,
 };
 use rand::{Rng, RngExt};
 

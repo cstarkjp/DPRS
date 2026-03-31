@@ -28,7 +28,10 @@ pub use run_1d::Run1D;
 pub use run_2d::Run2D;
 pub use run_3d::Run3D;
 
-use crate::parameters::{Dimension, DualState, Processing, PyParameters, SimParameters};
+use crate::{
+    py_parameters::{Dimension, DualState, Processing, PyParameters},
+    sim_parameters::SimParameters,
+};
 
 /// Entry point to this module.
 pub fn sim_dk(py_parameters: PyParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {

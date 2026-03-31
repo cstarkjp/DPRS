@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_1d::CellModel1D, parameters::DualState};
+use crate::{dk::cell_model_1d::CellModel1D, py_parameters::DualState};
 use rand::{Rng, RngExt};
 
 /// GrowthModel1D implements the CellModel1D trait, plus these.

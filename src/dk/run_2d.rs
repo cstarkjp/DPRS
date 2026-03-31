@@ -3,7 +3,8 @@
 // //!
 
 use crate::dk::simulation_2d::simulation;
-use crate::parameters::{DualState, SimParameters};
+use crate::py_parameters::DualState;
+use crate::sim_parameters::SimParameters;
 use std::time::Instant;
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.

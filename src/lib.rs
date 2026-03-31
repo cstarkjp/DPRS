@@ -4,7 +4,8 @@
 
 // Imports
 pub mod dk;
-pub mod parameters;
+pub mod py_parameters;
+pub mod sim_parameters;
 mod sim;
 
 #[cfg(test)]

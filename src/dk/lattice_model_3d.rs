@@ -4,7 +4,7 @@
 
 use crate::{
     dk::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
-    parameters::{BoundaryCondition, Topology},
+    py_parameters::{BoundaryCondition, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;

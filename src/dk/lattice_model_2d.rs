@@ -4,7 +4,7 @@
 
 use crate::{
     dk::cell_model_2d::CellModel2D,
-    parameters::{BoundaryCondition, Topology},
+    py_parameters::{BoundaryCondition, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
