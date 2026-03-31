@@ -30,12 +30,13 @@ use std::marker::PhantomData;
 /// interrogated with an (x,y,z) index (each of u8)
 ///
 #[derive(Debug, Clone)]
-pub struct Nbrhood3D<C: CellModel3D + ?Sized> {
+pub struct CellNbrhood3D<C: CellModel3D + ?Sized> {
     cells_ne: u32,
     phantom: PhantomData<C::State>,
 }
 
-impl<C: CellModel3D + ?Sized> std::default::Default for Nbrhood3D<C> {
+/// Default, empty, very dull neighborhood.
+impl<C: CellModel3D + ?Sized> std::default::Default for CellNbrhood3D<C> {
     fn default() -> Self {
         let cells_ne = 0;
         Self {
@@ -45,7 +46,7 @@ impl<C: CellModel3D + ?Sized> std::default::Default for Nbrhood3D<C> {
     }
 }
 
-impl<C: CellModel3D + ?Sized> Nbrhood3D<C> {
+impl<C: CellModel3D + ?Sized> CellNbrhood3D<C> {
     /// Create a new neighborhood centred on an xyz in the given lattice,
     /// with the specified n_x and n_y (the lattice must be Z-major, X-minor)
     pub fn new(lattice: &[C::State], xyz: (usize, usize, usize), n_x: usize, n_y: usize) -> Self {
@@ -108,7 +109,7 @@ impl<C: CellModel3D + ?Sized> Nbrhood3D<C> {
 /// An iterator over a lattice centred on a cell (x,y,z), with a 'move X by +1' method
 pub struct RowIterator3D<'a, C: CellModel3D> {
     /// The 3-by-3-by-3 neighbourhood around a cell
-    nbrhood: Nbrhood3D<C>,
+    nbrhood: CellNbrhood3D<C>,
     /// A windowed iterator over the 'X' row in the lattice, starting at the cell
     /// that is offset by (-1,-1,-1), ending at (+1,+1,+1)
     ///
@@ -149,7 +150,7 @@ impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
             .take(n_x - 1 - xyz.0);
 
         if let Some(lattice_window) = row_iter.next() {
-            let mut nbrhood = Nbrhood3D::default();
+            let mut nbrhood = CellNbrhood3D::default();
             nbrhood.fill_slice::<0>(lattice_window, n_x, n_y);
             nbrhood.fill_slice::<1>(lattice_window, n_x, n_y);
             nbrhood.fill_slice::<2>(lattice_window, n_x, n_y);
@@ -181,7 +182,7 @@ impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
     }
 
     /// Borrow the neighborhood, so it may be iterated over or indexed into
-    pub fn nbrhood(&self) -> &Nbrhood3D<C> {
+    pub fn nbrhood(&self) -> &CellNbrhood3D<C> {
         &self.nbrhood
     }
 }

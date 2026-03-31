@@ -15,16 +15,16 @@ mod run_2d;
 mod simulation_2d;
 
 mod cell_model_3d;
+mod cell_nbrhood_3d;
 mod growth_model_3d;
 mod lattice_model_3d;
-mod cell_nbrhood_3d;
 mod run_3d;
 mod simulation_3d;
 
 use crate::sim_parameters::{Dimension, DualState, Processing, SimParameters};
 pub use cell_model_3d::CellModel3D;
+pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
 pub use lattice_model_3d::LatticeModel3D;
-pub use cell_nbrhood_3d::{Nbrhood3D, RowIterator3D};
 pub use run_1d::Run1D;
 pub use run_2d::Run2D;
 pub use run_3d::Run3D;

@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use super::Nbrhood3D;
+use super::CellNbrhood3D;
 use rand::Rng;
 
 /// The trait required for a model to run in 3D.
@@ -37,6 +37,6 @@ pub trait CellModel3D: Sync {
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
-        nbrhood: &Nbrhood3D<Self>,
+        nbrhood: &CellNbrhood3D<Self>,
     ) -> Self::State;
 }

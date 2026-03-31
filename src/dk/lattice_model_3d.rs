@@ -3,7 +3,7 @@
 // //!
 
 use crate::{
-    dk::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
+    dk::{CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
     sim_parameters::BoundaryCondition,
     sim_parameters::Topology,
 };
@@ -309,7 +309,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     }
 
     /// Cell values triple-triple-tripled across (x-1:x+1, y-1:y+1, z-1:z+1).
-    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> Nbrhood3D<C> {
+    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> CellNbrhood3D<C> {
         assert!(
             x > 0,
             "X must be within the border to generate a neighborhood"
@@ -322,7 +322,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
             z > 0,
             "Z must be within the border to generate a neighborhood"
         );
-        Nbrhood3D::new(&self.lattice, (x, y, z), self.n_x, self.n_y)
+        CellNbrhood3D::new(&self.lattice, (x, y, z), self.n_x, self.n_y)
     }
 
     /// Check (x,y,z) coordinate is within lattice bounds.

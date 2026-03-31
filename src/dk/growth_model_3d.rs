@@ -3,7 +3,7 @@
 // //!
 
 use crate::{
-    dk::{Nbrhood3D, cell_model_3d::CellModel3D},
+    dk::{CellNbrhood3D, cell_model_3d::CellModel3D},
     sim_parameters::DualState,
 };
 use rand::{Rng, RngExt};
@@ -47,7 +47,7 @@ impl CellModel3D for GrowthModel3D {
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
-        nbrhood: &Nbrhood3D<Self>,
+        nbrhood: &CellNbrhood3D<Self>,
     ) -> Self::State {
         let p_1 = self.p_1;
         let do_survive = rng.random_bool(p_1);
