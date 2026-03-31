@@ -1,13 +1,4 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-use std::convert::From;
-
-use crate::py_parameters::{
-    BoundaryCondition as PyBoundaryCondition, Dimension as PyDimension,
-    GrowthModelChoice as PyGrowthModelChoice, InitialCondition as PyInitialCondition,
-    Processing as PyProcessing, PyParameters, Topology as PyTopology,
-};
+use crate::py_parameters::PyParameters;
 
 /// Lattice growth model type.
 #[derive(PartialEq, Debug, Clone, Default)]
@@ -18,16 +9,6 @@ pub enum GrowthModelChoice {
     PairContactProcess,
     TwoSpeciesContactProcess,
 }
-impl From<PyGrowthModelChoice> for GrowthModelChoice {
-    fn from(choice: PyGrowthModelChoice) -> Self {
-        match choice {
-            PyGrowthModelChoice::DomanyKinzel => Self::DomanyKinzel,
-            PyGrowthModelChoice::ContactProcess => Self::ContactProcess,
-            PyGrowthModelChoice::PairContactProcess => Self::PairContactProcess,
-            PyGrowthModelChoice::TwoSpeciesContactProcess => Self::TwoSpeciesContactProcess,
-        }
-    }
-}
 
 /// Lattice dimension.
 #[derive(PartialEq, Debug, Clone, Default)]
@@ -37,15 +18,6 @@ pub enum Dimension {
     D2,
     D3,
 }
-impl From<PyDimension> for Dimension {
-    fn from(dim: PyDimension) -> Self {
-        match dim {
-            PyDimension::D1 => Self::D1,
-            PyDimension::D2 => Self::D2,
-            PyDimension::D3 => Self::D3,
-        }
-    }
-}
 
 /// Choice of processing type: will become a Py-passable parameter.
 #[derive(PartialEq, Debug, Clone, Default)]
@@ -53,14 +25,6 @@ pub enum Processing {
     #[default]
     Serial,
     Parallel,
-}
-impl From<PyProcessing> for Processing {
-    fn from(processing: PyProcessing) -> Self {
-        match processing {
-            PyProcessing::Serial => Self::Serial,
-            PyProcessing::Parallel => Self::Parallel,
-        }
-    }
 }
 
 /// Initial lattice condition.
@@ -70,15 +34,6 @@ pub enum InitialCondition {
     Randomized,
     CentralSeed,
     Preserved,
-}
-impl From<PyInitialCondition> for InitialCondition {
-    fn from(ic: PyInitialCondition) -> Self {
-        match ic {
-            PyInitialCondition::Randomized => Self::Randomized,
-            PyInitialCondition::CentralSeed => Self::CentralSeed,
-            PyInitialCondition::Preserved => Self::Preserved,
-        }
-    }
 }
 
 /// Edge topology.
@@ -91,15 +46,6 @@ pub enum Topology {
     Open,
     /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
     Periodic,
-}
-impl From<PyTopology> for Topology {
-    fn from(topol: PyTopology) -> Self {
-        match topol {
-            PyTopology::Unspecified => Self::Unspecified,
-            PyTopology::Open => Self::Open,
-            PyTopology::Periodic => Self::Periodic,
-        }
-    }
 }
 
 /// Edge boundary conditions
@@ -117,17 +63,6 @@ pub enum BoundaryCondition {
     Extended,   // NYI
     Reflecting, // NYI
 }
-impl From<PyBoundaryCondition> for BoundaryCondition {
-    fn from(bc: PyBoundaryCondition) -> Self {
-        match bc {
-            PyBoundaryCondition::Unspecified => Self::Unspecified,
-            PyBoundaryCondition::Floating => Self::Floating,
-            PyBoundaryCondition::Pinned => Self::Pinned,
-            PyBoundaryCondition::Extended => Self::Extended,
-            PyBoundaryCondition::Reflecting => Self::Reflecting,
-        }
-    }
-}
 
 /// Cell state behavior for DP.
 #[derive(Default, PartialEq, Clone, Copy, Debug)]
@@ -137,6 +72,7 @@ pub enum DualState {
     Empty,
     Occupied,
 }
+
 impl From<bool> for DualState {
     fn from(b: bool) -> Self {
         match b {

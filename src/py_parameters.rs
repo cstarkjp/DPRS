@@ -4,74 +4,108 @@
 
 use pyo3::{FromPyObject, pyclass};
 
-/// Lattice growth model type.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum GrowthModelChoice {
-    #[default]
-    DomanyKinzel,
-    ContactProcess,
-    PairContactProcess,
-    TwoSpeciesContactProcess,
+macro_rules! py_of_enum {
+    {$(#[$outer:meta])* $enum: ty, $py_enum: ident, ( $( $(#[$inner:ident $($args:tt)*])* $others:ident ),* $(,)? )  } => {
+
+        $(#[$outer])*
+        #[derive(PartialEq, Debug, Clone, Default)]
+        #[pyclass(from_py_object, eq, eq_int)]
+        pub enum $py_enum {
+            $( $(#[$inner $($args)*])* $others ),*
+        }
+
+        impl From<$py_enum> for $enum {
+            fn from(choice: $py_enum) -> $enum {
+                match choice {
+                    $( < $py_enum > :: $others => Self :: $others ),*
+                }
+            }
+        }
+
+    }
 }
 
-/// Lattice dimension.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum Dimension {
-    #[default]
-    D1,
-    D2,
-    D3,
+py_of_enum! {
+    /// Lattice growth model type.
+    crate::sim_parameters::GrowthModelChoice,
+    GrowthModelChoice,
+        (
+            #[default] DomanyKinzel,
+            ContactProcess ,
+            PairContactProcess,
+            TwoSpeciesContactProcess
+        )
 }
 
-/// Initial lattice condition.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum InitialCondition {
-    #[default]
-    Randomized,
-    CentralSeed,
-    Preserved,
+py_of_enum! {
+    /// Lattice dimension.
+    crate::sim_parameters::Dimension,
+    Dimension,
+        (
+            #[default]
+            D1,
+            D2,
+            D3,
+        )
 }
 
-/// Edge topology.
-#[derive(Eq, PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum Topology {
-    /// No copying etc is done from one edge to another
-    Unspecified,
-    /// No copying etc is done from one edge to another
-    #[default]
-    Open,
-    /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
-    Periodic,
+py_of_enum! {
+    /// Initial lattice condition.
+    crate::sim_parameters::InitialCondition,
+    InitialCondition,
+        (
+            #[default]
+            Randomized,
+            CentralSeed,
+            Preserved,
+        )
 }
 
-/// Edge boundary conditions
-///
-/// This is in essence what is around the outside of the lattice
-#[derive(Eq, PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum BoundaryCondition {
-    Unspecified,
-    /// The outside of the lattice could be anything
-    #[default]
-    Floating,
-    /// The boundary is pinned to a fixed value, so 0 and/or n-1 are written to
-    /// the specified value
-    Pinned,
-    Extended,   // NYI
-    Reflecting, // NYI
+py_of_enum! {
+    /// Edge topology.
+    crate::sim_parameters::Topology,
+    Topology,
+        (
+            /// No copying etc is done from one edge to another
+            Unspecified,
+            /// No copying etc is done from one edge to another
+            #[default]
+            Open,
+            /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
+            Periodic,
+        )
 }
 
-/// Choice of processing type: will become a Py-passable parameter.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum Processing {
-    #[default]
-    Serial,
-    Parallel,
+py_of_enum! {
+    /// Edge boundary conditions
+    ///
+    /// This is in essence what is around the outside of the lattice
+    crate::sim_parameters::BoundaryCondition,
+    BoundaryCondition,
+        (
+            Unspecified,
+            /// The outside of the lattice could be anything
+            #[default]
+            Floating,
+            /// The boundary is pinned to a fixed value, so 0 and/or n-1 are written to
+            /// the specified value
+            Pinned,
+            // NYI
+            Extended,
+            // NYI
+              Reflecting,
+        )
+}
+
+py_of_enum! {
+    /// Choice of processing type: will become a Py-passable parameter.
+    crate::sim_parameters::Processing,
+    Processing,
+        (
+            #[default]
+            Serial,
+            Parallel,
+        )
 }
 
 /// Model parameter bundle derived from Python Parameters class instance.
