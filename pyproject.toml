@@ -5,7 +5,7 @@ build-backend = "maturin"
 [project]
 name = "dprs"
 requires-python = ">=3.12"
-description = 'Directed percolation-type models in Rust'
+description = 'Directed percolation-type models implemented in Rust and wrapped in Python'
 readme = 'README.md'
 classifiers = [
     "Programming Language :: Rust",
@@ -24,7 +24,9 @@ authors = [
 ]
 keywords = [
   'directed percolation', 
-  'phase transition'
+  'phase transition',
+  'Domany-Kinzel',
+  'contact process'
 ]
 dynamic = ["version"]
 
@@ -37,22 +39,6 @@ documentation = "https://cstarkjp.github.io/DPRS"
 [tool.maturin]
 python-source = "python"
 module-name = "dprs.sim"
-
-# [tool.uv]
-# required-version = "0.10.11"
-
-## Development Status :: 2 - Pre-Alpha 
-## Development Status :: 3 - Alpha
-## Development Status :: 4 - Beta
-## Development Status :: 5 - Production/Stable
-
-
-# [project.urls]
-# homepage = "https://cstarkjp.github.io/DPRS"
-# repository = "https://github.com/cstarkjp/DPRS"
-# documentation = "https://cstarkjp.github.io/DPRS"
-# # "Bug Tracker" = "https://github.com/cstarkjp/Langevin"
-
 
 # dynamic = ["version"]
 
