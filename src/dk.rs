@@ -31,7 +31,9 @@ pub use run_3d::Run3D;
 
 /// Entry point to this module.
 pub fn sim_dk(sim_parameters: SimParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
-    sim_parameters.print();
+    println!();
+    println!("{sim_parameters}");
+    println!();
     let (t_run_time, n_lattices, lattices, tracking) = match &sim_parameters.dim {
         Dimension::D1 => {
             let run_1d = Run1D::new(&sim_parameters);

@@ -137,32 +137,30 @@ pub struct PyParameters {
     pub n_threads: usize,
 }
 
-/// Report Python-side parameters.
-impl PyParameters {
-    pub fn print(&self) {
-        println!();
-        println!("Growth model:  {:?}", self.growth_model_choice);
-        println!("Dimension:     {:?}", self.dim);
-        println!("Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z));
-        println!("Prob. p_1:     {}", self.p_1);
-        println!("Prob. p_2:     {}", self.p_2);
-        println!("Iterations:    {}", self.n_iterations);
-        println!("Sample period: {}", self.sample_period);
-        println!("Initial cond.: {:?}", self.initial_condition);
-        println!("Initial prob.: {}", self.p_initial);
-        println!("Random seed:   {}", self.random_seed);
-        println!("Topology x:    {:?}", self.axis_topology_x);
-        println!("Topology y:    {:?}", self.axis_topology_y);
-        println!("Topology z:    {:?}", self.axis_topology_z);
-        println!("Axis BCs x:    {:?}", self.axis_bcs_x);
-        println!("Axis BCs y:    {:?}", self.axis_bcs_y);
-        println!("Axis BCs z:    {:?}", self.axis_bcs_z);
-        println!("BC values x:   {:?}", self.axis_bc_values_x);
-        println!("BC values y:   {:?}", self.axis_bc_values_y);
-        println!("BC values z:   {:?}", self.axis_bc_values_z);
-        println!("Edge buffer:   {}", self.do_edge_buffering);
-        println!("Processing:    {:?}", self.processing);
-        println!("Num. threads:  {}", self.n_threads);
-        println!();
+impl std::fmt::Display for PyParameters {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        writeln!(fmt, "Growth model:  {:?}", self.growth_model_choice)?;
+        writeln!(fmt, "Dimension:     {:?}", self.dim)?;
+        writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
+        writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
+        writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
+        writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
+        writeln!(fmt, "Sample period: {}", self.sample_period)?;
+        writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
+        writeln!(fmt, "Initial prob.: {}", self.p_initial)?;
+        writeln!(fmt, "Random seed:   {}", self.random_seed)?;
+        writeln!(fmt, "Topology x:    {:?}", self.axis_topology_x)?;
+        writeln!(fmt, "Topology y:    {:?}", self.axis_topology_y)?;
+        writeln!(fmt, "Topology z:    {:?}", self.axis_topology_z)?;
+        writeln!(fmt, "Axis BCs x:    {:?}", self.axis_bcs_x)?;
+        writeln!(fmt, "Axis BCs y:    {:?}", self.axis_bcs_y)?;
+        writeln!(fmt, "Axis BCs z:    {:?}", self.axis_bcs_z)?;
+        writeln!(fmt, "BC values x:   {:?}", self.axis_bc_values_x)?;
+        writeln!(fmt, "BC values y:   {:?}", self.axis_bc_values_y)?;
+        writeln!(fmt, "BC values z:   {:?}", self.axis_bc_values_z)?;
+        writeln!(fmt, "Edge buffer:   {}", self.do_edge_buffering)?;
+        writeln!(fmt, "Processing:    {:?}", self.processing)?;
+        writeln!(fmt, "Num. threads:  {}", self.n_threads)?;
+        Ok(())
     }
 }
