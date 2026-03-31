@@ -40,6 +40,7 @@ pub trait CellModel1D: Sync {
         nbrhood: &[Self::State; 3],
     ) -> Self::State;
 
+    #[allow(dead_code)]
     fn simplistic_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,

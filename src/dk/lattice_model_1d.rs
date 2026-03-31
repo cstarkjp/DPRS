@@ -67,35 +67,25 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         (self.cell_model, self.lattice)
     }
 
-    /// Count the total number of cells in the grid.
-    fn n_cells(&self) -> usize {
-        self.n_x
-    }
-
     /// Compute the mean cell occupancy
     pub fn mean(&self) -> f64 {
         let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
 
-        (total as f64) / (self.n_cells() as f64)
-    }
-
-    /// Compute the cell index of a given (x, y) coordinate.
-    fn i_cell(&self, x: usize) -> usize {
-        x
+        (total as f64) / (self.n_x as f64)
     }
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.lattice = (0..self.n_cells())
+        self.lattice = (0..self.n_x)
             .map(|_| self.cell_model.randomize_state(rng))
             .collect();
     }
 
     /// Seed the simulation with a central patch.
     pub fn create_seeded_lattice(&mut self) {
-        self.lattice = (0..self.n_cells()).map(|_| C::State::default()).collect();
-        let i = self.i_cell(self.n_cells() / 2);
+        self.lattice = vec![C::State::default(); self.n_x];
+        let i = self.n_x / 2;
         self.lattice[i] = C::OCCUPIED;
     }
 
@@ -103,121 +93,98 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     pub fn apply_edge_topology(&mut self) {
         // Apply x_axis termini topology
         if self.axis_topology_x.is_periodic() {
-            self.make_axis_periodic_x(self.n_x - 2, 0);
-            self.make_axis_periodic_x(1, self.n_x - 1);
+            self.lattice[0] = self.lattice[self.n_x - 2];
+            self.lattice[self.n_x - 1] = self.lattice[1];
         }
-    }
-
-    /// Enforce periodic edge topology for the x-axis.
-    fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
-        let i_from = self.i_cell(x_from);
-        let i_to = self.i_cell(x_to);
-        self.lattice[i_to] = self.lattice[i_from];
     }
 
     /// Enforce edge boundary conditions.
     pub fn apply_boundary_conditions(&mut self) {
-        let n_x = self.n_x;
-
         // Apply left y-edge b.c.
-        if self.axis_bcs_x.0.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.0.is_pinned() {
-            // println!("Pinning left end");
-            self.pin_axis_ends_x(0, self.end_values_x.0);
+        if self.axis_bcs_x.0.is_pinned() {
+            self.lattice[0] = self.end_values_x.0;
         }
 
         // Apply right y-edge b.c.
-        if self.axis_bcs_x.1.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.1.is_pinned() {
-            // println!("Pinning right end");
-            self.pin_axis_ends_x(n_x - 1, self.end_values_x.1);
+        if self.axis_bcs_x.1.is_pinned() {
+            self.lattice[self.n_x - 1] = self.end_values_x.1;
         }
     }
 
-    /// Enforce constant-value edge b.c. at ends.
-    fn pin_axis_ends_x(&mut self, x: usize, pinned_value: <C as CellModel1D>::State) {
-        let i_cell = self.i_cell(x);
-        self.lattice[i_cell] = pinned_value;
-    }
-
     /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R) {
-        self.lattice = (0..self.n_cells())
-            .map(|i_cell| {
-                let (is_in_bounds, x) = self.is_in_bounds(i_cell);
-
-                if is_in_bounds {
-                    let nbrhood = self.cell_nbrhood(x);
-                    self.cell_model
-                        .simplistic_dk_update_state(&mut rng, &nbrhood)
-                } else {
-                    C::State::default()
-                }
-            })
-            .collect();
-    }
-
-    /// Cell values tripled across (x-1:x+1).
-    fn cell_nbrhood(&self, x: usize) -> [<C as CellModel1D>::State; 3] {
-        [
-            self.lattice[self.i_cell(x - 1)],
-            self.lattice[self.i_cell(x)],
-            self.lattice[self.i_cell(x + 1)],
-        ]
-    }
-
-    /// Check (x) coordinate is within lattice bounds.
-    fn is_in_bounds_x(&self, x: usize) -> bool {
-        x > 0 && x < self.n_x - 1
-    }
-
-    /// Check cell index is within lattice bounds; return this test and (x).
-    fn is_in_bounds(&self, i_cell: usize) -> (bool, usize) {
-        let x = i_cell;
-
-        (self.is_in_bounds_x(x), x)
+    pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R) {
+        let mut updated_lattice = vec![C::State::default(); self.n_x];
+        self.update_portion_of_row(rng, &mut updated_lattice, 0, true, true);
+        self.lattice = updated_lattice;
     }
 
     /// Evolve the grid by one iteration using chunked parallel processing.
     /// TODO: Does it make sense to pass the probability p like this?
     /// Wouldn't it be better to set it on the model struct?
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
-        let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
         // Split the lattice into n_y rows each of length n_x and
         // update these rows in parallel using par_chunks_mut().
         // Before passing to next_row() to perform the update,
         // enumerate each row, zip each pair together with one of the RNGs,
         // and then omit the first and last rows.
+        let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
         let chunk_length = self.n_x;
+        let num_chunks = (self.n_x + chunk_length - 1) / self.n_x;
         updated_lattice
             .par_chunks_mut(chunk_length)
             .zip(rngs)
-            .for_each(|(chunk, rng)| self.update_row(rng, chunk));
-
+            .enumerate()
+            .for_each(|(i, (chunk, rng))| {
+                self.update_portion_of_row(
+                    rng,
+                    chunk,
+                    i * chunk_length,
+                    i == 0,
+                    i + 1 == num_chunks,
+                )
+            });
         self.lattice = updated_lattice;
     }
 
-    /// Update a row of cells.
+    /// Update a *portion* of a row of cells.
     ///
     /// This zips across the row using 3-cell windows centred on each cell.
     ///
-    /// By using iterators we can guarantee safe access without (unnecessary)
-    /// range checks.
-    pub fn update_row<R: Rng>(&self, rng: &mut R, row: &mut [C::State]) {
-        let lattice = &self.lattice;
-        let row_span = self.n_x - 2;
+    /// The row should be a portion of a *new* lattice.
+    ///
+    /// * If 'skip_left' is true then the *first* cell in the row will *NOT* be updated.
+    ///
+    /// * If 'skip_right' is true then the *last* cell in the row will *NOT* be updated.
+    ///
+    /// The lattice_offset should correspond to the offset from the start of the
+    /// lattice that *row* begins at. To use the neighborhood (one left, one
+    /// right) of the row the lattice cells corresponding to the row are
+    /// required; this will be lattice_offset-1 to lattice_offset+1+row_len()
+    ///
+    /// Since lattice_offset-1 is invalid at the start of a row, 'skip_left'
+    /// enables the actual iteration to take place *just* on the contents of the
+    /// lattice (hence not requiring buffer underflow...)
+    pub fn update_portion_of_row<R: Rng>(
+        &self,
+        rng: &mut R,
+        row: &mut [C::State],
+        lattice_offset: usize,
+        skip_left: bool,
+        skip_right: bool,
+    ) {
+        let lattice = self
+            .lattice
+            .split_at(lattice_offset + (skip_left as usize - 1))
+            .1;
+        let row_span = row.len();
         for (cell, window) in row
             .iter_mut()
-            .skip(1)
-            .take(row_span)
+            .take(row_span - (skip_right as usize))
+            .skip(skip_left as usize)
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0], window[1], window[2]];
-            let nbrhood = nbrhood.as_array::<3>().unwrap();
-            *cell = self.cell_model.adapted_dk_update_state(rng, nbrhood);
-            // *cell = self.cell_model.simplistic_dk_update_state(rng, p, nbrhood);
+            *cell = self.cell_model.adapted_dk_update_state(rng, &nbrhood);
         }
     }
 }
