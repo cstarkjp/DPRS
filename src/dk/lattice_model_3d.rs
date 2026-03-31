@@ -1,7 +1,3 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
 use crate::{
     dk::{CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
     sim_parameters::BoundaryCondition,
@@ -121,6 +117,11 @@ impl<C: CellModel3D> LatticeModel3D<C> {
         x + self.n_x * y + self.n_x * self.n_y * z
     }
 
+    /// Get a mutable reference to one of the XY layers of the lattice
+    fn lattice_layer_mut(&mut self, z: usize) -> &mut [C::State] {
+        &mut self.lattice[(z * self.n_x * self.n_y)..((z + 1) * self.n_x * self.n_y)]
+    }
+
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
@@ -131,7 +132,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
 
     /// Seed the simulation with a central patch.
     pub fn create_seeded_lattice(&mut self) {
-        self.lattice = (0..self.n_cells()).map(|_| C::State::default()).collect();
+        self.lattice = vec![C::State::default(); self.n_cells()];
         let i = self.i_cell(self.n_x / 2, self.n_y / 2, self.n_z / 2);
         self.lattice[i] = C::OCCUPIED;
     }
@@ -159,131 +160,71 @@ impl<C: CellModel3D> LatticeModel3D<C> {
 
     /// Enforce periodic edge topology for the x-axis, i.e., along the y-z faces.
     fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
-        let n_y = self.n_y;
-        let n_z = self.n_z;
-        for z in 0..n_z {
-            for y in 0..n_y {
-                let i_from = self.i_cell(x_from, y, z);
-                let i_to = self.i_cell(x_to, y, z);
-                self.lattice[i_to] = self.lattice[i_from];
-            }
+        for row in self.lattice.chunks_exact_mut(self.n_x) {
+            row[x_to] = row[x_from];
         }
     }
 
     /// Enforce periodic edge topology for the y-axis, i.e., along the x-z faces.
     fn make_axis_periodic_y(&mut self, y_from: usize, y_to: usize) {
-        let n_x = self.n_x;
-        let n_z = self.n_z;
-        for z in 0..n_z {
-            for x in 0..n_x {
-                let i_from = self.i_cell(x, y_to, z);
-                let i_to = self.i_cell(x, y_from, z);
-                self.lattice[i_to] = self.lattice[i_from];
-            }
+        for layer in self.lattice.chunks_exact_mut(self.n_x * self.n_y) {
+            layer.copy_within(
+                (y_from * self.n_x)..((y_from + 1) * self.n_x),
+                y_to * self.n_x,
+            );
         }
     }
 
     /// Enforce periodic edge topology for the z-axis, i.e., along the x-y faces.
     fn make_axis_periodic_z(&mut self, z_from: usize, z_to: usize) {
-        let n_x = self.n_x;
-        let n_y = self.n_y;
-        for y in 0..n_y {
-            for x in 0..n_x {
-                let i_from = self.i_cell(x, y, z_to);
-                let i_to = self.i_cell(x, y, z_from);
-                self.lattice[i_to] = self.lattice[i_from];
-            }
-        }
+        self.lattice.copy_within(
+            (z_from * self.n_x * self.n_y)..((z_from + 1) * self.n_x * self.n_y),
+            z_to * self.n_x * self.n_y,
+        );
     }
 
     /// Enforce edge boundary conditions.
     pub fn apply_boundary_conditions(&mut self) {
-        let n_x = self.n_x;
-        let n_y = self.n_y;
-        let n_z = self.n_z;
-
         // Apply left yz-edge b.c.
-        if self.axis_bcs_x.0.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.0.is_pinned() {
-            // println!("Pinning left yz edge");
-            self.pin_axis_ends_x(0, self.end_values_x.0);
+        if self.axis_bcs_x.0.is_pinned() {
+            for row in self.lattice.chunks_exact_mut(self.n_x) {
+                row[0] = self.end_values_x.0;
+            }
         }
 
         // Apply right yz-edge b.c.
-        if self.axis_bcs_x.1.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.1.is_pinned() {
-            // println!("Pinning right yz edge");
-            self.pin_axis_ends_x(n_x - 1, self.end_values_x.1);
+        if self.axis_bcs_x.1.is_pinned() {
+            for row in self.lattice.chunks_exact_mut(self.n_x) {
+                row[self.n_x - 1] = self.end_values_x.1;
+            }
         }
 
         // Apply bottom xz-edge b.c.
-        if self.axis_bcs_y.0.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_y.0.is_pinned() {
-            // println!("Pinning bottom xz edge");
-            self.pin_axis_ends_y(0, self.end_values_y.0);
+        if self.axis_bcs_y.0.is_pinned() {
+            let v = self.end_values_y.0;
+            for layer in self.lattice.chunks_exact_mut(self.n_x * self.n_y) {
+                layer[0..self.n_x].fill(v);
+            }
         }
 
         // Apply top xz-edge b.c.
-        if self.axis_bcs_y.1.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_y.1.is_pinned() {
-            // println!("Pinning top xz edge");
-            self.pin_axis_ends_y(n_y - 1, self.end_values_y.1);
+        if self.axis_bcs_y.1.is_pinned() {
+            let v = self.end_values_y.1;
+            for layer in self.lattice.chunks_exact_mut(self.n_x * self.n_y) {
+                layer[(self.n_x - 1) * self.n_y..self.n_x * self.n_y].fill(v);
+            }
         }
 
         // Apply bottom xy-edge b.c.
-        if self.axis_bcs_z.0.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_z.0.is_pinned() {
-            // println!("Pinning bottom xy edge");
-            self.pin_axis_ends_z(0, self.end_values_z.0);
+        if self.axis_bcs_z.0.is_pinned() {
+            let v = self.end_values_z.0;
+            self.lattice_layer_mut(0).fill(v);
         }
 
         // Apply top xy-edge b.c.
-        if self.axis_bcs_z.1.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_z.1.is_pinned() {
-            // println!("Pinning top xy edge");
-            self.pin_axis_ends_z(n_z - 1, self.end_values_z.1);
-        }
-    }
-
-    /// Enforce constant-value edge b.c. along a yz face.
-    fn pin_axis_ends_x(&mut self, x: usize, pinned_value: <C as CellModel3D>::State) {
-        let n_y = self.n_y;
-        let n_z = self.n_z;
-        for z in 0..n_z {
-            for y in 0..n_y {
-                let i_cell = self.i_cell(x, y, z);
-                self.lattice[i_cell] = pinned_value;
-            }
-        }
-    }
-
-    /// Enforce constant-value edge b.c. along an xz face.
-    fn pin_axis_ends_y(&mut self, y: usize, pinned_value: <C as CellModel3D>::State) {
-        let n_x = self.n_x;
-        let n_z = self.n_z;
-        for z in 0..n_z {
-            for x in 0..n_x {
-                let i_cell = self.i_cell(x, y, z);
-                self.lattice[i_cell] = pinned_value;
-            }
-        }
-    }
-
-    /// Enforce constant-value edge b.c. along an xy face.
-    fn pin_axis_ends_z(&mut self, z: usize, pinned_value: <C as CellModel3D>::State) {
-        let n_x = self.n_x;
-        let n_y = self.n_y;
-        for y in 0..n_y {
-            for x in 0..n_x {
-                let i_cell = self.i_cell(x, y, z);
-                self.lattice[i_cell] = pinned_value;
-            }
+        if self.axis_bcs_z.1.is_pinned() {
+            let v = self.end_values_z.1;
+            self.lattice_layer_mut(self.n_z - 1).fill(v);
         }
     }
 
