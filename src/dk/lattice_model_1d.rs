@@ -87,15 +87,15 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.lattice = (0..self.n_cells())
+        self.lattice = (0..self.n_x)
             .map(|_| self.cell_model.randomize_state(rng))
             .collect();
     }
 
     /// Seed the simulation with a central patch.
     pub fn create_seeded_lattice(&mut self) {
-        self.lattice = (0..self.n_cells()).map(|_| C::State::default()).collect();
-        let i = self.i_cell(self.n_cells() / 2);
+        self.lattice = vec![C::State::default(); self.n_x];
+        let i = self.n_x / 2;
         self.lattice[i] = C::OCCUPIED;
     }
 
@@ -103,43 +103,22 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     pub fn apply_edge_topology(&mut self) {
         // Apply x_axis termini topology
         if self.axis_topology_x.is_periodic() {
-            self.make_axis_periodic_x(self.n_x - 2, 0);
-            self.make_axis_periodic_x(1, self.n_x - 1);
+            self.lattice[0] = self.lattice[self.n_x - 2];
+            self.lattice[self.n_x - 1] = self.lattice[1];
         }
-    }
-
-    /// Enforce periodic edge topology for the x-axis.
-    fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
-        let i_from = self.i_cell(x_from);
-        let i_to = self.i_cell(x_to);
-        self.lattice[i_to] = self.lattice[i_from];
     }
 
     /// Enforce edge boundary conditions.
     pub fn apply_boundary_conditions(&mut self) {
-        let n_x = self.n_x;
-
         // Apply left y-edge b.c.
-        if self.axis_bcs_x.0.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.0.is_pinned() {
-            // println!("Pinning left end");
-            self.pin_axis_ends_x(0, self.end_values_x.0);
+        if self.axis_bcs_x.0.is_pinned() {
+            self.lattice[0] = self.end_values_x.0;
         }
 
         // Apply right y-edge b.c.
-        if self.axis_bcs_x.1.is_unconstrained() {
-            // No edge values need be imposed
-        } else if self.axis_bcs_x.1.is_pinned() {
-            // println!("Pinning right end");
-            self.pin_axis_ends_x(n_x - 1, self.end_values_x.1);
+        if self.axis_bcs_x.1.is_pinned() {
+            self.lattice[self.n_x - 1] = self.end_values_x.1;
         }
-    }
-
-    /// Enforce constant-value edge b.c. at ends.
-    fn pin_axis_ends_x(&mut self, x: usize, pinned_value: <C as CellModel1D>::State) {
-        let i_cell = self.i_cell(x);
-        self.lattice[i_cell] = pinned_value;
     }
 
     /// Evolve the grid by one iteration using serial processing.
