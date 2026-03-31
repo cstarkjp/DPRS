@@ -103,7 +103,7 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
             assert!(parameters.random_seed > 0);
-            let mut rngs: Vec<StdRng> = (0..parameters.n_y)
+            let mut rngs: Vec<StdRng> = (0..parameters.n_threads)
                 .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for i in 1..(n_iterations + 1) {
