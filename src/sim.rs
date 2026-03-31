@@ -24,10 +24,12 @@ mod sim {
     use crate::py_parameters::PyParameters;
     #[pymodule_export]
     use crate::py_parameters::Topology;
+    use crate::sim_parameters::SimParameters;
 
     #[pyfunction]
-    fn dk(params: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        let (n_lattices, lattices, tracking, t_run_time) = sim_dk(params);
+    fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
+        let sim_parameters = SimParameters::fill(&py_parameters);
+        let (n_lattices, lattices, tracking, t_run_time) = sim_dk(sim_parameters);
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {
