@@ -8,7 +8,7 @@ macro_rules! py_of_enum {
     {$(#[$outer:meta])* $enum: ty, $py_enum: ident, ( $( $(#[$inner:ident $($args:tt)*])* $others:ident ),* $(,)? )  } => {
 
         $(#[$outer])*
-        #[derive(PartialEq, Debug, Clone, Default)]
+        #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
         #[pyclass(from_py_object, eq, eq_int)]
         pub enum $py_enum {
             $( $(#[$inner $($args)*])* $others ),*
