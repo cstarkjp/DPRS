@@ -4,7 +4,8 @@
 
 use crate::{
     dk::{Nbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
-    py_parameters::{BoundaryCondition, Topology},
+    sim_parameters::BoundaryCondition,
+    sim_parameters::Topology,
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -389,17 +390,15 @@ impl<C: CellModel3D> LatticeModel3D<C> {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
-                *cell =
-                    self.cell_model
-                        .simplistic_dk_update_state(rng, lattice_window.nbrhood());
+                *cell = self
+                    .cell_model
+                    .simplistic_dk_update_state(rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }
             }
         }
     }
-
-
 
     fn x_axis_topology_is_periodic(&self) -> bool {
         matches![self.axis_topology_x, Topology::Periodic]

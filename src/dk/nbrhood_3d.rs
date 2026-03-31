@@ -1,6 +1,9 @@
-use std::marker::PhantomData;
+// #![warn(missing_docs)]
+// //!
+// //!
 
 use super::CellModel3D;
+use std::marker::PhantomData;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
 ///

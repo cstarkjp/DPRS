@@ -1,11 +1,133 @@
 // #![warn(missing_docs)]
 // //!
 // //!
+use std::convert::From;
 
 use crate::py_parameters::{
-    BoundaryCondition, Dimension, GrowthModelChoice, InitialCondition, Processing, PyParameters,
-    Topology,
+    BoundaryCondition as PyBoundaryCondition, Dimension as PyDimension,
+    GrowthModelChoice as PyGrowthModelChoice, InitialCondition as PyInitialCondition,
+    Processing as PyProcessing, PyParameters, Topology as PyTopology,
 };
+
+/// Lattice growth model type.
+#[derive(PartialEq, Debug, Clone, Default)]
+pub enum GrowthModelChoice {
+    #[default]
+    DomanyKinzel,
+    ContactProcess,
+    PairContactProcess,
+    TwoSpeciesContactProcess,
+}
+impl From<PyGrowthModelChoice> for GrowthModelChoice {
+    fn from(processing: PyGrowthModelChoice) -> Self {
+        match processing {
+            PyGrowthModelChoice::DomanyKinzel => Self::DomanyKinzel,
+            PyGrowthModelChoice::ContactProcess => Self::ContactProcess,
+            PyGrowthModelChoice::PairContactProcess => Self::PairContactProcess,
+            PyGrowthModelChoice::TwoSpeciesContactProcess => Self::TwoSpeciesContactProcess,
+        }
+    }
+}
+
+/// Lattice dimension.
+#[derive(PartialEq, Debug, Clone, Default)]
+pub enum Dimension {
+    #[default]
+    D1,
+    D2,
+    D3,
+}
+impl From<PyDimension> for Dimension {
+    fn from(dim: PyDimension) -> Self {
+        match dim {
+            PyDimension::D1 => Self::D1,
+            PyDimension::D2 => Self::D2,
+            PyDimension::D3 => Self::D3,
+        }
+    }
+}
+
+/// Choice of processing type: will become a Py-passable parameter.
+#[derive(PartialEq, Debug, Clone, Default)]
+pub enum Processing {
+    #[default]
+    Serial,
+    Parallel,
+}
+impl From<PyProcessing> for Processing {
+    fn from(processing: PyProcessing) -> Self {
+        match processing {
+            PyProcessing::Serial => Self::Serial,
+            PyProcessing::Parallel => Self::Parallel,
+        }
+    }
+}
+
+/// Initial lattice condition.
+#[derive(PartialEq, Debug, Clone, Default)]
+pub enum InitialCondition {
+    #[default]
+    Randomized,
+    CentralSeed,
+    Preserved,
+}
+impl From<PyInitialCondition> for InitialCondition {
+    fn from(ic: PyInitialCondition) -> Self {
+        match ic {
+            PyInitialCondition::Randomized => Self::Randomized,
+            PyInitialCondition::CentralSeed => Self::CentralSeed,
+            PyInitialCondition::Preserved => Self::Preserved,
+        }
+    }
+}
+
+/// Edge topology.
+#[derive(Eq, PartialEq, Debug, Clone, Default)]
+pub enum Topology {
+    /// No copying etc is done from one edge to another
+    Unspecified,
+    /// No copying etc is done from one edge to another
+    #[default]
+    Open,
+    /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
+    Periodic,
+}
+impl From<PyTopology> for Topology {
+    fn from(ic: PyTopology) -> Self {
+        match ic {
+            PyTopology::Unspecified => Self::Unspecified,
+            PyTopology::Open => Self::Open,
+            PyTopology::Periodic => Self::Periodic,
+        }
+    }
+}
+
+/// Edge boundary conditions
+///
+/// This is in essence what is around the outside of the lattice
+#[derive(Eq, PartialEq, Debug, Clone, Default)]
+pub enum BoundaryCondition {
+    Unspecified,
+    /// The outside of the lattice could be anything
+    #[default]
+    Floating,
+    /// The boundary is pinned to a fixed value, so 0 and/or n-1 are written to
+    /// the specified value
+    Pinned,
+    Extended,   // NYI
+    Reflecting, // NYI
+}
+impl From<PyBoundaryCondition> for BoundaryCondition {
+    fn from(ic: PyBoundaryCondition) -> Self {
+        match ic {
+            PyBoundaryCondition::Unspecified => Self::Unspecified,
+            PyBoundaryCondition::Floating => Self::Floating,
+            PyBoundaryCondition::Pinned => Self::Pinned,
+            PyBoundaryCondition::Extended => Self::Extended,
+            PyBoundaryCondition::Reflecting => Self::Reflecting,
+        }
+    }
+}
 
 /// Cell state behavior for DP.
 #[derive(Default, PartialEq, Clone, Copy, Debug)]
@@ -15,11 +137,6 @@ pub enum DualState {
     Empty,
     Occupied,
 }
-
-// impl DualState {
-//     const VALUES: [Self; 2] = [Self::Empty, Self::Occupied];
-// }
-
 impl From<bool> for DualState {
     fn from(b: bool) -> Self {
         match b {
@@ -28,13 +145,11 @@ impl From<bool> for DualState {
         }
     }
 }
-
 impl From<DualState> for bool {
     fn from(state: DualState) -> bool {
         matches![state, DualState::Occupied]
     }
 }
-
 impl From<DualState> for f64 {
     fn from(state: DualState) -> f64 {
         let b = matches![state, DualState::Occupied];
@@ -42,7 +157,6 @@ impl From<DualState> for f64 {
         (b as usize) as f64
     }
 }
-
 /// Test the DualState var is a byte.
 #[test]
 fn guarantee_dpstate_is_u8() {
@@ -88,8 +202,8 @@ impl SimParameters {
     pub fn fill(parameters: &PyParameters) -> Self {
         let p = parameters.clone();
         Self {
-            growth_model_choice: p.growth_model_choice,
-            dim: p.dim,
+            growth_model_choice: GrowthModelChoice::from(p.growth_model_choice),
+            dim: Dimension::from(p.dim),
             n_x: p.n_x,
             n_y: p.n_y,
             n_z: p.n_z,
@@ -97,20 +211,29 @@ impl SimParameters {
             p_2: p.p_2,
             n_iterations: p.n_iterations,
             sample_period: p.sample_period,
-            initial_condition: p.initial_condition,
+            initial_condition: InitialCondition::from(p.initial_condition),
             p_initial: p.p_initial,
             random_seed: p.random_seed,
-            axis_topology_x: p.axis_topology_x,
-            axis_topology_y: p.axis_topology_y,
-            axis_topology_z: p.axis_topology_z,
-            axis_bcs_x: p.axis_bcs_x,
-            axis_bcs_y: p.axis_bcs_y,
-            axis_bcs_z: p.axis_bcs_z,
+            axis_topology_x: Topology::from(p.axis_topology_x),
+            axis_topology_y: Topology::from(p.axis_topology_y),
+            axis_topology_z: Topology::from(p.axis_topology_z),
+            axis_bcs_x: (
+                BoundaryCondition::from(p.axis_bcs_x.0),
+                BoundaryCondition::from(p.axis_bcs_x.1),
+            ),
+            axis_bcs_y: (
+                BoundaryCondition::from(p.axis_bcs_y.0),
+                BoundaryCondition::from(p.axis_bcs_y.1),
+            ),
+            axis_bcs_z: (
+                BoundaryCondition::from(p.axis_bcs_z.0),
+                BoundaryCondition::from(p.axis_bcs_z.1),
+            ),
             axis_bc_values_x: p.axis_bc_values_x,
             axis_bc_values_y: p.axis_bc_values_y,
             axis_bc_values_z: p.axis_bc_values_z,
             do_edge_buffering: p.do_edge_buffering,
-            processing: p.processing,
+            processing: Processing::from(p.processing),
             n_threads: p.n_threads,
         }
     }

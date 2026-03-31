@@ -1,3 +1,7 @@
+// #![warn(missing_docs)]
+// //!
+// //!
+
 use rand::Rng;
 
 /// The trait required for a model to run in 1D.

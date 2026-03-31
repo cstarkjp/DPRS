@@ -1,8 +1,8 @@
 // #![warn(missing_docs)]
 // //!
 // //!
+
 use pyo3::{FromPyObject, pyclass};
-use std::convert::From;
 
 /// Lattice growth model type.
 #[derive(PartialEq, Debug, Clone, Default)]
@@ -25,6 +25,16 @@ pub enum Dimension {
     D3,
 }
 
+/// Initial lattice condition.
+#[derive(PartialEq, Debug, Clone, Default)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum InitialCondition {
+    #[default]
+    Randomized,
+    CentralSeed,
+    Preserved,
+}
+
 /// Edge topology.
 #[derive(Eq, PartialEq, Debug, Clone, Default)]
 #[pyclass(from_py_object, eq, eq_int)]
@@ -36,18 +46,6 @@ pub enum Topology {
     Open,
     /// Data is copied from 'n-2' into 0, and from 1 into 'n-1'
     Periodic,
-}
-
-/// Initial lattice condition.
-/// TODO: implement CentralSeed, meaning only a small central portion of
-/// the lattice is assigned to be occupied at t=0.
-#[derive(PartialEq, Debug, Clone, Default)]
-#[pyclass(from_py_object, eq, eq_int)]
-pub enum InitialCondition {
-    #[default]
-    Randomized,
-    CentralSeed,
-    Preserved,
 }
 
 /// Edge boundary conditions
