@@ -176,7 +176,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     }
 
     /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R, iteration: usize) {
+    pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R) {
         self.lattice = (0..self.n_cells())
             .map(|i_cell| {
                 let (is_in_bounds, x, y) = self.is_in_bounds(i_cell);
@@ -187,9 +187,9 @@ impl<C: CellModel2D> LatticeModel2D<C> {
                         GrowthModelChoice::SimplifiedDomanyKinzel => {
                             self.cell_model.simplified_dk_update_state(rng, &nbrhood)
                         }
-                        GrowthModelChoice::StaggeredDomanyKinzel => self
-                            .cell_model
-                            .staggered_dk_update_state(rng, &nbrhood, iteration),
+                        GrowthModelChoice::StaggeredDomanyKinzel => {
+                            self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                        }
                         _ => todo!(),
                     }
                 } else {
@@ -228,7 +228,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     }
 
     /// Evolve the grid by one iteration using chunked parallel processing.
-    pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R], iteration: usize) {
+    pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
         // Split the lattice into n_y rows each of length n_x and
         // update these rows in parallel using par_chunks_mut().
@@ -242,7 +242,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             .zip(rngs)
             .skip(1)
             .take(n_rows)
-            .for_each(|((y, row), rng)| self.update_row(rng, y, row, iteration));
+            .for_each(|((y, row), rng)| self.update_row(rng, y, row));
 
         // Only replace the lattice with the updated version once all the rows
         // have been updated.
@@ -256,13 +256,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     ///
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
-    pub fn update_row<R: Rng>(
-        &self,
-        rng: &mut R,
-        y: usize,
-        row: &mut [C::State],
-        iteration: usize,
-    ) {
+    pub fn update_row<R: Rng>(&self, rng: &mut R, y: usize, row: &mut [C::State]) {
         let lattice = &self.lattice;
         let row_span = self.n_x - 2;
         let i_md = self.i_cell(0, y);
@@ -284,9 +278,9 @@ impl<C: CellModel2D> LatticeModel2D<C> {
                 GrowthModelChoice::SimplifiedDomanyKinzel => {
                     self.cell_model.simplified_dk_update_state(rng, &nbrhood)
                 }
-                GrowthModelChoice::StaggeredDomanyKinzel => self
-                    .cell_model
-                    .staggered_dk_update_state(rng, &nbrhood, iteration),
+                GrowthModelChoice::StaggeredDomanyKinzel => {
+                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                }
                 _ => todo!(),
             }
         }

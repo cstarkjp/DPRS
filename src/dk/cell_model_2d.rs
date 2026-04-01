@@ -43,6 +43,5 @@ pub trait CellModel2D: Sync {
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 9],
-        iteration: usize,
     ) -> Self::State;
 }

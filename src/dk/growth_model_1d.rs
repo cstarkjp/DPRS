@@ -63,9 +63,8 @@ impl CellModel1D for GrowthModel1D {
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 3],
-        iteration: usize,
     ) -> Self::State {
-        let _is_even_step = iteration.is_multiple_of(2);
+        let _is_even_step = self.iteration.is_multiple_of(2);
         //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
         let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
         let has_nearest_neighbor = nbrhood[1].into();

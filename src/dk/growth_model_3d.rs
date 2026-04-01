@@ -15,7 +15,6 @@ pub struct GrowthModel3D {
     #[allow(dead_code)]
     pub p_2: f64,
     pub p_initial: f64,
-    #[allow(dead_code)]
     pub iteration: usize,
 }
 
@@ -69,9 +68,8 @@ impl CellModel3D for GrowthModel3D {
         &self,
         rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,
-        iteration: usize,
     ) -> Self::State {
-        let _is_even_step = iteration.is_multiple_of(2);
+        let _is_even_step = self.iteration.is_multiple_of(2);
         //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
         let p_1 = self.p_1;
         let do_survive = rng.random_bool(p_1);

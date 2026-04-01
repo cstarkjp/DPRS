@@ -12,7 +12,6 @@ pub struct GrowthModel2D {
     #[allow(dead_code)]
     pub p_2: f64,
     pub p_initial: f64,
-    #[allow(dead_code)]
     pub iteration: usize,
 }
 
@@ -64,9 +63,8 @@ impl CellModel2D for GrowthModel2D {
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 9],
-        iteration: usize,
     ) -> Self::State {
-        let _is_even_step = iteration.is_multiple_of(2);
+        let _is_even_step = self.iteration.is_multiple_of(2);
         //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
         let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
         let has_nearest_neighbor: bool = nbrhood[4].into();
