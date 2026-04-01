@@ -1,6 +1,6 @@
 use crate::{
     dk::{CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D, traits::HasMean},
-    sim_parameters::{BoundaryCondition, Topology},
+    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -23,6 +23,7 @@ pub struct LatticeModel3D<C: CellModel3D> {
     end_values_y: (C::State, C::State),
     end_values_z: (C::State, C::State),
     // From Parameters
+    growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_topology_y: Topology,
     axis_topology_z: Topology,
@@ -56,6 +57,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
         end_values_x: (C::State, C::State),
         end_values_y: (C::State, C::State),
         end_values_z: (C::State, C::State),
+        growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_topology_y: Topology,
         axis_topology_z: Topology,
@@ -76,6 +78,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
             end_values_x,
             end_values_y,
             end_values_z,
+            growth_model_choice,
             axis_topology_x,
             axis_topology_y,
             axis_topology_z,
@@ -238,7 +241,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y, z);
                     self.cell_model
-                        .simplistic_dk_update_state(&mut rng, &nbrhood)
+                        .simplified_dk_update_state(&mut rng, &nbrhood)
                 } else {
                     C::State::default()
                 }
@@ -330,7 +333,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
             for cell in row.iter_mut().skip(1).take(row_span) {
                 *cell = self
                     .cell_model
-                    .simplistic_dk_update_state(rng, lattice_window.nbrhood());
+                    .simplified_dk_update_state(rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }

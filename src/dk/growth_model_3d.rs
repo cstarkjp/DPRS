@@ -49,7 +49,7 @@ impl CellModel3D for GrowthModel3D {
     /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
     ///  (1) a coin toss with probability p says it *may* be occupied
     ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    fn simplistic_dk_update_state<R: Rng>(
+    fn simplified_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,

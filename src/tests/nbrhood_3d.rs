@@ -72,7 +72,7 @@ impl CellModel3D for Model3D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn simplistic_dk_update_state<R: rand::Rng>(
+    fn simplified_dk_update_state<R: rand::Rng>(
         &self,
         _rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,

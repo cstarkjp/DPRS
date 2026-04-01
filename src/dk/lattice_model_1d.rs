@@ -4,7 +4,7 @@
 
 use crate::{
     dk::{cell_model_1d::CellModel1D, traits::HasMean},
-    sim_parameters::{BoundaryCondition, Topology},
+    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -23,6 +23,7 @@ pub struct LatticeModel1D<C: CellModel1D> {
     lattice: Vec<C::State>,
     end_values_x: (C::State, C::State),
     // From Parameters
+    growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
     axis_bc_values_x: (bool, bool),
@@ -46,6 +47,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         cell_model: C,
         n_x: usize,
         end_values_x: (C::State, C::State),
+        growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
         axis_bc_values_x: (bool, bool),
@@ -56,6 +58,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
             n_x,
             lattice: vec![C::State::default(); n_x],
             end_values_x,
+            growth_model_choice,
             axis_topology_x,
             axis_bcs_x,
             axis_bc_values_x,
@@ -76,7 +79,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
     pub fn take(self) -> (C, Vec<C::State>) {
         (self.cell_model, self.lattice)
     }
-    
+
     /// Count the total number of cells in the grid.
     fn n_cells(&self) -> usize {
         self.n_x
@@ -200,8 +203,15 @@ impl<C: CellModel1D> LatticeModel1D<C> {
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0], window[1], window[2]];
-            // *cell = self.cell_model.adapted_dk_update_state(rng, &nbrhood);
-            *cell = self.cell_model.simplistic_dk_update_state(rng, &nbrhood);
+            *cell = match self.growth_model_choice {
+                GrowthModelChoice::SimplifiedDomanyKinzel => {
+                    self.cell_model.simplified_dk_update_state(rng, &nbrhood)
+                }
+                GrowthModelChoice::StaggeredDomanyKinzel => {
+                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                }
+                _ => todo!(),
+            }
         }
     }
 }

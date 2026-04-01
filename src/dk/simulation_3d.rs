@@ -39,6 +39,7 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
         (DualState::Empty, DualState::Empty),
         (DualState::Empty, DualState::Empty),
         (DualState::Empty, DualState::Empty),
+        parameters.growth_model_choice,
         parameters.axis_topology_x,
         parameters.axis_topology_y,
         parameters.axis_topology_z,

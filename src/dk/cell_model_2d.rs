@@ -34,13 +34,13 @@ pub trait CellModel2D: Sync {
     fn randomize_state<R: Rng>(&self, rng: &mut R) -> Self::State;
 
     #[allow(dead_code)]
-    fn adapted_dk_update_state<R: Rng>(
+    fn staggered_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 9],
     ) -> Self::State;
 
-    fn simplistic_dk_update_state<R: Rng>(
+    fn simplified_dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 9],

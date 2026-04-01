@@ -1,6 +1,6 @@
 use crate::{
     dk::{cell_model_2d::CellModel2D, traits::HasMean},
-    sim_parameters::{BoundaryCondition, Topology},
+    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -21,6 +21,7 @@ pub struct LatticeModel2D<C: CellModel2D> {
     end_values_x: (C::State, C::State),
     end_values_y: (C::State, C::State),
     // From Parameters
+    growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_topology_y: Topology,
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
@@ -49,6 +50,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
         n_y: usize,
         end_values_x: (C::State, C::State),
         end_values_y: (C::State, C::State),
+        growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_topology_y: Topology,
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
@@ -64,6 +66,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             lattice: vec![C::State::default(); n_x * n_y],
             end_values_x,
             end_values_y,
+            growth_model_choice,
             axis_topology_x,
             axis_topology_y,
             axis_bcs_x,
@@ -173,15 +176,22 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     }
 
     /// Evolve the grid by one iteration using serial processing.
-    pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R) {
+    pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R) {
         self.lattice = (0..self.n_cells())
             .map(|i_cell| {
                 let (is_in_bounds, x, y) = self.is_in_bounds(i_cell);
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    self.cell_model
-                        .simplistic_dk_update_state(&mut rng, &nbrhood)
+                    match self.growth_model_choice {
+                        GrowthModelChoice::SimplifiedDomanyKinzel => {
+                            self.cell_model.simplified_dk_update_state(rng, &nbrhood)
+                        }
+                        GrowthModelChoice::StaggeredDomanyKinzel => {
+                            self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                        }
+                        _ => todo!(),
+                    }
                 } else {
                     C::State::default()
                 }
@@ -266,8 +276,15 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             let nbrhood = [
                 up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
             ];
-            // *cell = self.cell_model.adapted_dk_update_state(rng, &nbrhood);
-            *cell = self.cell_model.simplistic_dk_update_state(rng, &nbrhood);
+            *cell = match self.growth_model_choice {
+                GrowthModelChoice::SimplifiedDomanyKinzel => {
+                    self.cell_model.simplified_dk_update_state(rng, &nbrhood)
+                }
+                GrowthModelChoice::StaggeredDomanyKinzel => {
+                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                }
+                _ => todo!(),
+            }
         }
     }
 }
