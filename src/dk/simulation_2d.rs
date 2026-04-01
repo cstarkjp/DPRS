@@ -15,7 +15,7 @@ use rand::rngs::StdRng;
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation(parameters: &SimParameters) -> (usize, LatticeSlices, Tracking) {
+pub fn simulation_2d(parameters: &SimParameters) -> (usize, LatticeSlices, Tracking) {
     let pad: usize = match parameters.do_edge_buffering {
         true => 1,
         false => 0,
@@ -44,6 +44,8 @@ pub fn simulation(parameters: &SimParameters) -> (usize, LatticeSlices, Tracking
         parameters.axis_bc_values_y,
         parameters.do_edge_buffering,
     );
+
+    // simulation()
 
     let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {

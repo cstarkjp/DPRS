@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::dk::simulation_3d::simulation;
+use crate::dk::simulation_3d::simulation_3d;
 use crate::dk::types::{LatticeSlices, Tracking};
 use crate::sim_parameters::SimParameters;
 use std::time::Instant;
@@ -32,7 +32,7 @@ impl Run3D {
         let time = Instant::now();
 
         // Do the simulation
-        let (n_lattices, lattices, tracking) = pool.install(|| simulation(&self.parameters));
+        let (n_lattices, lattices, tracking) = pool.install(|| simulation_3d(&self.parameters));
         // Stop the clock
         let duration: f64 = time.elapsed().as_secs_f64();
 

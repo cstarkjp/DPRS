@@ -24,6 +24,8 @@ mod lattice_model_3d;
 mod run_3d;
 mod simulation_3d;
 
+// mod simulation;
+
 use crate::{
     dk::types::{LatticeSlices, Tracking},
     sim_parameters::{Dimension, SimParameters},
