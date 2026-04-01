@@ -142,6 +142,11 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         // Clippy recommendation:
         let chunk_length = self.n_x.div_ceil(n_chunks);
 
+        let _do_staggered = match self.growth_model_choice {
+            GrowthModelChoice::StaggeredDomanyKinzel => true,
+            _ => false,
+        };
+
         updated_lattice
             .par_chunks_mut(chunk_length)
             .zip(rngs)
