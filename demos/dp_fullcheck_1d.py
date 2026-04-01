@@ -1,4 +1,4 @@
-from functools import partial
+from collections.abc import Sequence
 import numpy as np
 from scipy.stats import linregress
 import matplotlib.pyplot as plt
@@ -40,12 +40,17 @@ if parameters.sample_period > parameters.n_iterations:
     parameters.sample_period = parameters.n_iterations
 
 n_lattices: int
-raw_lattices: list[list[bool]] 
-raw_tracking: list[list, list]
+raw_lattices: list[list[bool]]
+raw_tracking: Sequence[list]
+pruned_tracking: Sequence[list]
 t_run_time: float
 (n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dk(parameters)
 print(f"Total number of lattice time slices = {n_lattices}\n")
-tracking: NDArray = np.array(raw_tracking, dtype=np.float64,) 
+pruned_tracking = []
+for data in raw_tracking:
+    if len(data)>0:
+        pruned_tracking.append(data)
+tracking: NDArray = np.array(pruned_tracking, dtype=np.float64,) 
 
 viz = Viz(dpi=250)
 name: str

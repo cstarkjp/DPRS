@@ -21,6 +21,9 @@ mod lattice_model_3d;
 mod run_3d;
 mod simulation_3d;
 
+mod traits;
+mod utils;
+
 use crate::sim_parameters::{Dimension, DualState, SimParameters};
 pub use cell_model_3d::CellModel3D;
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};

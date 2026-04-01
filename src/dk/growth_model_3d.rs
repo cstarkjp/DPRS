@@ -28,6 +28,11 @@ impl GrowthModel3D {
             iteration,
         }
     }
+
+    /// Update simulation step counter.
+    pub fn increment(&mut self) {
+        self.iteration += 1;
+    }
 }
 
 // Implement CellModel3D trait for GrowthModel3D.

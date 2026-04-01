@@ -25,6 +25,11 @@ impl GrowthModel1D {
             iteration,
         }
     }
+
+    /// Update simulation step counter.
+    pub fn increment(&mut self) {
+        self.iteration += 1;
+    }
 }
 
 // Implement CellModel1D trait for GrowthModel.
@@ -37,7 +42,6 @@ impl CellModel1D for GrowthModel1D {
     fn randomize_state<R: Rng>(&self, rng: &mut R) -> Self::State {
         rng.random_bool(self.p_initial).into()
     }
-
     /// Adapted Domany-Kinzel rule: this cell will become occupied if...
     fn adapted_dk_update_state<R: Rng>(
         &self,

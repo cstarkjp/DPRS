@@ -1,7 +1,6 @@
 use crate::{
-    dk::{CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D},
-    sim_parameters::BoundaryCondition,
-    sim_parameters::Topology,
+    dk::{CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D, traits::HasMean},
+    sim_parameters::{BoundaryCondition, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -34,6 +33,15 @@ pub struct LatticeModel3D<C: CellModel3D> {
     axis_bc_values_y: (bool, bool),
     axis_bc_values_z: (bool, bool),
     do_edge_buffering: bool,
+}
+
+impl<C: CellModel3D> HasMean for LatticeModel3D<C> {
+    /// Compute the mean cell occupancy
+    fn mean(&self) -> f64 {
+        let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
+
+        (total as f64) / (self.n_cells() as f64)
+    }
 }
 
 /// Lattice model methods.
@@ -103,13 +111,6 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     /// Count the total number of cells in the grid.
     fn n_cells(&self) -> usize {
         self.n_x * self.n_y * self.n_z
-    }
-
-    /// Compute the mean cell occupancy
-    pub fn mean(&self) -> f64 {
-        let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
-
-        (total as f64) / (self.n_cells() as f64)
     }
 
     /// Compute the cell index of a given (x, y, z) coordinate.

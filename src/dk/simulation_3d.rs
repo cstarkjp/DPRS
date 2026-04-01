@@ -4,6 +4,7 @@
 
 use super::growth_model_3d::GrowthModel3D;
 use crate::dk::lattice_model_3d;
+use crate::dk::utils::{do_slice, update_statistics};
 use crate::sim_parameters::{DualState, InitialCondition, Processing, SimParameters};
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
@@ -50,8 +51,6 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
         parameters.do_edge_buffering,
     );
 
-    let n_iterations: usize = parameters.n_iterations;
-    let sample_period: usize = parameters.sample_period;
     let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {
@@ -66,25 +65,27 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
     lm.apply_boundary_conditions();
 
     // Set up a recording of lattice evolution, or suppress
+    let n_iterations: usize = parameters.n_iterations;
+    let sample_period: usize = parameters.sample_period;
     let n_lattices = match sample_period > 0 {
         true => n_iterations / sample_period + 1,
         false => 0,
     };
-    let mut lattices = Vec::new();
-    let mut tracking = Vec::new();
-    let t_track = Vec::new();
-    let rho_mean_track = Vec::new();
     // Record the initial lattice
+    let mut lattices = Vec::new();
     lattices.push(lm.lattice().clone());
-    tracking.push(t_track);
-    tracking.push(rho_mean_track);
-    tracking[0].push(0.0);
-    let rho_mean = lm.mean();
-    tracking[1].push(rho_mean);
-    // We aren't going to worry about the lattice type being Cell
-    //  - instead we're going to leave it up to pyo3 to convert
-    // the lattice vector into a Python list as it thinks fit.
-    // This happens (magically) on exiting sim_dk() back to Python.
+
+    // Start recording lattice stats
+    let mut tracking = Vec::new();
+    let t_tracking = Vec::new();
+    let rho_mean_tracking = Vec::new();
+    let radius_mean_tracking = Vec::new();
+    let radius_stddev_tracking = Vec::new();
+    tracking.push(t_tracking);
+    tracking.push(rho_mean_tracking);
+    tracking.push(radius_mean_tracking);
+    tracking.push(radius_stddev_tracking);
+    update_statistics(growth_model.iteration, &lm, &mut tracking);
 
     // Evolve the lattice for n_iterations
     //
@@ -94,18 +95,15 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
     match parameters.processing {
         Processing::Serial => {
             for i in 1..(n_iterations + 1) {
-                growth_model.iteration += 1;
                 // for i in tqdm!(1..(n_iterations + 1)) {
                 lm.next_iteration_serial(&mut rng);
                 lm.apply_edge_topology();
                 lm.apply_boundary_conditions();
-                if sample_period > 0 && i.is_multiple_of(sample_period) {
-                    lattices.push(lm.lattice().clone());
+                if do_slice(i, sample_period) {
+                    lattices.push(lm.lattice().clone())
                 };
-                let t = i as f64;
-                tracking[0].push(t);
-                let rho_mean = lm.mean();
-                tracking[1].push(rho_mean);
+                growth_model.increment();
+                update_statistics(growth_model.iteration, &lm, &mut tracking);
             }
         }
         Processing::Parallel => {
@@ -123,19 +121,16 @@ pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Ve
                 .collect();
             // let progress_bar = ProgressBar::new((n_iterations + 1).try_into().unwrap());
             for i in 1..(n_iterations + 1) {
-                growth_model.iteration += 1;
                 // progress_bar.inc(1);
                 // for i in tqdm!(1..(n_iterations + 1)) {
                 lm.next_iteration_parallel(&mut rngs);
                 lm.apply_edge_topology();
                 lm.apply_boundary_conditions();
-                if sample_period > 0 && i.is_multiple_of(sample_period) {
-                    lattices.push(lm.lattice().clone());
+                if do_slice(i, sample_period) {
+                    lattices.push(lm.lattice().clone())
                 };
-                let t = i as f64;
-                tracking[0].push(t);
-                let rho_mean = lm.mean();
-                tracking[1].push(rho_mean);
+                growth_model.increment();
+                update_statistics(growth_model.iteration, &lm, &mut tracking);
             }
             // progress_bar.finish_with_message("done");
         }

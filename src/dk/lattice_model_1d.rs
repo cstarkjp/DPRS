@@ -3,7 +3,8 @@
 // //!
 
 use crate::{
-    dk::cell_model_1d::CellModel1D, sim_parameters::BoundaryCondition, sim_parameters::Topology,
+    dk::{cell_model_1d::CellModel1D, traits::HasMean},
+    sim_parameters::{BoundaryCondition, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -26,6 +27,15 @@ pub struct LatticeModel1D<C: CellModel1D> {
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
     axis_bc_values_x: (bool, bool),
     do_edge_buffering: bool,
+}
+
+impl<C: CellModel1D> HasMean for LatticeModel1D<C> {
+    /// Compute the mean cell occupancy
+    fn mean(&self) -> f64 {
+        let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
+
+        (total as f64) / (self.n_x as f64)
+    }
 }
 
 /// Lattice model methods.
@@ -67,12 +77,12 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         (self.cell_model, self.lattice)
     }
 
-    /// Compute the mean cell occupancy
-    pub fn mean(&self) -> f64 {
-        let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
+    // /// Compute the mean cell occupancy
+    // pub fn mean(&self) -> f64 {
+    //     let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
 
-        (total as f64) / (self.n_x as f64)
-    }
+    //     (total as f64) / (self.n_x as f64)
+    // }
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
