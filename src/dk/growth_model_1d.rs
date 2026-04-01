@@ -48,11 +48,12 @@ impl CellModel1D for GrowthModel1D {
     fn dk_update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[Self::State; 3]) -> Self::State {
         let do_survive = if self.do_staggered {
             let is_even_step = self.iteration.is_multiple_of(2);
-            let is_any_nbr_occupied = if is_even_step {
-                nbrhood.iter().take(2).any(|s| (*s).into())
-            } else {
-                nbrhood.iter().skip(1).any(|s| (*s).into())
-            };
+            let offset = if is_even_step { 1 } else { 0 };
+            let nbrs = &nbrhood[offset..(2 + offset)];
+            let _are_both_nbrs_occupied = nbrs.iter().all(|s| (*s).into());
+            let is_any_nbr_occupied = nbrs.iter().any(|s| (*s).into());
+            // This isn't the actual D-K rule for p_1, p_2
+            // TODO: mod to use uniform r.v. and check against p_1, then p_2
             is_any_nbr_occupied & rng.random_bool(self.p_1)
         } else {
             let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
