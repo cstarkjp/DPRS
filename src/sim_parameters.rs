@@ -4,7 +4,8 @@ use crate::py_parameters::PyParameters;
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum GrowthModelChoice {
     #[default]
-    DomanyKinzel,
+    SimplifiedDomanyKinzel,
+    StaggeredDomanyKinzel,
     ContactProcess,
     PairContactProcess,
     TwoSpeciesContactProcess,

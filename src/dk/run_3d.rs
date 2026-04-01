@@ -3,7 +3,8 @@
 // //!
 
 use crate::dk::simulation_3d::simulation;
-use crate::sim_parameters::{DualState, SimParameters};
+use crate::dk::types::{LatticeSlices, Tracking};
+use crate::sim_parameters::SimParameters;
 use std::time::Instant;
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
@@ -20,7 +21,7 @@ impl Run3D {
     }
 
     /// Run a simulation and record how long the computation takes.
-    pub fn run(&self) -> (f64, usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+    pub fn run(&self) -> (f64, usize, LatticeSlices, Tracking) {
         // Set up thread pool of size set by user
         let pool = rayon::ThreadPoolBuilder::new()
             .num_threads(self.parameters.n_threads)

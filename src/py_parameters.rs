@@ -30,7 +30,9 @@ py_of_enum! {
     crate::sim_parameters::GrowthModelChoice,
     GrowthModelChoice,
         (
-            #[default] DomanyKinzel,
+            #[default]
+            SimplifiedDomanyKinzel,
+            StaggeredDomanyKinzel,
             ContactProcess ,
             PairContactProcess,
             TwoSpeciesContactProcess

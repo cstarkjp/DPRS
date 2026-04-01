@@ -11,7 +11,7 @@ from dprs.utils import make_name, make_title, DUAL
 print(f"\n{sim}")
 
 class Parameters:
-    growth_model_choice = sim.GrowthModelChoice.DomanyKinzel
+    growth_model_choice = sim.GrowthModelChoice.SimplifiedDomanyKinzel
     dim = sim.Dimension.D3
     n_x: int = 200
     n_y: int = 200

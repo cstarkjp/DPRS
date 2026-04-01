@@ -4,7 +4,7 @@
 
 use crate::{
     dk::{cell_model_1d::CellModel1D, traits::HasMean},
-    sim_parameters::{BoundaryCondition, Topology},
+    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
 };
 use rand::Rng;
 use rayon::prelude::*;
@@ -23,6 +23,7 @@ pub struct LatticeModel1D<C: CellModel1D> {
     lattice: Vec<C::State>,
     end_values_x: (C::State, C::State),
     // From Parameters
+    growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
     axis_bc_values_x: (bool, bool),
@@ -34,9 +35,15 @@ impl<C: CellModel1D> HasMean for LatticeModel1D<C> {
     fn mean(&self) -> f64 {
         let total: usize = self.lattice().iter().map(C::from_state_to_usize).sum();
 
-        (total as f64) / (self.n_x as f64)
+        (total as f64) / (self.n_cells() as f64)
     }
 }
+
+// impl<C: CellModel1D> HasLattice for LatticeModel1D<C> {
+//     fn lattice<S: CellModel1D::State>(&self) -> &Vec<S> {
+//         &self.lattice
+//     }
+// }
 
 /// Lattice model methods.
 impl<C: CellModel1D> LatticeModel1D<C> {
@@ -46,6 +53,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         cell_model: C,
         n_x: usize,
         end_values_x: (C::State, C::State),
+        growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
         axis_bc_values_x: (bool, bool),
@@ -56,6 +64,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
             n_x,
             lattice: vec![C::State::default(); n_x],
             end_values_x,
+            growth_model_choice,
             axis_topology_x,
             axis_bcs_x,
             axis_bc_values_x,
@@ -77,17 +86,22 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         (self.cell_model, self.lattice)
     }
 
+    /// Count the total number of cells in the grid.
+    fn n_cells(&self) -> usize {
+        self.n_x
+    }
+
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.lattice = (0..self.n_x)
+        self.lattice = (0..self.n_cells())
             .map(|_| self.cell_model.randomize_state(rng))
             .collect();
     }
 
     /// Seed the simulation with a central patch.
     pub fn create_seeded_lattice(&mut self) {
-        self.lattice = vec![C::State::default(); self.n_x];
+        self.lattice = vec![C::State::default(); self.n_cells()];
         let i = self.n_x / 2;
         self.lattice[i] = C::OCCUPIED;
     }
@@ -130,29 +144,18 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         // Before passing to next_row() to perform the update,
         // enumerate each row, zip each pair together with one of the RNGs,
         // and then omit the first and last rows.
-
-        // // Slow
-        // let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
-        // let chunk_length = self.n_x;
-        // let num_chunks = (self.n_x + chunk_length - 1) / self.n_x;
-
-        // // Fast
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
-        let num_chunks = rngs.len();
-        let chunk_length = (self.n_x + num_chunks - 1) / num_chunks;
+        let n_chunks = rngs.len();
+        // let chunk_length = (self.n_x + n_chunks - 1) / n_chunks;
+        // Clippy recommendation:
+        let chunk_length = self.n_x.div_ceil(n_chunks);
 
         updated_lattice
             .par_chunks_mut(chunk_length)
             .zip(rngs)
             .enumerate()
             .for_each(|(i, (chunk, rng))| {
-                self.update_portion_of_row(
-                    rng,
-                    chunk,
-                    i * chunk_length,
-                    i == 0,
-                    i + 1 == num_chunks,
-                )
+                self.update_portion_of_row(rng, chunk, i * chunk_length, i == 0, i + 1 == n_chunks)
             });
         self.lattice = updated_lattice;
     }
@@ -195,8 +198,15 @@ impl<C: CellModel1D> LatticeModel1D<C> {
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0], window[1], window[2]];
-            // *cell = self.cell_model.adapted_dk_update_state(rng, &nbrhood);
-            *cell = self.cell_model.simplistic_dk_update_state(rng, &nbrhood);
+            *cell = match self.growth_model_choice {
+                GrowthModelChoice::SimplifiedDomanyKinzel => {
+                    self.cell_model.simplified_dk_update_state(rng, &nbrhood)
+                }
+                GrowthModelChoice::StaggeredDomanyKinzel => {
+                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
+                }
+                _ => todo!(),
+            }
         }
     }
 }

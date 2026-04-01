@@ -87,7 +87,7 @@ impl<C: CellModel3D + ?Sized> CellNbrhood3D<C> {
     }
 
     /// Shift the current neighborhood down by one 'X', and load the X=2 offset
-    /// - i.e. updated the neighborhood to be that of the cell at (x+1,y,z)
+    /// i.e., updated the neighborhood to be that of the cell at (x+1,y,z)
     /// given the current neighborhood is at (x,y.z) and the lattice_window
     /// provided is *for* (x+1,y,z) - i.e. starts at (x,y-1,z-1)
     pub fn shift_slice(&mut self, lattice_window: &[C::State], n_x: usize, n_y: usize) {
