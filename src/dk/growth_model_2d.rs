@@ -67,6 +67,7 @@ impl CellModel2D for GrowthModel2D {
         iteration: usize,
     ) -> Self::State {
         let _is_even_step = iteration.is_multiple_of(2);
+        //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
         let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
         let has_nearest_neighbor: bool = nbrhood[4].into();
         let p_1 = self.p_1;

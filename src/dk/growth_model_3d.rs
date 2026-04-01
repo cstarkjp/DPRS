@@ -72,6 +72,7 @@ impl CellModel3D for GrowthModel3D {
         iteration: usize,
     ) -> Self::State {
         let _is_even_step = iteration.is_multiple_of(2);
+        //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
         let p_1 = self.p_1;
         let do_survive = rng.random_bool(p_1);
         if do_survive {
