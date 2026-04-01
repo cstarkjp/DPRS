@@ -10,7 +10,8 @@ from dprs.utils import make_name, make_title, DUAL
 print(f"\n{sim}")
 
 class Parameters:
-    growth_model_choice = sim.GrowthModelChoice.SimplifiedDomanyKinzel
+    growth_model_choice = sim.GrowthModelChoice.StaggeredDomanyKinzel
+    # growth_model_choice = sim.GrowthModelChoice.SimplifiedDomanyKinzel
     dim = sim.Dimension.D1
     n_x: int = 10_000
     n_y: int = 1
