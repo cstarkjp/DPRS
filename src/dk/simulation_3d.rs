@@ -108,7 +108,7 @@ pub fn simulation(parameters: &SimParameters) -> (usize, LatticeSlices, Tracking
             // keep it full length for now just in case we need buffer RNGs.
             assert!(parameters.random_seed > 0);
             // Allow for edge padding by adding two here
-            let mut rngs: Vec<StdRng> = (0..parameters.n_z + 2)
+            let mut rngs: Vec<StdRng> = (0..(parameters.n_z + pad * 2))
                 .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             // let progress_bar = ProgressBar::new((n_iterations + 1).try_into().unwrap());
