@@ -240,15 +240,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y, z);
-                    match self.growth_model_choice {
-                        GrowthModelChoice::SimplifiedDomanyKinzel => self
-                            .cell_model
-                            .simplified_dk_update_state(&mut rng, &nbrhood),
-                        GrowthModelChoice::StaggeredDomanyKinzel => self
-                            .cell_model
-                            .staggered_dk_update_state(&mut rng, &nbrhood),
-                        _ => todo!(),
-                    }
+                    self.cell_model.dk_update_state(&mut rng, &nbrhood)
                 } else {
                     C::State::default()
                 }
@@ -336,15 +328,9 @@ impl<C: CellModel3D> LatticeModel3D<C> {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
-                *cell = match self.growth_model_choice {
-                    GrowthModelChoice::SimplifiedDomanyKinzel => self
-                        .cell_model
-                        .simplified_dk_update_state(rng, lattice_window.nbrhood()),
-                    GrowthModelChoice::StaggeredDomanyKinzel => self
-                        .cell_model
-                        .staggered_dk_update_state(rng, lattice_window.nbrhood()),
-                    _ => todo!(),
-                };
+                *cell = self
+                    .cell_model
+                    .dk_update_state(rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }

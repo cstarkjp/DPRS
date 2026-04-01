@@ -34,15 +34,21 @@ pub trait CellModel3D: Sync {
     /// Sample Bernoulli distribution to randomize cell state.
     fn randomize_state<R: Rng>(&self, rng: &mut R) -> Self::State;
 
-    fn simplified_dk_update_state<R: Rng>(
+    fn dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,
     ) -> Self::State;
 
-    fn staggered_dk_update_state<R: Rng>(
-        &self,
-        rng: &mut R,
-        nbrhood: &CellNbrhood3D<Self>,
-    ) -> Self::State;
+    // fn simplified_dk_update_state<R: Rng>(
+    //     &self,
+    //     rng: &mut R,
+    //     nbrhood: &CellNbrhood3D<Self>,
+    // ) -> Self::State;
+
+    // fn staggered_dk_update_state<R: Rng>(
+    //     &self,
+    //     rng: &mut R,
+    //     nbrhood: &CellNbrhood3D<Self>,
+    // ) -> Self::State;
 }

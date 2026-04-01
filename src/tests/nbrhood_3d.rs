@@ -14,16 +14,18 @@ struct Model3D {
     pub p_initial: f64,
     #[allow(dead_code)]
     pub iteration: usize,
+    pub do_staggered: bool,
 }
 
 #[allow(dead_code)]
 impl Model3D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize) -> Self {
+    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool) -> Self {
         Self {
             p_1,
             p_2,
             p_initial,
             iteration,
+            do_staggered,
         }
     }
 }
@@ -72,11 +74,15 @@ impl CellModel3D for Model3D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn simplified_dk_update_state<R: rand::Rng>(
+    fn dk_update_state<R: rand::Rng>(
         &self,
         _rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,
     ) -> Self::State {
+        if self.do_staggered {
+            //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
+            let _is_even_step = self.iteration.is_multiple_of(2);
+        }
         nbrhood.is_any_occupied().into()
     }
 }

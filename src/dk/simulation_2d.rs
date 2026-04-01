@@ -5,7 +5,9 @@
 use super::growth_model_2d::GrowthModel2D;
 use crate::dk::lattice_model_2d;
 use crate::dk::types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
-use crate::sim_parameters::{DualState, InitialCondition, Processing, SimParameters};
+use crate::sim_parameters::{
+    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+};
 use lattice_model_2d::LatticeModel2D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -26,8 +28,18 @@ pub fn simulation_2d(parameters: &SimParameters) -> (usize, LatticeSlices, Track
     let n_y: usize = pruned_n_y + pad * 2;
 
     // Growth model and its parameters
-    let mut growth_model =
-        GrowthModel2D::new(parameters.p_1, parameters.p_2, parameters.p_initial, 0);
+    let do_staggered = match parameters.growth_model_choice {
+        GrowthModelChoice::SimplifiedDomanyKinzel => false,
+        GrowthModelChoice::StaggeredDomanyKinzel => true,
+        _ => todo!(),
+    };
+    let mut growth_model = GrowthModel2D::new(
+        parameters.p_1,
+        parameters.p_2,
+        parameters.p_initial,
+        0,
+        do_staggered,
+    );
     // Lattice model and its parameters
     let mut lm = LatticeModel2D::new(
         growth_model,

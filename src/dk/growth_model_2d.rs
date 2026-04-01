@@ -13,15 +13,17 @@ pub struct GrowthModel2D {
     pub p_2: f64,
     pub p_initial: f64,
     pub iteration: usize,
+    pub do_staggered: bool,
 }
 
 impl GrowthModel2D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize) -> Self {
+    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool,) -> Self {
         Self {
             p_1,
             p_2,
             p_initial,
             iteration,
+            do_staggered,
         }
     }
 
@@ -43,14 +45,15 @@ impl CellModel2D for GrowthModel2D {
         rng.random_bool(self.p_initial).into()
     }
 
-    /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
-    ///  (1) a coin toss with probability p says it *may* be occupied
-    ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    fn simplified_dk_update_state<R: Rng>(
+    fn dk_update_state<R: Rng>(
         &self,
         rng: &mut R,
         nbrhood: &[Self::State; 9],
     ) -> Self::State {
+        if self.do_staggered {
+            //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
+            let _is_even_step = self.iteration.is_multiple_of(2);
+        }
         let p = self.p_1;
         let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
         let do_survive = is_any_nbr_occupied & rng.random_bool(p);
@@ -58,23 +61,38 @@ impl CellModel2D for GrowthModel2D {
         do_survive.into()
     }
 
-    /// Staggered Domany-Kinzel rule
-    fn staggered_dk_update_state<R: Rng>(
-        &self,
-        rng: &mut R,
-        nbrhood: &[Self::State; 9],
-    ) -> Self::State {
-        let _is_even_step = self.iteration.is_multiple_of(2);
-        //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
-        let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
-        let has_nearest_neighbor: bool = nbrhood[4].into();
-        let p_1 = self.p_1;
-        let p_2 = p_1 / 3.;
-        let do_survive = (n_neighbors > 0 && rng.random_bool(p_1))
-            | (has_nearest_neighbor && n_neighbors > 1 && rng.random_bool(p_2));
+    // /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
+    // ///  (1) a coin toss with probability p says it *may* be occupied
+    // ///  (2) if one of the 9 neighborhood + here cells were previously occupied
+    // fn simplified_dk_update_state<R: Rng>(
+    //     &self,
+    //     rng: &mut R,
+    //     nbrhood: &[Self::State; 9],
+    // ) -> Self::State {
+    //     let p = self.p_1;
+    //     let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
+    //     let do_survive = is_any_nbr_occupied & rng.random_bool(p);
 
-        do_survive.into()
-    }
+    //     do_survive.into()
+    // }
+
+    // /// Staggered Domany-Kinzel rule
+    // fn staggered_dk_update_state<R: Rng>(
+    //     &self,
+    //     rng: &mut R,
+    //     nbrhood: &[Self::State; 9],
+    // ) -> Self::State {
+    //     let _is_even_step = self.iteration.is_multiple_of(2);
+    //     //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
+    //     let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
+    //     let has_nearest_neighbor: bool = nbrhood[4].into();
+    //     let p_1 = self.p_1;
+    //     let p_2 = p_1 / 3.;
+    //     let do_survive = (n_neighbors > 0 && rng.random_bool(p_1))
+    //         | (has_nearest_neighbor && n_neighbors > 1 && rng.random_bool(p_2));
+
+    //     do_survive.into()
+    // }
 }
 
 // /// Minimal testing.

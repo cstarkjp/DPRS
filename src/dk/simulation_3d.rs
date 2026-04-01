@@ -5,7 +5,9 @@
 use super::growth_model_3d::GrowthModel3D;
 use crate::dk::lattice_model_3d;
 use crate::dk::types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
-use crate::sim_parameters::{DualState, InitialCondition, Processing, SimParameters};
+use crate::sim_parameters::{
+    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+};
 use lattice_model_3d::LatticeModel3D;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -28,8 +30,18 @@ pub fn simulation_3d(parameters: &SimParameters) -> (usize, LatticeSlices, Track
     let n_z: usize = pruned_n_z + pad * 2;
 
     // Growth model and its parameters
-    let mut growth_model =
-        GrowthModel3D::new(parameters.p_1, parameters.p_2, parameters.p_initial, 0);
+    let do_staggered = match parameters.growth_model_choice {
+        GrowthModelChoice::SimplifiedDomanyKinzel => false,
+        GrowthModelChoice::StaggeredDomanyKinzel => true,
+        _ => todo!(),
+    };
+    let mut growth_model = GrowthModel3D::new(
+        parameters.p_1,
+        parameters.p_2,
+        parameters.p_initial,
+        0,
+        do_staggered,
+    );
     // Lattice model and its parameters
     let mut lm = LatticeModel3D::new(
         growth_model,

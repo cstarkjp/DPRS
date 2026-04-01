@@ -190,15 +190,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0], window[1], window[2]];
-            *cell = match self.growth_model_choice {
-                GrowthModelChoice::SimplifiedDomanyKinzel => {
-                    self.cell_model.simplified_dk_update_state(rng, &nbrhood)
-                }
-                GrowthModelChoice::StaggeredDomanyKinzel => {
-                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
-                }
-                _ => todo!(),
-            }
+            *cell = self.cell_model.dk_update_state(rng, &nbrhood);
         }
     }
 }

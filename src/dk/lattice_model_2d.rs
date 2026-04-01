@@ -183,15 +183,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    match self.growth_model_choice {
-                        GrowthModelChoice::SimplifiedDomanyKinzel => {
-                            self.cell_model.simplified_dk_update_state(rng, &nbrhood)
-                        }
-                        GrowthModelChoice::StaggeredDomanyKinzel => {
-                            self.cell_model.staggered_dk_update_state(rng, &nbrhood)
-                        }
-                        _ => todo!(),
-                    }
+                    self.cell_model.dk_update_state(rng, &nbrhood)
                 } else {
                     C::State::default()
                 }
@@ -274,15 +266,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             let nbrhood = [
                 up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
             ];
-            *cell = match self.growth_model_choice {
-                GrowthModelChoice::SimplifiedDomanyKinzel => {
-                    self.cell_model.simplified_dk_update_state(rng, &nbrhood)
-                }
-                GrowthModelChoice::StaggeredDomanyKinzel => {
-                    self.cell_model.staggered_dk_update_state(rng, &nbrhood)
-                }
-                _ => todo!(),
-            }
+            *cell = self.cell_model.dk_update_state(rng, &nbrhood);
         }
     }
 }
