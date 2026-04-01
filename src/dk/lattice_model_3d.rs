@@ -283,8 +283,6 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     }
 
     /// Evolve the grid by one iteration using chunked parallel processing.
-    /// TODO: Does it make sense to pass the probability p like this?
-    /// Wouldn't it be better to set it on the model struct?
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         assert!(
             rngs.len() >= self.n_z,
