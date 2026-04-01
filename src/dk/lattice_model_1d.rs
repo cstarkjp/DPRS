@@ -95,7 +95,7 @@ impl<C: CellModel1D> LatticeModel1D<C> {
 
     /// Seed the simulation with a central patch.
     pub fn create_seeded_lattice(&mut self) {
-        self.lattice = vec![C::State::default(); self.n_x];
+        self.lattice = vec![C::State::default(); self.n_cells()];
         let i = self.n_x / 2;
         self.lattice[i] = C::OCCUPIED;
     }
@@ -138,29 +138,16 @@ impl<C: CellModel1D> LatticeModel1D<C> {
         // Before passing to next_row() to perform the update,
         // enumerate each row, zip each pair together with one of the RNGs,
         // and then omit the first and last rows.
-
-        // // Slow
-        // let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
-        // let chunk_length = self.n_x;
-        // let num_chunks = (self.n_x + chunk_length - 1) / self.n_x;
-
-        // // Fast
         let mut updated_lattice = vec![C::State::default(); self.lattice.len()];
-        let num_chunks = rngs.len();
-        let chunk_length = (self.n_x + num_chunks - 1) / num_chunks;
+        let n_chunks = rngs.len();
+        let chunk_length = (self.n_x + n_chunks - 1) / n_chunks;
 
         updated_lattice
             .par_chunks_mut(chunk_length)
             .zip(rngs)
             .enumerate()
             .for_each(|(i, (chunk, rng))| {
-                self.update_portion_of_row(
-                    rng,
-                    chunk,
-                    i * chunk_length,
-                    i == 0,
-                    i + 1 == num_chunks,
-                )
+                self.update_portion_of_row(rng, chunk, i * chunk_length, i == 0, i + 1 == n_chunks)
             });
         self.lattice = updated_lattice;
     }

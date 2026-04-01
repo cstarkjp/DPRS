@@ -3,6 +3,7 @@
 // //!
 
 mod traits;
+mod types;
 mod utils;
 
 mod cell_model_1d;
@@ -24,7 +25,7 @@ mod lattice_model_3d;
 mod run_3d;
 mod simulation_3d;
 
-use crate::sim_parameters::{Dimension, DualState, SimParameters};
+use crate::{dk::types::{LatticeHistory, TrackingHistory}, sim_parameters::{Dimension, SimParameters}};
 pub use cell_model_3d::CellModel3D;
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
 pub use lattice_model_3d::LatticeModel3D;
@@ -33,7 +34,7 @@ pub use run_2d::Run2D;
 pub use run_3d::Run3D;
 
 /// Entry point to this module.
-pub fn sim_dk(sim_parameters: SimParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>, f64) {
+pub fn sim_dk(sim_parameters: SimParameters) -> (usize, LatticeHistory, TrackingHistory, f64) {
     println!();
     println!("{sim_parameters}");
     println!();

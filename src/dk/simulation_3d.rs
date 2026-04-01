@@ -4,6 +4,7 @@
 
 use super::growth_model_3d::GrowthModel3D;
 use crate::dk::lattice_model_3d;
+use crate::dk::types::{LatticeHistory, TrackingHistory};
 use crate::dk::utils::{do_slice, update_statistics};
 use crate::sim_parameters::{DualState, InitialCondition, Processing, SimParameters};
 use lattice_model_3d::LatticeModel3D;
@@ -15,7 +16,7 @@ use rand::rngs::StdRng;
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation(parameters: &SimParameters) -> (usize, Vec<Vec<DualState>>, Vec<Vec<f64>>) {
+pub fn simulation(parameters: &SimParameters) -> (usize, LatticeHistory, TrackingHistory) {
     let pad: usize = match parameters.do_edge_buffering {
         true => 1,
         false => 0,
