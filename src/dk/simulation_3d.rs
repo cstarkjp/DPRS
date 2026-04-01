@@ -94,7 +94,7 @@ pub fn simulation_3d(parameters: &SimParameters) -> (usize, LatticeSlices, Track
         Processing::Serial => {
             for _ in 1..(n_iterations + 1) {
                 let iteration = growth_model.increment();
-                lm.next_iteration_serial(&mut rng, iteration);
+                lm.next_iteration_serial(&mut rng);
                 lm.apply_edge_topology();
                 lm.apply_boundary_conditions();
                 lattice_history.record(lm.lattice(), iteration);
@@ -116,7 +116,7 @@ pub fn simulation_3d(parameters: &SimParameters) -> (usize, LatticeSlices, Track
                 .collect();
             for _ in 1..(n_iterations + 1) {
                 let iteration = growth_model.increment();
-                lm.next_iteration_parallel(&mut rngs, iteration);
+                lm.next_iteration_parallel(&mut rngs);
                 lm.apply_edge_topology();
                 lm.apply_boundary_conditions();
                 lattice_history.record(lm.lattice(), iteration);

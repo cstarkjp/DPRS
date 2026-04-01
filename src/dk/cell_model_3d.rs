@@ -44,6 +44,5 @@ pub trait CellModel3D: Sync {
         &self,
         rng: &mut R,
         nbrhood: &CellNbrhood3D<Self>,
-        iteration: usize,
     ) -> Self::State;
 }
