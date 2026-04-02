@@ -1,13 +1,9 @@
 use super::CellNbrhood3D;
 
-use super::LatticeModel1D;
-use super::LatticeModel2D;
-use super::LatticeModel3D;
 use crate::sim_parameters::{
-    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+    DualState, SimParameters,
 };
 
-use super::GrowthModel1D;
 
 // #![warn(missing_docs)]
 // //!
@@ -68,10 +64,10 @@ pub trait DramaticallySimulatable<D: CellDim>: Sized {
     fn num_parallel_rngs(&self, _parameters: &SimParameters) -> usize;
     fn iteration(&self) -> usize;
     fn lattice(&self) -> &[DualState];
-    fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {}
+    fn create_randomized_lattice<R: Rng>(&mut self, _rng: &mut R) {}
     fn create_seeded_lattice(&mut self) {}
     fn apply_edge_topology(&mut self) {}
     fn apply_boundary_conditions(&mut self) {}
-    fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {}
-    fn iterate_once_parallel<R: Rng + Send>(&mut self, rng: &mut [R]) {}
+    fn iterate_once_serial<R: Rng>(&mut self, _rng: &mut R) {}
+    fn iterate_once_parallel<R: Rng + Send>(&mut self, _rng: &mut [R]) {}
 }

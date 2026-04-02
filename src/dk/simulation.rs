@@ -2,10 +2,10 @@
 // //!
 // //!
 
-use super::{Cell1D, CellDim, DramaticallySimulatable};
+use super::{CellDim, DramaticallySimulatable};
 use crate::dk::types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
 use crate::sim_parameters::{
-    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+    InitialCondition, Processing, SimParameters,
 };
 // use lattice_model_1d::LatticeModel1D;
 // use super::growth_model_1d::GrowthModel1D;

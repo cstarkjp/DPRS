@@ -4,7 +4,7 @@
 
 use super::{Cell3D, CellModel, CellNbrhood3D};
 use crate::sim_parameters::{
-    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+    DualState, GrowthModelChoice, SimParameters,
 };
 use rand::{Rng, RngExt};
 

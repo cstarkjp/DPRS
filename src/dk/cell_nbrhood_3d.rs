@@ -2,7 +2,6 @@
 // //!
 // //!
 
-use super::{Cell3D, CellModel};
 use crate::sim_parameters::DualState;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
