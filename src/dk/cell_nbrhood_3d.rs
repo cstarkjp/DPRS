@@ -2,8 +2,7 @@
 // //!
 // //!
 
-use super::CellModel3D;
-use std::marker::PhantomData;
+use super::{Cell3D, CellModel};
 
 /// The 3-by-3-by-3 neighbourhood around a cell
 ///
@@ -30,42 +29,43 @@ use std::marker::PhantomData;
 /// interrogated with an (x,y,z) index (each of u8)
 ///
 #[derive(Debug, Clone)]
-pub struct CellNbrhood3D<C: CellModel3D + ?Sized> {
+pub struct CellNbrhood3D {
     cells_ne: u32,
-    phantom: PhantomData<C::State>,
 }
 
 /// Default, empty, very dull neighborhood.
-impl<C: CellModel3D + ?Sized> std::default::Default for CellNbrhood3D<C> {
+impl std::default::Default for CellNbrhood3D {
     fn default() -> Self {
         let cells_ne = 0;
-        Self {
-            cells_ne,
-            phantom: PhantomData,
-        }
+        Self { cells_ne }
     }
 }
 
-impl<C: CellModel3D + ?Sized> CellNbrhood3D<C> {
+impl CellNbrhood3D {
     /// Create a new neighborhood centred on an xyz in the given lattice,
     /// with the specified n_x and n_y (the lattice must be Z-major, X-minor)
-    pub fn new(lattice: &[C::State], xyz: (usize, usize, usize), n_x: usize, n_y: usize) -> Self {
+    pub fn new<I: Copy + Into<bool>>(
+        lattice: &[I],
+        xyz: (usize, usize, usize),
+        n_x: usize,
+        n_y: usize,
+    ) -> Self {
         let mut s = Self::default();
 
         let window_start = (xyz.0 - 1) + (xyz.1 - 1) * n_x + (xyz.2 - 1) * (n_x * n_y);
         let lattice_window = lattice.split_at(window_start).1;
 
-        s.fill_slice::<0>(lattice_window, n_x, n_y);
-        s.fill_slice::<1>(lattice_window, n_x, n_y);
-        s.fill_slice::<2>(lattice_window, n_x, n_y);
+        s.fill_slice::<I, 0>(lattice_window, n_x, n_y);
+        s.fill_slice::<I, 1>(lattice_window, n_x, n_y);
+        s.fill_slice::<I, 2>(lattice_window, n_x, n_y);
         s
     }
 
     /// Fill one of the three 'X' slices using the 'X'th offset into the window
     /// which must contain the full neighborhood, and start at (x-1,y-1,z-1)
-    pub fn fill_slice<const X_OFS: usize>(
+    pub fn fill_slice<I: Copy + Into<bool>, const X_OFS: usize>(
         &mut self,
-        lattice_window: &[C::State],
+        lattice_window: &[I],
         n_x: usize,
         n_y: usize,
     ) {
@@ -90,9 +90,14 @@ impl<C: CellModel3D + ?Sized> CellNbrhood3D<C> {
     /// i.e., updated the neighborhood to be that of the cell at (x+1,y,z)
     /// given the current neighborhood is at (x,y.z) and the lattice_window
     /// provided is *for* (x+1,y,z) - i.e. starts at (x,y-1,z-1)
-    pub fn shift_slice(&mut self, lattice_window: &[C::State], n_x: usize, n_y: usize) {
+    pub fn shift_slice<I: Copy + Into<bool>>(
+        &mut self,
+        lattice_window: &[I],
+        n_x: usize,
+        n_y: usize,
+    ) {
         self.cells_ne >>= 9;
-        self.fill_slice::<2>(lattice_window, n_x, n_y);
+        self.fill_slice::<I, 2>(lattice_window, n_x, n_y);
     }
 
     /// Return true if any of the neighborhood is occupied
@@ -107,9 +112,9 @@ impl<C: CellModel3D + ?Sized> CellNbrhood3D<C> {
 }
 
 /// An iterator over a lattice centred on a cell (x,y,z), with a 'move X by +1' method
-pub struct RowIterator3D<'a, C: CellModel3D> {
+pub struct RowIterator3D<'a, C: CellModel<Cell3D>> {
     /// The 3-by-3-by-3 neighbourhood around a cell
-    nbrhood: CellNbrhood3D<C>,
+    nbrhood: CellNbrhood3D,
     /// A windowed iterator over the 'X' row in the lattice, starting at the cell
     /// that is offset by (-1,-1,-1), ending at (+1,+1,+1)
     ///
@@ -125,7 +130,7 @@ pub struct RowIterator3D<'a, C: CellModel3D> {
     n_y: usize,
 }
 
-impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
+impl<'a, C: CellModel<Cell3D>> RowIterator3D<'a, C> {
     /// Create a new 'X row iterator' which provides a neighborhood for (x,y,z), then (x+1,y,z), etc
     pub fn new(
         lattice: &'a [C::State],
@@ -151,9 +156,9 @@ impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
 
         if let Some(lattice_window) = row_iter.next() {
             let mut nbrhood = CellNbrhood3D::default();
-            nbrhood.fill_slice::<0>(lattice_window, n_x, n_y);
-            nbrhood.fill_slice::<1>(lattice_window, n_x, n_y);
-            nbrhood.fill_slice::<2>(lattice_window, n_x, n_y);
+            nbrhood.fill_slice::<_, 0>(lattice_window, n_x, n_y);
+            nbrhood.fill_slice::<_, 1>(lattice_window, n_x, n_y);
+            nbrhood.fill_slice::<_, 2>(lattice_window, n_x, n_y);
             Some(Self {
                 nbrhood,
                 row_iter,
@@ -182,7 +187,7 @@ impl<'a, C: CellModel3D> RowIterator3D<'a, C> {
     }
 
     /// Borrow the neighborhood, so it may be iterated over or indexed into
-    pub fn nbrhood(&self) -> &CellNbrhood3D<C> {
+    pub fn nbrhood(&self) -> &CellNbrhood3D {
         &self.nbrhood
     }
 }

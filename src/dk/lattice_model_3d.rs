@@ -1,9 +1,5 @@
-use crate::{
-    dk::{
-        CellNbrhood3D, RowIterator3D, cell_model_3d::CellModel3D, traits::DramaticallySimulatable,
-    },
-    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
-};
+use super::{Cell3D, CellModel, CellNbrhood3D, RowIterator3D};
+use crate::sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -13,7 +9,7 @@ use rayon::prelude::*;
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel3D<C: CellModel3D> {
+pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3x3 cell neighborhoods in one time step and the next.
     cell_model: C,
@@ -39,7 +35,7 @@ pub struct LatticeModel3D<C: CellModel3D> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel3D> LatticeModel3D<C> {
+impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Create a fresh grid (vector of C::State cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn new(
@@ -233,7 +229,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y, z);
-                    self.cell_model.dk_update_state(&mut rng, &nbrhood)
+                    self.cell_model.update_state(&mut rng, &nbrhood)
                 } else {
                     C::State::default()
                 }
@@ -242,7 +238,7 @@ impl<C: CellModel3D> LatticeModel3D<C> {
     }
 
     /// Cell values triple-triple-tripled across (x-1:x+1, y-1:y+1, z-1:z+1).
-    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> CellNbrhood3D<C> {
+    fn cell_nbrhood(&self, x: usize, y: usize, z: usize) -> CellNbrhood3D {
         assert!(
             x > 0,
             "X must be within the border to generate a neighborhood"
@@ -316,14 +312,12 @@ impl<C: CellModel3D> LatticeModel3D<C> {
             .take(self.n_y - 2)
         {
             let Some(mut lattice_window) =
-                RowIterator3D::new(&self.lattice, (1, y, z), self.n_x, self.n_y)
+                RowIterator3D::<C>::new(&self.lattice, (1, y, z), self.n_x, self.n_y)
             else {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
-                *cell = self
-                    .cell_model
-                    .dk_update_state(rng, lattice_window.nbrhood());
+                *cell = self.cell_model.update_state(rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }

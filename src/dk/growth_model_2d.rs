@@ -2,7 +2,8 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_2d::CellModel2D, sim_parameters::DualState};
+use super::{Cell2D, CellModel};
+use crate::sim_parameters::DualState;
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.
@@ -17,7 +18,7 @@ pub struct GrowthModel2D {
 }
 
 impl GrowthModel2D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool,) -> Self {
+    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool) -> Self {
         Self {
             p_1,
             p_2,
@@ -35,7 +36,7 @@ impl GrowthModel2D {
 }
 
 // Implement CellModel2D trait for GrowthModel2D.
-impl CellModel2D for GrowthModel2D {
+impl CellModel<Cell2D> for GrowthModel2D {
     type State = DualState;
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
@@ -45,11 +46,7 @@ impl CellModel2D for GrowthModel2D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn dk_update_state<R: Rng>(
-        &self,
-        rng: &mut R,
-        nbrhood: &[Self::State; 9],
-    ) -> Self::State {
+    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[bool; 9]) -> Self::State {
         if self.do_staggered {
             //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
             let _is_even_step = self.iteration.is_multiple_of(2);

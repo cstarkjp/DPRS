@@ -2,10 +2,8 @@
 // //!
 // //!
 
-use crate::{
-    dk::{CellNbrhood3D, cell_model_3d::CellModel3D},
-    sim_parameters::DualState,
-};
+use super::{Cell3D, CellModel, CellNbrhood3D};
+use crate::sim_parameters::DualState;
 use rand::{Rng, RngExt};
 
 /// GrowthModel3D implements the CellModel3D trait, plus these.
@@ -20,7 +18,7 @@ pub struct GrowthModel3D {
 }
 
 impl GrowthModel3D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool,) -> Self {
+    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool) -> Self {
         Self {
             p_1,
             p_2,
@@ -38,7 +36,7 @@ impl GrowthModel3D {
 }
 
 // Implement CellModel3D trait for GrowthModel3D.
-impl CellModel3D for GrowthModel3D {
+impl CellModel<Cell3D> for GrowthModel3D {
     type State = DualState;
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
@@ -48,11 +46,7 @@ impl CellModel3D for GrowthModel3D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn dk_update_state<R: Rng>(
-        &self,
-        rng: &mut R,
-        nbrhood: &CellNbrhood3D<Self>,
-    ) -> Self::State {
+    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &CellNbrhood3D) -> Self::State {
         if self.do_staggered {
             //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
             let _is_even_step = self.iteration.is_multiple_of(2);

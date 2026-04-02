@@ -1,7 +1,5 @@
-use crate::{
-    dk::{cell_model_2d::CellModel2D, traits::DramaticallySimulatable},
-    sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology},
-};
+use super::{Cell2D, CellModel};
+use crate::sim_parameters::{BoundaryCondition, GrowthModelChoice, Topology};
 use rand::Rng;
 use rayon::prelude::*;
 
@@ -11,7 +9,7 @@ use rayon::prelude::*;
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(PartialEq, Eq, Clone, Debug)]
-pub struct LatticeModel2D<C: CellModel2D> {
+pub struct LatticeModel2D<C: CellModel<Cell2D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3 cell neighborhoods in one time step and the next.
     cell_model: C,
@@ -32,7 +30,7 @@ pub struct LatticeModel2D<C: CellModel2D> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel2D> LatticeModel2D<C> {
+impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
     /// Create a fresh grid (vector of C::State cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     pub fn new(
@@ -174,7 +172,7 @@ impl<C: CellModel2D> LatticeModel2D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    self.cell_model.dk_update_state(rng, &nbrhood)
+                    self.cell_model.update_state(rng, &nbrhood)
                 } else {
                     C::State::default()
                 }
@@ -183,17 +181,17 @@ impl<C: CellModel2D> LatticeModel2D<C> {
     }
 
     /// Cell values triple-tripled across (x-1:x+1, y-1:y+1).
-    fn cell_nbrhood(&self, x: usize, y: usize) -> [<C as CellModel2D>::State; 9] {
+    fn cell_nbrhood(&self, x: usize, y: usize) -> [bool; 9] {
         [
-            self.lattice[self.i_cell(x - 1, y + 1)],
-            self.lattice[self.i_cell(x, y + 1)],
-            self.lattice[self.i_cell(x + 1, y + 1)],
-            self.lattice[self.i_cell(x - 1, y)],
-            self.lattice[self.i_cell(x, y)],
-            self.lattice[self.i_cell(x + 1, y)],
-            self.lattice[self.i_cell(x - 1, y - 1)],
-            self.lattice[self.i_cell(x, y - 1)],
-            self.lattice[self.i_cell(x + 1, y - 1)],
+            self.lattice[self.i_cell(x - 1, y + 1)].into(),
+            self.lattice[self.i_cell(x, y + 1)].into(),
+            self.lattice[self.i_cell(x + 1, y + 1)].into(),
+            self.lattice[self.i_cell(x - 1, y)].into(),
+            self.lattice[self.i_cell(x, y)].into(),
+            self.lattice[self.i_cell(x + 1, y)].into(),
+            self.lattice[self.i_cell(x - 1, y - 1)].into(),
+            self.lattice[self.i_cell(x, y - 1)].into(),
+            self.lattice[self.i_cell(x + 1, y - 1)].into(),
         ]
     }
 
@@ -255,9 +253,17 @@ impl<C: CellModel2D> LatticeModel2D<C> {
             ),
         ) {
             let nbrhood = [
-                up[0], up[1], up[2], md[0], md[1], md[2], dn[0], dn[1], dn[2],
+                up[0].into(),
+                up[1].into(),
+                up[2].into(),
+                md[0].into(),
+                md[1].into(),
+                md[2].into(),
+                dn[0].into(),
+                dn[1].into(),
+                dn[2].into(),
             ];
-            *cell = self.cell_model.dk_update_state(rng, &nbrhood);
+            *cell = self.cell_model.update_state(rng, &nbrhood);
         }
     }
 }

@@ -2,7 +2,8 @@
 // //!
 // //!
 
-use crate::{dk::cell_model_1d::CellModel1D, sim_parameters::DualState};
+use super::{Cell1D, CellModel};
+use crate::sim_parameters::DualState;
 use rand::{Rng, RngExt};
 
 /// GrowthModel1D implements the CellModel1D trait, plus these.
@@ -35,7 +36,7 @@ impl GrowthModel1D {
 }
 
 // Implement CellModel1D trait for GrowthModel.
-impl CellModel1D for GrowthModel1D {
+impl CellModel<Cell1D> for GrowthModel1D {
     type State = DualState;
     const EMPTY: DualState = DualState::Empty;
     const OCCUPIED: DualState = DualState::Occupied;
@@ -45,7 +46,7 @@ impl CellModel1D for GrowthModel1D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn dk_update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[Self::State; 3]) -> Self::State {
+    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[bool; 3]) -> Self::State {
         let do_survive = match self.do_staggered {
             true => {
                 let is_even_step = self.iteration.is_multiple_of(2);
