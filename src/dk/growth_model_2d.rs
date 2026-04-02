@@ -3,7 +3,9 @@
 // //!
 
 use super::{Cell2D, CellModel};
-use crate::sim_parameters::DualState;
+use crate::sim_parameters::{
+    DualState, GrowthModelChoice, InitialCondition, Processing, SimParameters,
+};
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.
@@ -36,6 +38,22 @@ impl GrowthModel2D {
 
 // Implement CellModel2D trait for GrowthModel2D.
 impl CellModel<Cell2D> for GrowthModel2D {
+    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+        // Growth model and its parameters
+        let do_staggered = match parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => false,
+            GrowthModelChoice::StaggeredDomanyKinzel => true,
+            _ => todo!(),
+        };
+        Ok(Self::new(
+            parameters.p_1,
+            parameters.p_2,
+            parameters.p_initial,
+            0,
+            do_staggered,
+        ))
+    }
+
     fn next_iteration(&mut self) {
         self.iteration += 1;
     }

@@ -19,7 +19,7 @@ use rand::rngs::StdRng;
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation<D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
 ) -> Result<(usize, LatticeSlices, Tracking), ()> {
     let mut lm = LM::create_from_parameters(parameters)?;

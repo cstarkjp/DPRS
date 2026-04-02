@@ -1,4 +1,4 @@
-use super::{Cell1D, CellDim, DramaticallySimulatable};
+use super::DramaticallySimulatable;
 use super::{Cell2D, CellModel};
 use crate::sim_parameters::{
     BoundaryCondition, DualState, GrowthModelChoice, SimParameters, Topology,

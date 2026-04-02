@@ -2,7 +2,8 @@
 // //!
 // //!
 
-use crate::dk::simulation_1d::simulation_1d;
+use super::simulation_nd;
+use super::{Cell1D, GrowthModel1D, LatticeModel1D};
 use crate::dk::types::{LatticeSlices, Tracking};
 use crate::sim_parameters::SimParameters;
 use std::time::Instant;
@@ -30,7 +31,9 @@ impl Run1D {
         // Start the clock
         let time = Instant::now();
         // Do the simulation
-        let (n_lattices, lattices, tracking) = pool.install(|| simulation_1d(&self.parameters));
+        let (n_lattices, lattices, tracking) = pool.install(|| {
+            simulation_nd::<Cell1D, LatticeModel1D<GrowthModel1D>>(&self.parameters).unwrap()
+        });
         // Stop the clock
         let duration: f64 = time.elapsed().as_secs_f64();
 

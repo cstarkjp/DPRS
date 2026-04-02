@@ -1,8 +1,6 @@
-// #![warn(missing_docs)]
-// //!
-// //!
+use super::simulation_nd;
+use super::{Cell2D, GrowthModel2D, LatticeModel2D};
 
-use crate::dk::simulation_2d::simulation_2d;
 use crate::dk::types::{LatticeSlices, Tracking};
 use crate::sim_parameters::SimParameters;
 use std::time::Instant;
@@ -32,7 +30,9 @@ impl Run2D {
         let time = Instant::now();
 
         // Do the simulation
-        let (n_lattices, lattices, tracking) = pool.install(|| simulation_2d(&self.parameters));
+        let (n_lattices, lattices, tracking) = pool.install(|| {
+            simulation_nd::<Cell2D, LatticeModel2D<GrowthModel2D>>(&self.parameters).unwrap()
+        });
         // Stop the clock
         let duration: f64 = time.elapsed().as_secs_f64();
 

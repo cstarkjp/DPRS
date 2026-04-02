@@ -55,10 +55,7 @@ impl CellDim for Cell3D {
 /// This must be [Sync] as the model can be accessed by
 /// different threads at the same time in the parallel working.
 pub trait CellModel<Dim: CellDim>: Sync + Sized {
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()> {
-        Err(())
-    }
-
+    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()>;
     fn next_iteration(&mut self);
     fn iteration(&self) -> usize;
     fn randomize_state<R: Rng>(&self, rng: &mut R) -> DualState;
@@ -67,19 +64,9 @@ pub trait CellModel<Dim: CellDim>: Sync + Sized {
 
 pub trait DramaticallySimulatable<D: CellDim>: Sized {
     fn mean(&self) -> f64;
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()> {
-        Err(())
-    }
-    fn num_parallel_rngs(&self, _parameters: &SimParameters) -> usize {
-        0
-    }
-    //pub fn lattice(&self) -> &[DualStaetVec<C::State> {
-    //         &self.lattice
-    //    }
-
-    fn iteration(&self) -> usize {
-        0
-    }
+    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()>;
+    fn num_parallel_rngs(&self, _parameters: &SimParameters) -> usize;
+    fn iteration(&self) -> usize;
     fn lattice(&self) -> &[DualState];
     fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {}
     fn create_seeded_lattice(&mut self) {}
@@ -87,27 +74,4 @@ pub trait DramaticallySimulatable<D: CellDim>: Sized {
     fn apply_boundary_conditions(&mut self) {}
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {}
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rng: &mut [R]) {}
-}
-
-// pub trait HasLattice: Sync {
-//     fn lattice<T>(&self) -> &Vec<T>;
-// }
-
-impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C> {
-    /// Compute the mean cell occupancy
-    fn mean(&self) -> f64 {
-        let total: usize = self
-            .lattice()
-            .iter()
-            .map(|s| {
-                let u: usize = (*s).into();
-                u
-            })
-            .sum();
-
-        (total as f64) / (self.n_cells() as f64)
-    }
-    fn lattice(&self) -> &[DualState] {
-        self.lattice()
-    }
 }

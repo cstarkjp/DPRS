@@ -45,14 +45,13 @@ impl CellModel<Cell1D> for GrowthModel1D {
             GrowthModelChoice::StaggeredDomanyKinzel => true,
             _ => todo!(),
         };
-        let mut growth_model = GrowthModel1D::new(
+        Ok(Self::new(
             parameters.p_1,
             parameters.p_2,
             parameters.p_initial,
             0,
             do_staggered,
-        );
-        Ok(growth_model)
+        ))
     }
 
     fn next_iteration(&mut self) {
