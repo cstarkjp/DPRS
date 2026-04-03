@@ -248,23 +248,17 @@ impl SimParameters {
             n_threads: py_p.n_threads,
         }
     }
+    pub fn padding(&self) -> usize {
+        self.do_edge_buffering as usize
+    }
     pub fn n_x_with_pad(&self) -> usize {
-        match self.do_edge_buffering {
-            true => self.n_x + 2,
-            false => self.n_x,
-        }
+        self.n_x + self.padding() * 2
     }
     pub fn n_y_with_pad(&self) -> usize {
-        match self.do_edge_buffering {
-            true => self.n_y + 2,
-            false => self.n_y,
-        }
+        self.n_y + self.padding() * 2
     }
     pub fn n_z_with_pad(&self) -> usize {
-        match self.do_edge_buffering {
-            true => self.n_z + 2,
-            false => self.n_z,
-        }
+        self.n_z + self.padding() * 2
     }
     pub fn lattice_n_x(&self) -> usize {
         self.n_x_with_pad()

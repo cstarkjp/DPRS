@@ -47,7 +47,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
     // Record the initial lattice
     let mut lattice_history = LatticeHistory::default();
     lattice_history.set_sample_period(sample_period);
-    lattice_history.record(lm.lattice(), iteration);
+    lattice_history.record(|| lm.lattice().to_vec(), iteration);
 
     // Start recording lattice stats
     let mut tracking_history = TrackingHistory::default();
@@ -65,7 +65,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
                 lm.iterate_once_serial(&mut rng);
                 lm.apply_axial_topologies();
                 lm.apply_boundary_conditions();
-                lattice_history.record(lm.lattice(), iteration);
+                lattice_history.record(|| lm.lattice().to_vec(), iteration);
                 tracking_history.update(iteration, &lm);
             }
         }
@@ -87,7 +87,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
                 lm.iterate_once_parallel(&mut rngs);
                 lm.apply_axial_topologies();
                 lm.apply_boundary_conditions();
-                lattice_history.record(lm.lattice(), iteration);
+                lattice_history.record(|| lm.lattice().to_vec(), iteration);
                 tracking_history.update(iteration, &lm);
             }
         }

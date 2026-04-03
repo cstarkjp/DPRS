@@ -21,9 +21,9 @@ impl LatticeHistory {
         self.sample_period = sample_period;
     }
 
-    pub fn record(&mut self, lattice: &[DualState], i: usize) {
-        if self.sample_period > 0 && i.is_multiple_of(self.sample_period) {
-            self.lattice_slices.push(lattice.to_vec());
+    pub fn record<F: FnOnce() -> Vec<DualState>>(&mut self, lattice_fn: F, iteration: usize) {
+        if self.sample_period > 0 && iteration.is_multiple_of(self.sample_period) {
+            self.lattice_slices.push(lattice_fn());
         }
     }
 
