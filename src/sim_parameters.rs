@@ -269,4 +269,69 @@ impl SimParameters {
     pub fn lattice_n_z(&self) -> usize {
         self.n_z_with_pad()
     }
+    /// Return an iterator over the *single* row
+    ///
+    /// This is used to generate the history in a simulation
+    fn rows_1d<'a, T>(&'a self, lattice: &'a [T]) -> impl Iterator<Item = &'a [T]> + 'a {
+        assert_eq!(lattice.len(), self.lattice_n_x());
+        let n_x = self.lattice_n_x();
+        let pad = self.padding();
+        lattice[pad..n_x - pad].chunks(n_x)
+    }
+
+    /// Return an iterator over the the rows in the lattice, skipping the edge (and the edge of each row)
+    ///
+    /// This is used to generate the history in a simulation
+    fn rows_2d<'a, T>(&'a self, lattice: &'a [T]) -> impl Iterator<Item = &'a [T]> + 'a {
+        let n_x = self.lattice_n_x();
+        let n_y = self.lattice_n_y();
+        assert_eq!(lattice.len(), n_x * n_y);
+        let pad = self.padding();
+
+        lattice
+            .chunks_exact(n_x)
+            .take(n_y - pad)
+            .skip(pad)
+            .map(move |s| &s[pad..n_x - pad])
+    }
+
+    /// Return an iterator over the the rows in the lattice, skipping the edge (and the edge of each row)
+    ///
+    /// This is used to generate the history in a simulation
+    fn rows_3d<'a, T>(&'a self, lattice: &'a [T]) -> impl Iterator<Item = &'a [T]> + 'a {
+        let n_x = self.lattice_n_x();
+        let n_y = self.lattice_n_y();
+        let n_z = self.lattice_n_z();
+        assert_eq!(lattice.len(), n_x * n_y * n_z);
+        let pad = self.padding();
+
+        lattice
+            .chunks_exact(n_x)
+            .enumerate()
+            .filter(move |(yz, _)| {
+                let y = yz % n_y;
+                let z = yz / n_y;
+                (y >= pad) && (y < n_y - pad) && (z >= pad) && (z < n_z - pad)
+            })
+            .map(move |(_, s)| &s[pad..n_x - pad])
+    }
+
+    pub fn pruned_lattice<T: Clone>(&self, lattice: Vec<T>) -> Vec<T> {
+        if !self.do_edge_buffering {
+            lattice
+        } else {
+            let rows: Box<dyn Iterator<Item = &[T]>> = {
+                match self.dim {
+                    Dimension::D1 => Box::new(self.rows_1d(&lattice)),
+                    Dimension::D2 => Box::new(self.rows_2d(&lattice)),
+                    Dimension::D3 => Box::new(self.rows_3d(&lattice)),
+                }
+            };
+            let mut pruned = vec![];
+            for r in rows {
+                pruned.extend_from_slice(r);
+            }
+            pruned
+        }
+    }
 }

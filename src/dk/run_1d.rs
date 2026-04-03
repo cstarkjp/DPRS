@@ -37,28 +37,10 @@ impl Run1D {
         // Stop the clock
         let duration: f64 = time.elapsed().as_secs_f64();
 
-        // If needed, remove edge buffering before returning the lattice time-slices.
-        // Buffer lattice edges
-        let pad: usize = match self.parameters.do_edge_buffering {
-            true => 1,
-            false => 0,
-        };
-        let pruned_n_x = self.parameters.n_x;
-        let lattices = if self.parameters.do_edge_buffering {
-            // Step through each of the recorded lattices, pruning off by 'pad'
-            // at each edge, returning the pruned lattices
-            lattices
-                .into_iter()
-                .map(|lattice| {
-                    let mut pruned_lattice = vec![];
-                    pruned_lattice.extend_from_slice(&lattice[pad..(pad + pruned_n_x)]);
-
-                    pruned_lattice
-                })
-                .collect()
-        } else {
-            lattices
-        };
+        let lattices = lattices
+            .into_iter()
+            .map(|lattice| self.parameters.pruned_lattice(lattice))
+            .collect();
 
         (duration, n_lattices, lattices, tracking)
     }
