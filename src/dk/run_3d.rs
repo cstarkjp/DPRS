@@ -39,45 +39,10 @@ impl Run3D {
         // Stop the clock
         let duration: f64 = time.elapsed().as_secs_f64();
 
-        // If needed, remove edge buffering before returning the lattice time-slices.
-        // Buffer lattice edges
-        let pad: usize = match self.parameters.do_edge_buffering {
-            true => 1,
-            false => 0,
-        };
-        let pruned_n_x = self.parameters.n_x;
-        let pruned_n_y = self.parameters.n_y;
-        let pruned_n_z = self.parameters.n_z;
-        let n_x: usize = pruned_n_x + pad * 2;
-        let n_y: usize = pruned_n_y + pad * 2;
-        let lattices = if self.parameters.do_edge_buffering {
-            // Step through each of the recorded lattices, pruning off by 'pad'
-            // at each edge, returning the pruned lattices
-            lattices
-                .into_iter()
-                .map(|lattice| {
-                    let mut pruned_lattice = vec![];
-                    // Break lattice into layers (chunks of length n_x*n_y),
-                    //   - skip first chunk = "face" buffer
-                    //   - take pruned_n_z chunks = all non-padded layers
-                    //   - break lattice into rows (chunks of length n_x),
-                    //     iterating over each reference:
-                    //       - skip the initial edge buffer (pad wide)
-                    //       - take all but the final edge puffer (pruned_n_y cells)
-                    //          - iterate over these refs to append to pruned_lattice
-                    //            using extend_from_slice() to do so
-                    let n_cells_per_layer = n_x * n_y;
-                    for layer in lattice.chunks(n_cells_per_layer).skip(pad).take(pruned_n_z) {
-                        for cells in layer.chunks(n_x).skip(pad).take(pruned_n_y) {
-                            pruned_lattice.extend_from_slice(&cells[pad..(pad + pruned_n_x)]);
-                        }
-                    }
-                    pruned_lattice
-                })
-                .collect()
-        } else {
-            lattices
-        };
+        let lattices = lattices
+            .into_iter()
+            .map(|lattice| self.parameters.pruned_lattice(lattice))
+            .collect();
 
         (duration, n_lattices, lattices, tracking)
     }
