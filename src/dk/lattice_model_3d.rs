@@ -31,22 +31,51 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     iteration: usize,
 }
 
+impl<C: CellModel<Cell3D>> std::fmt::Display for LatticeModel3D<C> {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(
+            fmt,
+            "3d Lattice model of {} by {} by {} iteration {}",
+            self.lattice_n_x, self.lattice_n_y, self.lattice_n_z, self.iteration
+        )?;
+        for (z, l) in self
+            .lattice
+            .chunks_exact(self.lattice_n_x * self.lattice_n_y)
+            .enumerate()
+        {
+            writeln!(fmt, "Layer z={z}")?;
+            for (y, l) in l.chunks_exact(self.lattice_n_x).enumerate() {
+                let mut s = String::new();
+                for c in l {
+                    if (*c).into() {
+                        s.push('*')
+                    } else {
+                        s.push('.')
+                    }
+                }
+                writeln!(fmt, "{y:3} : {s}")?;
+            }
+        }
+        Ok(())
+    }
+}
+
 /// Lattice model methods.
 impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Compute the cell index of a given (x, y, z) coordinate.
     fn i_cell(&self, x: usize, y: usize, z: usize) -> usize {
-        x + self.parameters.n_x * y + self.parameters.n_x * self.parameters.n_y * z
+        x + self.lattice_n_x * y + self.lattice_n_x * self.lattice_n_y * z
     }
 
     /// Get a mutable reference to one of the XY layers of the lattice
     fn lattice_layer_mut(&mut self, z: usize) -> &mut [DualState] {
-        &mut self.lattice[(z * self.parameters.n_x * self.parameters.n_y)
-            ..((z + 1) * self.parameters.n_x * self.parameters.n_y)]
+        &mut self.lattice[(z * self.lattice_n_x * self.lattice_n_y)
+            ..((z + 1) * self.lattice_n_x * self.lattice_n_y)]
     }
 
     /// Enforce periodic edge topology for the x-axis, i.e., along the y-z faces.
     fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
-        for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
+        for row in self.lattice.chunks_exact_mut(self.lattice_n_x) {
             row[x_to] = row[x_from];
         }
     }
@@ -55,11 +84,11 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     fn make_axis_periodic_y(&mut self, y_from: usize, y_to: usize) {
         for layer in self
             .lattice
-            .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+            .chunks_exact_mut(self.lattice_n_x * self.lattice_n_y)
         {
             layer.copy_within(
-                (y_from * self.parameters.n_x)..((y_from + 1) * self.parameters.n_x),
-                y_to * self.parameters.n_x,
+                (y_from * self.lattice_n_x)..((y_from + 1) * self.lattice_n_x),
+                y_to * self.lattice_n_x,
             );
         }
     }
@@ -67,9 +96,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Enforce periodic edge topology for the z-axis, i.e., along the x-y faces.
     fn make_axis_periodic_z(&mut self, z_from: usize, z_to: usize) {
         self.lattice.copy_within(
-            (z_from * self.parameters.n_x * self.parameters.n_y)
-                ..((z_from + 1) * self.parameters.n_x * self.parameters.n_y),
-            z_to * self.parameters.n_x * self.parameters.n_y,
+            (z_from * self.lattice_n_x * self.lattice_n_y)
+                ..((z_from + 1) * self.lattice_n_x * self.lattice_n_y),
+            z_to * self.lattice_n_x * self.lattice_n_y,
         );
     }
 
@@ -105,12 +134,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
             z > 0,
             "Z must be within the border to generate a neighborhood"
         );
-        CellNbrhood3D::new(
-            &self.lattice,
-            (x, y, z),
-            self.parameters.n_x,
-            self.parameters.n_y,
-        )
+        CellNbrhood3D::new(&self.lattice, (x, y, z), self.lattice_n_x, self.lattice_n_y)
     }
 
     /// Check (x,y,z) coordinate is within lattice bounds.
@@ -118,18 +142,18 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         x > 0
             && y > 0
             && z > 0
-            && x < (self.parameters.n_x - 1)
-            && y < (self.parameters.n_y - 1)
-            && z < (self.parameters.n_z - 1)
+            && x < (self.lattice_n_x - 1)
+            && y < (self.lattice_n_y - 1)
+            && z < (self.lattice_n_z - 1)
     }
 
     /// Check cell index is within lattice bounds; return this test and (x, y, z).
     fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize, usize) {
         // TODO: 3d update needed
 
-        let x = i_cell % self.parameters.n_x;
-        let y = (i_cell / self.parameters.n_x) % self.parameters.n_y;
-        let z = i_cell / (self.parameters.n_x * self.parameters.n_y);
+        let x = i_cell % self.lattice_n_x;
+        let y = (i_cell / self.lattice_n_x) % self.lattice_n_y;
+        let z = i_cell / (self.lattice_n_x * self.lattice_n_y);
 
         (self.is_in_bounds_xyz(x, y, z), x, y, z)
     }
@@ -137,7 +161,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Evolve the grid by one iteration using chunked parallel processing.
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         assert!(
-            rngs.len() >= self.parameters.n_z,
+            rngs.len() >= self.lattice_n_z,
             "Must have at least n_z RNGs supplied to 3D parallel iteration"
         );
         self.iteration += 1;
@@ -147,9 +171,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         // next_layer() to perform the update, enumerate (to get 'z'), zip each
         // pair together with one of the RNGs, and then omit the first and last
         // layers.
-        let n_layers = self.parameters.n_z - 2;
+        let n_layers = self.lattice_n_z - 2;
         updated_lattice
-            .par_chunks_mut(self.parameters.n_x * self.parameters.n_y)
+            .par_chunks_mut(self.lattice_n_x * self.lattice_n_y)
             .enumerate()
             .zip(rngs)
             .skip(1)
@@ -169,19 +193,16 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// a row gathering new neighbors into its neighborhood, dropping older ones
     /// out.
     pub fn update_layer<R: Rng>(&self, rng: &mut R, z: usize, layer: &mut [DualState]) {
-        let row_span = self.parameters.n_x - 2;
+        let row_span = self.lattice_n_x - 2;
         for (y, row) in layer
-            .chunks_exact_mut(self.parameters.n_x)
+            .chunks_exact_mut(self.lattice_n_x)
             .enumerate()
             .skip(1)
-            .take(self.parameters.n_y - 2)
+            .take(self.lattice_n_y - 2)
         {
-            let Some(mut lattice_window) = RowIterator3D::new(
-                &self.lattice,
-                (1, y, z),
-                self.parameters.n_x,
-                self.parameters.n_y,
-            ) else {
+            let Some(mut lattice_window) =
+                RowIterator3D::new(&self.lattice, (1, y, z), self.lattice_n_x, self.lattice_n_y)
+            else {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
@@ -269,20 +290,20 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     fn apply_axial_topologies(&mut self) {
         // Apply x_axis termini topology
         if self.parameters.topology_x.is_periodic() {
-            self.make_axis_periodic_x(self.parameters.n_x - 2, 0);
-            self.make_axis_periodic_x(1, self.parameters.n_x - 1);
+            self.make_axis_periodic_x(self.lattice_n_x - 2, 0);
+            self.make_axis_periodic_x(1, self.lattice_n_x - 1);
         }
 
         // Apply y_axis termini topology
         if self.parameters.topology_y.is_periodic() {
-            self.make_axis_periodic_y(self.parameters.n_y - 2, 0);
-            self.make_axis_periodic_y(1, self.parameters.n_y - 1);
+            self.make_axis_periodic_y(self.lattice_n_y - 2, 0);
+            self.make_axis_periodic_y(1, self.lattice_n_y - 1);
         }
 
         // Apply z_axis termini topology
         if self.parameters.topology_z.is_periodic() {
-            self.make_axis_periodic_z(self.parameters.n_z - 2, 0);
-            self.make_axis_periodic_z(1, self.parameters.n_z - 1);
+            self.make_axis_periodic_z(self.lattice_n_z - 2, 0);
+            self.make_axis_periodic_z(1, self.lattice_n_z - 1);
         }
     }
 
@@ -290,15 +311,15 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     fn apply_boundary_conditions(&mut self) {
         // Apply left yz-edge b.c.
         if self.parameters.bcs_x.0.is_pinned() {
-            for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
+            for row in self.lattice.chunks_exact_mut(self.lattice_n_x) {
                 row[0] = self.parameters.bc_values_x.0;
             }
         }
 
         // Apply right yz-edge b.c.
         if self.parameters.bcs_x.1.is_pinned() {
-            for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
-                row[self.parameters.n_x - 1] = self.parameters.bc_values_x.1;
+            for row in self.lattice.chunks_exact_mut(self.lattice_n_x) {
+                row[self.lattice_n_x - 1] = self.parameters.bc_values_x.1;
             }
         }
 
@@ -307,9 +328,9 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
             let v = self.parameters.bc_values_y.0;
             for layer in self
                 .lattice
-                .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+                .chunks_exact_mut(self.lattice_n_x * self.lattice_n_y)
             {
-                layer[0..self.parameters.n_x].fill(v);
+                layer[0..self.lattice_n_x].fill(v);
             }
         }
 
@@ -318,10 +339,10 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
             let v = self.parameters.bc_values_y.1;
             for layer in self
                 .lattice
-                .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+                .chunks_exact_mut(self.lattice_n_x * self.lattice_n_y)
             {
-                layer[(self.parameters.n_x - 1) * self.parameters.n_y
-                    ..self.parameters.n_x * self.parameters.n_y]
+                layer[(self.lattice_n_x - 1) * self.lattice_n_y
+                    ..self.lattice_n_x * self.lattice_n_y]
                     .fill(v);
             }
         }
@@ -335,7 +356,7 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
         // Apply top xy-edge b.c.
         if self.parameters.bcs_z.1.is_pinned() {
             let v = self.parameters.bc_values_z.1;
-            self.lattice_layer_mut(self.parameters.n_z - 1).fill(v);
+            self.lattice_layer_mut(self.lattice_n_z - 1).fill(v);
         }
     }
 
