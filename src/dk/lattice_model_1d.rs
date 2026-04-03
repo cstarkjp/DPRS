@@ -14,9 +14,16 @@ pub struct LatticeModel1D<C: CellModel<Cell1D>> {
     /// The model that provides the cells and the mapping between
     /// 3x1 cell neighborhoods in one time step and the next.
     cell_model: C,
+    /// Lattice dimension x
     lattice_n_x: usize,
+    /// The current lattice
     lattice: Vec<DualState>,
+    /// Simulation parameters, only a few of which are used
     parameters: SimParameters,
+    /// Iteration of the simulation
+    ///
+    /// The first update is performed with iteration==1
+    iteration: usize,
 }
 
 /// Lattice model methods.
@@ -25,6 +32,7 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
     ///
     /// Create a new row, fill that in one 'update' call, then set the lattice to that
     pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R) {
+        self.iteration += 1;
         let mut updated_lattice = vec![DualState::default(); self.lattice_n_x];
         self.update_portion_of_row(rng, &mut updated_lattice, 0, true, true);
         self.lattice = updated_lattice;
@@ -32,6 +40,7 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
 
     /// Evolve the grid by one iteration using chunked parallel processing.
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
+        self.iteration += 1;
         // Split the lattice into n_y rows each of length n_x and
         // update these rows in parallel using par_chunks_mut().
         // Before passing to next_row() to perform the update,
@@ -96,7 +105,7 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0].into(), window[1].into(), window[2].into()];
-            *cell = self.cell_model.update_state(rng, &nbrhood);
+            *cell = self.cell_model.update_state(self.iteration, rng, &nbrhood);
         }
     }
 }
@@ -108,6 +117,7 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
             lattice_n_x: parameters.lattice_n_x(),
             lattice: vec![DualState::default(); parameters.lattice_n_x()],
             parameters: parameters.clone(),
+            iteration: 0,
         })
     }
 
@@ -134,7 +144,7 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     }
 
     fn iteration(&self) -> usize {
-        self.cell_model.iteration()
+        self.iteration
     }
 
     /// Get the number of RNG required for parallel simulation
@@ -183,12 +193,10 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     }
 
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {
-        self.cell_model.next_iteration();
         self.next_iteration_serial(rng);
     }
 
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
-        self.cell_model.next_iteration();
         self.next_iteration_parallel(rngs);
     }
 }

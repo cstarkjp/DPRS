@@ -25,6 +25,10 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     lattice: Vec<DualState>,
     /// Simulation parameters, only a few of which are used
     parameters: SimParameters,
+    /// Iteration of the simulation
+    ///
+    /// The first update is performed with iteration==1
+    iteration: usize,
 }
 
 /// Lattice model methods.
@@ -71,13 +75,15 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
 
     /// Evolve the grid by one iteration using serial processing.
     pub fn next_iteration_serial<R: Rng>(&mut self, mut rng: &mut R) {
+        self.iteration += 1;
         self.lattice = (0..self.n_cells())
             .map(|i_cell| {
                 let (is_in_bounds, x, y, z) = self.is_in_bounds(i_cell);
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y, z);
-                    self.cell_model.update_state(&mut rng, &nbrhood)
+                    self.cell_model
+                        .update_state(self.iteration, &mut rng, &nbrhood)
                 } else {
                     DualState::default()
                 }
@@ -134,6 +140,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
             rngs.len() >= self.parameters.n_z,
             "Must have at least n_z RNGs supplied to 3D parallel iteration"
         );
+        self.iteration += 1;
         let mut updated_lattice = vec![DualState::default(); self.lattice.len()];
         // Split the lattice into n_z layers each of size n_x*n_y and update
         // these layers in parallel using par_chunks_mut(). Before passing to
@@ -178,7 +185,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
-                *cell = self.cell_model.update_state(rng, lattice_window.nbrhood());
+                *cell = self
+                    .cell_model
+                    .update_state(self.iteration, rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }
@@ -201,6 +210,7 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
                     * parameters.lattice_n_z()
             ],
             parameters: parameters.clone(),
+            iteration: 0,
         })
     }
 
@@ -225,9 +235,15 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
 
         (total as f64) / (self.n_cells() as f64)
     }
+
     fn iteration(&self) -> usize {
-        self.cell_model.iteration()
+        self.iteration
     }
+
+    /// Get the number of RNG required for parallel simulation
+    ///
+    /// For a 3D lattice, one thread is used for each 'X-Y' layer, and
+    /// there are lattice_n_z of those; one RNG per thread
     fn num_parallel_rngs(&self) -> usize {
         self.lattice_n_z
     }
@@ -324,12 +340,10 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     }
 
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {
-        self.cell_model.next_iteration();
         self.next_iteration_serial(rng);
     }
 
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
-        self.cell_model.next_iteration();
         self.next_iteration_parallel(rngs);
     }
 }

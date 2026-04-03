@@ -3,9 +3,7 @@
 // //!
 
 use super::{Cell2D, CellModel};
-use crate::sim_parameters::{
-    DualState, GrowthModelChoice, SimParameters,
-};
+use crate::sim_parameters::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.
@@ -15,25 +13,7 @@ pub struct GrowthModel2D {
     #[allow(dead_code)]
     pub p_2: f64,
     pub p_initial: f64,
-    pub iteration: usize,
     pub do_staggered: bool,
-}
-
-impl GrowthModel2D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool) -> Self {
-        Self {
-            p_1,
-            p_2,
-            p_initial,
-            iteration,
-            do_staggered,
-        }
-    }
-    /// Deprecated - remove me
-    pub fn increment(&mut self) -> usize {
-        self.next_iteration();
-        self.iteration()
-    }
 }
 
 // Implement CellModel2D trait for GrowthModel2D.
@@ -45,20 +25,12 @@ impl CellModel<Cell2D> for GrowthModel2D {
             GrowthModelChoice::StaggeredDomanyKinzel => true,
             _ => todo!(),
         };
-        Ok(Self::new(
-            parameters.p_1,
-            parameters.p_2,
-            parameters.p_initial,
-            0,
+        Ok(Self {
+            p_1: parameters.p_1,
+            p_2: parameters.p_2,
+            p_initial: parameters.p_initial,
             do_staggered,
-        ))
-    }
-
-    fn next_iteration(&mut self) {
-        self.iteration += 1;
-    }
-    fn iteration(&self) -> usize {
-        self.iteration
+        })
     }
 
     /// Sample Bernoulli distribution with probability p to randomize cell state.
@@ -66,10 +38,15 @@ impl CellModel<Cell2D> for GrowthModel2D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[bool; 9]) -> DualState {
+    fn update_state<R: Rng>(
+        &self,
+        iteration: usize,
+        rng: &mut R,
+        nbrhood: &[bool; 9],
+    ) -> DualState {
         if self.do_staggered {
             //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
-            let _is_even_step = self.iteration.is_multiple_of(2);
+            let _is_even_step = iteration.is_multiple_of(2);
         }
         let p = self.p_1;
         let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());

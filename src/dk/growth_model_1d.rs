@@ -13,25 +13,7 @@ pub struct GrowthModel1D {
     #[allow(dead_code)]
     pub p_2: f64,
     pub p_initial: f64,
-    pub iteration: usize,
     pub do_staggered: bool,
-}
-
-impl GrowthModel1D {
-    pub fn new(p_1: f64, p_2: f64, p_initial: f64, iteration: usize, do_staggered: bool) -> Self {
-        Self {
-            p_1,
-            p_2,
-            p_initial,
-            iteration,
-            do_staggered,
-        }
-    }
-    /// Deprecated - remove me
-    pub fn increment(&mut self) -> usize {
-        self.next_iteration();
-        self.iteration()
-    }
 }
 
 // Implement CellModel1D trait for GrowthModel.
@@ -43,20 +25,12 @@ impl CellModel<Cell1D> for GrowthModel1D {
             GrowthModelChoice::StaggeredDomanyKinzel => true,
             _ => todo!(),
         };
-        Ok(Self::new(
-            parameters.p_1,
-            parameters.p_2,
-            parameters.p_initial,
-            0,
+        Ok(Self {
+            p_1: parameters.p_1,
+            p_2: parameters.p_2,
+            p_initial: parameters.p_initial,
             do_staggered,
-        ))
-    }
-
-    fn next_iteration(&mut self) {
-        self.iteration += 1;
-    }
-    fn iteration(&self) -> usize {
-        self.iteration
+        })
     }
 
     /// Sample Bernoulli distribution with probability p to randomize cell state.
@@ -64,10 +38,15 @@ impl CellModel<Cell1D> for GrowthModel1D {
         rng.random_bool(self.p_initial).into()
     }
 
-    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &[bool; 3]) -> DualState {
+    fn update_state<R: Rng>(
+        &self,
+        iteration: usize,
+        rng: &mut R,
+        nbrhood: &[bool; 3],
+    ) -> DualState {
         let do_survive = match self.do_staggered {
             true => {
-                let is_even_step = self.iteration.is_multiple_of(2);
+                let is_even_step = iteration.is_multiple_of(2);
                 let offset = if is_even_step { 1 } else { 0 };
                 let nbrs = &nbrhood[offset..(2 + offset)];
                 let _are_both_nbrs_occupied = nbrs.iter().all(|s| (*s).into());

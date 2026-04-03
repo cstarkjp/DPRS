@@ -48,11 +48,19 @@ impl CellDim for Cell3D {
 /// This must be [Sync] as the model can be accessed by
 /// different threads at the same time in the parallel working.
 pub trait CellModel<Dim: CellDim>: Sync + Sized {
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()>;
-    fn next_iteration(&mut self);
-    fn iteration(&self) -> usize;
+    /// Create the cell model from the parameters
+    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()>;
+
+    /// Randomize the state of the cell, usually using p_initial from the original parameters
     fn randomize_state<R: Rng>(&self, rng: &mut R) -> DualState;
-    fn update_state<R: Rng>(&self, rng: &mut R, nbrhood: &Dim::Nbrhood) -> DualState;
+
+    /// Update the state of a cell given the iteration, current Rng state, and neighborhood
+    fn update_state<R: Rng>(
+        &self,
+        iteration: usize,
+        rng: &mut R,
+        nbrhood: &Dim::Nbrhood,
+    ) -> DualState;
 }
 
 pub trait DramaticallySimulatable<D: CellDim>: Sized {
