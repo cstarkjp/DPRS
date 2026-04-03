@@ -15,105 +15,47 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3x3 cell neighborhoods in one time step and the next.
     cell_model: C,
+    /// Lattice dimension x
+    lattice_n_x: usize,
+    /// Lattice dimension y
+    lattice_n_y: usize,
+    /// Lattice dimension z
+    lattice_n_z: usize,
+    /// The current lattice
     lattice: Vec<DualState>,
-    p: SimParameters,
+    /// Simulation parameters, only a few of which are used
+    parameters: SimParameters,
 }
 
 /// Lattice model methods.
 impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
-    /// Create a fresh grid (vector of DualState cells) with all values=false,
-    /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn new(cell_model: C, p: SimParameters) -> Self {
-        Self {
-            cell_model,
-            lattice: vec![DualState::default(); p.n_x * p.n_y * p.n_z],
-            p,
-        }
-    }
-
-    /// Borrow the lattice.
-    pub fn lattice(&self) -> &Vec<DualState> {
-        &self.lattice
-    }
-
-    /// Borrow the lattice mutably.
-    pub fn lattice_mut(&mut self) -> &mut [DualState] {
-        &mut self.lattice
-    }
-
-    /// Take the model and the lattice, destroying the rest of the model.
-    ///
-    /// This is the 'deconstructor', used after simulation to take the lattice
-    /// (and potentially the model, if that is useful too).
-    #[allow(dead_code)]
-    pub fn take(self) -> (C, Vec<DualState>) {
-        (self.cell_model, self.lattice)
-    }
-
-    /// Count the total number of cells in the grid.
-    pub fn n_cells(&self) -> usize {
-        self.p.n_x * self.p.n_y * self.p.n_z
-    }
-
     /// Compute the cell index of a given (x, y, z) coordinate.
     fn i_cell(&self, x: usize, y: usize, z: usize) -> usize {
-        x + self.p.n_x * y + self.p.n_x * self.p.n_y * z
+        x + self.parameters.n_x * y + self.parameters.n_x * self.parameters.n_y * z
     }
 
     /// Get a mutable reference to one of the XY layers of the lattice
     fn lattice_layer_mut(&mut self, z: usize) -> &mut [DualState] {
-        &mut self.lattice[(z * self.p.n_x * self.p.n_y)..((z + 1) * self.p.n_x * self.p.n_y)]
-    }
-
-    /// Generate a randomized grid with cell values of 0 or 1 sampled
-    /// from a de-facto Bernoulli distribution.
-    pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_state(rng))
-            .collect();
-    }
-
-    /// Seed the simulation with a central patch.
-    pub fn create_seeded_lattice(&mut self) {
-        self.lattice = vec![DualState::default(); self.n_cells()];
-        let i = self.i_cell(self.p.n_x / 2, self.p.n_y / 2, self.p.n_z / 2);
-        self.lattice[i] = DualState::Occupied;
-    }
-
-    /// Enforce edge topology specifications.
-    pub fn apply_edge_topology(&mut self) {
-        // Apply x_axis termini topology
-        if self.p.axis_topology_x.is_periodic() {
-            self.make_axis_periodic_x(self.p.n_x - 2, 0);
-            self.make_axis_periodic_x(1, self.p.n_x - 1);
-        }
-
-        // Apply y_axis termini topology
-        if self.p.axis_topology_y.is_periodic() {
-            self.make_axis_periodic_y(self.p.n_y - 2, 0);
-            self.make_axis_periodic_y(1, self.p.n_y - 1);
-        }
-
-        // Apply z_axis termini topology
-        if self.p.axis_topology_z.is_periodic() {
-            self.make_axis_periodic_z(self.p.n_z - 2, 0);
-            self.make_axis_periodic_z(1, self.p.n_z - 1);
-        }
+        &mut self.lattice[(z * self.parameters.n_x * self.parameters.n_y)
+            ..((z + 1) * self.parameters.n_x * self.parameters.n_y)]
     }
 
     /// Enforce periodic edge topology for the x-axis, i.e., along the y-z faces.
     fn make_axis_periodic_x(&mut self, x_from: usize, x_to: usize) {
-        for row in self.lattice.chunks_exact_mut(self.p.n_x) {
+        for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
             row[x_to] = row[x_from];
         }
     }
 
     /// Enforce periodic edge topology for the y-axis, i.e., along the x-z faces.
     fn make_axis_periodic_y(&mut self, y_from: usize, y_to: usize) {
-        for layer in self.lattice.chunks_exact_mut(self.p.n_x * self.p.n_y) {
+        for layer in self
+            .lattice
+            .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+        {
             layer.copy_within(
-                (y_from * self.p.n_x)..((y_from + 1) * self.p.n_x),
-                y_to * self.p.n_x,
+                (y_from * self.parameters.n_x)..((y_from + 1) * self.parameters.n_x),
+                y_to * self.parameters.n_x,
             );
         }
     }
@@ -121,54 +63,10 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Enforce periodic edge topology for the z-axis, i.e., along the x-y faces.
     fn make_axis_periodic_z(&mut self, z_from: usize, z_to: usize) {
         self.lattice.copy_within(
-            (z_from * self.p.n_x * self.p.n_y)..((z_from + 1) * self.p.n_x * self.p.n_y),
-            z_to * self.p.n_x * self.p.n_y,
+            (z_from * self.parameters.n_x * self.parameters.n_y)
+                ..((z_from + 1) * self.parameters.n_x * self.parameters.n_y),
+            z_to * self.parameters.n_x * self.parameters.n_y,
         );
-    }
-
-    /// Enforce edge boundary conditions.
-    pub fn apply_boundary_conditions(&mut self) {
-        // Apply left yz-edge b.c.
-        if self.p.axis_bcs_x.0.is_pinned() {
-            for row in self.lattice.chunks_exact_mut(self.p.n_x) {
-                row[0] = self.p.axis_bc_values_x.0;
-            }
-        }
-
-        // Apply right yz-edge b.c.
-        if self.p.axis_bcs_x.1.is_pinned() {
-            for row in self.lattice.chunks_exact_mut(self.p.n_x) {
-                row[self.p.n_x - 1] = self.p.axis_bc_values_x.1;
-            }
-        }
-
-        // Apply bottom xz-edge b.c.
-        if self.p.axis_bcs_y.0.is_pinned() {
-            let v = self.p.axis_bc_values_y.0;
-            for layer in self.lattice.chunks_exact_mut(self.p.n_x * self.p.n_y) {
-                layer[0..self.p.n_x].fill(v);
-            }
-        }
-
-        // Apply top xz-edge b.c.
-        if self.p.axis_bcs_y.1.is_pinned() {
-            let v = self.p.axis_bc_values_y.1;
-            for layer in self.lattice.chunks_exact_mut(self.p.n_x * self.p.n_y) {
-                layer[(self.p.n_x - 1) * self.p.n_y..self.p.n_x * self.p.n_y].fill(v);
-            }
-        }
-
-        // Apply bottom xy-edge b.c.
-        if self.p.axis_bcs_z.0.is_pinned() {
-            let v = self.p.axis_bc_values_z.0;
-            self.lattice_layer_mut(0).fill(v);
-        }
-
-        // Apply top xy-edge b.c.
-        if self.p.axis_bcs_z.1.is_pinned() {
-            let v = self.p.axis_bc_values_z.1;
-            self.lattice_layer_mut(self.p.n_z - 1).fill(v);
-        }
     }
 
     /// Evolve the grid by one iteration using serial processing.
@@ -201,7 +99,12 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
             z > 0,
             "Z must be within the border to generate a neighborhood"
         );
-        CellNbrhood3D::new(&self.lattice, (x, y, z), self.p.n_x, self.p.n_y)
+        CellNbrhood3D::new(
+            &self.lattice,
+            (x, y, z),
+            self.parameters.n_x,
+            self.parameters.n_y,
+        )
     }
 
     /// Check (x,y,z) coordinate is within lattice bounds.
@@ -209,18 +112,18 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         x > 0
             && y > 0
             && z > 0
-            && x < (self.p.n_x - 1)
-            && y < (self.p.n_y - 1)
-            && z < (self.p.n_z - 1)
+            && x < (self.parameters.n_x - 1)
+            && y < (self.parameters.n_y - 1)
+            && z < (self.parameters.n_z - 1)
     }
 
     /// Check cell index is within lattice bounds; return this test and (x, y, z).
     fn is_in_bounds(&self, i_cell: usize) -> (bool, usize, usize, usize) {
         // TODO: 3d update needed
 
-        let x = i_cell % self.p.n_x;
-        let y = (i_cell / self.p.n_x) % self.p.n_y;
-        let z = i_cell / (self.p.n_x * self.p.n_y);
+        let x = i_cell % self.parameters.n_x;
+        let y = (i_cell / self.parameters.n_x) % self.parameters.n_y;
+        let z = i_cell / (self.parameters.n_x * self.parameters.n_y);
 
         (self.is_in_bounds_xyz(x, y, z), x, y, z)
     }
@@ -228,7 +131,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// Evolve the grid by one iteration using chunked parallel processing.
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         assert!(
-            rngs.len() >= self.p.n_z,
+            rngs.len() >= self.parameters.n_z,
             "Must have at least n_z RNGs supplied to 3D parallel iteration"
         );
         let mut updated_lattice = vec![DualState::default(); self.lattice.len()];
@@ -237,9 +140,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         // next_layer() to perform the update, enumerate (to get 'z'), zip each
         // pair together with one of the RNGs, and then omit the first and last
         // layers.
-        let n_layers = self.p.n_z - 2;
+        let n_layers = self.parameters.n_z - 2;
         updated_lattice
-            .par_chunks_mut(self.p.n_x * self.p.n_y)
+            .par_chunks_mut(self.parameters.n_x * self.parameters.n_y)
             .enumerate()
             .zip(rngs)
             .skip(1)
@@ -259,16 +162,19 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     /// a row gathering new neighbors into its neighborhood, dropping older ones
     /// out.
     pub fn update_layer<R: Rng>(&self, rng: &mut R, z: usize, layer: &mut [DualState]) {
-        let row_span = self.p.n_x - 2;
+        let row_span = self.parameters.n_x - 2;
         for (y, row) in layer
-            .chunks_exact_mut(self.p.n_x)
+            .chunks_exact_mut(self.parameters.n_x)
             .enumerate()
             .skip(1)
-            .take(self.p.n_y - 2)
+            .take(self.parameters.n_y - 2)
         {
-            let Some(mut lattice_window) =
-                RowIterator3D::new(&self.lattice, (1, y, z), self.p.n_x, self.p.n_y)
-            else {
+            let Some(mut lattice_window) = RowIterator3D::new(
+                &self.lattice,
+                (1, y, z),
+                self.parameters.n_x,
+                self.parameters.n_y,
+            ) else {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
@@ -282,7 +188,31 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
 }
 
 impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C> {
-    /// Compute the mean cell occupancy
+    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+        Ok(Self {
+            cell_model: C::create_from_parameters(parameters)?,
+            lattice_n_x: parameters.lattice_n_x(),
+            lattice_n_y: parameters.lattice_n_y(),
+            lattice_n_z: parameters.lattice_n_z(),
+            lattice: vec![
+                DualState::default();
+                parameters.lattice_n_x()
+                    * parameters.lattice_n_y()
+                    * parameters.lattice_n_z()
+            ],
+            parameters: parameters.clone(),
+        })
+    }
+
+    /// Count the total number of cells in the grid.
+    fn n_cells(&self) -> usize {
+        self.lattice.len()
+    }
+
+    fn lattice(&self) -> &[DualState] {
+        &self.lattice
+    }
+
     fn mean(&self) -> f64 {
         let total: usize = self
             .lattice()
@@ -298,35 +228,106 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     fn iteration(&self) -> usize {
         self.cell_model.iteration()
     }
-    fn num_parallel_rngs(&self, parameters: &SimParameters) -> usize {
-        parameters.n_z_with_pad()
+    fn num_parallel_rngs(&self) -> usize {
+        self.lattice_n_z
     }
-    fn lattice(&self) -> &[DualState] {
-        self.lattice()
-    }
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
-        // Lattice model and its parameters
-        Ok(Self::new(
-            C::create_from_parameters(parameters)?,
-            parameters.clone(),
-        ))
-    }
+
     fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.create_randomized_lattice(rng);
+        self.lattice = (0..self.n_cells())
+            .map(|_| self.cell_model.randomize_state(rng))
+            .collect();
     }
+
+    /// Seed the simulation with a central patch.
     fn create_seeded_lattice(&mut self) {
-        self.create_seeded_lattice();
+        self.lattice = vec![DualState::default(); self.n_cells()];
+        let i = self.i_cell(
+            self.lattice_n_x / 2,
+            self.lattice_n_y / 2,
+            self.lattice_n_z / 2,
+        );
+        self.lattice[i] = DualState::Occupied;
     }
+
+    /// Enforce edge topology specifications.
     fn apply_edge_topology(&mut self) {
-        self.apply_edge_topology();
+        // Apply x_axis termini topology
+        if self.parameters.axis_topology_x.is_periodic() {
+            self.make_axis_periodic_x(self.parameters.n_x - 2, 0);
+            self.make_axis_periodic_x(1, self.parameters.n_x - 1);
+        }
+
+        // Apply y_axis termini topology
+        if self.parameters.axis_topology_y.is_periodic() {
+            self.make_axis_periodic_y(self.parameters.n_y - 2, 0);
+            self.make_axis_periodic_y(1, self.parameters.n_y - 1);
+        }
+
+        // Apply z_axis termini topology
+        if self.parameters.axis_topology_z.is_periodic() {
+            self.make_axis_periodic_z(self.parameters.n_z - 2, 0);
+            self.make_axis_periodic_z(1, self.parameters.n_z - 1);
+        }
     }
+
+    /// Enforce edge boundary conditions.
     fn apply_boundary_conditions(&mut self) {
-        self.apply_boundary_conditions();
+        // Apply left yz-edge b.c.
+        if self.parameters.axis_bcs_x.0.is_pinned() {
+            for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
+                row[0] = self.parameters.axis_bc_values_x.0;
+            }
+        }
+
+        // Apply right yz-edge b.c.
+        if self.parameters.axis_bcs_x.1.is_pinned() {
+            for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
+                row[self.parameters.n_x - 1] = self.parameters.axis_bc_values_x.1;
+            }
+        }
+
+        // Apply bottom xz-edge b.c.
+        if self.parameters.axis_bcs_y.0.is_pinned() {
+            let v = self.parameters.axis_bc_values_y.0;
+            for layer in self
+                .lattice
+                .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+            {
+                layer[0..self.parameters.n_x].fill(v);
+            }
+        }
+
+        // Apply top xz-edge b.c.
+        if self.parameters.axis_bcs_y.1.is_pinned() {
+            let v = self.parameters.axis_bc_values_y.1;
+            for layer in self
+                .lattice
+                .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
+            {
+                layer[(self.parameters.n_x - 1) * self.parameters.n_y
+                    ..self.parameters.n_x * self.parameters.n_y]
+                    .fill(v);
+            }
+        }
+
+        // Apply bottom xy-edge b.c.
+        if self.parameters.axis_bcs_z.0.is_pinned() {
+            let v = self.parameters.axis_bc_values_z.0;
+            self.lattice_layer_mut(0).fill(v);
+        }
+
+        // Apply top xy-edge b.c.
+        if self.parameters.axis_bcs_z.1.is_pinned() {
+            let v = self.parameters.axis_bc_values_z.1;
+            self.lattice_layer_mut(self.parameters.n_z - 1).fill(v);
+        }
     }
+
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {
         self.cell_model.next_iteration();
         self.next_iteration_serial(rng);
     }
+
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         self.cell_model.next_iteration();
         self.next_iteration_parallel(rngs);

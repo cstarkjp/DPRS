@@ -4,9 +4,7 @@
 
 use super::{CellDim, DramaticallySimulatable};
 use crate::dk::types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
-use crate::sim_parameters::{
-    InitialCondition, Processing, SimParameters,
-};
+use crate::sim_parameters::{InitialCondition, Processing, SimParameters};
 // use lattice_model_1d::LatticeModel1D;
 // use super::growth_model_1d::GrowthModel1D;
 // use crate::dk::lattice_model_1d;
@@ -81,7 +79,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
             // keep it full length for now just in case we need buffer RNGs.
             assert!(parameters.random_seed > 0);
 
-            let mut rngs: Vec<StdRng> = (0..lm.num_parallel_rngs(parameters))
+            let mut rngs: Vec<StdRng> = (0..lm.num_parallel_rngs())
                 .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for _ in 1..(n_iterations + 1) {

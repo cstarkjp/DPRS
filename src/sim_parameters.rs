@@ -264,4 +264,13 @@ impl SimParameters {
             false => self.n_z,
         }
     }
+    pub fn lattice_n_x(&self) -> usize {
+        self.n_x_with_pad()
+    }
+    pub fn lattice_n_y(&self) -> usize {
+        self.n_y_with_pad()
+    }
+    pub fn lattice_n_z(&self) -> usize {
+        self.n_z_with_pad()
+    }
 }

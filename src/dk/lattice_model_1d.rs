@@ -1,6 +1,3 @@
-// #![warn(missing_docs)]
-// //!
-// //!
 use super::{Cell1D, CellModel, DramaticallySimulatable};
 
 use crate::sim_parameters::{DualState, GrowthModelChoice, SimParameters};
@@ -16,81 +13,19 @@ use rayon::prelude::*;
 pub struct LatticeModel1D<C: CellModel<Cell1D>> {
     /// The model that provides the cells and the mapping between
     /// 3x1 cell neighborhoods in one time step and the next.
-    pub cell_model: C,
+    cell_model: C,
+    lattice_n_x: usize,
     lattice: Vec<DualState>,
-    p: SimParameters,
+    parameters: SimParameters,
 }
 
 /// Lattice model methods.
 impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
-    /// Create a fresh grid (vector of DualState cells) with all values=false,
-    /// along with birth/survival rules set by the "born" and "survive" vectors.
-    pub fn new(cell_model: C, p: SimParameters) -> Self {
-        Self {
-            cell_model,
-            lattice: vec![DualState::default(); p.n_x],
-            p,
-        }
-    }
-
-    /// Borrow the lattice.
-    pub fn lattice(&self) -> &[DualState] {
-        &self.lattice
-    }
-
-    /// Take the model and the lattice, destroying the rest of the model.
-    ///
-    /// This is the 'deconstructor', used after simulation to take the lattice
-    /// (and potentially the model, if that is useful too).
-    pub fn take(self) -> (C, Vec<DualState>) {
-        (self.cell_model, self.lattice)
-    }
-
-    /// Count the total number of cells in the grid.
-    pub fn n_cells(&self) -> usize {
-        self.p.n_x
-    }
-
-    /// Generate a randomized grid with cell values of 0 or 1 sampled
-    /// from a de-facto Bernoulli distribution.
-    pub fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_state(rng))
-            .collect();
-    }
-
-    /// Seed the simulation with a central patch.
-    pub fn create_seeded_lattice(&mut self) {
-        self.lattice = vec![DualState::default(); self.n_cells()];
-        let i = self.p.n_x / 2;
-        self.lattice[i] = DualState::Occupied;
-    }
-
-    /// Enforce edge topology specifications.
-    pub fn apply_edge_topology(&mut self) {
-        // Apply x_axis termini topology
-        if self.p.axis_topology_x.is_periodic() {
-            self.lattice[0] = self.lattice[self.p.n_x - 2];
-            self.lattice[self.p.n_x - 1] = self.lattice[1];
-        }
-    }
-
-    /// Enforce edge boundary conditions.
-    pub fn apply_boundary_conditions(&mut self) {
-        // Apply left y-edge b.c.
-        if self.p.axis_bcs_x.0.is_pinned() {
-            self.lattice[0] = self.p.axis_bc_values_x.0;
-        }
-
-        // Apply right y-edge b.c.
-        if self.p.axis_bcs_x.1.is_pinned() {
-            self.lattice[self.p.n_x - 1] = self.p.axis_bc_values_x.1;
-        }
-    }
-
     /// Evolve the grid by one iteration using serial processing.
+    ///
+    /// Create a new row, fill that in one 'update' call, then set the lattice to that
     pub fn next_iteration_serial<R: Rng>(&mut self, rng: &mut R) {
-        let mut updated_lattice = vec![DualState::default(); self.p.n_x];
+        let mut updated_lattice = vec![DualState::default(); self.lattice_n_x];
         self.update_portion_of_row(rng, &mut updated_lattice, 0, true, true);
         self.lattice = updated_lattice;
     }
@@ -106,9 +41,9 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
         let n_chunks = rngs.len();
         // let chunk_length = (self.n_x + n_chunks - 1) / n_chunks;
         // Clippy recommendation:
-        let chunk_length = self.p.n_x.div_ceil(n_chunks);
+        let chunk_length = self.lattice_n_x.div_ceil(n_chunks);
 
-        let _do_staggered = match self.p.growth_model_choice {
+        let _do_staggered = match self.parameters.growth_model_choice {
             GrowthModelChoice::StaggeredDomanyKinzel => true,
             _ => false,
         };
@@ -167,7 +102,24 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
 }
 
 impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C> {
-    /// Compute the mean cell occupancy
+    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+        Ok(Self {
+            cell_model: C::create_from_parameters(parameters)?,
+            lattice_n_x: parameters.lattice_n_x(),
+            lattice: vec![DualState::default(); parameters.lattice_n_x()],
+            parameters: parameters.clone(),
+        })
+    }
+
+    /// Count the total number of cells in the grid.
+    fn n_cells(&self) -> usize {
+        self.lattice_n_x
+    }
+
+    fn lattice(&self) -> &[DualState] {
+        &self.lattice
+    }
+
     fn mean(&self) -> f64 {
         let total: usize = self
             .lattice()
@@ -180,38 +132,61 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
 
         (total as f64) / (self.n_cells() as f64)
     }
+
     fn iteration(&self) -> usize {
         self.cell_model.iteration()
     }
-    fn num_parallel_rngs(&self, parameters: &SimParameters) -> usize {
-        parameters.n_threads
+
+    /// Get the number of RNG required for parallel simulation
+    ///
+    /// For 1D the lattice is split into 'N' subsections, one per thread, so the
+    /// number of RNGs required is the number of threads.
+    fn num_parallel_rngs(&self) -> usize {
+        self.parameters.n_threads
     }
-    fn lattice(&self) -> &[DualState] {
-        self.lattice()
-    }
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
-        // Lattice model and its parameters
-        Ok(Self::new(
-            C::create_from_parameters(parameters)?,
-            parameters.clone(),
-        ))
-    }
+
+    /// Generate a randomized grid with cell values of 0 or 1 sampled
+    /// from a de-facto Bernoulli distribution.
     fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
-        self.create_randomized_lattice(rng);
+        self.lattice = (0..self.n_cells())
+            .map(|_| self.cell_model.randomize_state(rng))
+            .collect();
     }
+
+    /// Seed the simulation with a central patch.
     fn create_seeded_lattice(&mut self) {
-        self.create_seeded_lattice();
+        self.lattice = vec![DualState::default(); self.n_cells()];
+        let i = self.lattice_n_x / 2;
+        self.lattice[i] = DualState::Occupied;
     }
+
+    /// Enforce edge topology specifications.
     fn apply_edge_topology(&mut self) {
-        self.apply_edge_topology();
+        // Apply x_axis termini topology
+        if self.parameters.axis_topology_x.is_periodic() {
+            self.lattice[0] = self.lattice[self.lattice_n_x - 2];
+            self.lattice[self.lattice_n_x - 1] = self.lattice[1];
+        }
     }
+
+    /// Enforce edge boundary conditions.
     fn apply_boundary_conditions(&mut self) {
-        self.apply_boundary_conditions();
+        // Apply left y-edge b.c.
+        if self.parameters.axis_bcs_x.0.is_pinned() {
+            self.lattice[0] = self.parameters.axis_bc_values_x.0;
+        }
+
+        // Apply right y-edge b.c.
+        if self.parameters.axis_bcs_x.1.is_pinned() {
+            self.lattice[self.lattice_n_x - 1] = self.parameters.axis_bc_values_x.1;
+        }
     }
+
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {
         self.cell_model.next_iteration();
         self.next_iteration_serial(rng);
     }
+
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         self.cell_model.next_iteration();
         self.next_iteration_parallel(rngs);
