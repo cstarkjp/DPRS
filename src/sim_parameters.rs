@@ -200,50 +200,50 @@ impl std::fmt::Display for SimParameters {
 impl SimParameters {
     /// Copy Python-facing parameters.
     pub fn fill(parameters: &PyParameters) -> Self {
-        let p = parameters.clone();
+        let py_p = parameters.clone();
         Self {
-            growth_model_choice: GrowthModelChoice::from(p.growth_model_choice),
-            dim: Dimension::from(p.dim),
-            n_x: p.n_x,
-            n_y: p.n_y,
-            n_z: p.n_z,
-            p_1: p.p_1,
-            p_2: p.p_2,
-            n_iterations: p.n_iterations,
-            sample_period: p.sample_period,
-            initial_condition: InitialCondition::from(p.initial_condition),
-            p_initial: p.p_initial,
-            random_seed: p.random_seed,
-            axis_topology_x: Topology::from(p.axis_topology_x),
-            axis_topology_y: Topology::from(p.axis_topology_y),
-            axis_topology_z: Topology::from(p.axis_topology_z),
+            growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),
+            dim: Dimension::from(py_p.dim),
+            n_x: py_p.n_x,
+            n_y: py_p.n_y,
+            n_z: py_p.n_z,
+            p_1: py_p.p_1,
+            p_2: py_p.p_2,
+            n_iterations: py_p.n_iterations,
+            sample_period: py_p.sample_period,
+            initial_condition: InitialCondition::from(py_p.initial_condition),
+            p_initial: py_p.p_initial,
+            random_seed: py_p.random_seed,
+            axis_topology_x: Topology::from(py_p.axis_topology_x),
+            axis_topology_y: Topology::from(py_p.axis_topology_y),
+            axis_topology_z: Topology::from(py_p.axis_topology_z),
             axis_bcs_x: (
-                BoundaryCondition::from(p.axis_bcs_x.0),
-                BoundaryCondition::from(p.axis_bcs_x.1),
+                BoundaryCondition::from(py_p.axis_bcs_x.0),
+                BoundaryCondition::from(py_p.axis_bcs_x.1),
             ),
             axis_bcs_y: (
-                BoundaryCondition::from(p.axis_bcs_y.0),
-                BoundaryCondition::from(p.axis_bcs_y.1),
+                BoundaryCondition::from(py_p.axis_bcs_y.0),
+                BoundaryCondition::from(py_p.axis_bcs_y.1),
             ),
             axis_bcs_z: (
-                BoundaryCondition::from(p.axis_bcs_z.0),
-                BoundaryCondition::from(p.axis_bcs_z.1),
+                BoundaryCondition::from(py_p.axis_bcs_z.0),
+                BoundaryCondition::from(py_p.axis_bcs_z.1),
             ),
             axis_bc_values_x: (
-                DualState::from(p.axis_bc_values_x.0),
-                DualState::from(p.axis_bc_values_x.1),
+                DualState::from(py_p.axis_bc_values_x.0),
+                DualState::from(py_p.axis_bc_values_x.1),
             ),
-            axis_bc_values_y:  (
-                DualState::from(p.axis_bc_values_y.0),
-                DualState::from(p.axis_bc_values_y.1),
+            axis_bc_values_y: (
+                DualState::from(py_p.axis_bc_values_y.0),
+                DualState::from(py_p.axis_bc_values_y.1),
             ),
-            axis_bc_values_z:  (
-                DualState::from(p.axis_bc_values_z.0),
-                DualState::from(p.axis_bc_values_z.1),
+            axis_bc_values_z: (
+                DualState::from(py_p.axis_bc_values_z.0),
+                DualState::from(py_p.axis_bc_values_z.1),
             ),
-            do_edge_buffering: p.do_edge_buffering,
-            processing: Processing::from(p.processing),
-            n_threads: p.n_threads,
+            do_edge_buffering: py_p.do_edge_buffering,
+            processing: Processing::from(py_p.processing),
+            n_threads: py_p.n_threads,
         }
     }
     pub fn n_x_with_pad(&self) -> usize {
