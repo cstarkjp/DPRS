@@ -19,16 +19,16 @@ pub struct LatticeModel2D<C: CellModel<Cell2D>> {
     n_x: usize,
     n_y: usize,
     lattice: Vec<DualState>,
-    end_values_x: (DualState, DualState),
-    end_values_y: (DualState, DualState),
+    // end_values_x: (DualState, DualState),
+    // end_values_y: (DualState, DualState),
     // From Parameters
     growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_topology_y: Topology,
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
     axis_bcs_y: (BoundaryCondition, BoundaryCondition),
-    axis_bc_values_x: (bool, bool),
-    axis_bc_values_y: (bool, bool),
+    axis_bc_values_x: (DualState, DualState),
+    axis_bc_values_y: (DualState, DualState),
     do_edge_buffering: bool,
 }
 
@@ -40,15 +40,15 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
         cell_model: C,
         n_x: usize,
         n_y: usize,
-        end_values_x: (DualState, DualState),
-        end_values_y: (DualState, DualState),
+        // end_values_x: (DualState, DualState),
+        // end_values_y: (DualState, DualState),
         growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_topology_y: Topology,
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
         axis_bcs_y: (BoundaryCondition, BoundaryCondition),
-        axis_bc_values_x: (bool, bool),
-        axis_bc_values_y: (bool, bool),
+        axis_bc_values_x: (DualState, DualState),
+        axis_bc_values_y: (DualState, DualState),
         do_edge_buffering: bool,
     ) -> Self {
         Self {
@@ -56,8 +56,8 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
             n_x,
             n_y,
             lattice: vec![DualState::default(); n_x * n_y],
-            end_values_x,
-            end_values_y,
+            // end_values_x,
+            // end_values_y,
             growth_model_choice,
             axis_topology_x,
             axis_topology_y,
@@ -143,26 +143,26 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
         // Apply left y-edge b.c.
         if self.axis_bcs_x.0.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.n_x) {
-                row[0] = self.end_values_x.0;
+                row[0] = self.axis_bc_values_x.0;
             }
         }
 
         // Apply right y-edge b.c.
         if self.axis_bcs_x.1.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.n_x) {
-                row[self.n_x - 1] = self.end_values_x.1;
+                row[self.n_x - 1] = self.axis_bc_values_x.1;
             }
         }
 
         // Apply bottom x-edge b.c.
         if self.axis_bcs_y.0.is_pinned() {
-            let v = self.end_values_y.0;
+            let v = self.axis_bc_values_y.0;
             self.lattice_row_mut(0).fill(v);
         }
 
         // Apply top x-edge b.c.
         if self.axis_bcs_y.1.is_pinned() {
-            let v = self.end_values_y.1;
+            let v = self.axis_bc_values_y.1;
             self.lattice_row_mut(self.n_y - 1).fill(v);
         }
     }
@@ -300,8 +300,6 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
             C::create_from_parameters(parameters)?,
             parameters.n_x_with_pad(),
             parameters.n_y_with_pad(),
-            (DualState::Empty, DualState::Empty),
-            (DualState::Empty, DualState::Empty),
             parameters.growth_model_choice,
             parameters.axis_topology_x,
             parameters.axis_topology_y,

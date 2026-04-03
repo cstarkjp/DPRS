@@ -21,9 +21,9 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     n_y: usize,
     n_z: usize,
     lattice: Vec<DualState>,
-    end_values_x: (DualState, DualState),
-    end_values_y: (DualState, DualState),
-    end_values_z: (DualState, DualState),
+    // end_values_x: (DualState, DualState),
+    // end_values_y: (DualState, DualState),
+    // end_values_z: (DualState, DualState),
     // From Parameters
     growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
@@ -32,9 +32,9 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
     axis_bcs_y: (BoundaryCondition, BoundaryCondition),
     axis_bcs_z: (BoundaryCondition, BoundaryCondition),
-    axis_bc_values_x: (bool, bool),
-    axis_bc_values_y: (bool, bool),
-    axis_bc_values_z: (bool, bool),
+    axis_bc_values_x: (DualState, DualState),
+    axis_bc_values_y: (DualState, DualState),
+    axis_bc_values_z: (DualState, DualState),
     do_edge_buffering: bool,
 }
 
@@ -47,9 +47,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         n_x: usize,
         n_y: usize,
         n_z: usize,
-        end_values_x: (DualState, DualState),
-        end_values_y: (DualState, DualState),
-        end_values_z: (DualState, DualState),
+        // end_values_x: (DualState, DualState),
+        // end_values_y: (DualState, DualState),
+        // end_values_z: (DualState, DualState),
         growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_topology_y: Topology,
@@ -57,9 +57,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
         axis_bcs_y: (BoundaryCondition, BoundaryCondition),
         axis_bcs_z: (BoundaryCondition, BoundaryCondition),
-        axis_bc_values_x: (bool, bool),
-        axis_bc_values_y: (bool, bool),
-        axis_bc_values_z: (bool, bool),
+        axis_bc_values_x: (DualState, DualState),
+        axis_bc_values_y: (DualState, DualState),
+        axis_bc_values_z: (DualState, DualState),
         do_edge_buffering: bool,
     ) -> Self {
         Self {
@@ -68,9 +68,9 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
             n_y,
             n_z,
             lattice: vec![DualState::default(); n_x * n_y * n_z],
-            end_values_x,
-            end_values_y,
-            end_values_z,
+            // end_values_x,
+            // end_values_y,
+            // end_values_z,
             growth_model_choice,
             axis_topology_x,
             axis_topology_y,
@@ -185,20 +185,20 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         // Apply left yz-edge b.c.
         if self.axis_bcs_x.0.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.n_x) {
-                row[0] = self.end_values_x.0;
+                row[0] = self.axis_bc_values_x.0;
             }
         }
 
         // Apply right yz-edge b.c.
         if self.axis_bcs_x.1.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.n_x) {
-                row[self.n_x - 1] = self.end_values_x.1;
+                row[self.n_x - 1] = self.axis_bc_values_x.1;
             }
         }
 
         // Apply bottom xz-edge b.c.
         if self.axis_bcs_y.0.is_pinned() {
-            let v = self.end_values_y.0;
+            let v = self.axis_bc_values_y.0;
             for layer in self.lattice.chunks_exact_mut(self.n_x * self.n_y) {
                 layer[0..self.n_x].fill(v);
             }
@@ -206,7 +206,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
 
         // Apply top xz-edge b.c.
         if self.axis_bcs_y.1.is_pinned() {
-            let v = self.end_values_y.1;
+            let v = self.axis_bc_values_y.1;
             for layer in self.lattice.chunks_exact_mut(self.n_x * self.n_y) {
                 layer[(self.n_x - 1) * self.n_y..self.n_x * self.n_y].fill(v);
             }
@@ -214,13 +214,13 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
 
         // Apply bottom xy-edge b.c.
         if self.axis_bcs_z.0.is_pinned() {
-            let v = self.end_values_z.0;
+            let v = self.axis_bc_values_z.0;
             self.lattice_layer_mut(0).fill(v);
         }
 
         // Apply top xy-edge b.c.
         if self.axis_bcs_z.1.is_pinned() {
-            let v = self.end_values_z.1;
+            let v = self.axis_bc_values_z.1;
             self.lattice_layer_mut(self.n_z - 1).fill(v);
         }
     }
@@ -360,9 +360,9 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
             parameters.n_x_with_pad(),
             parameters.n_y_with_pad(),
             parameters.n_z_with_pad(),
-            (DualState::Empty, DualState::Empty),
-            (DualState::Empty, DualState::Empty),
-            (DualState::Empty, DualState::Empty),
+            // (DualState::Empty, DualState::Empty),
+            // (DualState::Empty, DualState::Empty),
+            // (DualState::Empty, DualState::Empty),
             parameters.growth_model_choice,
             parameters.axis_topology_x,
             parameters.axis_topology_y,

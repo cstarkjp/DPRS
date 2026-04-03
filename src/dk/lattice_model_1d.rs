@@ -21,12 +21,12 @@ pub struct LatticeModel1D<C: CellModel<Cell1D>> {
     pub cell_model: C,
     n_x: usize,
     lattice: Vec<DualState>,
-    end_values_x: (DualState, DualState),
+    // end_values_x: (DualState, DualState),
     // From Parameters
     growth_model_choice: GrowthModelChoice,
     axis_topology_x: Topology,
     axis_bcs_x: (BoundaryCondition, BoundaryCondition),
-    axis_bc_values_x: (bool, bool),
+    axis_bc_values_x: (DualState, DualState),
     do_edge_buffering: bool,
 }
 
@@ -37,18 +37,18 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
     pub fn new(
         cell_model: C,
         n_x: usize,
-        end_values_x: (DualState, DualState),
+        // end_values_x: (DualState, DualState),
         growth_model_choice: GrowthModelChoice,
         axis_topology_x: Topology,
         axis_bcs_x: (BoundaryCondition, BoundaryCondition),
-        axis_bc_values_x: (bool, bool),
+        axis_bc_values_x: (DualState, DualState),
         do_edge_buffering: bool,
     ) -> Self {
         Self {
             cell_model,
             n_x,
             lattice: vec![DualState::default(); n_x],
-            end_values_x,
+            // end_values_x,
             growth_model_choice,
             axis_topology_x,
             axis_bcs_x,
@@ -104,12 +104,12 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
     pub fn apply_boundary_conditions(&mut self) {
         // Apply left y-edge b.c.
         if self.axis_bcs_x.0.is_pinned() {
-            self.lattice[0] = self.end_values_x.0;
+            self.lattice[0] = self.axis_bc_values_x.0;
         }
 
         // Apply right y-edge b.c.
         if self.axis_bcs_x.1.is_pinned() {
-            self.lattice[self.n_x - 1] = self.end_values_x.1;
+            self.lattice[self.n_x - 1] = self.axis_bc_values_x.1;
         }
     }
 
@@ -219,7 +219,6 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
         Ok(Self::new(
             C::create_from_parameters(parameters)?,
             parameters.n_x_with_pad(),
-            (DualState::Empty, DualState::Empty),
             parameters.growth_model_choice,
             parameters.axis_topology_x,
             parameters.axis_bcs_x,
