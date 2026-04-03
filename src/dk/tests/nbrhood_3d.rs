@@ -6,7 +6,6 @@ use rand::RngExt;
 #[derive(Clone, Copy, Debug)]
 struct MoveRightModel1D {
     pub p_initial: f64,
-    pub iteration: usize,
 }
 
 impl CellModel<Cell1D> for MoveRightModel1D {
@@ -15,20 +14,14 @@ impl CellModel<Cell1D> for MoveRightModel1D {
     ) -> Result<Self, ()> {
         Ok(Self {
             p_initial: parameters.p_initial,
-            iteration: 0,
         })
-    }
-    fn next_iteration(&mut self) {
-        self.iteration += 1;
-    }
-    fn iteration(&self) -> usize {
-        self.iteration
     }
     fn randomize_state<R: rand::Rng>(&self, rng: &mut R) -> crate::sim_parameters::DualState {
         rng.random_bool(self.p_initial).into()
     }
     fn update_state<R: rand::Rng>(
         &self,
+        _iteration: usize,
         _rng: &mut R,
         nbrhood: &<Cell1D as crate::dk::CellDim>::Nbrhood,
     ) -> crate::sim_parameters::DualState {
