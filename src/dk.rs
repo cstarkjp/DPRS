@@ -18,14 +18,10 @@ mod growth_model_3d;
 mod lattice_model_3d;
 mod run_3d;
 
-// mod simulation_1d;
-// mod simulation_2d;
-// mod simulation_3d;
-
 mod simulation;
 
-// #[cfg(test)]
-// mod tests;
+#[cfg(test)]
+mod tests;
 
 pub use simulation::simulation_nd;
 

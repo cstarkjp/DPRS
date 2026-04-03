@@ -163,6 +163,8 @@ pub struct SimParameters {
     pub axis_bc_values_x: (DualState, DualState),
     pub axis_bc_values_y: (DualState, DualState),
     pub axis_bc_values_z: (DualState, DualState),
+    /// If do_edge_buffering is true then the lattice will be padded by 1 in all
+    /// dimensions on both 'edges'
     pub do_edge_buffering: bool,
     pub processing: Processing,
     pub n_threads: usize,
