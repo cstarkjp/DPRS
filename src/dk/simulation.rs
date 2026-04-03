@@ -22,7 +22,7 @@ use rand::rngs::StdRng;
 pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
 ) -> Result<(usize, LatticeSlices, Tracking), ()> {
-    let mut lm = LM::create_from_parameters(parameters)?;
+    let mut lm = LM::create_from_parameters(&parameters)?;
 
     let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
