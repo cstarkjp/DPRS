@@ -32,7 +32,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
         }
         InitialCondition::Preserved => {}
     }
-    lm.apply_edge_topology();
+    lm.apply_axial_topologies();
     lm.apply_boundary_conditions();
 
     // Set up a recording of lattice evolution, or suppress
@@ -55,7 +55,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
 
     // Evolve the lattice for n_iterations
     //
-    // Note: the second "apply_edge_topology" etc are unnecessary.
+    // Note: the second "apply_axial_topologies" etc are unnecessary.
     // It's only there for now to ensure the t-sliced lattices show whether
     // boundary topology/condition step is working or not.
     match parameters.processing {
@@ -63,7 +63,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
             for _ in 1..(n_iterations + 1) {
                 let iteration = lm.iteration();
                 lm.iterate_once_serial(&mut rng);
-                lm.apply_edge_topology();
+                lm.apply_axial_topologies();
                 lm.apply_boundary_conditions();
                 lattice_history.record(lm.lattice(), iteration);
                 tracking_history.update(iteration, &lm);
@@ -85,7 +85,7 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
             for _ in 1..(n_iterations + 1) {
                 let iteration = lm.iteration();
                 lm.iterate_once_parallel(&mut rngs);
-                lm.apply_edge_topology();
+                lm.apply_axial_topologies();
                 lm.apply_boundary_conditions();
                 lattice_history.record(lm.lattice(), iteration);
                 tracking_history.update(iteration, &lm);

@@ -30,15 +30,15 @@ class Parameters():
     initial_condition: sim.InitialCondition.Randomized
     p_initial: float
     random_seed: int
-    axis_topology_x: sim.Topology
-    axis_topology_y: sim.Topology
-    axis_topology_z: sim.Topology
-    axis_bcs_x: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    axis_bcs_y: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    axis_bcs_z: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    axis_bc_values_x: tuple[bool, bool]
-    axis_bc_values_y: tuple[bool, bool]
-    axis_bc_values_z: tuple[bool, bool]
+    topology_x: sim.Topology
+    topology_y: sim.Topology
+    topology_z: sim.Topology
+    bcs_x: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+    bcs_y: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+    bcs_z: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+    bc_values_x: tuple[bool, bool]
+    bc_values_y: tuple[bool, bool]
+    bc_values_z: tuple[bool, bool]
     do_edge_buffering: bool
     processing: sim.Processing
     n_threads: int

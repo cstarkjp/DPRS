@@ -125,15 +125,15 @@ pub struct PyParameters {
     pub initial_condition: InitialCondition,
     pub p_initial: f64,
     pub random_seed: usize,
-    pub axis_topology_x: Topology,
-    pub axis_topology_y: Topology,
-    pub axis_topology_z: Topology,
-    pub axis_bcs_x: (BoundaryCondition, BoundaryCondition),
-    pub axis_bcs_y: (BoundaryCondition, BoundaryCondition),
-    pub axis_bcs_z: (BoundaryCondition, BoundaryCondition),
-    pub axis_bc_values_x: (bool, bool),
-    pub axis_bc_values_y: (bool, bool),
-    pub axis_bc_values_z: (bool, bool),
+    pub topology_x: Topology,
+    pub topology_y: Topology,
+    pub topology_z: Topology,
+    pub bcs_x: (BoundaryCondition, BoundaryCondition),
+    pub bcs_y: (BoundaryCondition, BoundaryCondition),
+    pub bcs_z: (BoundaryCondition, BoundaryCondition),
+    pub bc_values_x: (bool, bool),
+    pub bc_values_y: (bool, bool),
+    pub bc_values_z: (bool, bool),
     pub do_edge_buffering: bool,
     pub processing: Processing,
     pub n_threads: usize,
@@ -151,15 +151,15 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
         writeln!(fmt, "Initial prob.: {}", self.p_initial)?;
         writeln!(fmt, "Random seed:   {}", self.random_seed)?;
-        writeln!(fmt, "Topology x:    {:?}", self.axis_topology_x)?;
-        writeln!(fmt, "Topology y:    {:?}", self.axis_topology_y)?;
-        writeln!(fmt, "Topology z:    {:?}", self.axis_topology_z)?;
-        writeln!(fmt, "Axis BCs x:    {:?}", self.axis_bcs_x)?;
-        writeln!(fmt, "Axis BCs y:    {:?}", self.axis_bcs_y)?;
-        writeln!(fmt, "Axis BCs z:    {:?}", self.axis_bcs_z)?;
-        writeln!(fmt, "BC values x:   {:?}", self.axis_bc_values_x)?;
-        writeln!(fmt, "BC values y:   {:?}", self.axis_bc_values_y)?;
-        writeln!(fmt, "BC values z:   {:?}", self.axis_bc_values_z)?;
+        writeln!(fmt, "Topology x:    {:?}", self.topology_x)?;
+        writeln!(fmt, "Topology y:    {:?}", self.topology_y)?;
+        writeln!(fmt, "Topology z:    {:?}", self.topology_z)?;
+        writeln!(fmt, "Axis BCs x:    {:?}", self.bcs_x)?;
+        writeln!(fmt, "Axis BCs y:    {:?}", self.bcs_y)?;
+        writeln!(fmt, "Axis BCs z:    {:?}", self.bcs_z)?;
+        writeln!(fmt, "BC values x:   {:?}", self.bc_values_x)?;
+        writeln!(fmt, "BC values y:   {:?}", self.bc_values_y)?;
+        writeln!(fmt, "BC values z:   {:?}", self.bc_values_z)?;
         writeln!(fmt, "Edge buffer:   {}", self.do_edge_buffering)?;
         writeln!(fmt, "Processing:    {:?}", self.processing)?;
         writeln!(fmt, "Num. threads:  {}", self.n_threads)?;

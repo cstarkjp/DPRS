@@ -171,9 +171,9 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     }
 
     /// Enforce edge topology specifications.
-    fn apply_edge_topology(&mut self) {
+    fn apply_axial_topologies(&mut self) {
         // Apply x_axis termini topology
-        if self.parameters.axis_topology_x.is_periodic() {
+        if self.parameters.topology_x.is_periodic() {
             self.lattice[0] = self.lattice[self.lattice_n_x - 2];
             self.lattice[self.lattice_n_x - 1] = self.lattice[1];
         }
@@ -182,13 +182,13 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     /// Enforce edge boundary conditions.
     fn apply_boundary_conditions(&mut self) {
         // Apply left y-edge b.c.
-        if self.parameters.axis_bcs_x.0.is_pinned() {
-            self.lattice[0] = self.parameters.axis_bc_values_x.0;
+        if self.parameters.bcs_x.0.is_pinned() {
+            self.lattice[0] = self.parameters.bc_values_x.0;
         }
 
         // Apply right y-edge b.c.
-        if self.parameters.axis_bcs_x.1.is_pinned() {
-            self.lattice[self.lattice_n_x - 1] = self.parameters.axis_bc_values_x.1;
+        if self.parameters.bcs_x.1.is_pinned() {
+            self.lattice[self.lattice_n_x - 1] = self.parameters.bc_values_x.1;
         }
     }
 

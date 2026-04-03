@@ -266,21 +266,21 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     }
 
     /// Enforce edge topology specifications.
-    fn apply_edge_topology(&mut self) {
+    fn apply_axial_topologies(&mut self) {
         // Apply x_axis termini topology
-        if self.parameters.axis_topology_x.is_periodic() {
+        if self.parameters.topology_x.is_periodic() {
             self.make_axis_periodic_x(self.parameters.n_x - 2, 0);
             self.make_axis_periodic_x(1, self.parameters.n_x - 1);
         }
 
         // Apply y_axis termini topology
-        if self.parameters.axis_topology_y.is_periodic() {
+        if self.parameters.topology_y.is_periodic() {
             self.make_axis_periodic_y(self.parameters.n_y - 2, 0);
             self.make_axis_periodic_y(1, self.parameters.n_y - 1);
         }
 
         // Apply z_axis termini topology
-        if self.parameters.axis_topology_z.is_periodic() {
+        if self.parameters.topology_z.is_periodic() {
             self.make_axis_periodic_z(self.parameters.n_z - 2, 0);
             self.make_axis_periodic_z(1, self.parameters.n_z - 1);
         }
@@ -289,22 +289,22 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     /// Enforce edge boundary conditions.
     fn apply_boundary_conditions(&mut self) {
         // Apply left yz-edge b.c.
-        if self.parameters.axis_bcs_x.0.is_pinned() {
+        if self.parameters.bcs_x.0.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
-                row[0] = self.parameters.axis_bc_values_x.0;
+                row[0] = self.parameters.bc_values_x.0;
             }
         }
 
         // Apply right yz-edge b.c.
-        if self.parameters.axis_bcs_x.1.is_pinned() {
+        if self.parameters.bcs_x.1.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.parameters.n_x) {
-                row[self.parameters.n_x - 1] = self.parameters.axis_bc_values_x.1;
+                row[self.parameters.n_x - 1] = self.parameters.bc_values_x.1;
             }
         }
 
         // Apply bottom xz-edge b.c.
-        if self.parameters.axis_bcs_y.0.is_pinned() {
-            let v = self.parameters.axis_bc_values_y.0;
+        if self.parameters.bcs_y.0.is_pinned() {
+            let v = self.parameters.bc_values_y.0;
             for layer in self
                 .lattice
                 .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
@@ -314,8 +314,8 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
         }
 
         // Apply top xz-edge b.c.
-        if self.parameters.axis_bcs_y.1.is_pinned() {
-            let v = self.parameters.axis_bc_values_y.1;
+        if self.parameters.bcs_y.1.is_pinned() {
+            let v = self.parameters.bc_values_y.1;
             for layer in self
                 .lattice
                 .chunks_exact_mut(self.parameters.n_x * self.parameters.n_y)
@@ -327,14 +327,14 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
         }
 
         // Apply bottom xy-edge b.c.
-        if self.parameters.axis_bcs_z.0.is_pinned() {
-            let v = self.parameters.axis_bc_values_z.0;
+        if self.parameters.bcs_z.0.is_pinned() {
+            let v = self.parameters.bc_values_z.0;
             self.lattice_layer_mut(0).fill(v);
         }
 
         // Apply top xy-edge b.c.
-        if self.parameters.axis_bcs_z.1.is_pinned() {
-            let v = self.parameters.axis_bc_values_z.1;
+        if self.parameters.bcs_z.1.is_pinned() {
+            let v = self.parameters.bc_values_z.1;
             self.lattice_layer_mut(self.parameters.n_z - 1).fill(v);
         }
     }

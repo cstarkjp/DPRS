@@ -219,9 +219,9 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
     }
 
     /// Enforce edge topology specifications.
-    fn apply_edge_topology(&mut self) {
+    fn apply_axial_topologies(&mut self) {
         // Apply x_axis termini topology
-        if self.parameters.axis_topology_x.is_periodic() {
+        if self.parameters.topology_x.is_periodic() {
             let n_x = self.lattice_n_x;
             for row in self.lattice.chunks_exact_mut(n_x) {
                 row[n_x - 2] = row[0];
@@ -230,7 +230,7 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
         }
 
         // Apply y_axis termini topology
-        if self.parameters.axis_topology_y.is_periodic() {
+        if self.parameters.topology_y.is_periodic() {
             let n_y = self.lattice_n_y;
             self.make_axis_periodic_y(n_y - 2, 0);
             self.make_axis_periodic_y(1, n_y - 1);
@@ -240,28 +240,28 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
     /// Enforce edge boundary conditions.
     fn apply_boundary_conditions(&mut self) {
         // Apply left y-edge b.c.
-        if self.parameters.axis_bcs_x.0.is_pinned() {
+        if self.parameters.bcs_x.0.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.lattice_n_x) {
-                row[0] = self.parameters.axis_bc_values_x.0;
+                row[0] = self.parameters.bc_values_x.0;
             }
         }
 
         // Apply right y-edge b.c.
-        if self.parameters.axis_bcs_x.1.is_pinned() {
+        if self.parameters.bcs_x.1.is_pinned() {
             for row in self.lattice.chunks_exact_mut(self.lattice_n_x) {
-                row[self.lattice_n_x - 1] = self.parameters.axis_bc_values_x.1;
+                row[self.lattice_n_x - 1] = self.parameters.bc_values_x.1;
             }
         }
 
         // Apply bottom x-edge b.c.
-        if self.parameters.axis_bcs_y.0.is_pinned() {
-            let v = self.parameters.axis_bc_values_y.0;
+        if self.parameters.bcs_y.0.is_pinned() {
+            let v = self.parameters.bc_values_y.0;
             self.lattice_row_mut(0).fill(v);
         }
 
         // Apply top x-edge b.c.
-        if self.parameters.axis_bcs_y.1.is_pinned() {
-            let v = self.parameters.axis_bc_values_y.1;
+        if self.parameters.bcs_y.1.is_pinned() {
+            let v = self.parameters.bc_values_y.1;
             self.lattice_row_mut(self.lattice_n_y - 1).fill(v);
         }
     }

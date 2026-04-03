@@ -37,8 +37,8 @@ fn test_1d() {
     parameters.dim = sim_parameters::Dimension::D1;
     parameters.initial_condition = sim_parameters::InitialCondition::CentralSeed;
     parameters.processing = sim_parameters::Processing::Serial;
-    parameters.axis_topology_x = sim_parameters::Topology::Periodic;
-    parameters.axis_bcs_x = (
+    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.bcs_x = (
         sim_parameters::BoundaryCondition::Floating,
         sim_parameters::BoundaryCondition::Floating,
     );

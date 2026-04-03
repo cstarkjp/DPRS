@@ -96,7 +96,7 @@ pub trait DramaticallySimulatable<D: CellDim>: Sized {
     fn iteration(&self) -> usize;
 
     /// Apply any edge topology mappings (such as x-is-periodic)
-    fn apply_edge_topology(&mut self);
+    fn apply_axial_topologies(&mut self);
 
     /// Apply any boundary conditions (such as fix an edge to a value)
     fn apply_boundary_conditions(&mut self);

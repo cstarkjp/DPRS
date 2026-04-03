@@ -154,15 +154,15 @@ pub struct SimParameters {
     pub initial_condition: InitialCondition,
     pub p_initial: f64,
     pub random_seed: usize,
-    pub axis_topology_x: Topology,
-    pub axis_topology_y: Topology,
-    pub axis_topology_z: Topology,
-    pub axis_bcs_x: (BoundaryCondition, BoundaryCondition),
-    pub axis_bcs_y: (BoundaryCondition, BoundaryCondition),
-    pub axis_bcs_z: (BoundaryCondition, BoundaryCondition),
-    pub axis_bc_values_x: (DualState, DualState),
-    pub axis_bc_values_y: (DualState, DualState),
-    pub axis_bc_values_z: (DualState, DualState),
+    pub topology_x: Topology,
+    pub topology_y: Topology,
+    pub topology_z: Topology,
+    pub bcs_x: (BoundaryCondition, BoundaryCondition),
+    pub bcs_y: (BoundaryCondition, BoundaryCondition),
+    pub bcs_z: (BoundaryCondition, BoundaryCondition),
+    pub bc_values_x: (DualState, DualState),
+    pub bc_values_y: (DualState, DualState),
+    pub bc_values_z: (DualState, DualState),
     /// If do_edge_buffering is true then the lattice will be padded by 1 in all
     /// dimensions on both 'edges'
     pub do_edge_buffering: bool,
@@ -182,15 +182,15 @@ impl std::fmt::Display for SimParameters {
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
         writeln!(fmt, "Initial prob.: {}", self.p_initial)?;
         writeln!(fmt, "Random seed:   {}", self.random_seed)?;
-        writeln!(fmt, "Topology x:    {:?}", self.axis_topology_x)?;
-        writeln!(fmt, "Topology y:    {:?}", self.axis_topology_y)?;
-        writeln!(fmt, "Topology z:    {:?}", self.axis_topology_z)?;
-        writeln!(fmt, "Axis BCs x:    {:?}", self.axis_bcs_x)?;
-        writeln!(fmt, "Axis BCs y:    {:?}", self.axis_bcs_y)?;
-        writeln!(fmt, "Axis BCs z:    {:?}", self.axis_bcs_z)?;
-        writeln!(fmt, "BC values x:   {:?}", self.axis_bc_values_x)?;
-        writeln!(fmt, "BC values y:   {:?}", self.axis_bc_values_y)?;
-        writeln!(fmt, "BC values z:   {:?}", self.axis_bc_values_z)?;
+        writeln!(fmt, "Topology x:    {:?}", self.topology_x)?;
+        writeln!(fmt, "Topology y:    {:?}", self.topology_y)?;
+        writeln!(fmt, "Topology z:    {:?}", self.topology_z)?;
+        writeln!(fmt, "Axis BCs x:    {:?}", self.bcs_x)?;
+        writeln!(fmt, "Axis BCs y:    {:?}", self.bcs_y)?;
+        writeln!(fmt, "Axis BCs z:    {:?}", self.bcs_z)?;
+        writeln!(fmt, "BC values x:   {:?}", self.bc_values_x)?;
+        writeln!(fmt, "BC values y:   {:?}", self.bc_values_y)?;
+        writeln!(fmt, "BC values z:   {:?}", self.bc_values_z)?;
         writeln!(fmt, "Edge buffer:   {}", self.do_edge_buffering)?;
         writeln!(fmt, "Processing:    {:?}", self.processing)?;
         writeln!(fmt, "Num. threads:  {}", self.n_threads)?;
@@ -216,32 +216,32 @@ impl SimParameters {
             initial_condition: InitialCondition::from(py_p.initial_condition),
             p_initial: py_p.p_initial,
             random_seed: py_p.random_seed,
-            axis_topology_x: Topology::from(py_p.axis_topology_x),
-            axis_topology_y: Topology::from(py_p.axis_topology_y),
-            axis_topology_z: Topology::from(py_p.axis_topology_z),
-            axis_bcs_x: (
-                BoundaryCondition::from(py_p.axis_bcs_x.0),
-                BoundaryCondition::from(py_p.axis_bcs_x.1),
+            topology_x: Topology::from(py_p.topology_x),
+            topology_y: Topology::from(py_p.topology_y),
+            topology_z: Topology::from(py_p.topology_z),
+            bcs_x: (
+                BoundaryCondition::from(py_p.bcs_x.0),
+                BoundaryCondition::from(py_p.bcs_x.1),
             ),
-            axis_bcs_y: (
-                BoundaryCondition::from(py_p.axis_bcs_y.0),
-                BoundaryCondition::from(py_p.axis_bcs_y.1),
+            bcs_y: (
+                BoundaryCondition::from(py_p.bcs_y.0),
+                BoundaryCondition::from(py_p.bcs_y.1),
             ),
-            axis_bcs_z: (
-                BoundaryCondition::from(py_p.axis_bcs_z.0),
-                BoundaryCondition::from(py_p.axis_bcs_z.1),
+            bcs_z: (
+                BoundaryCondition::from(py_p.bcs_z.0),
+                BoundaryCondition::from(py_p.bcs_z.1),
             ),
-            axis_bc_values_x: (
-                DualState::from(py_p.axis_bc_values_x.0),
-                DualState::from(py_p.axis_bc_values_x.1),
+            bc_values_x: (
+                DualState::from(py_p.bc_values_x.0),
+                DualState::from(py_p.bc_values_x.1),
             ),
-            axis_bc_values_y: (
-                DualState::from(py_p.axis_bc_values_y.0),
-                DualState::from(py_p.axis_bc_values_y.1),
+            bc_values_y: (
+                DualState::from(py_p.bc_values_y.0),
+                DualState::from(py_p.bc_values_y.1),
             ),
-            axis_bc_values_z: (
-                DualState::from(py_p.axis_bc_values_z.0),
-                DualState::from(py_p.axis_bc_values_z.1),
+            bc_values_z: (
+                DualState::from(py_p.bc_values_z.0),
+                DualState::from(py_p.bc_values_z.1),
             ),
             do_edge_buffering: py_p.do_edge_buffering,
             processing: Processing::from(py_p.processing),
