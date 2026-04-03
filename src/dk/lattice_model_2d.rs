@@ -28,6 +28,28 @@ pub struct LatticeModel2D<C: CellModel<Cell2D>> {
     iteration: usize,
 }
 
+impl<C: CellModel<Cell2D>> std::fmt::Display for LatticeModel2D<C> {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(
+            fmt,
+            "2d Lattice model of {} by {} iteration {}",
+            self.lattice_n_x, self.lattice_n_y, self.iteration
+        )?;
+        for (y, l) in self.lattice.chunks_exact(self.lattice_n_x).enumerate() {
+            let mut s = String::new();
+            for c in l {
+                if (*c).into() {
+                    s.push('*')
+                } else {
+                    s.push('.')
+                }
+            }
+            writeln!(fmt, "{y:3} : {s}")?;
+        }
+        Ok(())
+    }
+}
+
 /// Lattice model methods.
 impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
     /// Compute the cell index of a given (x, y) coordinate.
@@ -268,6 +290,7 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
 
     fn iterate_once_serial<R: Rng>(&mut self, rng: &mut R) {
         self.next_iteration_serial(rng);
+        eprintln!("{self}");
     }
 
     fn iterate_once_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {

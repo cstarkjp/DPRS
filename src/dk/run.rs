@@ -9,6 +9,8 @@ use crate::sim_parameters::SimParameters;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.
+///
+/// Returns the duration, number of lattices recorded, the lattices, and the tracking
 pub fn run_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
 ) -> (f64, usize, LatticeSlices, Tracking) {
