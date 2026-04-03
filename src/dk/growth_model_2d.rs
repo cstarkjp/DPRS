@@ -44,67 +44,27 @@ impl CellModel<Cell2D> for GrowthModel2D {
         rng: &mut R,
         nbrhood: &[bool; 9],
     ) -> DualState {
-        if self.do_staggered {
-            //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
-            let _is_even_step = iteration.is_multiple_of(2);
-        }
-        let p = self.p_1;
-        let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
-        let do_survive = is_any_nbr_occupied & rng.random_bool(p);
+        let do_survive = match self.do_staggered {
+            true => {
+                let is_even_step = iteration.is_multiple_of(2);
+                let offset = if is_even_step { 1 } else { 0 };
+                // TODO: Not mapped to 2d yet
+                let nbrs = &nbrhood[offset..(2 + offset)];
+                let _are_both_nbrs_occupied = nbrs.iter().all(|s| (*s).into());
+                let is_any_nbr_occupied = nbrs.iter().any(|s| (*s).into());
+                // This isn't the actual D-K rule for p_1, p_2
+                // TODO: mod to use uniform r.v. and check against p_1, then p_2
+                is_any_nbr_occupied & rng.random_bool(self.p_1)
+            }
+            false => {
+                // Simplistic Domany-Kinzel rule: this cell will become occupied if:
+                //  (1) a coin toss with probability p says it *may* be occupied
+                //  (2) if one of the 3 neighborhood + here cells were previously occupied
+                let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
+                is_any_nbr_occupied & rng.random_bool(self.p_1)
+            }
+        };
 
         do_survive.into()
     }
-
-    // /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
-    // ///  (1) a coin toss with probability p says it *may* be occupied
-    // ///  (2) if one of the 9 neighborhood + here cells were previously occupied
-    // fn simplified_dk_update_state<R: Rng>(
-    //     &self,
-    //     rng: &mut R,
-    //     nbrhood: &[Self::State; 9],
-    // ) -> Self::State {
-    //     let p = self.p_1;
-    //     let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
-    //     let do_survive = is_any_nbr_occupied & rng.random_bool(p);
-
-    //     do_survive.into()
-    // }
-
-    // /// Staggered Domany-Kinzel rule
-    // fn staggered_dk_update_state<R: Rng>(
-    //     &self,
-    //     rng: &mut R,
-    //     nbrhood: &[Self::State; 9],
-    // ) -> Self::State {
-    //     let _is_even_step = self.iteration.is_multiple_of(2);
-    //     //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
-    //     let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
-    //     let has_nearest_neighbor: bool = nbrhood[4].into();
-    //     let p_1 = self.p_1;
-    //     let p_2 = p_1 / 3.;
-    //     let do_survive = (n_neighbors > 0 && rng.random_bool(p_1))
-    //         | (has_nearest_neighbor && n_neighbors > 1 && rng.random_bool(p_2));
-
-    //     do_survive.into()
-    // }
 }
-
-// /// Minimal testing.
-// #[test]
-// fn test_dp() {
-//     use super::LatticeModel2D;
-//     use rand::rng;
-
-//     let dp = GrowthModel::default();
-//     let mut lm1 = LatticeModel2D::new(dp, 200, 200, (false, false), (false, false));
-//     lm1.create_randomized_lattice(&mut rng(), 0.5);
-//     let mut lm2 = lm1.clone();
-
-//     for _ in 0..100 {
-//         lm1.next_iteration_serial(&mut rng(), 0.5);
-//         // TODO: pass RNGs vec
-//         lm2.next_iteration_parallel(&mut rng(), 0.5);
-
-//         assert_eq!(lm1.lattice(), lm2.lattice());
-//     }
-// }

@@ -56,43 +56,13 @@ impl CellModel<Cell1D> for GrowthModel1D {
                 is_any_nbr_occupied & rng.random_bool(self.p_1)
             }
             false => {
+                // Simplistic Domany-Kinzel rule: this cell will become occupied if:
+                //  (1) a coin toss with probability p says it *may* be occupied
+                //  (2) if one of the 3 neighborhood + here cells were previously occupied
                 let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
                 is_any_nbr_occupied & rng.random_bool(self.p_1)
             }
         };
         do_survive.into()
     }
-
-    // /// Simplistic Domany-Kinzel rule: this cell will become occupied if:
-    // ///  (1) a coin toss with probability p says it *may* be occupied
-    // ///  (2) if one of the 3 neighborhood + here cells were previously occupied
-    // fn simplified_dk_update_state<R: Rng>(
-    //     &self,
-    //     rng: &mut R,
-    //     nbrhood: &[Self::State; 3],
-    // ) -> Self::State {
-    //     let p = self.p_1;
-    //     let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
-    //     let do_survive = is_any_nbr_occupied & rng.random_bool(p);
-
-    //     do_survive.into()
-    // }
-
-    // /// Staggered Domany-Kinzel rule
-    // fn staggered_dk_update_state<R: Rng>(
-    //     &self,
-    //     rng: &mut R,
-    //     nbrhood: &[Self::State; 3],
-    // ) -> Self::State {
-    //     let _is_even_step = self.iteration.is_multiple_of(2);
-    //     //TODO: flip between (0,1) and (1,2) nbrhood portions depending on is_even_step
-    //     let n_neighbors: usize = nbrhood.iter().map(Self::from_state_to_usize).sum();
-    //     let has_nearest_neighbor = nbrhood[1].into();
-    //     let p_1 = self.p_1;
-    //     let p_2 = p_1 * std::f64::consts::FRAC_1_SQRT_2;
-    //     let do_survive = (n_neighbors > 0 && rng.random_bool(p_2))
-    //         | (has_nearest_neighbor && rng.random_bool(p_1));
-
-    //     do_survive.into()
-    // }
 }
