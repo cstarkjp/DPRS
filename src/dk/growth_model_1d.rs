@@ -52,11 +52,13 @@ impl CellModel<Cell1D> for GrowthModel1D {
                 let is_even_step = iteration.is_multiple_of(2);
                 let offset = if is_even_step { 1 } else { 0 };
                 let nbrs = &nbrhood[offset..(2 + offset)];
-                let _are_both_nbrs_occupied = nbrs.iter().all(|s| *s);
-                let is_any_nbr_occupied = nbrs.iter().any(|s| *s);
-                // This isn't the actual D-K rule for p_1, p_2
-                // TODO: mod to use uniform r.v. and check against p_1, then p_2
-                is_any_nbr_occupied & rng.random_bool(self.p_1)
+                let are_both_nbrs_occupied = nbrs.iter().all(|s| *s);
+                let is_either_nbr_occupied = nbrs.iter().any(|s| *s) & !are_both_nbrs_occupied;
+                let uniform_variate: f64 = rng.random();
+                let is_activated = (is_either_nbr_occupied & (uniform_variate < self.p_1))
+                    | (are_both_nbrs_occupied & (uniform_variate < self.p_2));
+
+                is_activated
             }
             false => {
                 // Simplistic Domany-Kinzel rule: this cell will become occupied if:

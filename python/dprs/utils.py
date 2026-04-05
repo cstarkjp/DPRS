@@ -5,6 +5,7 @@ import warnings
 from enum import Enum
 from dataclasses import dataclass
 from dprs import sim
+from dprs.sim import GrowthModelChoice
 
 warnings.filterwarnings("ignore")
 
@@ -58,12 +59,29 @@ class DUAL(Enum):
 
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
     """Generate a string summarizing the sim for entitling plots."""
+    model: str
+    match parameters.growth_model_choice:
+        case GrowthModelChoice.SimplifiedDomanyKinzel: model="Simplified D-K:"
+        case GrowthModelChoice.StaggeredDomanyKinzel: model="Staggered D-K:"
+        case _: model="Unspecified model"
     return (
         (
-            rf"$p={parameters.p_1:0.7f}$" if parameters.dim==sim.Dimension.D3
-            else rf"$p={parameters.p_1:0.6f}$"
+            model
         )
-        + rf"   $s={parameters.random_seed}$"
+        + rf"   " +
+        (
+            rf"$p_1={parameters.p_1:0.7f}$" if parameters.dim==sim.Dimension.D3
+            else rf"$p_1={parameters.p_1:0.6f}$"
+        )
+        + rf"   " +
+        (
+            rf"$p_2={parameters.p_2:0.7f}$" if parameters.dim==sim.Dimension.D3
+            else rf"$p_2={parameters.p_2:0.6f}$"
+        )
+        + "\n" +
+        (
+            rf"$s={parameters.random_seed}$"
+        )
         + (
             rf"   $n_x={parameters.n_x}$" if parameters.n_x>=10000
             else rf"   $n_x={parameters.n_x}$"

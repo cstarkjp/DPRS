@@ -187,7 +187,7 @@ class Viz:
         Plot time evolution of mean cluster radius.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
-        plt.title(title, fontdict={"fontsize": 13})
+        plt.title(title, fontdict={"fontsize": 13}, pad=10,)
         t: NDArray = tracking[0][i_offset:]
         statistic: NDArray = tracking[index][i_offset:]
         statistic_fn = lambda t: scale*t**exponent
