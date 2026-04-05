@@ -47,14 +47,19 @@ impl CellModel<Cell2D> for GrowthModel2D {
         let do_survive = match self.do_staggered {
             true => {
                 let is_even_step = iteration.is_multiple_of(2);
-                let offset = if is_even_step { 1 } else { 0 };
-                // TODO: Not mapped to 2d yet
-                let nbrs = &nbrhood[offset..(2 + offset)];
-                let _are_both_nbrs_occupied = nbrs.iter().all(|s| *s);
-                let is_any_nbr_occupied = nbrs.iter().any(|s| *s);
-                // This isn't the actual D-K rule for p_1, p_2
-                // TODO: mod to use uniform r.v. and check against p_1, then p_2
-                is_any_nbr_occupied & rng.random_bool(self.p_1)
+                let nbrs: Vec<_> = if is_even_step {
+                    [nbrhood[0], nbrhood[1], nbrhood[3], nbrhood[4]].into()
+                } else {
+                    [nbrhood[4], nbrhood[5], nbrhood[7], nbrhood[8]].into()
+                };
+                let n_occupied_nbrs: usize = nbrs.iter().map(|s| *s as usize).sum();
+                let are_several_nbrs_occupied = n_occupied_nbrs>2;
+                let is_one_nbr_occupied = n_occupied_nbrs==1;
+                let uniform_variate: f64 = rng.random();
+                let is_activated = (is_one_nbr_occupied & (uniform_variate < self.p_1))
+                    | (are_several_nbrs_occupied & (uniform_variate < self.p_2));
+
+                is_activated
             }
             false => {
                 // Simplistic Domany-Kinzel rule: this cell will become occupied if:

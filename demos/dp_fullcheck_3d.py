@@ -104,8 +104,7 @@ viz.plot_lattice_statistic(
     tracking,
     labels=(
         "Order parameter  $\\widebar{\\rho}(t)$", 
-        "$\\widebar{\\rho}(t)$", 
-        "$t^{-\\delta}$",
+        "$\\widebar{\\rho}(t) \\sim t^{-\\delta}$",
         "${\\delta}$",
     ),
     index=2,

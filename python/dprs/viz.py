@@ -170,44 +170,6 @@ class Viz:
         plt.grid(ls=":")
         # plt.close()
 
-    # TODO: deprecated
-    def plot_ρmean(
-            self,
-            name: str,
-            title: str,
-            tracking: NDArray,
-            δ: float, 
-            ρ_mean_ref: float,
-            fig_size: tuple[float,float]=(6,4,),
-            i_offset: int=3,
-            do_ref_curve: bool=True,
-        ) -> tuple[Figure, Any]:
-        """
-        Plot time evolution of mean order parameter.
-        """
-        _ = self.create_figure(fig_name=name, fig_size=fig_size,)
-        plt.title(title, fontdict={"fontsize": 13})
-        t: NDArray = tracking[0][i_offset:]
-        ρ_mean: NDArray = tracking[2][i_offset:]
-        ρ_mean_fn = lambda t: ρ_mean_ref*t**(-δ)
-        plt.plot(
-            t, ρ_mean, lw=0.4, color="k",
-        )
-        if do_ref_curve:
-            plt.plot(
-                t, ρ_mean_fn(t), color="blue", alpha=0.5, 
-                label=r"$\widebar\rho(t) \sim t^{-\delta}$" + rf"$\quad\delta={δ}$",
-            )
-        plt.legend()
-        axes = plt.gca()
-        axes.autoscale(enable=True, axis="both", tight=True)
-        plt.loglog()
-        # plt.ylim(0,)
-        # plt.xlim(0,)
-        plt.ylabel(r"Mean order parameter  $\widebar\rho(t)$")
-        plt.xlabel(r"Time  $t$")
-        plt.grid(ls=":")
-
     def plot_lattice_statistic(
             self,
             name: str,
@@ -225,7 +187,7 @@ class Viz:
         Plot time evolution of mean cluster radius.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
-        plt.title(title, fontdict={"fontsize": 13})
+        plt.title(title, fontdict={"fontsize": 13}, pad=10,)
         t: NDArray = tracking[0][i_offset:]
         statistic: NDArray = tracking[index][i_offset:]
         statistic_fn = lambda t: scale*t**exponent
@@ -235,10 +197,9 @@ class Viz:
         if do_ref_curve:
             plt.plot(
                 t, statistic_fn(t), color="blue", alpha=0.5, 
-                label = rf"{labels[1]}" + rf"$\sim$" 
-                        + rf"{labels[2]}" 
+                label = rf"{labels[1]}" 
                         + rf"$\quad$" 
-                        + rf"{labels[3]}" 
+                        + rf"{labels[2]}" 
                         + rf"$={exponent:0.4f}$",
             )
         plt.legend()
