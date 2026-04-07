@@ -250,6 +250,7 @@ impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C>
     }
 
     fn statistics(&self) -> (f64, f64, f64) {
+        // TODO: compute centroid and measure moment from there
         let total: usize = self
             .lattice()
             .iter()

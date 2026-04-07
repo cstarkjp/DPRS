@@ -135,6 +135,7 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     }
 
     fn statistics(&self) -> (f64, f64, f64) {
+        // TODO: compute centroid and measure moment from there
         let total: usize = self
             .lattice()
             .iter()
@@ -144,6 +145,7 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
             })
             .sum();
         let mass = total as f64;
+        // Don't bother computing the mean radius unless we're central seeding
         let moment: f64 = match self.parameters.initial_condition {
             InitialCondition::CentralSeed => (0..self.lattice_n_x)
                 .map(|i| {

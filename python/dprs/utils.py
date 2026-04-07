@@ -70,29 +70,28 @@ def postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,):
         2 if parameters.growth_model_choice==GrowthModelChoice.StaggeredDomanyKinzel 
         else 1
     )
-    match parameters.dim:
-        case Dimension.D1:
-            converted_lattices: NDArray 
-            converted_lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
-                n_lattices, parameters.n_x,
-            ).T
-            lattices = converted_lattices[:, ::skip]
-        case Dimension.D2:
-            if n_lattices>0:
-                lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
+    lattices: NDArray 
+    if n_lattices>0:
+        lattices_all: NDArray 
+        match parameters.dim:
+            case Dimension.D1:
+                lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
+                    n_lattices, parameters.n_x,
+                ).T
+            case Dimension.D2:
+                lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
                     n_lattices, parameters.n_y, parameters.n_x,
                 ).T
-            else:
-                lattices = np.zeros((0,))
-        case Dimension.D3:
-            if n_lattices>0:
-                lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
+            case Dimension.D3:
+                lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
                     n_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
                 ).T
-            else:
-                lattices = np.zeros((0,))
-        case _: 
-            raise Exception
+            case _: 
+                raise Exception
+        lattices = lattices_all[:, ::skip]
+    else:
+        lattices = np.zeros((0,))
+
 
     pruned_tracking: Sequence[list] = []
     for data in raw_tracking:
