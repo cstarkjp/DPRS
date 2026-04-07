@@ -1,17 +1,16 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use super::simulation_nd;
-use super::{CellDim, DramaticallySimulatable};
-use crate::dk::types::{LatticeSlices, Tracking};
-use crate::parameters::SimParameters;
+use rand::{Rng, SeedableRng};
 use std::time::Instant;
+
+use crate::SimParameters;
+
+use crate::dk;
+use dk::{CellDim, DramaticallySimulatable, simulation_nd};
+use dk::{LatticeSlices, Tracking};
 
 /// Run a simulation and record how long the computation takes.
 ///
 /// Returns the duration, number of lattices recorded, the lattices, and the tracking
-pub fn run_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
 ) -> (f64, usize, LatticeSlices, Tracking) {
     // Set up thread pool of size set by user
@@ -25,7 +24,7 @@ pub fn run_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
 
     // Do the simulation
     let (n_lattices, lattices, tracking) =
-        pool.install(|| simulation_nd::<D, LM>(parameters).unwrap());
+        pool.install(|| simulation_nd::<R, D, LM>(parameters).unwrap());
 
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();

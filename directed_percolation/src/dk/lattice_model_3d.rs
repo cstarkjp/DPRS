@@ -1,14 +1,9 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use super::CellModel;
-use super::DramaticallySimulatable;
-use super::{Cell3D, CellNbrhood3D, RowIterator3D};
-use crate::parameters::InitialCondition;
-use crate::parameters::{DualState, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
+
+use super::{Cell3D, CellNbrhood3D, RowIterator3D};
+use super::{CellModel, DramaticallySimulatable};
+use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 3d.
 ///

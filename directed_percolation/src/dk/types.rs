@@ -1,13 +1,9 @@
-// #![warn(missing_docs)]
-// //!
-// //!
+use super::{CellDim, DramaticallySimulatable};
 
-use crate::{
-    dk::traits::{CellDim, DramaticallySimulatable},
-    parameters::DualState,
-};
+use crate::DualState;
 
 pub type LatticeSlices = Vec<Vec<DualState>>;
+
 pub type Tracking = Vec<Vec<f64>>;
 
 #[derive(Debug, Default)]

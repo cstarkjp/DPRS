@@ -1,15 +1,7 @@
-// #![warn(missing_docs)]
-// //!
-// //!
+use rand::Rng;
 
 use super::CellNbrhood3D;
-use crate::parameters::{DualState, SimParameters};
-
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use rand::Rng;
+use crate::{DualState, SimParameters};
 
 pub trait CellDim {
     /// The number of dimensions (1, 2 or 3)

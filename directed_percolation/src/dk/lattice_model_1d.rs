@@ -1,11 +1,9 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use super::{Cell1D, CellModel, DramaticallySimulatable};
-use crate::parameters::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
+
+use crate::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
+
+use super::{Cell1D, CellModel, DramaticallySimulatable};
 
 /// Model lattice in 1d.
 ///

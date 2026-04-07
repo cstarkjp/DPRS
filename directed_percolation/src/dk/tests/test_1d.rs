@@ -1,7 +1,12 @@
-use super::{Cell1D, CellModel, DualState, LatticeModel1D, SimParameters};
-use super::{run_nd, parameters, simulation_nd};
+pub use crate::{
+    BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
+};
+
+use super::{Cell1D, CellModel, LatticeModel1D};
+use super::{run_nd, simulation_nd};
 
 use rand::RngExt;
+use rand::rngs::ChaCha8Rng;
 
 #[derive(Clone, Copy, Debug)]
 struct MoveRightModel1D {
@@ -32,19 +37,16 @@ fn test_1d_sim() {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = parameters::Dimension::D1;
-    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
-    parameters.processing = parameters::Processing::Serial;
-    parameters.topology_x = parameters::Topology::Periodic;
-    parameters.bcs_x = (
-        parameters::BoundaryCondition::Floating,
-        parameters::BoundaryCondition::Floating,
-    );
+    parameters.dim = Dimension::D1;
+    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.processing = Processing::Serial;
+    parameters.topology_x = Topology::Periodic;
+    parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
     parameters.n_iterations = 10;
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters).unwrap();
+        simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters).unwrap();
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);
@@ -56,20 +58,17 @@ fn test_1d_run() {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = parameters::Dimension::D1;
-    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
-    parameters.processing = parameters::Processing::Serial;
-    parameters.topology_x = parameters::Topology::Periodic;
-    parameters.bcs_x = (
-        parameters::BoundaryCondition::Floating,
-        parameters::BoundaryCondition::Floating,
-    );
+    parameters.dim = Dimension::D1;
+    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.processing = Processing::Serial;
+    parameters.topology_x = Topology::Periodic;
+    parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
     parameters.n_iterations = 10;
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
 
     let (_duration, num_lattices, lattices, _tracking) =
-        run_nd::<Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters);
     assert_eq!(num_lattices, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);

@@ -1,12 +1,9 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
-use super::DramaticallySimulatable;
-use super::{Cell2D, CellModel};
-use crate::parameters::{DualState, InitialCondition, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
+
+use super::{Cell2D, CellModel, DramaticallySimulatable};
+
+use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 2d.
 ///

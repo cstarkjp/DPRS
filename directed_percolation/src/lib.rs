@@ -1,7 +1,10 @@
 // #![warn(missing_docs)]
-// //!
-// //!
+//! This library provides simulations of directed percolation
+//!
 
 pub mod dk;
-pub mod parameters;
-pub use parameters::SimParameters;
+mod parameters;
+pub use parameters::{
+    BoundaryCondition, Dimension, DualState, GrowthModelChoice, InitialCondition, Processing,
+    SimParameters, Topology,
+};

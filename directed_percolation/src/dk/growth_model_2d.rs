@@ -1,19 +1,19 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
 use super::{Cell2D, CellModel};
-use crate::parameters::{DualState, GrowthModelChoice, SimParameters};
+use crate::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct GrowthModel2D {
-    pub p_1: f64,
+    /// The probability used in the model, where a cell is activated with this probability if *any* of its neighbors (including itself) is active
+    p_1: f64,
+    /// Unused probability
     #[allow(dead_code)]
-    pub p_2: f64,
-    pub p_initial: f64,
-    pub do_staggered: bool,
+    p_2: f64,
+    /// The initial probability that a cell is activated, for random initial conditions
+    p_initial: f64,
+    /// Asserted if 'staggered' simulation is required
+    do_staggered: bool,
 }
 
 // Implement CellModel2D trait for GrowthModel2D.
@@ -53,8 +53,8 @@ impl CellModel<Cell2D> for GrowthModel2D {
                     [nbrhood[4], nbrhood[5], nbrhood[7], nbrhood[8]].into()
                 };
                 let n_occupied_nbrs: usize = nbrs.iter().map(|s| *s as usize).sum();
-                let are_several_nbrs_occupied = n_occupied_nbrs>2;
-                let is_one_nbr_occupied = n_occupied_nbrs==1;
+                let are_several_nbrs_occupied = n_occupied_nbrs > 2;
+                let is_one_nbr_occupied = n_occupied_nbrs == 1;
                 let uniform_variate: f64 = rng.random();
                 let is_activated = (is_one_nbr_occupied & (uniform_variate < self.p_1))
                     | (are_several_nbrs_occupied & (uniform_variate < self.p_2));

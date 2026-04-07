@@ -1,6 +1,6 @@
-// #![warn(missing_docs)]
-// //!
-// //!
+//! Documentation of Domany Kinzel models
+//!
+use rand::{Rng, SeedableRng};
 
 mod traits;
 mod types;
@@ -21,10 +21,8 @@ mod tests;
 
 pub use simulation::simulation_nd;
 
-use crate::{
-    dk::types::{LatticeSlices, Tracking},
-    parameters::{Dimension, SimParameters},
-};
+pub use types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
+
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
 pub use growth_model_1d::GrowthModel1D;
 pub use growth_model_2d::GrowthModel2D;
@@ -36,14 +34,18 @@ pub use lattice_model_3d::LatticeModel3D;
 pub use traits::{Cell1D, Cell2D, Cell3D, CellDim, CellModel, DramaticallySimulatable};
 
 /// Entry point to this module.
-pub fn sim_dk(sim_parameters: SimParameters) -> (usize, LatticeSlices, Tracking, f64) {
+use crate::{Dimension, SimParameters};
+
+pub fn sim_dk<R: Rng + SeedableRng + Send>(
+    sim_parameters: SimParameters,
+) -> (usize, LatticeSlices, Tracking, f64) {
     println!();
     println!("{sim_parameters}");
     println!();
     let (t_run_time, n_lattices, lattice_slices, tracking) = match &sim_parameters.dim {
-        Dimension::D1 => run_nd::<Cell1D, LatticeModel1D<GrowthModel1D>>(&sim_parameters),
-        Dimension::D2 => run_nd::<Cell2D, LatticeModel2D<GrowthModel2D>>(&sim_parameters),
-        Dimension::D3 => run_nd::<Cell3D, LatticeModel3D<GrowthModel3D>>(&sim_parameters),
+        Dimension::D1 => run_nd::<R, Cell1D, LatticeModel1D<GrowthModel1D>>(&sim_parameters),
+        Dimension::D2 => run_nd::<R, Cell2D, LatticeModel2D<GrowthModel2D>>(&sim_parameters),
+        Dimension::D3 => run_nd::<R, Cell3D, LatticeModel3D<GrowthModel3D>>(&sim_parameters),
     };
     println!(
         "Simulation run time ({}): {:4.3}s",
