@@ -51,4 +51,4 @@ Note that a site neighborhood here is strictly limited to the _nearest_ neighbor
         - append the updated (or not) lattice $\mathcal{L}$ to the report list: $\quad \mathcal{L}_\mathsf{report} \rightarrow \mathcal{L}_\mathsf{report} + \mathcal{L}$
         - append the current time $t$ to the report time list $\mathcal{T}_{\mathsf{report}}$
         - reset the report interval timer $t_\mathsf{report} \mapsto 0$
-- Return the report list of lattices $\mathcal{L}_{\mathsf{report}}$ together with the report time list $\mathcal{T}_{\mathsf{report}}$
+- Return the report list of lattices $\mathcal{S}_{\mathsf{randomized}}$ together with the report time list $\mathcal{T}_{\mathsf{report}}$
