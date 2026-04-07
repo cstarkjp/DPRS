@@ -3,9 +3,7 @@
 // //!
 
 // Imports
-pub mod dk;
 pub mod py_parameters;
-pub mod sim_parameters;
 
 use pyo3::prelude::*;
 #[pymodule]
@@ -14,7 +12,7 @@ mod sim {
     use pyo3::prelude::*;
 
     use crate::py_parameters::PyParameters;
-    use crate::sim_parameters::SimParameters;
+    use dprs::SimParameters;
 
     #[pymodule_export]
     use crate::py_parameters::BoundaryCondition;

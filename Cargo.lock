@@ -69,7 +69,6 @@ checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 name = "dprs"
 version = "0.1.26"
 dependencies = [
- "pyo3",
  "rand",
  "rayon",
 ]
@@ -204,6 +203,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "pydprs"
+version = "0.1.26"
+dependencies = [
+ "dprs",
+ "pyo3",
+ "rand",
 ]
 
 [[package]]

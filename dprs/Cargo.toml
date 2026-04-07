@@ -1,0 +1,12 @@
+[package]
+name = "dprs"
+version = "0.1.26"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "dprs"
+
+[dependencies]
+rand = "0.10.0"
+rayon = "1.11.0"
