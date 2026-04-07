@@ -27,7 +27,7 @@ macro_rules! py_of_enum {
 
 py_of_enum! {
     /// Lattice growth model type.
-    directed_percolation::parameters::GrowthModelChoice,
+    directed_percolation::GrowthModelChoice,
     GrowthModelChoice,
         (
             #[default]
@@ -41,7 +41,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Lattice dimension.
-    directed_percolation::parameters::Dimension,
+    directed_percolation::Dimension,
     Dimension,
         (
             #[default]
@@ -53,7 +53,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Initial lattice condition.
-    directed_percolation::parameters::InitialCondition,
+    directed_percolation::InitialCondition,
     InitialCondition,
         (
             #[default]
@@ -65,7 +65,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Edge topology.
-    directed_percolation::parameters::Topology,
+    directed_percolation::Topology,
     Topology,
         (
             /// No copying etc is done from one edge to another
@@ -82,7 +82,7 @@ py_of_enum! {
     /// Edge boundary conditions
     ///
     /// This is in essence what is around the outside of the lattice
-    directed_percolation::parameters::BoundaryCondition,
+    directed_percolation::BoundaryCondition,
     BoundaryCondition,
         (
             Unspecified,
@@ -101,7 +101,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Choice of processing type: will become a Py-passable parameter.
-    directed_percolation::parameters::Processing,
+    directed_percolation::Processing,
     Processing,
         (
             #[default]
@@ -171,7 +171,7 @@ use directed_percolation::SimParameters;
 impl PyParameters {
     /// Copy Python-facing parameters.
     pub fn fill(&self) -> SimParameters {
-        use directed_percolation::parameters::*;
+        use directed_percolation::*;
         let py_p = self.clone();
         SimParameters {
             growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),

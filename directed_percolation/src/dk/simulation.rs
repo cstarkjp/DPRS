@@ -1,24 +1,20 @@
-// #![warn(missing_docs)]
-// //!
-// //!
+use rand::{Rng, SeedableRng};
 
 use super::{CellDim, DramaticallySimulatable};
-use crate::dk::types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
+use crate::dk::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
 use crate::parameters::{InitialCondition, Processing, SimParameters};
-use rand::SeedableRng;
-use rand::rngs::StdRng;
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
 ///
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
 ) -> Result<(usize, LatticeSlices, Tracking), ()> {
     let mut lm = LM::create_from_parameters(&parameters)?;
 
-    let mut rng = StdRng::seed_from_u64(parameters.random_seed as u64);
+    let mut rng = R::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {
             lm.create_randomized_lattice(&mut rng);
@@ -75,8 +71,8 @@ pub fn simulation_nd<D: CellDim, LM: DramaticallySimulatable<D>>(
             // keep it full length for now just in case we need buffer RNGs.
             assert!(parameters.random_seed > 0);
 
-            let mut rngs: Vec<StdRng> = (0..lm.num_parallel_rngs())
-                .map(|s| StdRng::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
+            let mut rngs: Vec<_> = (0..lm.num_parallel_rngs())
+                .map(|s| R::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
             for _ in 1..(n_iterations + 1) {
                 lm.iterate_once_parallel(&mut rngs);

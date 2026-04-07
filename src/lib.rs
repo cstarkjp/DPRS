@@ -10,6 +10,7 @@ use pyo3::prelude::*;
 mod sim {
     use directed_percolation::dk::sim_dk;
     use pyo3::prelude::*;
+    use rand::rngs::StdRng;
 
     use crate::parameters::PyParameters;
 
@@ -29,7 +30,7 @@ mod sim {
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
         let sim_parameters = py_parameters.fill();
-        let (n_lattices, lattices, tracking, t_run_time) = sim_dk(sim_parameters);
+        let (n_lattices, lattices, tracking, t_run_time) = sim_dk::<StdRng>(sim_parameters);
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {

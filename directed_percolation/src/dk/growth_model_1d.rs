@@ -1,19 +1,19 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
 use super::{Cell1D, CellModel};
-use crate::parameters::{DualState, GrowthModelChoice, SimParameters};
+use crate::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct GrowthModel1D {
-    pub p_1: f64,
+    /// The probability used in the model, where a cell is activated with this probability if *any* of its neighbors (including itself) is active
+    p_1: f64,
+    /// Unused probability
     #[allow(dead_code)]
-    pub p_2: f64,
-    pub p_initial: f64,
-    pub do_staggered: bool,
+    p_2: f64,
+    /// The initial probability that a cell is activated, for random initial conditions
+    p_initial: f64,
+    /// Asserted if 'staggered' simulation is required
+    do_staggered: bool,
 }
 
 // Implement CellModel1D trait for GrowthModel.
