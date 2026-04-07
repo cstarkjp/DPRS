@@ -48,8 +48,8 @@ Note that a site neighborhood here is strictly limited to the _nearest_ neighbor
     - Reinsert the site $i$ at a _random_ location in the list $\mathcal{S}_{\mathsf{randomized}}$
     - Update the report timer: $\quad t_\mathsf{report} \mapsto t_\mathsf{report} + \Delta{t}$
     - Check it's time to report, $t_\mathsf{report} \geq \Delta{}t_\mathsf{report}$; if so:
-        - append the updated (or not) lattice $\mathcal{L}$ to the report list: $\mathcal{L}_\mathsf{report} + \mathcal{L}$
-        - append the current time $t$ to the report time list: $\mathcal{T}_{\mathsf{report}} + t$
+        - append the updated (or not) lattice $\mathcal{L}$ to the report list: $\rightarrow \mathcal{L}_\mathsf{report} + \mathcal{L}$
+        - append the current time $t$ to the report time list: $\rightarrow \mathcal{T}_{\mathsf{report}} + t$
         - reset the report interval timer $t_\mathsf{report} \mapsto 0$
 - Return the report list of lattices $\mathcal{S}_{\mathsf{randomized}}$ 
 - Return the report time list $\mathcal{T}_{\mathsf{report}}$
