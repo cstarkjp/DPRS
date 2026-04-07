@@ -5,8 +5,8 @@
 use super::CellModel;
 use super::DramaticallySimulatable;
 use super::{Cell3D, CellNbrhood3D, RowIterator3D};
-use crate::sim_parameters::InitialCondition;
-use crate::sim_parameters::{DualState, SimParameters};
+use crate::parameters::InitialCondition;
+use crate::parameters::{DualState, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
 

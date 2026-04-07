@@ -4,7 +4,7 @@
 
 use super::{Cell1D, CellModel, DramaticallySimulatable};
 
-use crate::sim_parameters::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
+use crate::parameters::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
 

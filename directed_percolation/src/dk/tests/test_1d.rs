@@ -1,5 +1,5 @@
 use super::{Cell1D, CellModel, DualState, LatticeModel1D, SimParameters};
-use super::{run_nd, sim_parameters, simulation_nd};
+use super::{run_nd, parameters, simulation_nd};
 
 use rand::RngExt;
 
@@ -32,13 +32,13 @@ fn test_1d_sim() {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = sim_parameters::Dimension::D1;
-    parameters.initial_condition = sim_parameters::InitialCondition::CentralSeed;
-    parameters.processing = sim_parameters::Processing::Serial;
-    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.dim = parameters::Dimension::D1;
+    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
+    parameters.processing = parameters::Processing::Serial;
+    parameters.topology_x = parameters::Topology::Periodic;
     parameters.bcs_x = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
     parameters.n_iterations = 10;
     parameters.sample_period = 1;
@@ -56,13 +56,13 @@ fn test_1d_run() {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = sim_parameters::Dimension::D1;
-    parameters.initial_condition = sim_parameters::InitialCondition::CentralSeed;
-    parameters.processing = sim_parameters::Processing::Serial;
-    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.dim = parameters::Dimension::D1;
+    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
+    parameters.processing = parameters::Processing::Serial;
+    parameters.topology_x = parameters::Topology::Periodic;
     parameters.bcs_x = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
     parameters.n_iterations = 10;
     parameters.sample_period = 1;

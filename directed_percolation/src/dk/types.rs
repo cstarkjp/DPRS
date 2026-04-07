@@ -4,7 +4,7 @@
 
 use crate::{
     dk::traits::{CellDim, DramaticallySimulatable},
-    sim_parameters::DualState,
+    parameters::DualState,
 };
 
 pub type LatticeSlices = Vec<Vec<DualState>>;

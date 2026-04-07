@@ -1,5 +1,5 @@
 use super::{Cell2D, CellModel, DualState, LatticeModel2D, SimParameters};
-use super::{run_nd, sim_parameters, simulation_nd};
+use super::{run_nd, parameters, simulation_nd};
 
 use rand::RngExt;
 
@@ -34,18 +34,18 @@ fn test_2d_sim() {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = sim_parameters::Dimension::D2;
-    parameters.initial_condition = sim_parameters::InitialCondition::CentralSeed;
-    parameters.processing = sim_parameters::Processing::Serial;
-    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.dim = parameters::Dimension::D2;
+    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
+    parameters.processing = parameters::Processing::Serial;
+    parameters.topology_x = parameters::Topology::Periodic;
     parameters.bcs_x = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
-    parameters.topology_y = sim_parameters::Topology::Periodic;
+    parameters.topology_y = parameters::Topology::Periodic;
     parameters.bcs_y = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
     parameters.n_iterations = 13 * 17;
     parameters.sample_period = 1;
@@ -67,18 +67,18 @@ fn test_2d_run() {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = sim_parameters::Dimension::D2;
-    parameters.initial_condition = sim_parameters::InitialCondition::CentralSeed;
-    parameters.processing = sim_parameters::Processing::Serial;
-    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.dim = parameters::Dimension::D2;
+    parameters.initial_condition = parameters::InitialCondition::CentralSeed;
+    parameters.processing = parameters::Processing::Serial;
+    parameters.topology_x = parameters::Topology::Periodic;
     parameters.bcs_x = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
-    parameters.topology_y = sim_parameters::Topology::Periodic;
+    parameters.topology_y = parameters::Topology::Periodic;
     parameters.bcs_y = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
     parameters.n_iterations = 13 * 17;
     parameters.sample_period = 1;
@@ -99,21 +99,21 @@ fn test_2d_run_random() {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = sim_parameters::Dimension::D2;
-    parameters.initial_condition = sim_parameters::InitialCondition::Randomized;
+    parameters.dim = parameters::Dimension::D2;
+    parameters.initial_condition = parameters::InitialCondition::Randomized;
     parameters.random_seed = 0x1234;
     parameters.p_initial = 0.5;
-    parameters.processing = sim_parameters::Processing::Parallel;
+    parameters.processing = parameters::Processing::Parallel;
     parameters.n_threads = 10;
-    parameters.topology_x = sim_parameters::Topology::Periodic;
+    parameters.topology_x = parameters::Topology::Periodic;
     parameters.bcs_x = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
-    parameters.topology_y = sim_parameters::Topology::Periodic;
+    parameters.topology_y = parameters::Topology::Periodic;
     parameters.bcs_y = (
-        sim_parameters::BoundaryCondition::Floating,
-        sim_parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
+        parameters::BoundaryCondition::Floating,
     );
     parameters.n_iterations = 13 * 17;
     parameters.sample_period = 13 * 17;

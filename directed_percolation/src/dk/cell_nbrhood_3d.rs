@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::sim_parameters::DualState;
+use crate::parameters::DualState;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
 ///

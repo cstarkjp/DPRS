@@ -4,7 +4,7 @@
 
 use super::DramaticallySimulatable;
 use super::{Cell2D, CellModel};
-use crate::sim_parameters::{DualState, InitialCondition, SimParameters};
+use crate::parameters::{DualState, InitialCondition, SimParameters};
 use rand::Rng;
 use rayon::prelude::*;
 

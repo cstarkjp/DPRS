@@ -3,7 +3,7 @@
 // //!
 
 use super::{Cell3D, CellModel, CellNbrhood3D};
-use crate::sim_parameters::{DualState, GrowthModelChoice, SimParameters};
+use crate::parameters::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel3D implements the CellModel3D trait, plus these.

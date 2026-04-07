@@ -4,7 +4,7 @@
 
 use super::CellNbrhood3D;
 
-use crate::sim_parameters::{DualState, SimParameters};
+use crate::parameters::{DualState, SimParameters};
 
 // #![warn(missing_docs)]
 // //!

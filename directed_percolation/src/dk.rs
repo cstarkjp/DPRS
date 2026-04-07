@@ -26,7 +26,7 @@ pub use simulation::simulation_nd;
 
 use crate::{
     dk::types::{LatticeSlices, Tracking},
-    sim_parameters::{Dimension, SimParameters},
+    parameters::{Dimension, SimParameters},
 };
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
 pub use growth_model_1d::GrowthModel1D;

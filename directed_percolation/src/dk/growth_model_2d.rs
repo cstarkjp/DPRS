@@ -3,7 +3,7 @@
 // //!
 
 use super::{Cell2D, CellModel};
-use crate::sim_parameters::{DualState, GrowthModelChoice, SimParameters};
+use crate::parameters::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel2D implements the CellModel2D trait, plus these.

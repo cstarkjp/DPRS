@@ -5,7 +5,7 @@
 use super::simulation_nd;
 use super::{CellDim, DramaticallySimulatable};
 use crate::dk::types::{LatticeSlices, Tracking};
-use crate::sim_parameters::SimParameters;
+use crate::parameters::SimParameters;
 use std::time::Instant;
 
 /// Run a simulation and record how long the computation takes.

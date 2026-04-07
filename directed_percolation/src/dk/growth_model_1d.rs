@@ -3,7 +3,7 @@
 // //!
 
 use super::{Cell1D, CellModel};
-use crate::sim_parameters::{DualState, GrowthModelChoice, SimParameters};
+use crate::parameters::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
 /// GrowthModel1D implements the CellModel1D trait, plus these.
