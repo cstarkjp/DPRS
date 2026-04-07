@@ -8,7 +8,7 @@ pub mod py_parameters;
 use pyo3::prelude::*;
 #[pymodule]
 mod sim {
-    use crate::dk::sim_dk;
+    use dprs::dk::sim_dk;
     use pyo3::prelude::*;
 
     use crate::py_parameters::PyParameters;
@@ -29,7 +29,7 @@ mod sim {
 
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        let sim_parameters = SimParameters::fill(&py_parameters);
+        let sim_parameters = py_parameters.fill();
         let (n_lattices, lattices, tracking, t_run_time) = sim_dk(sim_parameters);
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();

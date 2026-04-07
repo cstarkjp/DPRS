@@ -27,7 +27,7 @@ macro_rules! py_of_enum {
 
 py_of_enum! {
     /// Lattice growth model type.
-    crate::sim_parameters::GrowthModelChoice,
+    dprs::sim_parameters::GrowthModelChoice,
     GrowthModelChoice,
         (
             #[default]
@@ -41,7 +41,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Lattice dimension.
-    crate::sim_parameters::Dimension,
+    dprs::sim_parameters::Dimension,
     Dimension,
         (
             #[default]
@@ -53,7 +53,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Initial lattice condition.
-    crate::sim_parameters::InitialCondition,
+    dprs::sim_parameters::InitialCondition,
     InitialCondition,
         (
             #[default]
@@ -65,7 +65,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Edge topology.
-    crate::sim_parameters::Topology,
+    dprs::sim_parameters::Topology,
     Topology,
         (
             /// No copying etc is done from one edge to another
@@ -82,7 +82,7 @@ py_of_enum! {
     /// Edge boundary conditions
     ///
     /// This is in essence what is around the outside of the lattice
-    crate::sim_parameters::BoundaryCondition,
+    dprs::sim_parameters::BoundaryCondition,
     BoundaryCondition,
         (
             Unspecified,
@@ -101,7 +101,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Choice of processing type: will become a Py-passable parameter.
-    crate::sim_parameters::Processing,
+    dprs::sim_parameters::Processing,
     Processing,
         (
             #[default]
@@ -167,9 +167,11 @@ impl std::fmt::Display for PyParameters {
     }
 }
 
+use dprs::SimParameters;
 impl PyParameters {
     /// Copy Python-facing parameters.
-    pub fn fill(parameters: &self) -> dprs::SimParameters {
+    pub fn fill(&self) -> SimParameters {
+        use dprs::sim_parameters::*;
         let py_p = self.clone();
         SimParameters {
             growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),

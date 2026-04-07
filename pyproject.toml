@@ -23,7 +23,7 @@ authors = [
   {name = 'Colin P. Stark', email = 'cstarkjp@gmail.com'},
 ]
 keywords = [
-  'directed percolation', 
+  'directed percolation',
   'phase transition',
   'Domany-Kinzel',
   'contact process'
@@ -38,8 +38,6 @@ documentation = "https://cstarkjp.github.io/DPRS"
 
 [tool.maturin]
 python-source = "python"
-module-name = "dprs.sim"
+module-name = "pydprs.sim"
 
 # dynamic = ["version"]
-
-
