@@ -1,0 +1,8 @@
+[package]
+name = "directed_percolation"
+version = "0.1.26"
+edition = "2024"
+
+[dependencies]
+rand = "0.10.0"
+rayon = "1.11.0"

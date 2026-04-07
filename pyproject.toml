@@ -37,7 +37,8 @@ documentation = "https://cstarkjp.github.io/DPRS"
 # "Bug Tracker" = "https://github.com/cstarkjp/Langevin"
 
 [tool.maturin]
+manifest-path = "Cargo.toml"
 python-source = "python"
-module-name = "pydprs.sim"
+module-name = "dprs.sim"
 
 # dynamic = ["version"]

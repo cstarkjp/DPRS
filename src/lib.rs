@@ -8,11 +8,10 @@ pub mod py_parameters;
 use pyo3::prelude::*;
 #[pymodule]
 mod sim {
-    use dprs::dk::sim_dk;
+    use directed_percolation::dk::sim_dk;
     use pyo3::prelude::*;
 
     use crate::py_parameters::PyParameters;
-    use dprs::SimParameters;
 
     #[pymodule_export]
     use crate::py_parameters::BoundaryCondition;
