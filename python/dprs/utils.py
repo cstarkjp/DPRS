@@ -4,9 +4,13 @@ Useful functions.
 import warnings
 from enum import Enum
 from dataclasses import dataclass
+from collections.abc import Sequence
+import numpy as np
+from numpy.typing import NDArray
 from dprs import sim
-from dprs.sim import GrowthModelChoice
-
+from dprs.sim import (
+    GrowthModelChoice, Dimension,
+)
 warnings.filterwarnings("ignore")
 
 __all__ = [
@@ -56,6 +60,55 @@ class DUAL(Enum):
             return False
         elif self is DUAL.OCCUPIED:
             return True
+
+def postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,):
+    n_lattices: int
+    raw_lattices: list[list[bool]] 
+    raw_tracking: Sequence[list]
+    lattices: NDArray
+    skip: int = (
+        2 if parameters.growth_model_choice==GrowthModelChoice.StaggeredDomanyKinzel 
+        else 1
+    )
+    match parameters.dim:
+        case Dimension.D1:
+            converted_lattices: NDArray 
+            converted_lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
+                n_lattices, parameters.n_x,
+            ).T
+            lattices = converted_lattices[:, ::skip]
+        case Dimension.D2:
+            if n_lattices>0:
+                lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
+                    n_lattices, parameters.n_y, parameters.n_x,
+                ).T
+            else:
+                lattices = np.zeros((0,))
+        case Dimension.D3:
+            if n_lattices>0:
+                lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
+                    n_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
+                ).T
+            else:
+                lattices = np.zeros((0,))
+        case _: 
+            raise Exception
+
+    pruned_tracking: Sequence[list] = []
+    for data in raw_tracking:
+        if len(data)>0:
+            pruned_tracking.append(data)
+    tracking_array: NDArray = np.array(pruned_tracking, dtype=np.float64,)[:, ::skip]
+    tracking = dict(
+        iteration = tracking_array[0],
+        time = tracking_array[0]/skip,
+        mass = tracking_array[1],
+        ρ_mean = tracking_array[2],
+        R_mean = tracking_array[3],
+    )
+
+    return (lattices, tracking)
+
 
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
     """Generate a string summarizing the sim for entitling plots."""

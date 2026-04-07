@@ -5,8 +5,9 @@ from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 from dprs import sim
+from dprs.sim import GrowthModelChoice
 from dprs.viz import Viz
-from dprs.utils import make_name, make_title, DUAL
+from dprs.utils import make_name, make_title, DUAL, postprocessing
 
 print(f"\n{sim}")
 
@@ -43,21 +44,13 @@ if parameters.sample_period > parameters.n_iterations:
 n_lattices: int
 raw_lattices: list[list[bool]] 
 raw_tracking: Sequence[list]
-pruned_tracking: Sequence[list]
 t_run_time: float
 (n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dk(parameters)
+
 lattices: NDArray
-if n_lattices>0:
-    lattices = np.array(raw_lattices, dtype=np.bool,).reshape(
-        n_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
-    ).T
-else:
-    lattices = np.zeros((0,))
-pruned_tracking = []
-for data in raw_tracking:
-    if len(data)>0:
-        pruned_tracking.append(data)
-tracking: NDArray = np.array(pruned_tracking, dtype=np.float64,) 
+tracking_array: NDArray
+(lattices, tracking) \
+    = postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,)
 
 viz = Viz(dpi=250)
 i_slice: int
@@ -102,23 +95,22 @@ viz.plot_lattice_statistic(
     name,
     make_title(parameters, None),
     tracking,
+    choices=("time", "ρ_mean"),
     labels=(
         "Order parameter  $\\widebar{\\rho}(t)$", 
         "$\\widebar{\\rho}(t) \\sim t^{-\\delta}$",
         "${\\delta}$",
     ),
-    index=2,
     exponent=-δ, 
     scale=scale,
-    fig_size=(6,4,),
     i_offset=1,
     do_ref_curve=True,
 )
 plt.show()
 
 i_offset: int = parameters.n_iterations//3
-t: NDArray = tracking[0][i_offset:]
-ρ_mean: NDArray = tracking[1][i_offset:]
+t: NDArray = tracking["time"][i_offset:]
+ρ_mean: NDArray = tracking["ρ_mean"][i_offset:]
 (exponent, scale, r_value, p_value, std_err) \
     = linregress(np.log(t), np.log(ρ_mean))
 print(rf"Estimated t-decay exponent:  δ = {exponent:0.3f}")

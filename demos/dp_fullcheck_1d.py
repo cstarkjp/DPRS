@@ -4,9 +4,9 @@ from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 from dprs import sim
-from dprs.viz import Viz
-from dprs.utils import make_name, make_title, DUAL
 from dprs.sim import GrowthModelChoice
+from dprs.viz import Viz
+from dprs.utils import make_name, make_title, DUAL, postprocessing
 
 print(f"\n{sim}")
 
@@ -17,8 +17,8 @@ class Parameters:
     n_x: int = 10_000
     n_y: int = 1
     n_z: int = 1
-    p_1: float = 0.538910
-    p_2: float = 0
+    p_1: float = 0.705485152
+    p_2: float = 0.705485152
     n_iterations: int = 1000
     sample_period: int  = 0
     initial_condition = sim.InitialCondition.Randomized
@@ -44,22 +44,13 @@ if parameters.sample_period > parameters.n_iterations:
 n_lattices: int
 raw_lattices: list[list[bool]]
 raw_tracking: Sequence[list]
-pruned_tracking: Sequence[list]
 t_run_time: float
 (n_lattices, raw_lattices, raw_tracking, t_run_time)= sim.dk(parameters)
-print(f"Total number of lattice time slices = {n_lattices}\n")
 
-pruned_tracking = []
-for data in raw_tracking:
-    if len(data)>0:
-        pruned_tracking.append(data)
-tracking_full: NDArray = np.array(pruned_tracking, dtype=np.float64,) 
-skip = (
-    2 if parameters.growth_model_choice==GrowthModelChoice.StaggeredDomanyKinzel 
-    else 1
-)
-tracking = tracking_full[:, ::skip]
-tracking[0] = tracking[0] #/skip
+lattices: NDArray
+tracking_array: NDArray
+(lattices, tracking) \
+    = postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,)
 
 viz = Viz(dpi=250)
 name: str
@@ -73,24 +64,22 @@ viz.plot_lattice_statistic(
     name,
     make_title(parameters, None),
     tracking,
+    choices=("time", "ρ_mean"),
     labels=(
         "Order parameter  $\\widebar{\\rho}(t)$", 
         "$\\widebar{\\rho}(t) \\sim t^{-\\delta}$",
         "${\\delta}$",
     ),
-    index=2,
     exponent=-δ, 
     scale=scale,
-    fig_size=(6,4,),
     i_offset=1,
     do_ref_curve=True,
 )
 plt.show()
 
 i_offset: int = parameters.n_iterations//3
-t: NDArray = tracking[0][i_offset:]
-ρ_mean: NDArray = tracking[1][i_offset:]
+t: NDArray = tracking["time"][i_offset:]
+ρ_mean: NDArray = tracking["ρ_mean"][i_offset:]
 (exponent, scale, r_value, p_value, std_err) \
     = linregress(np.log(t), np.log(ρ_mean))
-
 print(rf"Estimated t-decay exponent:  δ = {exponent:0.3f}")

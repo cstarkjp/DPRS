@@ -13,6 +13,7 @@ from typing import Any, Callable
 from collections.abc import Sequence
 from numpy.typing import NDArray
 from dprs import sim
+from dprs.sim import InitialCondition
 
 warnings.filterwarnings("ignore")
 
@@ -49,7 +50,6 @@ class Viz:
             mpl.rc("font", size=font_size, family=font_family)
         except:
             mpl.rc("font", size=font_size, family="")
-
 
     def create_figure(
         self,
@@ -106,17 +106,24 @@ class Viz:
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
         plt.title(title, fontdict={"fontsize": 11.5})
         color_map = ListedColormap(((0.9, 0.9, 0.9,), (0.65, 0, 0.65),))
-        x = (lattices.shape[0] if x is None else min(x, lattices.shape[0]))
+        x_span = (lattices.shape[0] if x is None else min(x, lattices.shape[0]))
         t = (lattices.shape[1] if t is None else min(t, lattices.shape[1]))
+        match p.initial_condition:
+            case InitialCondition.CentralSeed: 
+                x = (lattices.shape[0]//2-x_span, lattices.shape[0]//2+x_span,)
+            case InitialCondition.Randomized: 
+                x = (0, x_span,)
+            case _:
+                raise Exception
         plt.imshow(
-            lattices[0:x, 0:t, ].T, 
+            lattices[x[0]:x[1], 0:t, ].T, 
             vmin=0, vmax=1,
             cmap=color_map, 
-            extent=(0, x, t-0.5, -0.5),
+            extent=(*x, t-0.5, -0.5),
         )
         color_bar = plt.colorbar(
             ticks=(0.25, 0.75,), 
-            shrink=0.5*(t/x)**0.25, 
+            shrink=min(0.35, 0.5*(t/x_span)**0.25), 
             aspect=15,
             label="cell state",
         )
@@ -174,9 +181,9 @@ class Viz:
             self,
             name: str,
             title: str,
-            tracking: NDArray,
+            tracking: dict,
+            choices: tuple[str, str],
             labels: Sequence[str],
-            index: int,
             exponent: float, 
             scale: float,
             fig_size: tuple[float,float]=(6,4,),
@@ -188,8 +195,8 @@ class Viz:
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
         plt.title(title, fontdict={"fontsize": 13}, pad=10,)
-        t: NDArray = tracking[0][i_offset:]
-        statistic: NDArray = tracking[index][i_offset:]
+        t: NDArray = tracking[choices[0]][i_offset:]
+        statistic: NDArray = tracking[choices[1]][i_offset:]
         statistic_fn = lambda t: scale*t**exponent
         plt.plot(
             t, statistic, lw=0.4, color="k",
