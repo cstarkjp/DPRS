@@ -46,7 +46,9 @@ impl CellModel<Cell2D> for GrowthModel2D {
         let do_survive = match self.do_staggered {
             true => {
                 let is_even_step = iteration.is_multiple_of(2);
-                // bitmask is x-major, so the bit order is (x+1,y+1),(x+1,y),(x+1,y-1), (x,y+1),(x,y),(x,y-1), (x-1,y+1),(x-1,y),(x-1,y-1)
+                // bitmask is x-major, so the bit order is (x+1,y+1),(x+1,y),(x+1,y-1), 
+                //                                         (x,y+1),(x,y),(x,y-1), 
+                //                                         (x-1,y+1),(x-1,y),(x-1,y-1)
                 //
                 // For even we want (x-1,y+1), (x,y+1), (x-1,y), (x,y) - i.e. 0b_000_110_110
                 //
