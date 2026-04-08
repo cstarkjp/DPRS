@@ -30,7 +30,7 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
     // Set up a recording of lattice evolution, or suppress
     let n_iterations: usize = parameters.n_iterations;
     let sample_period: usize = parameters.sample_period;
-    let n_lattices = match sample_period > 0 {
+    let mut n_lattices = match sample_period > 0 {
         true => n_iterations / sample_period + 1,
         false => 0,
     };
@@ -82,11 +82,20 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
             }
         }
     };
-    assert!(
-        n_lattices == 0 || n_lattices == lattice_history.len(),
-        "Number of lattices {n_lattices} and lattice_history is {}",
-        lattice_history.len()
-    );
+    // assert!(
+    //     n_lattices == 0 || n_lattices == lattice_history.len(),
+    //     "Number of lattices {n_lattices} and lattice_history is {}",
+    //     lattice_history.len()
+    // );
 
-    Ok((n_lattices, lattice_history.take(), tracking_history.take()))
+    // Possibly redundant
+    if !(n_lattices == 0 || n_lattices == lattice_history.len()) {
+        Err(DkError::LatticeHistoryError(format!(
+            "number of lattices is {} and len(lattice_history) is {}",
+            n_lattices,
+            lattice_history.len()
+        )))
+    } else {
+        Ok((n_lattices, lattice_history.take(), tracking_history.take()))
+    }
 }
