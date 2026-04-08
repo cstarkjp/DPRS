@@ -61,8 +61,8 @@ class DUAL(Enum):
         elif self is DUAL.OCCUPIED:
             return True
 
-def postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,):
-    n_lattices: int
+def postprocessing(parameters, n_raw_lattices, raw_lattices, raw_tracking,):
+    n_raw_lattices: int
     raw_lattices: list[list[bool]] 
     raw_tracking: Sequence[list]
     lattices: NDArray
@@ -70,28 +70,30 @@ def postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,):
         2 if parameters.growth_model_choice==GrowthModelChoice.StaggeredDomanyKinzel 
         else 1
     )
-    lattices: NDArray 
-    if n_lattices>0:
+    lattices: NDArray
+    if n_raw_lattices>0:
         lattices_all: NDArray 
         match parameters.dim:
             case Dimension.D1:
                 lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
-                    n_lattices, parameters.n_x,
+                    n_raw_lattices, parameters.n_x,
                 ).T
+                lattices = lattices_all[:, ::skip]
             case Dimension.D2:
                 lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
-                    n_lattices, parameters.n_y, parameters.n_x,
+                    n_raw_lattices, parameters.n_y, parameters.n_x,
                 ).T
+                lattices = lattices_all[:, :, ::skip]
             case Dimension.D3:
                 lattices_all = np.array(raw_lattices, dtype=np.bool,).reshape(
-                    n_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
+                    n_raw_lattices, parameters.n_z, parameters.n_y, parameters.n_x,
                 ).T
+                lattices = lattices_all[:, :, :, ::skip]
             case _: 
                 raise Exception
-        lattices = lattices_all[:, ::skip]
     else:
         lattices = np.zeros((0,))
-
+    n_lattices: int = lattices.shape[-1]
 
     pruned_tracking: Sequence[list] = []
     for data in raw_tracking:
@@ -106,7 +108,7 @@ def postprocessing(parameters, n_lattices, raw_lattices, raw_tracking,):
         R_mean = tracking_array[3],
     )
 
-    return (lattices, tracking)
+    return (n_lattices, lattices, tracking)
 
 
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 

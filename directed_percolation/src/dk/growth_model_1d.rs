@@ -5,10 +5,12 @@ use rand::{Rng, RngExt};
 /// GrowthModel1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct GrowthModel1D {
-    /// The probability used in the model, where a cell is activated with this probability if *any* of its neighbors (including itself) is active
+    /// The two Domany-Kinzel growth rule probabilities:
+    /// their usage depends on whether the standard SimplifiedDomanyKinzel model is chosen
+    /// or if the pseudo-diagonal StaggeredDomanyKinzel model is chosen.
+    /// p_1 relates more to a single (or centrally) occupied cell
+    /// p_2 relates more to multiple (or non-centrally) occupied cells
     p_1: f64,
-    /// Unused probability
-    #[allow(dead_code)]
     p_2: f64,
     /// The initial probability that a cell is activated, for random initial conditions
     p_initial: f64,
@@ -57,10 +59,10 @@ impl CellModel<Cell1D> for GrowthModel1D {
                         true => (nbrhood[1] | nbrhood[2], nbrhood[1] & nbrhood[2]),
                         false => (nbrhood[0] | nbrhood[1], nbrhood[0] & nbrhood[1]),
                     };
-                 if is_either_nbr_occupied {
+                if is_either_nbr_occupied {
                     let uniform_variate: f64 = rng.random();
-                    (is_either_nbr_occupied & (uniform_variate < self.p_1))
-                    | (are_both_nbrs_occupied & (uniform_variate < self.p_2))
+                    (uniform_variate < self.p_1)
+                        | (are_both_nbrs_occupied & (uniform_variate < self.p_2))
                 } else {
                     false
                 }
@@ -85,8 +87,7 @@ impl CellModel<Cell1D> for GrowthModel1D {
                 let is_activated = (is_occupied & (uniform_variate < self.p_1))
                     | (has_nbrs & (uniform_variate < self.p_2));
                 is_activated
-            } 
-            // false => {
+            } // false => {
               //     // Simplistic Domany-Kinzel rule: this cell will become occupied if:
               //     //  (1) a coin toss with probability p says it *may* be occupied
               //     //  and (2) if any one of the neighborhood + here cells were previously occupied
