@@ -6,6 +6,7 @@ use thiserror::Error;
 mod traits;
 mod types;
 
+mod cell_nbrhood_2d;
 mod cell_nbrhood_3d;
 mod growth_model_1d;
 mod growth_model_2d;
@@ -24,6 +25,7 @@ pub use simulation::simulation_nd;
 
 pub use types::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
 
+pub use cell_nbrhood_2d::{CellNbrhood2D, RowIterator2D};
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
 pub use growth_model_1d::GrowthModel1D;
 pub use growth_model_2d::GrowthModel2D;
