@@ -3,6 +3,7 @@
 // //!
 
 use pyo3::{FromPyObject, pyclass};
+use thiserror::Error;
 
 macro_rules! py_of_enum {
     {$(#[$outer:meta])* $enum: ty, $py_enum: ident, ( $( $(#[$inner:ident $($args:tt)*])* $others:ident ),* $(,)? )  } => {
@@ -110,6 +111,15 @@ py_of_enum! {
         )
 }
 
+#[derive(Debug, Default, Error)]
+pub enum DprsError {
+    #[default]
+    #[error("unknown error in DPRS simulation")]
+    UnknownError,
+    #[error("Bad parameter: {0}")]
+    BadParameter(String),
+}
+
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
 pub struct PyParameters {
@@ -170,35 +180,72 @@ impl std::fmt::Display for PyParameters {
 use directed_percolation::SimParameters;
 impl PyParameters {
     /// Copy Python-facing parameters.
-    pub fn fill(&self) -> SimParameters {
+
+    pub fn fill(&self) -> Result<SimParameters, DprsError> {
         use directed_percolation::*;
         let py_p = self.clone();
         // Trap errors in parameter bounds
-        assert!(py_p.n_x > 0, "Lattice size in x direction must be >0");
-        assert!(py_p.n_y > 0, "Lattice size in y direction must be >0");
-        assert!(py_p.n_z > 0, "Lattice size in z direction must be >0");
-        assert!(
-            py_p.p_1 >= 0. && py_p.p_1 <= 1.,
-            "Probability p_1 must be [0,1]"
-        );
-        assert!(
-            py_p.p_2 >= 0. && py_p.p_2 <= 1.,
-            "Probability p_2 must be [0,1]"
-        );
-        assert!(
-            py_p.p_initial >= 0. && py_p.p_initial <= 1.,
-            "Probability p_initial must be [0,1]"
-        );
-        assert!(py_p.n_iterations > 0, "Number of iterations must be >0");
-        assert!(
-            py_p.sample_period <= py_p.n_iterations,
-            "Sample period must be <= number of iterations"
-        );
-        // Copied from simulation.rs
-        // Keep both because another wrapper might forget to trap here
-        assert!(py_p.random_seed > 0, "Random number seed must be >0");
-        assert!(py_p.n_threads > 0, "Number of threads must be >0");
-        SimParameters {
+        if py_p.n_x == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Lattice size n_x={} must be >0",
+                py_p.n_x
+            )));
+        }
+        if py_p.n_y == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Lattice size n_y={} must be >0",
+                py_p.n_y
+            )));
+        }
+        if py_p.n_z == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Lattice size n_z={} must be >0",
+                py_p.n_z
+            )));
+        }
+        if py_p.p_1 < 0. || py_p.p_1 > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_1={} must be [0,1]",
+                py_p.p_1
+            )));
+        }
+        if py_p.p_2 < 0. || py_p.p_2 > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_2={} must be [0,1]",
+                py_p.p_2
+            )));
+        }
+        if py_p.p_initial < 0. || py_p.p_initial > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_initial={} must be [0,1]",
+                py_p.p_initial
+            )));
+        }
+        if py_p.n_iterations == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Number of iterations {} must be >0",
+                py_p.n_iterations
+            )));
+        }
+        if py_p.sample_period > py_p.n_iterations {
+            return Err(DprsError::BadParameter(format!(
+                "Sample period {} must be <= number of iterations {}",
+                py_p.sample_period, py_p.n_iterations
+            )));
+        }
+        if py_p.random_seed == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Random number seed {} must be >0",
+                py_p.random_seed
+            )));
+        }
+        if py_p.n_threads == 0 {
+            return Err(DprsError::BadParameter(format!(
+                "Number of threads {} must be >0",
+                py_p.n_threads
+            )));
+        }
+        Ok(SimParameters {
             growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),
             dim: Dimension::from(py_p.dim),
             n_x: py_p.n_x,
@@ -241,6 +288,6 @@ impl PyParameters {
             do_edge_buffering: py_p.do_edge_buffering,
             processing: Processing::from(py_p.processing),
             n_threads: py_p.n_threads,
-        }
+        })
     }
 }

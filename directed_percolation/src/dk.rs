@@ -48,6 +48,8 @@ pub enum DkError {
     ThreadBuildError(#[from] rayon::ThreadPoolBuildError),
     #[error("Failed to create the lattice model")]
     FailedToCreateModel,
+    #[error("Bad parameter: {0}")]
+    BadParameter(String),
 }
 
 pub fn sim_dk<R: Rng + SeedableRng + Send>(
