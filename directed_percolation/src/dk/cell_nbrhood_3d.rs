@@ -10,20 +10,11 @@ use crate::DualState;
 ///
 /// The lattice is deemed to be 'Z-major' and 'X-minor'
 ///
-/// To provide performance on 'move write' this type uses an 'X major', with
+/// To provide performance on 'move right' this type uses an 'X major', with
 /// then Z then Y-minor; moving +1 in the X is moving the 9 entries down and
 /// filling the new x+1 from the y+-1/z+-1 square
 ///
-/// Hence *this* is indexed by `x*9 + y + z*3`
-///
-/// It is (by design decision) too large to implement Copy
-///
-/// It has a manual implementation of [Default] because `C` does not implement
-/// default, which means it will not be derived automatically
-///
-/// It has an implementation of 'Index' (but not IndexMut) so it can be
-/// interrogated with an (x,y,z) index (each of u8)
-///
+/// Hence the bitmask 'cells_not_empty' is indexed by `x*9 + y + z*3`
 #[derive(Debug, Clone, Default)]
 pub struct CellNbrhood3D {
     /// Bitmask of cells that are not empty
@@ -98,6 +89,12 @@ impl CellNbrhood3D {
     pub fn bitmask(&self) -> u32 {
         self.cells_not_empty
     }
+
+    /// Return true if the particular neighbor is occupied
+    pub fn is_occupied(&self, x: u8, y: u8, z: u8) -> bool {
+        let bit = x * 9 + z * 3 + y;
+        ((self.cells_not_empty >> bit) & 1) != 0
+    }
 }
 
 /// An iterator over a lattice centred on a cell (x,y,z), with a 'move X by +1' method
@@ -115,7 +112,9 @@ pub struct RowIterator3D<'a> {
     row_iter: std::iter::Take<std::slice::Windows<'a, DualState>>,
     /// The most recent window produce by row_iter
     lattice_window: Option<&'a [DualState]>,
+    /// Size of the *lattice* in the x direction
     n_x: usize,
+    /// Size of the *lattice* in the y direction
     n_y: usize,
 }
 
