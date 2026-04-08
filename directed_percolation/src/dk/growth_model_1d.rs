@@ -80,7 +80,7 @@ impl CellModel<Cell1D> for GrowthModel1D {
                 // Simplified Domany-Kinzel rule: this cell will become occupied if:
                 // either (1) it's already occupied and a coin toss with prob p_1 succeeds
                 //   or   (2) (regardless) it has neighbors and a coin toss with prob p_2 succeeds
-                let n_nbrs: usize = [nbrhood[0] as usize, nbrhood[2] as usize].iter().sum();
+                let n_nbrs: usize = [nbrhood[0].into(), nbrhood[2].into()].iter().sum();
                 let has_nbrs = n_nbrs > 0;
                 let uniform_variate: f64 = rng.random();
                 let is_occupied = nbrhood[1];

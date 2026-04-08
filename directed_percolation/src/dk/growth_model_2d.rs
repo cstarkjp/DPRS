@@ -46,26 +46,77 @@ impl CellModel<Cell2D> for GrowthModel2D {
         let do_survive = match self.do_staggered {
             true => {
                 let is_even_step = iteration.is_multiple_of(2);
-                let nbrs: Vec<_> = if is_even_step {
-                    [nbrhood[0], nbrhood[1], nbrhood[3], nbrhood[4]].into()
+                let nbrs: Vec<usize> = if is_even_step {
+                    [
+                        nbrhood[0].into(),
+                        nbrhood[1].into(),
+                        nbrhood[3].into(),
+                        nbrhood[4].into(),
+                    ]
+                    .into()
                 } else {
-                    [nbrhood[4], nbrhood[5], nbrhood[7], nbrhood[8]].into()
+                    [
+                        nbrhood[4].into(),
+                        nbrhood[5].into(),
+                        nbrhood[7].into(),
+                        nbrhood[8].into(),
+                    ]
+                    .into()
                 };
-                let n_occupied_nbrs: usize = nbrs.iter().map(|s| *s as usize).sum();
-                let are_several_nbrs_occupied = n_occupied_nbrs > 2;
-                let is_one_nbr_occupied = n_occupied_nbrs == 1;
-                let uniform_variate: f64 = rng.random();
-                let is_activated = (is_one_nbr_occupied & (uniform_variate < self.p_1))
-                    | (are_several_nbrs_occupied & (uniform_variate < self.p_2));
-
-                is_activated
+                let n_occupied_nbrs: usize = nbrs.iter().map(|s| s).sum();
+                if n_occupied_nbrs > 0 {
+                    let are_several_nbrs_occupied = n_occupied_nbrs >= 2;
+                    let uniform_variate: f64 = rng.random();
+                    (uniform_variate < self.p_1)
+                        | (are_several_nbrs_occupied & (uniform_variate < self.p_2))
+                } else {
+                    false
+                }
             }
             false => {
                 // Simplistic Domany-Kinzel rule: this cell will become occupied if:
                 //  (1) a coin toss with probability p says it *may* be occupied
                 //  (2) if one of the 3 neighborhood + here cells were previously occupied
-                let is_any_nbr_occupied = nbrhood.iter().any(|s| (*s).into());
-                is_any_nbr_occupied & rng.random_bool(self.p_1)
+                // Apparently grid anisotropy can be removed by suppressing diagonal
+                // neighbor consideration 50% of the time
+                // => use simple coin toss for each diagonal nbr to exclude each 50% of the time
+                let do_diagonal: u8 = rng.random();
+                let nbrs: Vec<u8> = [
+                    ((nbrhood[0] as u8) & (do_diagonal & 1)),
+                    nbrhood[1].into(),
+                    ((nbrhood[2] as u8) & ((do_diagonal >> 1) & 1)),
+                    nbrhood[3].into(),
+                    nbrhood[5].into(),
+                    ((nbrhood[6] as u8) & ((do_diagonal >> 2) & 1)),
+                    nbrhood[7].into(),
+                    ((nbrhood[8] as u8) & ((do_diagonal >> 3) & 1)),
+                ]
+                .into();
+                let is_here_occupied = nbrhood[4];
+                let n_occupied_nbrs: u8 = nbrs.iter().map(|s| s).sum();
+                let are_several_nbrs_occupied = n_occupied_nbrs >= 1;
+                if are_several_nbrs_occupied || is_here_occupied {
+                    let uniform_variate: f64 = rng.random();
+                    (is_here_occupied & (uniform_variate < self.p_1))
+                        | (are_several_nbrs_occupied & (uniform_variate < self.p_2))
+                } else {
+                    false
+                }
+                // If a 50% debiasing is not correct (a priori it ought to be 1-1/sqrt(2))
+                // then a weighted coin toss is needed for each diagonal separately.
+                // use std::f64::consts::SQRT_2;
+                // let p_diagonal: f64 = 1. - 1. / SQRT_2;
+                // let nbrs: Vec<u8> = [
+                //     (nbrhood[0] & rng.random_bool(p_diagonal)).into(),
+                //     nbrhood[1].into(),
+                //     (nbrhood[2] & rng.random_bool(p_diagonal)).into(),
+                //     nbrhood[3].into(),
+                //     nbrhood[5].into(),
+                //     (nbrhood[6] & rng.random_bool(p_diagonal)).into(),
+                //     nbrhood[7].into(),
+                //     (nbrhood[8] & rng.random_bool(p_diagonal)).into(),
+                // ]
+                // .into();
             }
         };
 
