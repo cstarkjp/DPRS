@@ -4,19 +4,18 @@ use std::time::Instant;
 use crate::SimParameters;
 use crate::dk;
 use dk::{CellDim, DramaticallySimulatable, simulation_nd};
-use dk::{LatticeSlices, Tracking};
+use dk::{DkError, LatticeSlices, Tracking};
 
 /// Run a simulation and record how long the computation takes.
 ///
 /// Returns the duration, number of lattices recorded, the lattices, and the tracking
 pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
     parameters: &SimParameters,
-) -> (f64, usize, LatticeSlices, Tracking) {
+) -> Result<(f64, usize, LatticeSlices, Tracking), DkError> {
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(parameters.n_threads)
-        .build()
-        .unwrap();
+        .build()?;
 
     // Start the clock
     let time = Instant::now();
@@ -33,5 +32,5 @@ pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatab
         .map(|lattice| parameters.pruned_lattice(lattice))
         .collect();
 
-    (duration, n_lattices, lattices, tracking)
+    Ok((duration, n_lattices, lattices, tracking))
 }

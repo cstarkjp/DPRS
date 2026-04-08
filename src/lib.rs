@@ -30,7 +30,8 @@ mod sim {
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
         let sim_parameters = py_parameters.fill();
-        let (n_lattices, lattices, tracking, t_run_time) = sim_dk::<StdRng>(sim_parameters);
+        let (n_lattices, lattices, tracking, t_run_time) = sim_dk::<StdRng>(sim_parameters)
+            .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {
