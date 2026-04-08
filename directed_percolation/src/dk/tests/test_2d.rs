@@ -33,7 +33,7 @@ impl CellModel<Cell2D> for MoveDownRightModel2D {
 }
 
 #[test]
-fn test_2d_sim() {
+fn test_2d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let mut parameters = SimParameters::default();
@@ -50,18 +50,18 @@ fn test_2d_sim() {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)
-            .unwrap();
+        simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     // sim lattices are unpruned
     assert_eq!(lattices[0][7 + 9 * 15], DualState::Occupied);
     assert_eq!(lattices[1][8 + 8 * 15], DualState::Occupied);
     assert_eq!(lattices.last().unwrap()[7 + 9 * 15], DualState::Occupied);
+    Ok(())
 }
 
 #[test]
-fn test_2d_run() {
+fn test_2d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let mut parameters = SimParameters::default();
@@ -78,16 +78,17 @@ fn test_2d_run() {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0][6 + 8 * 13], DualState::Occupied);
     assert_eq!(lattices[1][7 + 7 * 13], DualState::Occupied);
     assert_eq!(lattices.last().unwrap(), &lattices[0]);
+    Ok(())
 }
 
 #[test]
-fn test_2d_run_random() {
+fn test_2d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let mut parameters = SimParameters::default();
@@ -107,7 +108,7 @@ fn test_2d_run_random() {
     parameters.sample_period = 13 * 17;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     assert_eq!(&lattices[1], &lattices[0]);
@@ -123,4 +124,5 @@ fn test_2d_run_random() {
         tracking[1][0]
     );
     */
+    Ok(())
 }

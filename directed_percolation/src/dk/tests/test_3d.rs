@@ -33,7 +33,7 @@ impl CellModel<Cell3D> for MoveDownRightModel3D {
 }
 
 #[test]
-fn test_3d_sim() {
+fn test_3d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let n_z = 19;
@@ -55,8 +55,7 @@ fn test_3d_sim() {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)
-            .unwrap();
+        simulation_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     // sim lattices are unpruned
@@ -72,10 +71,11 @@ fn test_3d_sim() {
         lattices.last().unwrap()[7 + 9 * 15 + 10 * (15 * 19)],
         DualState::Occupied
     );
+    Ok(())
 }
 
 #[test]
-fn test_3d_run() {
+fn test_3d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let n_z = 19;
@@ -96,7 +96,7 @@ fn test_3d_run() {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0][6 + 8 * 13 + 9 * (13 * 17)], DualState::Occupied);
@@ -105,10 +105,11 @@ fn test_3d_run() {
         DualState::Occupied
     );
     assert_eq!(lattices.last().unwrap(), &lattices[0]);
+    Ok(())
 }
 
 #[test]
-fn test_3d_run_random() {
+fn test_3d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let n_z = 19;
@@ -133,11 +134,12 @@ fn test_3d_run_random() {
     parameters.sample_period = 13 * 17 * 19;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     assert_eq!(&lattices[1], &lattices[0]);
 
     // assert!(tracking[1][0] >= 0.4, "Density should be about 1/2");
     // assert!(tracking[1][0] <= 0.6, "Density should be about 1/2");
+    Ok(())
 }

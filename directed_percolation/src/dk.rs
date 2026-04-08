@@ -44,6 +44,8 @@ pub enum DkError {
     UnknownError,
     #[error("error building rayon threads")]
     ThreadBuildError(#[from] rayon::ThreadPoolBuildError),
+    #[error("Failed to create the lattice model")]
+    FailedToCreateModel,
 }
 
 pub fn sim_dk<R: Rng + SeedableRng + Send>(

@@ -33,7 +33,7 @@ impl CellModel<Cell1D> for MoveRightModel1D {
 }
 
 #[test]
-fn test_1d_sim() {
+fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
@@ -46,15 +46,16 @@ fn test_1d_sim() {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters).unwrap();
+        simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);
     assert_eq!(lattices[0][0..8], lattices[1][1..9]);
+    Ok(())
 }
 
 #[test]
-fn test_1d_run() {
+fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
@@ -68,9 +69,10 @@ fn test_1d_run() {
     parameters.do_edge_buffering = true;
 
     let (_duration, num_lattices, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters);
+        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters)?;
     assert_eq!(num_lattices, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);
     assert_eq!(lattices[0][0..8], lattices[1][1..9]);
+    Ok(())
 }
