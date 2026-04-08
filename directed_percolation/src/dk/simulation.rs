@@ -69,8 +69,6 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
             // one per row, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(parameters.random_seed > 0, "Random number seed must be >0");
-
             let mut rngs: Vec<_> = (0..lm.num_parallel_rngs())
                 .map(|s| R::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
                 .collect();
