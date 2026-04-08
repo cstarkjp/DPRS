@@ -84,13 +84,9 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
             }
         }
     };
-    assert!(n_iterations == lm.iteration());
-    /* Why is this assert here?
-     * If iterations = 13*7 and sample period is 13*7+1 then this assert fails
-     */
     assert!(
         n_lattices == 0 || n_lattices == lattice_history.len(),
-        "Num lattices {n_lattices} and lattice_history is {}",
+        "Number of lattices {n_lattices} and lattice_history is {}",
         lattice_history.len()
     );
 
