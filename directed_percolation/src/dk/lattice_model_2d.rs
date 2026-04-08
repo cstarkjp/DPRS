@@ -1,7 +1,8 @@
 use rand::Rng;
 use rayon::prelude::*;
 
-use super::{Cell2D, CellModel, DramaticallySimulatable};
+use super::{Cell2D, CellNbrhood2D, RowIterator2D};
+use super::{CellModel, DramaticallySimulatable};
 use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 2d.
@@ -88,18 +89,8 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
     }
 
     /// Cell values triple-tripled across (x-1:x+1, y-1:y+1).
-    fn cell_nbrhood(&self, x: usize, y: usize) -> [bool; 9] {
-        [
-            self.lattice[self.i_cell(x - 1, y + 1)].into(),
-            self.lattice[self.i_cell(x, y + 1)].into(),
-            self.lattice[self.i_cell(x + 1, y + 1)].into(),
-            self.lattice[self.i_cell(x - 1, y)].into(),
-            self.lattice[self.i_cell(x, y)].into(),
-            self.lattice[self.i_cell(x + 1, y)].into(),
-            self.lattice[self.i_cell(x - 1, y - 1)].into(),
-            self.lattice[self.i_cell(x, y - 1)].into(),
-            self.lattice[self.i_cell(x + 1, y - 1)].into(),
-        ]
+    fn cell_nbrhood(&self, x: usize, y: usize) -> CellNbrhood2D {
+        CellNbrhood2D::new(&self.lattice, (x, y), self.lattice_n_x)
     }
 
     /// Check (x,y) coordinate is within lattice bounds.
@@ -146,32 +137,20 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
     /// By using iterators we can guarantee safe access without (unnecessary)
     /// range checks.
     pub fn update_row<R: Rng>(&self, rng: &mut R, y: usize, row: &mut [DualState]) {
-        let lattice = &self.lattice;
         let row_span = self.lattice_n_x - 2;
-        let i_md = self.i_cell(0, y);
-        let i_up = i_md + self.lattice_n_x;
-        let i_dn = i_md - self.lattice_n_x;
-        for (cell, (dn, (md, up))) in row.iter_mut().skip(1).take(row_span).zip(
-            lattice.split_at(i_dn).1.windows(3).zip(
-                lattice
-                    .split_at(i_md)
-                    .1
-                    .windows(3)
-                    .zip(lattice.split_at(i_up).1.windows(3)),
-            ),
-        ) {
-            let nbrhood = [
-                up[0].into(),
-                up[1].into(),
-                up[2].into(),
-                md[0].into(),
-                md[1].into(),
-                md[2].into(),
-                dn[0].into(),
-                dn[1].into(),
-                dn[2].into(),
-            ];
-            *cell = self.cell_model.update_state(self.iteration, rng, &nbrhood);
+
+        let Some(mut lattice_window) = RowIterator2D::new(&self.lattice, (1, y), self.lattice_n_x)
+        else {
+            return;
+        };
+
+        for cell in row.iter_mut().skip(1).take(row_span) {
+            *cell = self
+                .cell_model
+                .update_state(self.iteration, rng, lattice_window.nbrhood());
+            if !lattice_window.next() {
+                break;
+            }
         }
     }
 }

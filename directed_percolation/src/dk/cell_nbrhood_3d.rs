@@ -1,7 +1,3 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
 use crate::DualState;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
@@ -14,31 +10,15 @@ use crate::DualState;
 ///
 /// The lattice is deemed to be 'Z-major' and 'X-minor'
 ///
-/// To provide performance on 'move write' this type uses an 'X major', with
+/// To provide performance on 'move right' this type uses an 'X major', with
 /// then Z then Y-minor; moving +1 in the X is moving the 9 entries down and
 /// filling the new x+1 from the y+-1/z+-1 square
 ///
-/// Hence *this* is indexed by `x*9 + y + z*3`
-///
-/// It is (by design decision) too large to implement Copy
-///
-/// It has a manual implementation of [Default] because `C` does not implement
-/// default, which means it will not be derived automatically
-///
-/// It has an implementation of 'Index' (but not IndexMut) so it can be
-/// interrogated with an (x,y,z) index (each of u8)
-///
-#[derive(Debug, Clone)]
+/// Hence the bitmask 'cells_not_empty' is indexed by `x*9 + y + z*3`
+#[derive(Debug, Clone, Default)]
 pub struct CellNbrhood3D {
-    cells_ne: u32,
-}
-
-/// Default, empty, very dull neighborhood.
-impl std::default::Default for CellNbrhood3D {
-    fn default() -> Self {
-        let cells_ne = 0;
-        Self { cells_ne }
-    }
+    /// Bitmask of cells that are not empty
+    cells_not_empty: u32,
 }
 
 impl CellNbrhood3D {
@@ -83,7 +63,7 @@ impl CellNbrhood3D {
                 layer_ne |= 1 << (3 * z + 2);
             }
         }
-        self.cells_ne |= layer_ne << (X_OFS * 9);
+        self.cells_not_empty |= layer_ne << (X_OFS * 9);
     }
 
     /// Shift the current neighborhood down by one 'X', and load the X=2 offset
@@ -96,18 +76,24 @@ impl CellNbrhood3D {
         n_x: usize,
         n_y: usize,
     ) {
-        self.cells_ne >>= 9;
+        self.cells_not_empty >>= 9;
         self.fill_slice::<I, 2>(lattice_window, n_x, n_y);
     }
 
     /// Return true if any of the neighborhood is occupied
     pub fn is_any_occupied(&self) -> bool {
-        self.cells_ne != 0
+        self.cells_not_empty != 0
     }
 
     /// Return the bitmask of 'occupied' neigbhors (y, z, x as minor, middle and major)
     pub fn bitmask(&self) -> u32 {
-        self.cells_ne
+        self.cells_not_empty
+    }
+
+    /// Return true if the particular neighbor is occupied
+    pub fn is_occupied(&self, x: u8, y: u8, z: u8) -> bool {
+        let bit = x * 9 + z * 3 + y;
+        ((self.cells_not_empty >> bit) & 1) != 0
     }
 }
 
@@ -126,7 +112,9 @@ pub struct RowIterator3D<'a> {
     row_iter: std::iter::Take<std::slice::Windows<'a, DualState>>,
     /// The most recent window produce by row_iter
     lattice_window: Option<&'a [DualState]>,
+    /// Size of the *lattice* in the x direction
     n_x: usize,
+    /// Size of the *lattice* in the y direction
     n_y: usize,
 }
 

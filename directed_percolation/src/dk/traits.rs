@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use super::CellNbrhood3D;
+use super::{CellNbrhood2D, CellNbrhood3D};
 use crate::{DualState, SimParameters};
 
 pub trait CellDim {
@@ -26,7 +26,7 @@ pub struct Cell2D();
 /// Implementation of CellDim to let it be used for simulations
 impl CellDim for Cell2D {
     const N: usize = 2;
-    type Nbrhood = [bool; 9];
+    type Nbrhood = CellNbrhood2D;
 }
 
 /// Marker type for 2d-simulation of cells with on/off state (boolean)
