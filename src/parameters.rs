@@ -173,6 +173,31 @@ impl PyParameters {
     pub fn fill(&self) -> SimParameters {
         use directed_percolation::*;
         let py_p = self.clone();
+        // Trap errors in parameter bounds
+        assert!(py_p.n_x > 0, "Lattice size in x direction must be >0");
+        assert!(py_p.n_y > 0, "Lattice size in y direction must be >0");
+        assert!(py_p.n_z > 0, "Lattice size in z direction must be >0");
+        assert!(
+            py_p.p_1 >= 0. && py_p.p_1 <= 1.,
+            "Probability p_1 must be [0,1]"
+        );
+        assert!(
+            py_p.p_2 >= 0. && py_p.p_2 <= 1.,
+            "Probability p_2 must be [0,1]"
+        );
+        assert!(
+            py_p.p_initial >= 0. && py_p.p_initial <= 1.,
+            "Probability p_initial must be [0,1]"
+        );
+        assert!(py_p.n_iterations > 0, "Number of iterations must be >0");
+        assert!(
+            py_p.sample_period <= py_p.n_iterations,
+            "Sample period must be <= number of iterations"
+        );
+        // Copied from simulation.rs
+        // Keep both because another wrapper might forget to trap here
+        assert!(py_p.random_seed > 0, "Random number seed must be >0");
+        assert!(py_p.n_threads > 0, "Number of threads must be >0");
         SimParameters {
             growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),
             dim: Dimension::from(py_p.dim),

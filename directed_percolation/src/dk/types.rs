@@ -1,5 +1,4 @@
 use super::{CellDim, DramaticallySimulatable};
-
 use crate::DualState;
 
 pub type LatticeSlices = Vec<Vec<DualState>>;

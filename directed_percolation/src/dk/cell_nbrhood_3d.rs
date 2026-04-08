@@ -2,7 +2,7 @@
 // //!
 // //!
 
-use crate::parameters::DualState;
+use crate::DualState;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
 ///

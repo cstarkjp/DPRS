@@ -2,7 +2,6 @@ use rand::{Rng, SeedableRng};
 use std::time::Instant;
 
 use crate::SimParameters;
-
 use crate::dk;
 use dk::{CellDim, DramaticallySimulatable, simulation_nd};
 use dk::{LatticeSlices, Tracking};

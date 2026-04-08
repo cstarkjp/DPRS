@@ -2,7 +2,7 @@ use rand::{Rng, SeedableRng};
 
 use super::{CellDim, DramaticallySimulatable};
 use crate::dk::{LatticeHistory, LatticeSlices, Tracking, TrackingHistory};
-use crate::parameters::{InitialCondition, Processing, SimParameters};
+use crate::{InitialCondition, Processing, SimParameters};
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
 ///
@@ -13,7 +13,6 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
     parameters: &SimParameters,
 ) -> Result<(usize, LatticeSlices, Tracking), ()> {
     let mut lm = LM::create_from_parameters(&parameters)?;
-
     let mut rng = R::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {
@@ -69,7 +68,7 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
             // one per row, to generate coin tosses for DP cell updates.
             // NB: this could be shortened by 2 (pad width) but we'll
             // keep it full length for now just in case we need buffer RNGs.
-            assert!(parameters.random_seed > 0);
+            assert!(parameters.random_seed > 0, "Random number seed must be >0");
 
             let mut rngs: Vec<_> = (0..lm.num_parallel_rngs())
                 .map(|s| R::seed_from_u64((parameters.random_seed * (s + 1)) as u64))
@@ -84,13 +83,9 @@ pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySi
             }
         }
     };
-    assert!(n_iterations == lm.iteration());
-    /* Why is this assert here?
-     * If iterations = 13*7 and sample period is 13*7+1 then this assert fails
-     */
     assert!(
         n_lattices == 0 || n_lattices == lattice_history.len(),
-        "Num lattices {n_lattices} and lattice_history is {}",
+        "Number of lattices {n_lattices} and lattice_history is {}",
         lattice_history.len()
     );
 
