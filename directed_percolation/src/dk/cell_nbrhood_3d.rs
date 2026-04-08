@@ -1,7 +1,3 @@
-// #![warn(missing_docs)]
-// //!
-// //!
-
 use crate::DualState;
 
 /// The 3-by-3-by-3 neighbourhood around a cell
@@ -28,17 +24,10 @@ use crate::DualState;
 /// It has an implementation of 'Index' (but not IndexMut) so it can be
 /// interrogated with an (x,y,z) index (each of u8)
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct CellNbrhood3D {
-    cells_ne: u32,
-}
-
-/// Default, empty, very dull neighborhood.
-impl std::default::Default for CellNbrhood3D {
-    fn default() -> Self {
-        let cells_ne = 0;
-        Self { cells_ne }
-    }
+    /// Bitmask of cells that are not empty
+    cells_not_empty: u32,
 }
 
 impl CellNbrhood3D {
@@ -83,7 +72,7 @@ impl CellNbrhood3D {
                 layer_ne |= 1 << (3 * z + 2);
             }
         }
-        self.cells_ne |= layer_ne << (X_OFS * 9);
+        self.cells_not_empty |= layer_ne << (X_OFS * 9);
     }
 
     /// Shift the current neighborhood down by one 'X', and load the X=2 offset
@@ -96,18 +85,18 @@ impl CellNbrhood3D {
         n_x: usize,
         n_y: usize,
     ) {
-        self.cells_ne >>= 9;
+        self.cells_not_empty >>= 9;
         self.fill_slice::<I, 2>(lattice_window, n_x, n_y);
     }
 
     /// Return true if any of the neighborhood is occupied
     pub fn is_any_occupied(&self) -> bool {
-        self.cells_ne != 0
+        self.cells_not_empty != 0
     }
 
     /// Return the bitmask of 'occupied' neigbhors (y, z, x as minor, middle and major)
     pub fn bitmask(&self) -> u32 {
-        self.cells_ne
+        self.cells_not_empty
     }
 }
 
