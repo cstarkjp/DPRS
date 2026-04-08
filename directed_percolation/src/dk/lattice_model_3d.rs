@@ -159,6 +159,8 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     }
 
     /// Evolve the grid by one iteration using chunked parallel processing.
+    ///
+    /// This requires edge buffering
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         assert!(
             rngs.len() >= self.lattice_n_z,
@@ -166,11 +168,23 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
         );
         self.iteration += 1;
         let mut updated_lattice = vec![DualState::default(); self.lattice.len()];
-        // Split the lattice into n_z layers each of size n_x*n_y and update
-        // these layers in parallel using par_chunks_mut(). Before passing to
-        // next_layer() to perform the update, enumerate (to get 'z'), zip each
-        // pair together with one of the RNGs, and then omit the first and last
-        // layers.
+
+        // This uses a composed iterator to update the individual layers in
+        // multiple threads. The composition is:
+        //
+        //  * Split the *to-be-updated* lattice into layers, one per Z coordinate (so each is of size n_x*n_y)
+        //
+        //  *  - handling each in a *different* work item, so potentially a different thread
+        //
+        //  * Prefix that with the z coordinate ('enumerate')
+        //
+        //  * For each Z-coordinate and layer, take one of the `rngs` supplied
+        //
+        //  * Ignore the first layer (which is Z=0)
+        //
+        //  * Ignore the last layer (by taking only n_z-2 layers)
+        //
+        //  * For each Z-coordinate, layer and RNG, fill in the updated layer in the lattice
         let n_layers = self.lattice_n_z - 2;
         updated_lattice
             .par_chunks_mut(self.lattice_n_x * self.lattice_n_y)

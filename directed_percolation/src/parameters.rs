@@ -95,11 +95,15 @@ impl BoundaryCondition {
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u8)]
 pub enum DualState {
+    /// Cell is not occupied
     #[default]
     Empty,
+    /// Cell is occupied
     Occupied,
 }
 
+/// Convert from a [DualState] to a usize for counting purposes - this is 1 for
+/// an Occupied cell, 0 for an Empty cell
 impl From<DualState> for usize {
     fn from(state: DualState) -> usize {
         let b: bool = state.into();
@@ -107,6 +111,7 @@ impl From<DualState> for usize {
     }
 }
 
+/// Convert from a [bool] to a [DualState] - true for an Occupied cell, false for an Empty cell
 impl From<bool> for DualState {
     fn from(b: bool) -> Self {
         match b {
@@ -115,18 +120,15 @@ impl From<bool> for DualState {
         }
     }
 }
+
+/// Convert from a [DualState] to a [bool] - true for an Occupied cell, false for an Empty cell
 impl From<DualState> for bool {
     fn from(state: DualState) -> bool {
         matches![state, DualState::Occupied]
     }
 }
-impl From<DualState> for f64 {
-    fn from(state: DualState) -> f64 {
-        let b = matches![state, DualState::Occupied];
-        (b as usize) as f64
-    }
-}
-/// Test the DualState var is a byte.
+
+/// Test that the [DualState] type is implemented by the compiler as a single byte
 #[test]
 fn guarantee_dpstate_is_u8() {
     assert_eq!(
@@ -136,34 +138,86 @@ fn guarantee_dpstate_is_u8() {
     );
 }
 
-/// Mirror Python-side parameter bundle.
+/// The parameters for a simulation
 #[derive(Debug, Clone, Default)]
 pub struct SimParameters {
+    /// The growth model to use for the simulation
     pub growth_model_choice: GrowthModelChoice,
+
+    /// The number of dimensions (1D, 2D or 3D)
     pub dim: Dimension,
+
+    /// The size in the X dimension, which must be valid for any simulation
     pub n_x: usize,
+
+    /// The size in the Y dimension, which must be valid for simulations of 2D or 3D
     pub n_y: usize,
+
+    /// The size in the Z dimension, which must be valid for simulations in 3D
     pub n_z: usize,
+
+    /// A first probability, used by the specific GrowthModel
     pub p_1: f64,
+
+    /// A second probability, used by some of the specific GrowthModels
     pub p_2: f64,
+
+    /// The number of iterations to simulate for
     pub n_iterations: usize,
+
+    /// The rate of sampling lattices to store in the lattice history
+    ///
+    /// The lattice history always includes the starting lattice, and then the
+    /// lattice reached after 'sample_period' iterations, and that reached after
+    /// a further 'sample_period' iterations, and so on.
+    ///
+    /// Ideally `n_iterations` is a multiple of this.
     pub sample_period: usize,
+
+    /// The initial condition to use for the simulation (such as fixed central seed, or random)
     pub initial_condition: InitialCondition,
+
+    /// For random initial conditions, the probability that a cell is occupied initially
     pub p_initial: f64,
+
+    /// The random seed to use as the basis for all the random number generators in a simulation
     pub random_seed: usize,
+
+    /// The topology of the simulation lattice in the X dimension
     pub topology_x: Topology,
+
+    /// The topology of the simulation lattice in the Y dimension
     pub topology_y: Topology,
+
+    /// The topology of the simulation lattice in the Z dimension
     pub topology_z: Topology,
+
+    /// The [BoundaryCondition] for the boundaries in the X dimension
     pub bcs_x: (BoundaryCondition, BoundaryCondition),
+
+    /// The [BoundaryCondition] for the boundaries in the Y dimension
     pub bcs_y: (BoundaryCondition, BoundaryCondition),
+
+    /// The [BoundaryCondition] for the boundaries in the Z dimension
     pub bcs_z: (BoundaryCondition, BoundaryCondition),
+
+    /// The cell occupation of the boundaries in the X dimension (if required by the [BoundaryCondition])
     pub bc_values_x: (DualState, DualState),
+
+    /// The cell occupation of the boundaries in the Y dimension (if required by the [BoundaryCondition])
     pub bc_values_y: (DualState, DualState),
+
+    /// The cell occupation of the boundaries in the Z dimension (if required by the [BoundaryCondition])
     pub bc_values_z: (DualState, DualState),
+
     /// If do_edge_buffering is true then the lattice will be padded by 1 in all
     /// dimensions on both 'edges'
     pub do_edge_buffering: bool,
+
+    /// The processing method - serial or parallel- to use for the simulation
     pub processing: Processing,
+
+    /// For parallel processing, the number of threads to use
     pub n_threads: usize,
 }
 
@@ -197,27 +251,35 @@ impl std::fmt::Display for SimParameters {
 
 /// Simulation parameters methods.
 impl SimParameters {
+    /// Returns the amount of padding in each axis
     pub fn padding(&self) -> usize {
         self.do_edge_buffering as usize
     }
-    pub fn n_x_with_pad(&self) -> usize {
+
+    /// Returns the *padded* n_x for the lattice
+    ///
+    /// If there is no edge buffering then this is the value given in the 'n_x'
+    /// field
+    pub fn lattice_n_x(&self) -> usize {
         self.n_x + self.padding() * 2
     }
-    pub fn n_y_with_pad(&self) -> usize {
+
+    /// Returns the *padded* n_y for the lattice
+    ///
+    /// If there is no edge buffering then this is the value given in the 'n_y'
+    /// field
+    pub fn lattice_n_y(&self) -> usize {
         self.n_y + self.padding() * 2
     }
-    pub fn n_z_with_pad(&self) -> usize {
+
+    /// Returns the *padded* n_z for the lattice
+    ///
+    /// If there is no edge buffering then this is the value given in the 'n_z'
+    /// field
+    pub fn lattice_n_z(&self) -> usize {
         self.n_z + self.padding() * 2
     }
-    pub fn lattice_n_x(&self) -> usize {
-        self.n_x_with_pad()
-    }
-    pub fn lattice_n_y(&self) -> usize {
-        self.n_y_with_pad()
-    }
-    pub fn lattice_n_z(&self) -> usize {
-        self.n_z_with_pad()
-    }
+
     /// Return an iterator over the *single* row
     ///
     /// This is used to generate the history in a simulation
@@ -265,10 +327,16 @@ impl SimParameters {
             .map(move |(_, s)| &s[pad..n_x - pad])
     }
 
+    /// Create a pruned lattice, i.e. one with the padding removed, from a given
+    /// lattice
+    ///
+    /// If there is no edge buffering then this is a NOP
     pub fn pruned_lattice<T: Clone>(&self, lattice: Vec<T>) -> Vec<T> {
         if !self.do_edge_buffering {
             lattice
         } else {
+            // Get an iterator over the rows specific to the dimension of the
+            // lattice
             let rows: Box<dyn Iterator<Item = &[T]>> = {
                 match self.dim {
                     Dimension::D1 => Box::new(self.rows_1d(&lattice)),
