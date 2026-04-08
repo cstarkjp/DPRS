@@ -1,4 +1,4 @@
-use super::{Cell2D, CellModel};
+use super::{Cell2D, CellModel, CellNbrhood2D};
 use crate::{DualState, GrowthModelChoice, SimParameters};
 use rand::{Rng, RngExt};
 
@@ -41,29 +41,22 @@ impl CellModel<Cell2D> for GrowthModel2D {
         &self,
         iteration: usize,
         rng: &mut R,
-        nbrhood: &[bool; 9],
+        nbrhood: &CellNbrhood2D,
     ) -> DualState {
         let do_survive = match self.do_staggered {
             true => {
                 let is_even_step = iteration.is_multiple_of(2);
-                let nbrs: Vec<usize> = if is_even_step {
-                    [
-                        nbrhood[0].into(),
-                        nbrhood[1].into(),
-                        nbrhood[3].into(),
-                        nbrhood[4].into(),
-                    ]
-                    .into()
+                // bitmask is x-major, so the bit order is (x+1,y+1),(x+1,y),(x+1,y-1), (x,y+1),(x,y),(x,y-1), (x-1,y+1),(x-1,y),(x-1,y-1)
+                //
+                // For even we want (x-1,y+1), (x,y+1), (x-1,y), (x,y) - i.e. 0b_000_110_110
+                //
+                // For odd we want (x,y),(x+1,y),(x,y-1),(x+1,y-1) - i.e. 0b_011_011_000
+                let nbrs = if is_even_step {
+                    nbrhood.bitmask() & 0b_000_110_110
                 } else {
-                    [
-                        nbrhood[4].into(),
-                        nbrhood[5].into(),
-                        nbrhood[7].into(),
-                        nbrhood[8].into(),
-                    ]
-                    .into()
+                    nbrhood.bitmask() & 0b_011_011_000
                 };
-                let n_occupied_nbrs: usize = nbrs.iter().map(|s| s).sum();
+                let n_occupied_nbrs = nbrs.count_ones();
                 if n_occupied_nbrs > 0 {
                     let are_several_nbrs_occupied = n_occupied_nbrs >= 2;
                     let uniform_variate: f64 = rng.random();
@@ -80,21 +73,13 @@ impl CellModel<Cell2D> for GrowthModel2D {
                 // Apparently grid anisotropy can be removed by suppressing diagonal
                 // neighbor consideration 50% of the time
                 // => use simple coin toss for each diagonal nbr to exclude each 50% of the time
-                let do_diagonal: u8 = rng.random();
-                let nbrs: Vec<u8> = [
-                    ((nbrhood[0] as u8) & (do_diagonal & 1)),
-                    nbrhood[1].into(),
-                    ((nbrhood[2] as u8) & ((do_diagonal >> 1) & 1)),
-                    nbrhood[3].into(),
-                    nbrhood[5].into(),
-                    ((nbrhood[6] as u8) & ((do_diagonal >> 2) & 1)),
-                    nbrhood[7].into(),
-                    ((nbrhood[8] as u8) & ((do_diagonal >> 3) & 1)),
-                ]
-                .into();
-                let is_here_occupied = nbrhood[4];
-                let n_occupied_nbrs: u8 = nbrs.iter().map(|s| s).sum();
+                let mut ignore_nbors: u16 = rng.random();
+                ignore_nbors = ignore_nbors & 0b_101_010_101;
+                let is_here_occupied = (nbrhood.bitmask() & 0b_000_010_000) != 0;
+                let n_occupied_nbrs =
+                    (nbrhood.bitmask() & !ignore_nbors & !0b_000_010_000).count_zeros();
                 let are_several_nbrs_occupied = n_occupied_nbrs >= 1;
+
                 if are_several_nbrs_occupied || is_here_occupied {
                     let uniform_variate: f64 = rng.random();
                     (is_here_occupied & (uniform_variate < self.p_1))

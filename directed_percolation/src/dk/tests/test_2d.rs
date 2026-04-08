@@ -2,7 +2,7 @@ pub use crate::{
     BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
-use super::{Cell2D, CellModel, LatticeModel2D};
+use super::{Cell2D, CellModel, CellNbrhood2D, LatticeModel2D};
 use super::{run_nd, simulation_nd};
 
 use rand::RngExt;
@@ -26,9 +26,12 @@ impl CellModel<Cell2D> for MoveDownRightModel2D {
         &self,
         _iteration: usize,
         _rng: &mut R,
-        nbrhood: &[bool; 9],
+        nbrhood: &CellNbrhood2D,
     ) -> DualState {
-        nbrhood[0].into()
+        // If bit at x-1, y+1 is set then this is
+        //
+        // x-1 is bits 0..3, y+1 is bit 2 of those
+        ((nbrhood.bitmask() & 4) != 0).into()
     }
 }
 
@@ -54,8 +57,16 @@ fn test_2d_sim() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     // sim lattices are unpruned
-    assert_eq!(lattices[0][7 + 9 * 15], DualState::Occupied);
-    assert_eq!(lattices[1][8 + 8 * 15], DualState::Occupied);
+    assert_eq!(
+        lattices[0][7 + 9 * 15],
+        DualState::Occupied,
+        "Initial lattice should be presented as 0 with the centre set, the rest clear"
+    );
+    assert_eq!(
+        lattices[1][8 + 8 * 15],
+        DualState::Occupied,
+        "Lattice steo 1 should be at [1], with the centre - right and 'up' (y-1) set"
+    );
     assert_eq!(lattices.last().unwrap()[7 + 9 * 15], DualState::Occupied);
     Ok(())
 }
