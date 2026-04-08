@@ -75,11 +75,11 @@ impl CellModel<Cell2D> for GrowthModel2D {
                 // Apparently grid anisotropy can be removed by suppressing diagonal
                 // neighbor consideration 50% of the time
                 // => use simple coin toss for each diagonal nbr to exclude each 50% of the time
-                let mut ignore_nbors: u16 = rng.random();
-                ignore_nbors = ignore_nbors & 0b_101_010_101;
+                let mut ignore_nbrs: u16 = rng.random();
+                ignore_nbrs = ignore_nbrs & 0b_101_010_101;
                 let is_here_occupied = (nbrhood.bitmask() & 0b_000_010_000) != 0;
                 let n_occupied_nbrs =
-                    (nbrhood.bitmask() & !ignore_nbors & !0b_000_010_000).count_zeros();
+                    (nbrhood.bitmask() & !ignore_nbrs & !0b_000_010_000).count_zeros();
                 let are_several_nbrs_occupied = n_occupied_nbrs >= 1;
 
                 if are_several_nbrs_occupied || is_here_occupied {
