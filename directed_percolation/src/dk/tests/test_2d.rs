@@ -29,9 +29,7 @@ impl CellModel<Cell2D> for MoveDownRightModel2D {
         nbrhood: &CellNbrhood2D,
     ) -> DualState {
         // If bit at x-1, y+1 is set then this is
-        //
-        // x-1 is bits 0..3, y+1 is bit 2 of those
-        ((nbrhood.bitmask() & 4) != 0).into()
+        nbrhood.is_occupied(0, 2).into()
     }
 }
 

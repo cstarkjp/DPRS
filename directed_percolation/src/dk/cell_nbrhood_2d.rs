@@ -1,20 +1,28 @@
 use crate::DualState;
 
-/// The 3-by-3 neighbourhood around a cell
+/// The 3-by-3 neighbourhood around a cell for some (x,y)
 ///
-/// It is designed to provide a fast method to move +1 in the lattice, to work
-/// with the parallel iterator that gives a thread a contiguous region of data
-/// to fill; hence moving +1 through the lattice requires the neighborhood to
-/// move 6 elements and fill 3 new elements from the new +1 region (i.e. these
-/// elements it fills from are non-contiguous)
+/// This is a bitmask; it has bit 0 set if the cell at (x-1, y-1) is occupied;
+/// it has bit 1 set if the cell at (x-1, y) is set.
 ///
-/// The lattice is deemed to be 'Y-major' and 'X-minor'
+/// Indeed:
 ///
-/// To provide performance on 'move right' this type uses an 'X major', with
-/// then Y-major; moving +1 in the X is moving the 3 entries down and
-/// filling the new x+1 from the y column
+///  *  for x-1: bits 0, 1 and 2 correspond to y-1, y, and y+1.
+///  *  for x: bits 3, 4 and 5 correspond to y-1, y, and y+1.
+///  *  for x+1: bits 6, 7 and 8 correspond to y-1, y, and y+1.
 ///
-/// Hence the bitmask 'cells_not_empty' is indexed by `x*3 + y`
+/// The lattice must be 'Y-major' and 'X-minor' - that is lattice[n+1] has an X
+/// coordinate of x+1 compared to lattice[n] with x as its X coordinate (unless
+/// it hits the end of a row); succssive rows have a larger step (i.e. adding
+/// one to the y coordinate has a larger change on the offset into the lattice)
+///
+/// This is designed to provide a fast method to move +1 in the X direction of
+/// the lattice, to work with the parallel iterator that gives a thread a
+/// contiguous region of data to fill; hence moving x+1 through the lattice
+/// requires the neighborhood to move 6 elements and fill 3 new elements from
+/// the new x+1 region
+///
+/// Hence the bitmask 'cells_not_empty' is indexed by `dx*3 + dy`
 #[derive(Debug, Clone, Default)]
 pub struct CellNbrhood2D {
     /// Bitmask of cells that are not empty
@@ -22,6 +30,39 @@ pub struct CellNbrhood2D {
 }
 
 impl CellNbrhood2D {
+    /// Bitmask for the three neighbors that have have a 'dx' of -1 relative to the center coordinate
+    pub const X_MINUS_ONE_BITS: u16 = 0b_000_000_111;
+
+    /// Bitmask for the three neighbors that have have the same X coordinate as the center
+    pub const X_BITS: u16 = 0b_000_111_000;
+
+    /// Bitmask for the three neighbors that have have a 'dx' of +1 relative to the center coordinate
+    pub const X_PLUS_ONE_BITS: u16 = 0b_111_000_000;
+
+    /// Bitmask for the three neighbors that have have a 'dy' of -1 relative to the center coordinate
+    pub const Y_MINUS_ONE_BITS: u16 = 0b_001_001_001;
+
+    /// Bitmask for the three neighbors that have have the same Y coordinate as the center
+    pub const Y_BITS: u16 = 0b_010_010_010;
+
+    /// Bitmask for the three neighbors that have have a 'dy' of +1 relative to the center coordinate
+    pub const Y_PLUS_ONE_BITS: u16 = 0b_100_100_100;
+
+    /// Bitmask for the center cell
+    pub const CENTER_BIT: u16 = 0b_000_010_000;
+
+    /// Bitmask for the corner neighbors of the square set of neighbors
+    pub const DIAGONAL_BITS: u16 = 0b_101_000_101;
+
+    /// Bitmask for the middle-of-the-edge neighbors of the square set of neighbors
+    pub const MIDDLE_EDGE_BITS: u16 = 0b_010_101_010;
+
+    /// Bitmask for the neighbors (x,y), (x-1,y-1), (x-1,y) and (x,y-1)
+    pub const XY_MINUS_CORNER_BITS: u16 = 0b_000_011_011;
+
+    /// Bitmask for the neighbors (x,y), (x+1,y+1), (x+1,y) and (x,y+1)
+    pub const XY_PLUS_CORNER_BITS: u16 = 0b_110_11_110;
+
     /// Create a new neighborhood centred on an xyz in the given lattice,
     /// with the specified n_x and n_y (the lattice must be Z-major, X-minor)
     pub fn new<I: Copy + Into<bool>>(lattice: &[I], xy: (usize, usize), n_x: usize) -> Self {
@@ -59,15 +100,15 @@ impl CellNbrhood2D {
     }
 
     /// Shift the current neighborhood down by one 'X', and load the X=2 offset
-    /// i.e., updated the neighborhood to be that of the cell at (x+1,y,z)
-    /// given the current neighborhood is at (x,y.z) and the lattice_window
-    /// provided is *for* (x+1,y,z) - i.e. starts at (x,y-1,z-1)
+    /// i.e., updated the neighborhood to be that of the cell at (x+1,y)
+    /// given the current neighborhood is at (x,y) and the lattice_window
+    /// provided is *for* (x+1,y) - i.e. starts at (x,y-1)
     pub fn shift_slice<I: Copy + Into<bool>>(&mut self, lattice_window: &[I], n_x: usize) {
         self.cells_not_empty >>= 3;
         self.fill_slice::<I, 2>(lattice_window, n_x);
     }
 
-    /// Return true if any of the neighborhood is occupied
+    /// Return true if *any* of the neighborhood is occupied
     pub fn is_any_occupied(&self) -> bool {
         self.cells_not_empty != 0
     }
@@ -77,14 +118,24 @@ impl CellNbrhood2D {
         self.cells_not_empty
     }
 
-    /// Return true if the particular neighbor is occupied
-    pub fn is_occupied(&self, x: u8, y: u8) -> bool {
-        let bit = x * 3 + y;
+    /// Return true if the particular neighbor is occupied, relative to itself
+    ///
+    /// A value of 0 for dx implies 'center x-1'; 1 for dx implies 'center x'; 2 for dx implies 'center x+1'.
+    ///
+    /// Similarly for dy relative to center y.
+    pub fn is_occupied(&self, dx: u8, dy: u8) -> bool {
+        let bit = dx * 3 + dy;
         ((self.cells_not_empty >> bit) & 1) != 0
     }
 }
 
 /// An iterator over a lattice centred on a cell (x,y), with a 'move X by +1' method
+///
+/// This provides a 'next' function that moves the RowIterator2D on by one in
+/// the positive X direction; if the end of the row has been reached then it
+/// returns false, otherwise it returns true.
+///
+/// The neighborhood of the current cell is provided by the 'nbrhood' method.
 pub struct RowIterator2D<'a> {
     /// The 3-by-3 neighbourhood around a cell
     nbrhood: CellNbrhood2D,
@@ -158,6 +209,12 @@ impl<'a> RowIterator2D<'a> {
     }
 }
 
+/// A test of the RowIterator2D
+///
+/// This is given a specific 5x4 lattice, for which the two possible rows (y=1
+/// and y=2) are tested to ensure that the RowIterator2D returns correct
+/// nbrhood() for every position on both rows, and that the iterator stops at
+/// the end of the rows.
 #[test]
 fn row_iter_2d() {
     let lattice_u8: &[u8] = &[
@@ -190,6 +247,10 @@ fn row_iter_2d() {
     assert_eq!(&nbrhoods, &[0b_100_110_111, 0b_000_100_110, 0b_000_000_100]);
 }
 
+/// Test the CellNeighborhood2D
+///
+/// This is given a known 5-by-4 lattice, and various locations are tested to
+/// see if the correct neighborhood is generated for each
 #[test]
 fn cell_nbrhood() {
     let lattice_u8: &[u8] = &[
@@ -208,6 +269,36 @@ fn cell_nbrhood() {
         (1, 2, 0b_100_110_111),
         (2, 2, 0b_000_100_110),
     ] {
-        assert_eq!(CellNbrhood2D::new(&lattice, (x, y), 5).bitmask(), nbrhood);
+        let l_nbrhood = CellNbrhood2D::new(&lattice, (x, y), 5);
+        assert_eq!(
+            l_nbrhood.bitmask(),
+            nbrhood,
+            "The neighborhoods should match"
+        );
+        assert_eq!(
+            l_nbrhood.is_any_occupied(),
+            nbrhood != 0,
+            "The is_any_occupied method should be correct with regard to their being some or no neighbors"
+        );
+        assert_eq!(
+            l_nbrhood.is_occupied(1, 1),
+            (nbrhood & CellNbrhood2D::CENTER_BIT) != 0,
+            "The is_occupied method for the center should match the center bit being set"
+        );
+        assert_eq!(
+            l_nbrhood.is_occupied(0, 2),
+            (nbrhood & CellNbrhood2D::X_MINUS_ONE_BITS & CellNbrhood2D::Y_PLUS_ONE_BITS) != 0,
+            "The is_occupied method should match (x-1, y+1) bit being set"
+        );
+        assert_eq!(
+            l_nbrhood.is_occupied(2, 1),
+            (nbrhood & CellNbrhood2D::X_PLUS_ONE_BITS & CellNbrhood2D::Y_BITS) != 0,
+            "The is_occupied method should match (x+1, y) bit being set"
+        );
+        assert_eq!(
+            l_nbrhood.is_occupied(1, 0),
+            (nbrhood & CellNbrhood2D::X_BITS & CellNbrhood2D::Y_MINUS_ONE_BITS) != 0,
+            "The is_occupied method should match (x, y-1) bit being set"
+        );
     }
 }
