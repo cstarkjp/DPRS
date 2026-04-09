@@ -214,8 +214,8 @@ export class SimulationControls {
       const tr = this.control_table
         .add_ele("tr")
         .add_tags({ id: ele_id + "controls" });
-      const td = tr.add_ele("td");
-      const run_sim = td.add_ele("input").add_tags({
+      const td_run = tr.add_ele("td");
+      const run_sim = td_run.add_ele("input").add_tags({
         id: ele_id + "run_simulation",
         className: "controls run_simulation",
         type: "button",
@@ -223,6 +223,17 @@ export class SimulationControls {
       });
       run_sim.ele.onclick = () => {
         window.main.run_simulation(dims);
+      };
+
+      const td_save = tr.add_ele("td");
+      const save_sim = td_save.add_ele("input").add_tags({
+        id: ele_id + "save_simulation",
+        className: "controls save_simulation",
+        type: "button",
+        value: "save simulation",
+      });
+      save_sim.ele.onclick = () => {
+        window.main.save_simulation(dims);
       };
     }
   }

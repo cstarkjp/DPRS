@@ -30,6 +30,69 @@ export class SimParameters {
     this.dims = new Dims();
     this.dims.n_x = 400;
   }
+  topo_as_json(n) {
+    return { periodic: this.topo[n].periodic };
+  }
+  as_json() {
+    const probabilities = {
+      p_initial: this.probabilities.p_initial,
+      p_1: this.probabilities.p_1,
+      p_2: this.probabilities.p_2,
+    };
+    const params = {
+      n_iterations: this.params.n_iterations,
+      sample_period: this.params.sample_period,
+      random_seed: this.params.random_seed,
+      initial_center: this.params.initial_center,
+      simulation_kind: this.params.simulation_kind,
+    };
+    const topos = [
+      this.topo_as_json(0),
+      this.topo_as_json(1),
+      this.topo_as_json(2),
+    ];
+    const dims = {
+      n_x: this.dims.n_x,
+      n_y: this.dims.n_y,
+      n_z: this.dims.n_z,
+    };
+    const parameters = {
+      probabilities: probabilities,
+      params: params,
+      topo: topos,
+      dims: dims,
+    };
+    return JSON.stringify(parameters);
+  }
+  from_json(json) {
+    let obj = null;
+    try {
+      obj = JSON.parse(json);
+    } catch (error) {
+      console.log("Failed to parse json");
+      return;
+    }
+
+    for (const k of ["n_x", "n_y", "n_z"]) {
+      this.dims[k] = obj.dims[k];
+    }
+
+    for (const k of ["p_initial", "p_1", "p_2"]) {
+      this.probabilities[k] = obj.probabilities[k];
+    }
+
+    for (const k of [
+      "n_iterations",
+      "sample_period",
+      "random_seed",
+      "initial_center",
+      "simulation_kind",
+    ]) {
+      this.params[k] = obj.params[k];
+    }
+    console.log(this.params.n_iterations);
+    return;
+  }
 }
 
 export class Sim {
@@ -50,6 +113,8 @@ export class Sim {
     this.parameters.topo_bc_z = sim_parameters.topo[2];
     this.parameters.params = sim_parameters.params;
     this.params = sim_parameters.params;
+
+    console.log(sim_parameters.as_json());
 
     this.log.info(
       `Probabilities p_initial:${this.parameters.probabilities.p_initial} ` +

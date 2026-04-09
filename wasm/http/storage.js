@@ -62,9 +62,11 @@ export class Directory {
     if (!this.files[suffix]) {
       return;
     }
+
     if (!this.files[suffix][root]) {
       return;
     }
+
     delete this.files[suffix][root];
     if (this.files[suffix].length == 0) {
       delete this.files[suffix];
@@ -285,7 +287,7 @@ export class FileSet {
     const suffix = filename.split(".").pop();
     if (suffix) {
       const root = filename.slice(0, -suffix.length - 1);
-      return [suffix, root];
+      return [root, suffix];
     } else {
       return null;
     }
@@ -317,6 +319,12 @@ export class FileSet {
     let f = this.prefix + root + "." + suffix;
     this.storage.setItem(f, data);
     this.directory.add_file(suffix, root);
+  }
+
+  delete_file(root, suffix) {
+    let f = this.prefix + root + "." + suffix;
+    this.storage.removeItem(f);
+    this.directory.delete_file(root, suffix);
   }
 
   request_load_file(filename, suffix, user_callback) {

@@ -6,6 +6,7 @@ import * as storage from "./storage.js";
 import * as visualize from "./visualize.js";
 import * as simulation from "./simulation.js";
 import * as simulation_controls from "./simulation_controls.js";
+import * as saved_simulations from "./saved_simulations.js";
 import { tabbed_configure } from "./tabbed.js";
 
 class Main {
@@ -14,10 +15,15 @@ class Main {
     this.log.push_reason("init");
     this.log.info("Starting dk");
 
-    this.storage = new storage.DBStorage("Storage", this.db_init.bind(this));
+    this.storage = new storage.FileSet(window.localStorage, "dk/");
 
     this.simulation = new simulation.Sim(window.log);
     this.visualize = new visualize.Visualize(window.log, this.simulation);
+    this.saved_sims = new saved_simulations.SavedSimulations(
+      window.log,
+      this,
+      "SavedSimulations",
+    );
 
     const params_1d = new simulation.SimParameters();
     // For staggered p_c = 0.705485152
@@ -70,6 +76,36 @@ class Main {
     this.log.pop_reason();
   }
 
+  load_simulation(filename) {
+    this.log.push_reason("load");
+
+    const sim_parameters = this.saved_sims.load(filename);
+    if (sim_parameters) {
+      if (sim_parameters.dims.n_y > 1) {
+        this.simulation_controls_2d.populate_values(sim_parameters);
+        this.log.info(`Loaded 2d sim ${filename}`);
+        document.tabs.hash_change("#tab-2D");
+      } else {
+        this.simulation_controls_1d.populate_values(sim_parameters);
+        this.log.info(`Loaded 1d sim ${filename}`);
+        document.tabs.hash_change("#tab-1D");
+      }
+    }
+    this.log.pop_reason();
+  }
+
+  save_simulation(dims) {
+    this.log.push_reason("save");
+
+    var sim_parameters = this.simulation_controls_1d.simulation_parameters();
+    if (dims > 1) {
+      sim_parameters = this.simulation_controls_2d.simulation_parameters();
+    }
+    console.log(sim_parameters.as_json());
+    this.saved_sims.save(sim_parameters.as_json());
+    this.log.pop_reason();
+  }
+
   run_simulation(dims) {
     this.log.push_reason("sim");
     this.log.info("Starting");
@@ -78,6 +114,7 @@ class Main {
     if (dims > 1) {
       sim_parameters = this.simulation_controls_2d.simulation_parameters();
     }
+
     this.simulation.run(sim_parameters);
     this.log.info(
       `Simulation complete with ${this.simulation.n_results()} results`,
