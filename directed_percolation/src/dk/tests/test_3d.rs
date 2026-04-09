@@ -139,7 +139,15 @@ fn test_3d_run_random() -> Result<(), Box<dyn std::error::Error>> {
 
     assert_eq!(&lattices[1], &lattices[0]);
 
-    // assert!(tracking[1][0] >= 0.4, "Density should be about 1/2");
-    // assert!(tracking[1][0] <= 0.6, "Density should be about 1/2");
+    assert!(
+        tracking[1].mean_rho >= 0.4,
+        "Density should be about 1/2 {}",
+        tracking[1].mean_rho
+    );
+    assert!(
+        tracking[1].mean_rho <= 0.6,
+        "Density should be about 1/2 {}",
+        tracking[1].mean_rho
+    );
     Ok(())
 }
