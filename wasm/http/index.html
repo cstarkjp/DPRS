@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>Draw</title>
+    </head>
+    <body class="dn">
+        <link href="index.css" rel="stylesheet" type="text/css" />
+        <script type="module" src="./dk.js"></script>
+        <div id="tab-list" class="tab-list">
+            <ul>
+                <li><a href="#tab-help">Help</a></li>
+                <li><a href="#tab-1D">1D simulations</a></li>
+                <li><a href="#tab-2D">2D simulations</a></li>
+            </ul>
+        </div>
+
+        <div id="tab-help"></div>
+        <div id="tab-1D">
+            <h1>Directed Percolation (1D) example</h1>
+            Enter the data for the simulation
+            <div id="1d_sim_controls"></div>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input
+                                        id="initial_center"
+                                        type="checkbox"
+                                        name="initial_center"
+                                    />
+                                    <label for="initial_center"
+                                        >Seed central (else random)</label
+                                    >
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="tab-2D">
+            <h1>Directed Percolation (2D) example</h1>
+            <div id="2d_sim_controls"></div>
+        </div>
+        <hr />
+        <div id="VisualizationControls">
+            <div style="text-align: center">Visualization controls</div>
+            <table>
+                <tr>
+                    <td>
+                        <input
+                            id="zoom"
+                            type="range"
+                            value="1.0"
+                            min="1.0"
+                            max="10"
+                            onclick="window.main.redraw()"
+                            name="zoom"
+                        />
+                        <label for="zoom">Zoom</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="Visualize"></div>
+        <div id="Log"></div>
+    </body>
+</html>
