@@ -185,6 +185,13 @@ export class Params {
         wasm.__wbg_params_free(ptr, 0);
     }
     /**
+     * @returns {boolean}
+     */
+    get initial_center() {
+        const ret = wasm.__wbg_get_params_initial_center(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
      * @returns {number}
      */
     get n_iterations() {
@@ -205,11 +212,24 @@ export class Params {
         const ret = wasm.__wbg_get_params_sample_period(this.__wbg_ptr);
         return ret >>> 0;
     }
+    /**
+     * @returns {SimulationKind}
+     */
+    get simulation_kind() {
+        const ret = wasm.__wbg_get_params_simulation_kind(this.__wbg_ptr);
+        return ret;
+    }
     constructor() {
         const ret = wasm.params_new();
         this.__wbg_ptr = ret >>> 0;
         ParamsFinalization.register(this, this.__wbg_ptr, this);
         return this;
+    }
+    /**
+     * @param {boolean} arg0
+     */
+    set initial_center(arg0) {
+        wasm.__wbg_set_params_initial_center(this.__wbg_ptr, arg0);
     }
     /**
      * @param {number} arg0
@@ -228,6 +248,12 @@ export class Params {
      */
     set sample_period(arg0) {
         wasm.__wbg_set_params_sample_period(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @param {SimulationKind} arg0
+     */
+    set simulation_kind(arg0) {
+        wasm.__wbg_set_params_simulation_kind(this.__wbg_ptr, arg0);
     }
 }
 if (Symbol.dispose) Params.prototype[Symbol.dispose] = Params.prototype.free;
@@ -352,6 +378,14 @@ export class Simulation {
     }
 }
 if (Symbol.dispose) Simulation.prototype[Symbol.dispose] = Simulation.prototype.free;
+
+/**
+ * @enum {0 | 1}
+ */
+export const SimulationKind = Object.freeze({
+    SimplifiedDomanyKinzel: 0, "0": "SimplifiedDomanyKinzel",
+    StaggeredDomanyKinzel: 1, "1": "StaggeredDomanyKinzel",
+});
 
 export class TopoBc {
     static __wrap(ptr) {
