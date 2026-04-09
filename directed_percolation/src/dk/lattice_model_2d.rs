@@ -110,11 +110,23 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
     pub fn next_iteration_parallel<R: Rng + Send>(&mut self, rngs: &mut [R]) {
         self.iteration += 1;
         let mut updated_lattice = vec![DualState::default(); self.lattice.len()];
-        // Split the lattice into n_y rows each of length n_x and
-        // update these rows in parallel using par_chunks_mut().
-        // Before passing to next_row() to perform the update,
-        // enumerate each row, zip each pair together with one of the RNGs,
-        // and then omit the first and last rows.
+
+        // This uses a composed iterator to update the individual layers in
+        // multiple threads. The composition is:
+        //
+        //  * Split the *to-be-updated* lattice into rows, one per Y coordinate (so each is of size n_x)
+        //
+        //  *  - handling each in a *different* work item, so potentially a different thread
+        //
+        //  * Prefix that with the y coordinate ('enumerate')
+        //
+        //  * For each Y-coordinate and layer, take one of the `rngs` supplied
+        //
+        //  * Ignore the first layer (which is Y=0)
+        //
+        //  * Ignore the last layer (by taking only n_y-2 layers)
+        //
+        //  * For each Y-coordinate, row and RNG, fill in the updated row in the lattice
         let n_rows = self.lattice_n_y - 2;
         updated_lattice
             .par_chunks_mut(self.lattice_n_x)
