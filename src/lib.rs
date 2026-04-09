@@ -29,7 +29,8 @@ mod sim {
 
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        let sim_parameters = py_parameters.fill()
+        let sim_parameters = py_parameters
+            .fill()
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
         let (n_lattices, lattices, tracking, t_run_time) = sim_dk::<StdRng>(sim_parameters)
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
@@ -39,6 +40,18 @@ mod sim {
             let bool_lattice = lattice.iter().map(|s| (*s).into()).collect();
             bool_lattices.push(bool_lattice);
         }
+        let tracking: Vec<_> = tracking
+            .take()
+            .into_iter()
+            .map(|statistic| {
+                vec![
+                    statistic.iteration as f64,
+                    statistic.mass as f64,
+                    statistic.mean_rho as f64,
+                    statistic.mean_radius as f64,
+                ]
+            })
+            .collect();
 
         Ok((n_lattices, bool_lattices, tracking, t_run_time))
     }
