@@ -22,7 +22,7 @@ class Main {
 
     this.simulation.params.n_iterations = 600;
     this.simulation.params.sample_period = 1;
-    this.simulation.params.random_seed = 1;
+    this.simulation.params.random_seed = 3;
 
     this.simulation.dims.n_x = 400;
     this.simulation.dims.n_y = 1;

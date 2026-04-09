@@ -18,8 +18,8 @@ export class Sim {
     this.params = new Params();
     this.params.n_iterations = 600;
     this.params.sample_period = 1;
-    this.params.random_seed = 1;
-    this.params.initial_center = true;
+    this.params.random_seed = 3;
+    this.params.initial_center = false;
     this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
 
     this.topo = [new TopoBc(), new TopoBc(), new TopoBc()];
