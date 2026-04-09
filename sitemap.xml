@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cstarkjp.github.io/DPRS/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/HOWTO/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/notes/ContactProcess/</loc>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-demos/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-modules/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-modules/utils-reference/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-modules/viz-reference/</loc>
-         <lastmod>2026-03-23</lastmod>
+         <lastmod>2026-04-09</lastmod>
     </url>
 </urlset>
