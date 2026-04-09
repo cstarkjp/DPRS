@@ -2,7 +2,7 @@ pub use crate::{
     BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
-use super::{Cell1D, CellModel, LatticeModel1D};
+use super::{Cell1D, CellModel, GrowthModel1D, LatticeModel1D};
 use super::{run_nd, simulation_nd};
 
 use rand::RngExt;
@@ -74,5 +74,40 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
 
     assert_eq!(lattices[0], lattices[10]);
     assert_eq!(lattices[0][0..8], lattices[1][1..9]);
+    Ok(())
+}
+
+#[test]
+fn test_1d_run_random() -> Result<(), Box<dyn std::error::Error>> {
+    let n_x = 100_000;
+    let mut parameters = SimParameters::default();
+    parameters.n_x = n_x;
+    parameters.dim = Dimension::D1;
+    parameters.initial_condition = InitialCondition::Randomized;
+    parameters.random_seed = 0x1298;
+    parameters.p_initial = 0.5;
+    parameters.processing = Processing::Parallel;
+    parameters.n_threads = 10;
+    parameters.topology_x = Topology::Periodic;
+    parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
+    parameters.n_iterations = 100_000;
+    parameters.sample_period = parameters.n_iterations;
+    parameters.do_edge_buffering = true;
+    let (_time, history_len, lattices, tracking) =
+        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<GrowthModel1D>>(&parameters)?;
+    assert_eq!(history_len, 2);
+
+    /*
+    assert!(
+        tracking[1][0] >= 0.4,
+        "Density should be about 1/2 {}",
+        tracking[1][0]
+    );
+    assert!(
+        tracking[1][0] <= 0.6,
+        "Density should be about 1/2 {}",
+        tracking[1][0]
+    );
+    */
     Ok(())
 }
