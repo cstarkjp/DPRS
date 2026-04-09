@@ -24,7 +24,7 @@ mod tests;
 
 pub use simulation::simulation_nd;
 
-pub use tracking::{Tracking, TrackingHistory};
+pub use tracking::{Statistics, TrackingHistory};
 pub use types::{LatticeHistory, LatticeSlices};
 
 pub use cell_nbrhood_2d::{CellNbrhood2D, RowIterator2D};
@@ -56,7 +56,7 @@ pub enum DkError {
 
 pub fn sim_dk<R: Rng + SeedableRng + Send>(
     sim_parameters: SimParameters,
-) -> Result<(usize, LatticeSlices, Tracking, f64), DkError> {
+) -> Result<(usize, LatticeSlices, TrackingHistory, f64), DkError> {
     println!();
     println!("{sim_parameters}");
     println!();
