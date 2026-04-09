@@ -1,0 +1,36 @@
+[package]
+authors = ["Gavin J Stark"]
+categories = ["wasm"]
+description = "Playing with DPRS"
+edition = "2024"
+name = "dprs-wasm"
+readme = "README.md"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies.wasm-bindgen]
+version = ">=0.2.92"
+
+[dependencies.js-sys]
+version = ">=0.3.64"
+
+[dependencies.directed_percolation]
+version = "0.1"
+path = "../DPRS/directed_percolation"
+
+[dependencies.web-sys]
+features = [
+  'console',
+]
+version = ">=0.3.40"
+
+[dependencies.rand]
+version = "0.10.0"
+default-features = false
+features = ["chacha"]
+
+[profile.release]
+lto = true
+opt-level = 3
