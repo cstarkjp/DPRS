@@ -8,9 +8,19 @@ export class Visualize {
     this.height = 0;
   }
 
-  canvas_simple(div_id, scale, stagger) {
-    this.width = this.simulation.dims.n_x * scale;
-    this.height = this.simulation.params.n_iterations * scale;
+  canvas_simple(div_id, scale) {
+    const stagger = this.simulation.results_are_staggered();
+    var x_ofs = 0;
+    var x_scale = scale;
+    var y_scale = scale;
+    if (stagger) {
+      y_scale = 0.5 * y_scale;
+      x_ofs = 0.5;
+    }
+
+    this.width = this.simulation.dims.n_x * x_scale;
+    this.height = this.simulation.n_results() * y_scale;
+
     const div = document.getElementById(div_id);
     if (!div) {
       return;
@@ -23,13 +33,6 @@ export class Visualize {
     this.canvas.ele.height = this.height;
     const ctx = this.canvas.ele.getContext("2d");
 
-    var x_ofs = 0;
-    var x_scale = scale;
-    var y_scale = scale;
-    if (stagger) {
-      y_scale = 0.5 * y_scale;
-      x_ofs = 0.5;
-    }
     for (let y = 0; y <= this.simulation.n_results(); y++) {
       let data = this.simulation.result(y);
       if (!data) {

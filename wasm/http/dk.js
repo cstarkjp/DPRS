@@ -1,4 +1,4 @@
-import init from "../pkg/dprs_wasm.js";
+import init, { SimulationKind } from "../pkg/dprs_wasm.js";
 import { Log } from "./log.js";
 import * as html from "./html.js";
 import * as utils from "./utils.js";
@@ -73,31 +73,49 @@ class Main {
     this.populate_value("sample_period", this.simulation.params.sample_period);
     this.populate_value("random_seed", this.simulation.params.random_seed);
     this.populate_value("width", this.simulation.dims.n_x);
+    document.getElementById("initial_center").checked =
+      this.simulation.params.initial_center;
   }
 
-  run_simulation() {
+  get_simulation_parameters() {
+    const simulation_choice = document
+      .getElementById("simulation_choice")
+      .querySelector(":checked").value;
+    if (simulation_choice == "simple_dk") {
+      this.simulation.params.simulation_kind =
+        SimulationKind.SimplifiedDomanyKinzel;
+    } else {
+      this.simulation.params.simulation_kind =
+        SimulationKind.StaggeredDomanyKinzel;
+    }
+    this.simulation.params.initial_center =
+      document.getElementById("initial_center").checked;
     this.simulation.probabilities.p_initial = this.get_float("p_initial", 0, 1);
     this.simulation.probabilities.p_1 = this.get_float("p_1", 0, 1);
     this.simulation.probabilities.p_2 = this.get_float("p_2", 0, 1);
     this.simulation.params.n_iterations = this.get_int(
       "n_iterations",
       0,
-      10000,
+      1000000,
     );
     this.simulation.params.sample_period = this.get_int(
       "sample_period",
       1,
-      10000,
+      100000,
     );
-    this.simulation.params.random_seed = this.get_int("random_seed", 1, 10000);
+    this.simulation.params.random_seed = this.get_int("random_seed", 1, 100000);
     this.simulation.dims.n_x = this.get_int("width", 10, 10000);
+  }
+
+  run_simulation() {
+    this.get_simulation_parameters();
     this.simulation.run();
     this.redraw();
   }
+
   redraw() {
-    const zoom = this.get_float("zoom", 0.1, 10);
-    console.log(zoom);
-    this.visualize.canvas_simple("Visualize", zoom, true);
+    const zoom = this.get_float("zoom", 1, 10);
+    this.visualize.canvas_simple("Visualize", zoom);
   }
 
   db_init(success) {

@@ -5,6 +5,7 @@ import init, {
   Dims,
   TopoBc,
   Simulation,
+  SimulationKind,
 } from "../pkg/dprs_wasm.js";
 import { Log } from "./log.js";
 
@@ -18,6 +19,8 @@ export class Sim {
     this.params.n_iterations = 600;
     this.params.sample_period = 1;
     this.params.random_seed = 1;
+    this.params.initial_center = true;
+    this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
 
     this.topo = [new TopoBc(), new TopoBc(), new TopoBc()];
     this.topo[0].periodic = true;
@@ -47,5 +50,11 @@ export class Sim {
   }
   result(x) {
     return this.simulation.result(x);
+  }
+  results_are_staggered() {
+    if (this.params.simulation_kind == SimulationKind.StaggeredDomanyKinzel) {
+      return this.params.sample_period == 1;
+    }
+    return false;
   }
 }

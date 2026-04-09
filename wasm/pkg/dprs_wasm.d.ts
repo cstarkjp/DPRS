@@ -29,9 +29,11 @@ export class Params {
     free(): void;
     [Symbol.dispose](): void;
     constructor();
+    initial_center: boolean;
     n_iterations: number;
     random_seed: number;
     sample_period: number;
+    simulation_kind: SimulationKind;
 }
 
 export class Probabilities {
@@ -55,6 +57,11 @@ export class Simulation {
     parameters: Parameters;
 }
 
+export enum SimulationKind {
+    SimplifiedDomanyKinzel = 0,
+    StaggeredDomanyKinzel = 1,
+}
+
 export class TopoBc {
     free(): void;
     [Symbol.dispose](): void;
@@ -73,6 +80,8 @@ export interface InitOutput {
     readonly __wbg_get_dims_n_x: (a: number) => number;
     readonly __wbg_get_dims_n_y: (a: number) => number;
     readonly __wbg_get_dims_n_z: (a: number) => number;
+    readonly __wbg_get_params_initial_center: (a: number) => number;
+    readonly __wbg_get_params_simulation_kind: (a: number) => number;
     readonly __wbg_get_probabilities_p_1: (a: number) => number;
     readonly __wbg_get_probabilities_p_2: (a: number) => number;
     readonly __wbg_get_probabilities_p_initial: (a: number) => number;
@@ -86,6 +95,8 @@ export interface InitOutput {
     readonly __wbg_set_dims_n_x: (a: number, b: number) => void;
     readonly __wbg_set_dims_n_y: (a: number, b: number) => void;
     readonly __wbg_set_dims_n_z: (a: number, b: number) => void;
+    readonly __wbg_set_params_initial_center: (a: number, b: number) => void;
+    readonly __wbg_set_params_simulation_kind: (a: number, b: number) => void;
     readonly __wbg_set_probabilities_p_1: (a: number, b: number) => void;
     readonly __wbg_set_probabilities_p_2: (a: number, b: number) => void;
     readonly __wbg_set_probabilities_p_initial: (a: number, b: number) => void;
@@ -107,6 +118,7 @@ export interface InitOutput {
     readonly parameters_set_topo_bc_y: (a: number, b: number) => void;
     readonly parameters_set_topo_bc_z: (a: number, b: number) => void;
     readonly parameters_topo_bc_x: (a: number) => number;
+    readonly params_new: () => number;
     readonly probabilities_new: () => number;
     readonly simulation_new: (a: number) => number;
     readonly simulation_parameters: (a: number) => number;
@@ -120,7 +132,6 @@ export interface InitOutput {
     readonly __wbg_set_params_n_iterations: (a: number, b: number) => void;
     readonly __wbg_set_params_random_seed: (a: number, b: number) => void;
     readonly __wbg_set_params_sample_period: (a: number, b: number) => void;
-    readonly params_new: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_start: () => void;
