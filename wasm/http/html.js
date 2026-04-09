@@ -17,9 +17,18 @@ export class Element {
 
   add_ele(ele_type, classes) {
     const ele = document.createElement(ele_type);
-    ele.className = classes;
+    if (classes) {
+      ele.className = classes;
+    }
     this.ele.appendChild(ele);
     return new Element(ele);
+  }
+
+  add_tags(tag_values) {
+    for (const [tag, value] of Object.entries(tag_values)) {
+      this.ele[tag] = value;
+    }
+    return this;
   }
 
   set_content(content) {

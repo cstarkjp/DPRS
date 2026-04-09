@@ -8,7 +8,7 @@ export class Visualize {
     this.height = 0;
   }
 
-  canvas_simple(div_id, scale) {
+  canvas_simple(div_id, scale, sim_control) {
     const stagger = this.simulation.results_are_staggered();
     var x_ofs = 0;
     var x_scale = scale;
@@ -18,7 +18,7 @@ export class Visualize {
       x_ofs = 0.5;
     }
 
-    this.width = this.simulation.dims.n_x * x_scale;
+    this.width = this.simulation.parameters.dims.n_x * x_scale;
     this.height = this.simulation.n_results() * y_scale;
 
     const div = document.getElementById(div_id);

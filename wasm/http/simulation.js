@@ -9,7 +9,7 @@ import init, {
 } from "../pkg/dprs_wasm.js";
 import { Log } from "./log.js";
 
-export class Sim {
+export class SimParameters {
   constructor() {
     this.probabilities = new Probabilities();
     this.probabilities.p_initial = 0.7;
@@ -18,8 +18,8 @@ export class Sim {
     this.params = new Params();
     this.params.n_iterations = 600;
     this.params.sample_period = 1;
-    this.params.random_seed = 3;
-    this.params.initial_center = false;
+    this.params.random_seed = 1;
+    this.params.initial_center = true;
     this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
 
     this.topo = [new TopoBc(), new TopoBc(), new TopoBc()];
@@ -29,18 +29,23 @@ export class Sim {
 
     this.dims = new Dims();
     this.dims.n_x = 400;
-
+  }
+}
+export class Sim {
+  constructor() {
     this.parameters = new Parameters();
+    this.params = this.parameters.params;
     this.simulation = new Simulation(this.parameters);
   }
 
-  run() {
-    this.parameters.probabilities = this.probabilities;
-    this.parameters.dims = this.dims;
-    this.parameters.topo_bc_x = this.topo[0];
-    this.parameters.topo_bc_y = this.topo[1];
-    this.parameters.topo_bc_z = this.topo[2];
-    this.parameters.params = this.params;
+  run(sim_parameters) {
+    this.parameters.probabilities = sim_parameters.probabilities;
+    this.parameters.dims = sim_parameters.dims;
+    this.parameters.topo_bc_x = sim_parameters.topo[0];
+    this.parameters.topo_bc_y = sim_parameters.topo[1];
+    this.parameters.topo_bc_z = sim_parameters.topo[2];
+    this.parameters.params = sim_parameters.params;
+    this.params = sim_parameters.params;
 
     this.simulation = new Simulation(this.parameters);
     this.simulation.simulate();

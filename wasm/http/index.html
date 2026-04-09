@@ -1,162 +1,70 @@
 <!doctype html>
 <html lang="en-US">
     <head>
-        <link rel="stylesheet" href="../assets/main.484c7ddc.min.css">
         <meta charset="utf-8" />
         <title>Draw</title>
     </head>
     <body class="dn">
         <link href="index.css" rel="stylesheet" type="text/css" />
         <script type="module" src="./dk.js"></script>
-        <h1>Directed Percolation (1D) example</h1>
-        Enter the data for the simulation
-        <table>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                <label for="width">n_x</label>
-                                <input
-                                    id="width"
-                                    type="text"
-                                    name="width"
-                                    value="400"
-                                />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                <label for="p_initial">p_initial</label>
-                                <input
-                                    id="p_initial"
-                                    class="probability"
-                                    type="text"
-                                    name="p_initial"
-                                />
-                            </td>
-                            <td>
-                                <label for="p_1">p_1</label>
-                                <input
-                                    class="probability"
-                                    id="p_1"
-                                    type="text"
-                                    name="p_1"
-                                    value="0.805"
-                                />
-                            </td>
-                            <td>
-                                <label for="p_2">p_2</label>
-                                <input
-                                    class="probability"
-                                    id="p_2"
-                                    type="text"
-                                    name="p_2"
-                                    value="0.805"
-                                />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+        <div id="tab-list" class="tab-list">
+            <ul>
+                <li><a href="#tab-help">Help</a></li>
+                <li><a href="#tab-1D">1D simulations</a></li>
+                <li><a href="#tab-2D">2D simulations</a></li>
+            </ul>
+        </div>
 
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                <label for="n_iterations">n_iterations</label>
-                                <input
-                                    id="n_iterations"
-                                    type="text"
-                                    name="n_iterations"
-                                    value="1000"
-                                />
-                            </td>
-                            <td>
-                                <label for="sample_period">sample period</label>
-                                <input
-                                    id="sample_period"
-                                    type="text"
-                                    name="sample_period"
-                                    value="20"
-                                />
-                            </td>
-                            <td>
-                                <label for="random_seed">random seed</label>
-                                <input
-                                    id="random_seed"
-                                    type="text"
-                                    name="random_seed"
-                                    value="3"
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    id="initial_center"
-                                    type="checkbox"
-                                    name="initial_center"
-                                />
-                                <label for="initial_center"
-                                    >Seed central (else random)</label
-                                >
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr id="simulation_choice">
-                <td>
-                    <input
-                        id="sim_staggered_dk"
-                        type="radio"
-                        value="staggered_dk"
-                        checked
-                        name="staggered"
-                        required
-                    />
-                    <label for="sim_staggered_dk">Staggered DK</label>
-                </td>
-                <td>
-                    <input
-                        id="sim_simple_dk"
-                        type="radio"
-                        name="staggered"
-                        value="simple_dk"
-                    />
-                    <label for="sim_simple_dk">Simplified DK</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input
-                        id="zoom"
-                        type="range"
-                        value="1.0"
-                        min="1.0"
-                        max="10"
-                        onclick="window.main.redraw()"
-                        name="zoom"
-                    />
-                    <label for="zoom">Zoom</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input
-                        type="button"
-                        value="Run simulation"
-                        onclick="window.main.run_simulation()"
-                    />
-                </td>
-            </tr>
-        </table>
+        <div id="tab-help"></div>
+        <div id="tab-1D">
+            <h1>Directed Percolation (1D) example</h1>
+            Enter the data for the simulation
+            <div id="1d_sim_controls"></div>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input
+                                        id="initial_center"
+                                        type="checkbox"
+                                        name="initial_center"
+                                    />
+                                    <label for="initial_center"
+                                        >Seed central (else random)</label
+                                    >
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="tab-2D">
+            <h1>Directed Percolation (2D) example</h1>
+            <div id="2d_sim_controls"></div>
+        </div>
+        <hr />
+        <div id="VisualizationControls">
+            <div style="text-align: center">Visualization controls</div>
+            <table>
+                <tr>
+                    <td>
+                        <input
+                            id="zoom"
+                            type="range"
+                            value="1.0"
+                            min="1.0"
+                            max="10"
+                            onclick="window.main.redraw()"
+                            name="zoom"
+                        />
+                        <label for="zoom">Zoom</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div id="Visualize"></div>
         <div id="Log"></div>
     </body>
