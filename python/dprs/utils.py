@@ -148,7 +148,7 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
             rf"   $n_z={parameters.n_z}$" if parameters.n_z>1
            else ""
         )
-        + ("\n" + rf"$i={i_slice*parameters.sample_period:0{5}}$" 
+        + ("\n" + rf"$t={i_slice*parameters.sample_period:0{5}}$" 
            if i_slice is not None else "")
         + (rf"   $z={z_slice}$" 
            if z_slice is not None else "")
@@ -173,6 +173,6 @@ def make_name(parameters: Parameters, variable: str, i_slice: int|None = None):
             f"_nz{parameters.n_z}" if parameters.n_z>1
             else ""
         )        
-        + (f"_i{i_slice*parameters.sample_period:0{5}}" 
+        + (f"_t{i_slice*parameters.sample_period:0{5}}" 
            if i_slice is not None else "")
     )

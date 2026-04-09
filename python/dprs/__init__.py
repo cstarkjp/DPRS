@@ -5,7 +5,7 @@
 
 from dprs import initialize
 
-__version__ = "2026.4.8"
+__version__ = "2026.4.9"
 
 __all__ = [
     "file",

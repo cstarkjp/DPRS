@@ -47,21 +47,21 @@ impl CellModel<Cell2D> for GrowthModel2D {
             true => {
                 let is_even_step = iteration.is_multiple_of(2);
                 // For even steps this cares about (x-1,y-1), (x,y-1), (x-1,y),
-                // (x,y) - which are termed the 'XY_MINUS_CORNER_BITS'
+                // (x,y) - which are termed the 'BITMASK_CORNER_PATCH_MINUS'
                 //
                 // For odd steps the other direction is important: (x,y), (x,y+1), (x+1,y),
-                // (x+1,y+1) - which are termed the 'XY_PLUS_CORNER_BITS'
+                // (x+1,y+1) - which are termed the 'BITMASK_CORNER_PATCH_PLUS'
                 let mut nbrs = nbrhood.bitmask();
                 if is_even_step {
-                    nbrs &= CellNbrhood2D::XY_MINUS_CORNER_BITS;
+                    nbrs &= CellNbrhood2D::BITMASK_CORNER_PATCH_MINUS;
                 } else {
-                    nbrs &= CellNbrhood2D::XY_PLUS_CORNER_BITS;
+                    nbrs &= CellNbrhood2D::BITMASK_CORNER_PATCH_PLUS;
                 }
                 let n_occupied_nbrs = nbrs.count_ones();
                 if n_occupied_nbrs > 0 {
                     let are_several_nbrs_occupied = n_occupied_nbrs >= 2;
                     let uniform_variate: f64 = rng.random();
-                    (uniform_variate < self.p_1)
+                    (!are_several_nbrs_occupied & (uniform_variate < self.p_1))
                         | (are_several_nbrs_occupied & (uniform_variate < self.p_2))
                 } else {
                     false
@@ -74,19 +74,19 @@ impl CellModel<Cell2D> for GrowthModel2D {
                 // Apparently grid anisotropy can be removed by suppressing diagonal
                 // neighbor consideration 50% of the time
                 // => use simple coin toss for each diagonal nbr to exclude each 50% of the time
-                let is_here_occupied = (nbrhood.bitmask() & CellNbrhood2D::CENTER_BIT) != 0;
+                let is_here_occupied = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
 
                 // Create a bitmask of "neighbors" to ignore
                 //
                 // The site itself ('here') should be ignored for counting the surrounding neighbors,
-                // so that means at least have CENTER_BIT (i.e. bit for (x,y) is set)
+                // so that means at least have BITMASK_CENTER (i.e. bit for (x,y) is set)
                 //
                 // Then set the *corner* neighbors as to ignore with a
                 // probability of 50%; this is done by creating a random 'u16'
                 // value, of which we only care about the corner bits (i.e
                 // 0b_101_000_101). (A random 'u16' is essentially a bag of 16 independent random coin tosses.)
-                let mut ignore_nbrs: u16 = CellNbrhood2D::CENTER_BIT;
-                ignore_nbrs |= CellNbrhood2D::DIAGONAL_BITS & rng.random::<u16>();
+                let mut ignore_nbrs: u16 = CellNbrhood2D::BITMASK_CENTER;
+                ignore_nbrs |= CellNbrhood2D::BITMASK_CORNERS & rng.random::<u16>();
 
                 // The interesting neighbors are those that whose bits are set
                 // which are not to be ignored.
