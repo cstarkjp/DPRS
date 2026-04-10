@@ -81,6 +81,13 @@ export class SimulationControls {
     this.populate_value("n_z", parameters.dims.n_z);
     document.getElementById(this.ele_id + "initial_center").checked =
       parameters.params.initial_center;
+    if (
+      parameters.params.simulation_kind == SimulationKind.SimplifiedDomanyKinzel
+    ) {
+      document.getElementById(this.ele_id + "sk_simple_dk").checked = true;
+    } else {
+      document.getElementById(this.ele_id + "sk_staggered_dk").checked = true;
+    }
   }
 
   simulation_parameters() {

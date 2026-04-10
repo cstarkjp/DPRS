@@ -318,7 +318,7 @@ export class FileSet {
   save_file(root, suffix, data) {
     let f = this.prefix + root + "." + suffix;
     this.storage.setItem(f, data);
-    this.directory.add_file(suffix, root);
+    this.directory.add_file(root, suffix);
   }
 
   delete_file(root, suffix) {

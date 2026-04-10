@@ -86,9 +86,14 @@ export class SimParameters {
       "sample_period",
       "random_seed",
       "initial_center",
-      "simulation_kind",
     ]) {
       this.params[k] = obj.params[k];
+    }
+    console.log(obj.params);
+    if (obj.params.simulation_kind != 0) {
+      this.params.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
+    } else {
+      this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
     }
     console.log(this.params.n_iterations);
     return;
