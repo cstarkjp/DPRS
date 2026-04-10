@@ -46,9 +46,6 @@ pub trait CellModel<Dim: CellDim>: Sync + Sized + std::fmt::Debug {
     /// Create the cell model from the parameters
     fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()>;
 
-    /// Randomize the state of the cell, usually using p_initial from the original parameters
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64,) -> DualState;
-
     /// Update the state of a cell given the iteration, current Rng state, and neighborhood
     fn update_state<R: Rng>(
         &self,
@@ -66,6 +63,9 @@ pub trait DramaticallySimulatable<D: CellDim>: std::fmt::Debug + Sized {
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.
     fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R);
+
+    /// Randomize the state of the cell, usually using p_initial from the original parameters
+    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64,) -> DualState;
 
     /// Seed the simulation with a central patch.
     fn create_seeded_lattice(&mut self);

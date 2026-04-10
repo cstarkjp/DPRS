@@ -30,11 +30,6 @@ impl CellModel<Cell3D> for GrowthModel3D {
         })
     }
 
-    /// Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> DualState {
-        rng.random_bool(p).into()
-    }
-
     fn update_state<R: Rng>(
         &self,
         iteration: usize,

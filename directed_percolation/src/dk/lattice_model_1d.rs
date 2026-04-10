@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::{Cell1D, CellModel, DramaticallySimulatable};
@@ -174,8 +174,13 @@ impl<C: CellModel<Cell1D>> DramaticallySimulatable<Cell1D> for LatticeModel1D<C>
     /// from a de-facto Bernoulli distribution.
     fn create_randomized_lattice<R: Rng>(&mut self, rng: &mut R) {
         self.lattice = (0..self.n_cells())
-            .map(|_| self.cell_model.randomize_state(rng, self.parameters.p_initial))
+            .map(|_| self.randomize_state(rng, self.parameters.p_initial))
             .collect();
+    }
+
+    /// Sample Bernoulli distribution with probability p to randomize cell state.
+    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> DualState {
+        rng.random_bool(p).into()
     }
 
     /// Seed the simulation with a central patch.

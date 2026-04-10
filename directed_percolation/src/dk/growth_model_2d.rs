@@ -20,11 +20,6 @@ impl CellModel<Cell2D> for DKSimplified2D {
         })
     }
 
-    /// Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> DualState {
-        rng.random_bool(p).into()
-    }
-
     fn update_state<R: Rng>(
         &self,
         _iteration: usize,
@@ -105,11 +100,6 @@ impl CellModel<Cell2D> for DKStaggered2D {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
         })
-    }
-
-    /// Sample Bernoulli distribution with probability p to randomize cell state.
-    fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> DualState {
-        rng.random_bool(p).into()
     }
 
     fn update_state<R: Rng>(
