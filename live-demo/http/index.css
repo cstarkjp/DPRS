@@ -20,7 +20,8 @@
 
 #upper {
     overflow-y: scroll;
-    height: 260px;
+    /* This height should not be fixed */
+    /* height: 260px; */
 }
 
 .tab-list ul {
