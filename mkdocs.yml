@@ -113,7 +113,7 @@ nav:
     - Home: index.md
     # - Navigation: navigation.md
     - Live demo: 
-        - wasm/http/index.html
+        - live-demo/http/index.html
     - Jupyter notebooks: 
         - jupyter-notebooks/index.md
     - Python demos: 

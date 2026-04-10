@@ -50,7 +50,9 @@ export class SimulationControls {
     this.populate_value("sample_period", parameters.params.sample_period);
     this.populate_value("random_seed", parameters.params.random_seed);
     this.populate_value("n_x", parameters.dims.n_x);
-    document.getElementById("initial_center").checked =
+    this.populate_value("n_y", parameters.dims.n_y);
+    this.populate_value("n_z", parameters.dims.n_z);
+    document.getElementById(this.ele_id + "initial_center").checked =
       parameters.params.initial_center;
   }
 
@@ -67,8 +69,9 @@ export class SimulationControls {
       parameters.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
     }
 
-    parameters.params.initial_center =
-      document.getElementById("initial_center").checked;
+    parameters.params.initial_center = document.getElementById(
+      this.ele_id + "initial_center",
+    ).checked;
     parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
     parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
     parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
@@ -76,8 +79,7 @@ export class SimulationControls {
     parameters.params.sample_period = this.get_int("sample_period", 1, 100000);
     parameters.params.random_seed = this.get_int("random_seed", 1, 100000);
     parameters.dims.n_x = this.get_int("n_x", 10, 10000);
-    console.log(parameters);
-    console.log(parameters.probabilities.p_2);
+
     return parameters;
   }
 
@@ -104,34 +106,37 @@ export class SimulationControls {
         .add_ele("tr")
         .add_tags({ id: ele_id + "dims" });
       const td = tr.add_ele("td");
-      td.add_ele("label").add_tags({ for: "n_x" }).set_content("n_x");
+      td.add_ele("label").add_tags({ for: "n_x" }).set_content("n_x: ");
       td.add_ele("input").add_tags({
         id: this.ele_id + "n_x",
         className: "dimensions",
         type: "text",
         name: "n_x",
         value: "20",
+        style: "margin-left: 5px; margin-right: 10px",
       });
       if (dims >= 2) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: "n_y" }).set_content("n_y");
+        td.add_ele("label").add_tags({ for: "n_y" }).set_content("n_y: ");
         td.add_ele("input").add_tags({
           id: this.ele_id + "n_y",
           className: "dimensions",
           type: "text",
           name: "n_y",
           value: "20",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
       if (dims >= 3) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: "n_z" }).set_content("n_z");
+        td.add_ele("label").add_tags({ for: "n_z" }).set_content("n_z: ");
         td.add_ele("input").add_tags({
           id: this.ele_id + "n_z",
           className: "dimensions",
           type: "text",
           name: "n_z",
           value: "20",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
     }
@@ -141,13 +146,14 @@ export class SimulationControls {
         .add_tags({ id: ele_id + "probability" });
       for (const thing of ["p_initial", "p_1", "p_2"]) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: thing }).set_content(thing);
+        td.add_ele("label").add_tags({ for: thing }).set_content(thing + ": ");
         td.add_ele("input").add_tags({
           id: this.ele_id + thing,
           className: "probability",
           type: "text",
           name: thing,
           value: "0.5",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
     }
@@ -161,15 +167,28 @@ export class SimulationControls {
         random_seed: "1",
       })) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: name }).set_content(name);
+        td.add_ele("label")
+          .add_tags({ for: this.ele_id + name })
+          .set_content(name + ": ");
         td.add_ele("input").add_tags({
           id: this.ele_id + name,
           className: "sim_controls " + name,
           type: "text",
           name: name,
           value: value,
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
+      const td = tr.add_ele("td");
+
+      td.add_ele("input").add_tags({
+        id: this.ele_id + "initial_center",
+        type: "checkbox",
+        name: this.ele + "initial_center",
+      });
+      td.add_ele("label")
+        .add_tags({ for: this.ele_id + "initial_center" })
+        .set_content("Central seed (otherwise randomized)");
     }
     {
       const tr = this.sim_table
@@ -189,6 +208,7 @@ export class SimulationControls {
           value: name,
           required: true,
           checked: first,
+          // style: "padding-right: 25px",
         });
         first = false;
         td.add_ele("label")
@@ -200,27 +220,29 @@ export class SimulationControls {
       const tr = this.control_table
         .add_ele("tr")
         .add_tags({ id: ele_id + "controls" });
-      const td = tr.add_ele("td");
-      const run_sim = td.add_ele("input").add_tags({
+      const td_run = tr.add_ele("td");
+      const run_sim = td_run.add_ele("input").add_tags({
         id: ele_id + "run_simulation",
         className: "controls run_simulation",
         type: "button",
         value: "Run simulation",
+        style: "margin-right: 15px",
       });
       run_sim.ele.onclick = () => {
         window.main.run_simulation(dims);
       };
-    }
-    /*
 
-                            <input
-                                id="initial_center"
-                                type="checkbox"
-                                name="initial_center"
-                            />
-                            <label for="initial_center"
-                                >Seed central (else random)</label
-                            >
-    */
+      const td_save = tr.add_ele("td");
+      const save_sim = td_save.add_ele("input").add_tags({
+        id: ele_id + "save_simulation",
+        className: "controls save_simulation",
+        type: "button",
+        value: "Save simulation",
+        style: "margin-right: 15px",
+      });
+      save_sim.ele.onclick = () => {
+        window.main.save_simulation(dims);
+      };
+    }
   }
 }

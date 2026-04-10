@@ -106,34 +106,37 @@ export class SimulationControls {
         .add_ele("tr")
         .add_tags({ id: ele_id + "dims" });
       const td = tr.add_ele("td");
-      td.add_ele("label").add_tags({ for: "n_x" }).set_content("n_x");
+      td.add_ele("label").add_tags({ for: "n_x" }).set_content("n_x: ");
       td.add_ele("input").add_tags({
         id: this.ele_id + "n_x",
         className: "dimensions",
         type: "text",
         name: "n_x",
         value: "20",
+        style: "margin-left: 5px; margin-right: 10px",
       });
       if (dims >= 2) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: "n_y" }).set_content("n_y");
+        td.add_ele("label").add_tags({ for: "n_y" }).set_content("n_y: ");
         td.add_ele("input").add_tags({
           id: this.ele_id + "n_y",
           className: "dimensions",
           type: "text",
           name: "n_y",
           value: "20",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
       if (dims >= 3) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: "n_z" }).set_content("n_z");
+        td.add_ele("label").add_tags({ for: "n_z" }).set_content("n_z: ");
         td.add_ele("input").add_tags({
           id: this.ele_id + "n_z",
           className: "dimensions",
           type: "text",
           name: "n_z",
           value: "20",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
     }
@@ -143,13 +146,14 @@ export class SimulationControls {
         .add_tags({ id: ele_id + "probability" });
       for (const thing of ["p_initial", "p_1", "p_2"]) {
         const td = tr.add_ele("td");
-        td.add_ele("label").add_tags({ for: thing }).set_content(thing);
+        td.add_ele("label").add_tags({ for: thing }).set_content(thing + ": ");
         td.add_ele("input").add_tags({
           id: this.ele_id + thing,
           className: "probability",
           type: "text",
           name: thing,
           value: "0.5",
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
     }
@@ -165,13 +169,14 @@ export class SimulationControls {
         const td = tr.add_ele("td");
         td.add_ele("label")
           .add_tags({ for: this.ele_id + name })
-          .set_content(name);
+          .set_content(name + ": ");
         td.add_ele("input").add_tags({
           id: this.ele_id + name,
           className: "sim_controls " + name,
           type: "text",
           name: name,
           value: value,
+          style: "margin-left: 5px; margin-right: 10px",
         });
       }
       const td = tr.add_ele("td");
@@ -183,7 +188,7 @@ export class SimulationControls {
       });
       td.add_ele("label")
         .add_tags({ for: this.ele_id + "initial_center" })
-        .set_content("Seed central (else random)");
+        .set_content("Central seed (otherwise randomized)");
     }
     {
       const tr = this.sim_table
@@ -203,6 +208,7 @@ export class SimulationControls {
           value: name,
           required: true,
           checked: first,
+          // style: "padding-right: 25px",
         });
         first = false;
         td.add_ele("label")
@@ -220,6 +226,7 @@ export class SimulationControls {
         className: "controls run_simulation",
         type: "button",
         value: "Run simulation",
+        style: "margin-right: 15px",
       });
       run_sim.ele.onclick = () => {
         window.main.run_simulation(dims);
@@ -230,7 +237,8 @@ export class SimulationControls {
         id: ele_id + "save_simulation",
         className: "controls save_simulation",
         type: "button",
-        value: "save simulation",
+        value: "Save simulation",
+        style: "margin-right: 15px",
       });
       save_sim.ele.onclick = () => {
         window.main.save_simulation(dims);

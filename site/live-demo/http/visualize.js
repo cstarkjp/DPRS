@@ -1,14 +1,16 @@
 import * as html from "./html.js";
-import { Log } from "./log.js";
+import * as log from "./log.js";
 
 export class Visualize {
-  constructor(simulation) {
+  constructor(logger, simulation) {
+    this.log = new log.Logger(logger, "viz");
     this.simulation = simulation;
     this.width = 0;
     this.height = 0;
   }
 
   canvas_simple(div_id, scale, sim_control) {
+    this.log.push_reason("canvas");
     const stagger = this.simulation.results_are_staggered();
     var x_ofs = 0;
     var x_scale = scale;
@@ -23,8 +25,15 @@ export class Visualize {
 
     const div = document.getElementById(div_id);
     if (!div) {
+      this.log.error(`div ${div_id}found for canvas`);
+      this.log.pop_reason();
+
       return;
     }
+
+    this.log.info(
+      `Created canvas size ${this.width} x ${this.height} with stagger ${stagger} and scale ${x_scale}x${y_scale}`,
+    );
 
     const div_html = new html.Element(div);
     div_html.clear();
@@ -50,5 +59,7 @@ export class Visualize {
         x_ofs = 0.5 - x_ofs;
       }
     }
+    this.log.info("Completed canvas");
+    this.log.pop_reason();
   }
 }
