@@ -63,21 +63,6 @@ impl CellModel<Cell2D> for DKSimplified2D {
             } else {
                 false
             }
-            // If a 50% debiasing is not correct (a priori it ought to be 1-1/sqrt(2))
-            // then a weighted coin toss is needed for each diagonal separately.
-            // use std::f64::consts::SQRT_2;
-            // let p_diagonal: f64 = 1. - 1. / SQRT_2;
-            // let nbrs: Vec<u8> = [
-            //     (nbrhood[0] & rng.random_bool(p_diagonal)).into(),
-            //     nbrhood[1].into(),
-            //     (nbrhood[2] & rng.random_bool(p_diagonal)).into(),
-            //     nbrhood[3].into(),
-            //     nbrhood[5].into(),
-            //     (nbrhood[6] & rng.random_bool(p_diagonal)).into(),
-            //     nbrhood[7].into(),
-            //     (nbrhood[8] & rng.random_bool(p_diagonal)).into(),
-            // ]
-            // .into();
         };
 
         do_survive.into()
