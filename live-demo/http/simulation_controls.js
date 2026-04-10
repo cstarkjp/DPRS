@@ -95,6 +95,7 @@ export class SimulationControls {
     this.dims_table = this.table.add_ele("tr").add_ele("td").add_ele("table");
     this.probs_table = this.table.add_ele("tr").add_ele("td").add_ele("table");
     this.param_table = this.table.add_ele("tr").add_ele("td").add_ele("table");
+    this.seed_table = this.table.add_ele("tr").add_ele("td").add_ele("table");
     this.sim_table = this.table.add_ele("tr").add_ele("td").add_ele("table");
     this.control_table = this.table
       .add_ele("tr")
@@ -164,6 +165,26 @@ export class SimulationControls {
       for (const [name, value] of Object.entries({
         n_iterations: "1000",
         sample_period: "20",
+      })) {
+        const td = tr.add_ele("td");
+        td.add_ele("label")
+          .add_tags({ for: this.ele_id + name })
+          .set_content(name + ": ");
+        td.add_ele("input").add_tags({
+          id: this.ele_id + name,
+          className: "sim_controls " + name,
+          type: "text",
+          name: name,
+          value: value,
+          style: "margin-left: 5px; margin-right: 10px",
+        });
+      }
+    }
+    {
+      const tr = this.seed_table
+        .add_ele("tr")
+        .add_tags({ id: ele_id + "seed_controls" });
+      for (const [name, value] of Object.entries({
         random_seed: "1",
       })) {
         const td = tr.add_ele("td");
@@ -179,8 +200,8 @@ export class SimulationControls {
           style: "margin-left: 5px; margin-right: 10px",
         });
       }
-      const td = tr.add_ele("td");
 
+      const td = tr.add_ele("td");
       td.add_ele("input").add_tags({
         id: this.ele_id + "initial_center",
         type: "checkbox",
