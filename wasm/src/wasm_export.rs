@@ -1,6 +1,8 @@
 use directed_percolation::SimParameters;
-use directed_percolation::dk::{Cell1D, GrowthModel1D, LatticeModel1D};
-use directed_percolation::dk::{Cell2D, GrowthModel2D, LatticeModel2D};
+use directed_percolation::dk::{DKSimplified1D, DKSimplified2D};
+use directed_percolation::dk::{DKStaggered1D, DKStaggered2D};
+use directed_percolation::dk::{Cell1D, LatticeModel1D};
+use directed_percolation::dk::{Cell2D, LatticeModel2D};
 use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -216,21 +218,44 @@ impl Simulation {
         self.parameters.0.n_threads = 1;
         self.parameters.0.processing = directed_percolation::Processing::Serial;
 
+        // No doubt there is a better way of doing this
         let simulation_results = {
-            if self.parameters.0.n_y < 2 {
-                directed_percolation::dk::simulation_nd::<
-                    ChaCha8Rng,
-                    Cell1D,
-                    LatticeModel1D<GrowthModel1D>,
-                >(&self.parameters.0)
-                .unwrap()
-            } else {
-                directed_percolation::dk::simulation_nd::<
-                    ChaCha8Rng,
-                    Cell2D,
-                    LatticeModel2D<GrowthModel2D>,
-                >(&self.parameters.0)
-                .unwrap()
+            match self.parameters.0.growth_model_choice {
+                directed_percolation::GrowthModelChoice::SimplifiedDomanyKinzel => {
+                    if self.parameters.0.n_y < 2 {
+                        directed_percolation::dk::simulation_nd::<
+                            ChaCha8Rng,
+                            Cell1D,
+                            LatticeModel1D<DKSimplified1D>,
+                        >(&self.parameters.0)
+                        .unwrap()
+                    } else {
+                        directed_percolation::dk::simulation_nd::<
+                            ChaCha8Rng,
+                            Cell2D,
+                            LatticeModel2D<DKSimplified2D>,
+                        >(&self.parameters.0)
+                        .unwrap()
+                    }
+                },
+                directed_percolation::GrowthModelChoice::StaggeredDomanyKinzel => {
+                    if self.parameters.0.n_y < 2 {
+                        directed_percolation::dk::simulation_nd::<
+                            ChaCha8Rng,
+                            Cell1D,
+                            LatticeModel1D<DKStaggered1D>,
+                        >(&self.parameters.0)
+                        .unwrap()
+                    } else {
+                        directed_percolation::dk::simulation_nd::<
+                            ChaCha8Rng,
+                            Cell2D,
+                            LatticeModel2D<DKStaggered2D>,
+                        >(&self.parameters.0)
+                        .unwrap()
+                    }
+                },
+                _ => todo! {},
             }
         };
         self.results = simulation_results
