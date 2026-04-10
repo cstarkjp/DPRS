@@ -39,6 +39,7 @@ export class SavedSimulations {
     if (!this.div) {
       return;
     }
+
     this.cache_contents();
     this.div.clear();
     this.table = this.div.add_ele("table");
@@ -95,8 +96,8 @@ export class SavedSimulations {
     }
     this.storage.request_save_file(filename, "json", sim, () => {
       this.log.info("save", "simulation saved");
+      this.populate_html();
     });
-    this.populate_html();
   }
 
   load(filename) {
