@@ -43,9 +43,9 @@ export class SimulationControls {
   }
 
   populate_values(parameters) {
-    this.populate_value("p_initial", parameters.probabilities.p_initial);
     this.populate_value("p_1", parameters.probabilities.p_1);
     this.populate_value("p_2", parameters.probabilities.p_2);
+    this.populate_value("p_initial", parameters.probabilities.p_initial);
     this.populate_value("n_iterations", parameters.params.n_iterations);
     this.populate_value("sample_period", parameters.params.sample_period);
     this.populate_value("random_seed", parameters.params.random_seed);
@@ -72,9 +72,9 @@ export class SimulationControls {
     parameters.params.initial_center = document.getElementById(
       this.ele_id + "initial_center",
     ).checked;
-    parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
     parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
     parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
+    parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
     parameters.params.n_iterations = this.get_int("n_iterations", 0, 1000000);
     parameters.params.sample_period = this.get_int("sample_period", 1, 100000);
     parameters.params.random_seed = this.get_int("random_seed", 1, 100000);
@@ -145,7 +145,7 @@ export class SimulationControls {
       const tr = this.probs_table
         .add_ele("tr")
         .add_tags({ id: ele_id + "probability" });
-      for (const thing of ["p_initial", "p_1", "p_2"]) {
+      for (const thing of ["p_1", "p_2", "p_initial"]) {
         const td = tr.add_ele("td");
         td.add_ele("label").add_tags({ for: thing }).set_content(thing + ": ");
         td.add_ele("input").add_tags({
@@ -209,7 +209,7 @@ export class SimulationControls {
       });
       td.add_ele("label")
         .add_tags({ for: this.ele_id + "initial_center" })
-        .set_content("Central seed (otherwise randomized)");
+        .set_content("Central cell (or: randomized)");
     }
     {
       const tr = this.sim_table
