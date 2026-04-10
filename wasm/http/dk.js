@@ -124,7 +124,7 @@ class Main {
   }
 
   redraw() {
-    const zoom = 1.0; // this.get_float("zoom", 1, 10);
+    const zoom = simulation_controls.gbl_get_float("zoom", 1, 10);
     this.visualize.canvas_simple(
       "Visualize",
       zoom,
