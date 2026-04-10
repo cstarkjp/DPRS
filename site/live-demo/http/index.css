@@ -1,23 +1,29 @@
 .dimensions {
     width: 6ch;
 }
+
 .probability {
     width: 6ch;
 }
+
 .n_iterations {
     width: 8ch;
 }
+
 .random_seed {
     width: 6ch;
 }
+
 .sample_period {
     width: 6ch;
 }
 
 #upper {
     overflow-y: scroll;
-    height: 250px;
+    /* This height should not be fixed */
+    /* height: 260px; */
 }
+
 .tab-list ul {
     list-style-type: none;
     margin: 0;
