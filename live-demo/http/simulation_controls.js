@@ -113,6 +113,7 @@ export class SimulationControls {
         type: "text",
         name: "n_x",
         value: "20",
+        style: "margin-left: 7px; margin-right: 10px",
       });
       if (dims >= 2) {
         const td = tr.add_ele("td");
@@ -123,6 +124,7 @@ export class SimulationControls {
           type: "text",
           name: "n_y",
           value: "20",
+          style: "margin-left: 7px; margin-right: 10px",
         });
       }
       if (dims >= 3) {
@@ -134,6 +136,7 @@ export class SimulationControls {
           type: "text",
           name: "n_z",
           value: "20",
+          style: "margin-left: 7px; margin-right: 10px",
         });
       }
     }
@@ -150,6 +153,7 @@ export class SimulationControls {
           type: "text",
           name: thing,
           value: "0.5",
+          style: "margin-left: 7px; margin-right: 10px",
         });
       }
     }
@@ -170,8 +174,9 @@ export class SimulationControls {
           id: this.ele_id + name,
           className: "sim_controls " + name,
           type: "text",
-          name: name + ": xxxxxxxxxxxx",
+          name: name,
           value: value,
+          style: "margin-left: 7px; margin-right: 10px",
         });
       }
       const td = tr.add_ele("td");
@@ -183,7 +188,7 @@ export class SimulationControls {
       });
       td.add_ele("label")
         .add_tags({ for: this.ele_id + "initial_center" })
-        .set_content("Seed central (else random)");
+        .set_content("Central seed (otherwise randomized)");
     }
     {
       const tr = this.sim_table
@@ -203,6 +208,7 @@ export class SimulationControls {
           value: name,
           required: true,
           checked: first,
+          // style: "padding-right: 25px",
         });
         first = false;
         td.add_ele("label")
@@ -220,6 +226,7 @@ export class SimulationControls {
         className: "controls run_simulation",
         type: "button",
         value: "Run simulation",
+        style: "margin-right: 15px",
       });
       run_sim.ele.onclick = () => {
         window.main.run_simulation(dims);
@@ -231,6 +238,7 @@ export class SimulationControls {
         className: "controls save_simulation",
         type: "button",
         value: "Save simulation",
+        style: "margin-right: 15px",
       });
       save_sim.ele.onclick = () => {
         window.main.save_simulation(dims);
