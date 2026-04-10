@@ -1,5 +1,7 @@
 # site/wasm/*
 # docs/wasm/*
+wasm/target/
+wasm/dprs.zip
 
 notebooks/plots/*
 plots/*
