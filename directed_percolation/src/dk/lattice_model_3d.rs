@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::{CellNbrhood3D, RowIterator3D};
-use crate::{Cell3D, CellModel, DramaticallySimulatable, Statistics};
+use crate::{Cell3D, CellModel, EvolvableLatticeDualState, Statistics};
 use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 3d.
@@ -231,7 +231,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     }
 }
 
-impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C> {
+impl<C: CellModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for LatticeModel3D<C> {
     fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
         Ok(Self {
             cell_model: C::create_from_parameters(parameters)?,

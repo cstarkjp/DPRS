@@ -1,7 +1,7 @@
 use rand::{Rng, SeedableRng};
 
-use crate::{CellDim, DramaticallySimulatable};
-use crate::{DkError, LatticeHistory, LatticeSlices, TrackingHistory};
+use crate::{CellSpace, EvolvableLatticeDualState};
+use crate::{DpError, LatticeHistory, LatticeSlices, TrackingHistory};
 use crate::{InitialCondition, Processing, SimParameters};
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.
@@ -9,11 +9,15 @@ use crate::{InitialCondition, Processing, SimParameters};
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn simulation_nd<
+    R: Rng + SeedableRng + Send,
+    CS: CellSpace,
+    LM: EvolvableLatticeDualState<CS>,
+>(
     parameters: &SimParameters,
-) -> Result<(usize, LatticeSlices, TrackingHistory), DkError> {
+) -> Result<(usize, LatticeSlices, TrackingHistory), DpError> {
     let mut lm =
-        LM::create_from_parameters(&parameters).map_err(|_| DkError::FailedToCreateModel)?;
+        LM::create_from_parameters(&parameters).map_err(|_| DpError::FailedToCreateModel)?;
     let mut rng = R::seed_from_u64(parameters.random_seed as u64);
     match parameters.initial_condition {
         InitialCondition::Randomized => {

@@ -2,7 +2,7 @@ use rand::Rng;
 
 use crate::{DualState, SimParameters, Statistics};
 
-pub trait CellDim {
+pub trait CellSpace {
     /// The number of dimensions (1, 2 or 3)
     const N: usize;
 
@@ -10,7 +10,7 @@ pub trait CellDim {
     type Nbrhood;
 }
 
-pub trait DramaticallySimulatable<D: CellDim>: std::fmt::Debug + Sized {
+pub trait EvolvableLatticeDualState<CS: CellSpace>: std::fmt::Debug + Sized {
     /// Create a fresh grid (vector of DualState cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
     fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()>;

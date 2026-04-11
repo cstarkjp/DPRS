@@ -2,15 +2,15 @@ use rand::{Rng, SeedableRng};
 use std::time::Instant;
 
 use crate::SimParameters;
-use crate::{CellDim, DramaticallySimulatable, simulation_nd};
-use crate::{DkError, LatticeSlices, TrackingHistory};
+use crate::{CellSpace, EvolvableLatticeDualState, simulation_nd};
+use crate::{DpError, LatticeSlices, TrackingHistory};
 
 /// Run a simulation and record how long the computation takes.
 ///
 /// Returns the duration, number of lattices recorded, the lattices, and the tracking
-pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn run_nd<R: Rng + SeedableRng + Send, CS: CellSpace, LM: EvolvableLatticeDualState<CS>>(
     parameters: &SimParameters,
-) -> Result<(f64, usize, LatticeSlices, TrackingHistory), DkError> {
+) -> Result<(f64, usize, LatticeSlices, TrackingHistory), DpError> {
     // Set up thread pool of size set by user
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(parameters.n_threads)
@@ -21,14 +21,14 @@ pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatab
 
     // Do the simulation
     let (n_lattices, lattices, tracking) =
-        pool.install(|| simulation_nd::<R, D, LM>(parameters).unwrap());
+        pool.install(|| simulation_nd::<R, CS, LM>(parameters).unwrap());
 
     // Stop the clock
     let duration: f64 = time.elapsed().as_secs_f64();
 
     let lattices = lattices
         .into_iter()
-        .map(|lattice| parameters.pruned_lattice(lattice, D::N))
+        .map(|lattice| parameters.pruned_lattice(lattice, CS::N))
         .collect();
 
     Ok((duration, n_lattices, lattices, tracking))

@@ -1,4 +1,4 @@
-use super::{CellDim, DramaticallySimulatable};
+use super::{CellSpace, EvolvableLatticeDualState};
 
 /// Statistics gathered for each iteration of a simulation (if the lattice model
 /// provides them)
@@ -34,7 +34,7 @@ impl std::ops::Deref for TrackingHistory {
 }
 
 impl TrackingHistory {
-    pub fn update<D: CellDim, T: DramaticallySimulatable<D>>(
+    pub fn update<CS: CellSpace, T: EvolvableLatticeDualState<CS>>(
         &mut self,
         iteration: usize,
         lattice_model: &T,
