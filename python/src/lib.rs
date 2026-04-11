@@ -5,10 +5,57 @@
 // Imports
 pub mod parameters;
 
+use rand::{Rng, SeedableRng};
+
+use directed_percolation::dk;
+use directed_percolation::{Dimension, GrowthModelChoice, run_nd};
+use directed_percolation::{DkError, LatticeSlices, SimParameters, TrackingHistory};
+
+/// Entry point to this module.
+pub fn sim_dk<R: Rng + SeedableRng + Send>(
+    sim_parameters: SimParameters,
+) -> Result<(usize, LatticeSlices, TrackingHistory, f64), DkError> {
+    println!();
+    println!("{sim_parameters}");
+    println!();
+    let (t_run_time, n_lattices, lattice_slices, tracking) = match &sim_parameters.dim {
+        Dimension::D1 => match &sim_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<R, dk::Cell1D, dk::LatticeModel1D<dk::DKSimplified1D>>(&sim_parameters)?
+            }
+            GrowthModelChoice::StaggeredDomanyKinzel => {
+                run_nd::<R, dk::Cell1D, dk::LatticeModel1D<dk::DKStaggered1D>>(&sim_parameters)?
+            }
+            _ => todo!(),
+        },
+        Dimension::D2 => match &sim_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<R, dk::Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(&sim_parameters)?
+            }
+            GrowthModelChoice::StaggeredDomanyKinzel => {
+                run_nd::<R, dk::Cell2D, dk::LatticeModel2D<dk::DKStaggered2D>>(&sim_parameters)?
+            }
+            _ => todo!(),
+        },
+        Dimension::D3 => match &sim_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<R, dk::Cell3D, dk::LatticeModel3D<dk::DKSimplified3D>>(&sim_parameters)?
+            }
+            _ => todo!(),
+        },
+    };
+    println!(
+        "Simulation run time ({}): {:4.3}s",
+        sim_parameters.processing, t_run_time
+    );
+
+    Ok((n_lattices, lattice_slices, tracking, t_run_time))
+}
+
 use pyo3::prelude::*;
 #[pymodule]
 mod sim {
-    use directed_percolation::sim_dk;
+    use super::sim_dk;
     use pyo3::prelude::*;
     use rand::rngs::StdRng;
 

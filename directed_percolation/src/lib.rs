@@ -2,7 +2,6 @@
 //! This library provides simulations of directed percolation
 //!
 
-use rand::{Rng, SeedableRng};
 use thiserror::Error;
 
 mod run;
@@ -39,44 +38,3 @@ pub use parameters::{
     BoundaryCondition, Dimension, DualState, GrowthModelChoice, InitialCondition, Processing,
     SimParameters, Topology,
 };
-
-/// Entry point to this module.
-pub fn sim_dk<R: Rng + SeedableRng + Send>(
-    sim_parameters: SimParameters,
-) -> Result<(usize, LatticeSlices, TrackingHistory, f64), DkError> {
-    println!();
-    println!("{sim_parameters}");
-    println!();
-    let (t_run_time, n_lattices, lattice_slices, tracking) = match &sim_parameters.dim {
-        Dimension::D1 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell1D, dk::LatticeModel1D<dk::DKSimplified1D>>(&sim_parameters)?
-            }
-            GrowthModelChoice::StaggeredDomanyKinzel => {
-                run_nd::<R, Cell1D, dk::LatticeModel1D<dk::DKStaggered1D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-        Dimension::D2 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(&sim_parameters)?
-            }
-            GrowthModelChoice::StaggeredDomanyKinzel => {
-                run_nd::<R, Cell2D, dk::LatticeModel2D<dk::DKStaggered2D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-        Dimension::D3 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell3D, dk::LatticeModel3D<dk::DKSimplified3D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-    };
-    println!(
-        "Simulation run time ({}): {:4.3}s",
-        sim_parameters.processing, t_run_time
-    );
-
-    Ok((n_lattices, lattice_slices, tracking, t_run_time))
-}
