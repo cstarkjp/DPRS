@@ -28,7 +28,7 @@ pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatab
 
     let lattices = lattices
         .into_iter()
-        .map(|lattice| parameters.pruned_lattice(lattice))
+        .map(|lattice| parameters.pruned_lattice(lattice, D::N))
         .collect();
 
     Ok((duration, n_lattices, lattices, tracking))

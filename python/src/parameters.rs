@@ -26,30 +26,23 @@ macro_rules! py_of_enum {
     }
 }
 
-py_of_enum! {
-    /// Lattice growth model type.
-    directed_percolation::GrowthModelChoice,
-    GrowthModelChoice,
-        (
-            #[default]
-            SimplifiedDomanyKinzel,
-            StaggeredDomanyKinzel,
-            ContactProcess ,
-            PairContactProcess,
-            TwoSpeciesContactProcess
-        )
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum GrowthModelChoice {
+    #[default]
+    SimplifiedDomanyKinzel,
+    StaggeredDomanyKinzel,
+    ContactProcess,
+    PairContactProcess,
+    TwoSpeciesContactProcess,
 }
-
-py_of_enum! {
-    /// Lattice dimension.
-    directed_percolation::Dimension,
-    Dimension,
-        (
-            #[default]
-            D1,
-            D2,
-            D3,
-        )
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
+#[pyclass(from_py_object, eq, eq_int)]
+pub enum Dimension {
+    #[default]
+    D1,
+    D2,
+    D3,
 }
 
 py_of_enum! {
@@ -246,8 +239,6 @@ impl PyParameters {
             )));
         }
         Ok(SimParameters {
-            growth_model_choice: GrowthModelChoice::from(py_p.growth_model_choice),
-            dim: Dimension::from(py_p.dim),
             n_x: py_p.n_x,
             n_y: py_p.n_y,
             n_z: py_p.n_z,

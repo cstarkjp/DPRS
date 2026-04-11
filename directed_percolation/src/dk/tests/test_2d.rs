@@ -1,5 +1,5 @@
 pub use crate::{
-    BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
+    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
 use super::{Cell2D, CellModel, CellNbrhood2D, LatticeModel2D};
@@ -32,7 +32,6 @@ fn test_2d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = Dimension::D2;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
@@ -68,7 +67,6 @@ fn test_2d_run() -> Result<(), Box<dyn std::error::Error>> {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = Dimension::D2;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
@@ -95,7 +93,6 @@ fn test_2d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.dim = Dimension::D2;
     parameters.initial_condition = InitialCondition::Randomized;
     parameters.random_seed = 0x1234;
     parameters.p_initial = 0.5;

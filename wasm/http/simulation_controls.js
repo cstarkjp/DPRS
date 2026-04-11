@@ -81,9 +81,7 @@ export class SimulationControls {
     this.populate_value("n_z", parameters.dims.n_z);
     document.getElementById(this.ele_id + "initial_center").checked =
       parameters.params.initial_center;
-    if (
-      parameters.params.simulation_kind == SimulationKind.SimplifiedDomanyKinzel
-    ) {
+    if (parameters.simulation_kind == SimulationKind.SimplifiedDomanyKinzel) {
       document.getElementById(this.ele_id + "sk_simple_dk").checked = true;
     } else {
       document.getElementById(this.ele_id + "sk_staggered_dk").checked = true;
@@ -98,9 +96,9 @@ export class SimulationControls {
       .querySelector(":checked").value;
 
     if (simulation_choice == "simple_dk") {
-      parameters.params.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
+      parameters.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
     } else {
-      parameters.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
+      parameters.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
     }
 
     parameters.params.initial_center = document.getElementById(

@@ -20,7 +20,8 @@ export class SimParameters {
     this.params.sample_period = 1;
     this.params.random_seed = 1;
     this.params.initial_center = true;
-    this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
+
+    this.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
 
     this.topo = [new TopoBc(), new TopoBc(), new TopoBc()];
     this.topo[0].periodic = true;
@@ -44,7 +45,7 @@ export class SimParameters {
       sample_period: this.params.sample_period,
       random_seed: this.params.random_seed,
       initial_center: this.params.initial_center,
-      simulation_kind: this.params.simulation_kind,
+      simulation_kind: this.simulation_kind,
     };
     const topos = [
       this.topo_as_json(0),
@@ -89,13 +90,13 @@ export class SimParameters {
     ]) {
       this.params[k] = obj.params[k];
     }
-    console.log(obj.params);
+
     if (obj.params.simulation_kind != 0) {
-      this.params.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
+      this.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
     } else {
-      this.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
+      this.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
     }
-    console.log(this.params.n_iterations);
+
     return;
   }
 }
@@ -119,8 +120,6 @@ export class Sim {
     this.parameters.params = sim_parameters.params;
     this.params = sim_parameters.params;
 
-    console.log(sim_parameters.as_json());
-
     this.log.info(
       `Probabilities p_initial:${this.parameters.probabilities.p_initial} ` +
         `p_1: ${this.parameters.probabilities.p_1} ` +
@@ -136,11 +135,11 @@ export class Sim {
         `sample_period:${this.parameters.params.sample_period} ` +
         `random_seed:${this.parameters.params.random_seed} ` +
         `initial_center:${this.parameters.params.initial_center} ` +
-        `simulation_kind:${this.parameters.params.simulation_kind}`,
+        `simulation_kind:${sim_parameters.simulation_kind}`,
     );
 
     this.simulation = new Simulation(this.parameters);
-    this.simulation.simulate();
+    this.simulation.simulate(sim_parameters.simulation_kind);
 
     this.log.info("Completed simulation");
     this.log.pop_reason();

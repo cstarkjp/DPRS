@@ -1,23 +1,3 @@
-/// Lattice growth model type.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum GrowthModelChoice {
-    #[default]
-    SimplifiedDomanyKinzel,
-    StaggeredDomanyKinzel,
-    ContactProcess,
-    PairContactProcess,
-    TwoSpeciesContactProcess,
-}
-
-/// Lattice dimension.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Dimension {
-    #[default]
-    D1,
-    D2,
-    D3,
-}
-
 /// Choice of processing type: will become a Py-passable parameter.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Processing {
@@ -141,12 +121,6 @@ fn guarantee_dpstate_is_u8() {
 /// The parameters for a simulation
 #[derive(Debug, Clone, Default)]
 pub struct SimParameters {
-    /// The growth model to use for the simulation
-    pub growth_model_choice: GrowthModelChoice,
-
-    /// The number of dimensions (1D, 2D or 3D)
-    pub dim: Dimension,
-
     /// The size in the X dimension, which must be valid for any simulation
     pub n_x: usize,
 
@@ -223,8 +197,6 @@ pub struct SimParameters {
 
 impl std::fmt::Display for SimParameters {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        writeln!(fmt, "Growth model:  {:?}", self.growth_model_choice)?;
-        writeln!(fmt, "Dimension:     {:?}", self.dim)?;
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
@@ -331,17 +303,17 @@ impl SimParameters {
     /// lattice
     ///
     /// If there is no edge buffering then this is a NOP
-    pub fn pruned_lattice<T: Clone>(&self, lattice: Vec<T>) -> Vec<T> {
+    pub fn pruned_lattice<T: Clone>(&self, lattice: Vec<T>, dim: usize) -> Vec<T> {
         if !self.do_edge_buffering {
             lattice
         } else {
             // Get an iterator over the rows specific to the dimension of the
             // lattice
             let rows: Box<dyn Iterator<Item = &[T]>> = {
-                match self.dim {
-                    Dimension::D1 => Box::new(self.rows_1d(&lattice)),
-                    Dimension::D2 => Box::new(self.rows_2d(&lattice)),
-                    Dimension::D3 => Box::new(self.rows_3d(&lattice)),
+                match dim {
+                    2 => Box::new(self.rows_2d(&lattice)),
+                    3 => Box::new(self.rows_3d(&lattice)),
+                    _ => Box::new(self.rows_1d(&lattice)),
                 }
             };
             let mut pruned = vec![];

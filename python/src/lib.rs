@@ -2,15 +2,77 @@
 // //!
 // //!
 
-// Imports
 pub mod parameters;
 
 use pyo3::prelude::*;
+
+use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
+
+use directed_percolation::dk;
+use directed_percolation::run_nd;
+use directed_percolation::{DkError, LatticeSlices, SimParameters, TrackingHistory};
+
+use crate::parameters::BoundaryCondition;
+use crate::parameters::Dimension;
+use crate::parameters::GrowthModelChoice;
+use crate::parameters::InitialCondition;
+use crate::parameters::Processing;
+use crate::parameters::Topology;
+fn sim_dk(
+    py_parameters: &parameters::PyParameters,
+) -> Result<(usize, LatticeSlices, TrackingHistory, f64), PyErr> {
+    let sim_parameters = py_parameters
+        .fill()
+        .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
+
+    println!();
+    println!("{sim_parameters}");
+    println!();
+    let (t_run_time, n_lattices, lattice_slices, tracking) = match py_parameters.dim {
+        Dimension::D1 => match py_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKSimplified1D>>(
+                    &sim_parameters,
+                )
+            }
+            GrowthModelChoice::StaggeredDomanyKinzel => {
+                run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKStaggered1D>>(&sim_parameters)
+            }
+            _ => todo!(),
+        },
+        Dimension::D2 => match py_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(
+                    &sim_parameters,
+                )
+            }
+            GrowthModelChoice::StaggeredDomanyKinzel => {
+                run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKStaggered2D>>(&sim_parameters)
+            }
+            _ => todo!(),
+        },
+        Dimension::D3 => match py_parameters.growth_model_choice {
+            GrowthModelChoice::SimplifiedDomanyKinzel => {
+                run_nd::<StdRng, dk::Cell3D, dk::LatticeModel3D<dk::DKSimplified3D>>(
+                    &sim_parameters,
+                )
+            }
+            _ => todo!(),
+        },
+    }
+    .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
+    println!(
+        "Simulation run time ({}): {:4.3}s",
+        sim_parameters.processing, t_run_time
+    );
+
+    Ok((n_lattices, lattice_slices, tracking, t_run_time))
+}
 #[pymodule]
 mod sim {
-    use directed_percolation::sim_dk;
+
     use pyo3::prelude::*;
-    use rand::rngs::StdRng;
 
     use crate::parameters::PyParameters;
 
@@ -29,11 +91,7 @@ mod sim {
 
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        let sim_parameters = py_parameters
-            .fill()
-            .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
-        let (n_lattices, lattices, tracking, t_run_time) = sim_dk::<StdRng>(sim_parameters)
-            .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
+        let (n_lattices, lattices, tracking, t_run_time) = super::sim_dk(&py_parameters)?;
         // Translation layer between DualState and bool lattice cell types.
         let mut bool_lattices: Vec<Vec<bool>> = Vec::new();
         for lattice in lattices {

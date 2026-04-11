@@ -30,37 +30,15 @@ fn sim_2d<Model: CellModel<Cell2D>>(
 }
 
 #[wasm_bindgen]
-#[derive(Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub enum SimulationKind {
     #[default]
     SimplifiedDomanyKinzel,
     StaggeredDomanyKinzel,
 }
 
-impl From<SimulationKind> for directed_percolation::GrowthModelChoice {
-    fn from(p: SimulationKind) -> directed_percolation::GrowthModelChoice {
-        match p {
-            SimulationKind::SimplifiedDomanyKinzel => {
-                directed_percolation::GrowthModelChoice::SimplifiedDomanyKinzel
-            }
-            _ => directed_percolation::GrowthModelChoice::StaggeredDomanyKinzel,
-        }
-    }
-}
-
-impl From<directed_percolation::GrowthModelChoice> for SimulationKind {
-    fn from(p: directed_percolation::GrowthModelChoice) -> SimulationKind {
-        match p {
-            directed_percolation::GrowthModelChoice::SimplifiedDomanyKinzel => {
-                SimulationKind::SimplifiedDomanyKinzel
-            }
-            _ => SimulationKind::StaggeredDomanyKinzel,
-        }
-    }
-}
-
 #[wasm_bindgen]
-#[derive(Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Params {
     pub n_iterations: usize,
     pub sample_period: usize,
@@ -75,7 +53,6 @@ impl From<&SimParameters> for Params {
         s.n_iterations = p.n_iterations;
         s.sample_period = p.sample_period;
         s.random_seed = p.random_seed;
-        s.simulation_kind = p.growth_model_choice.into();
         s.initial_center = matches![
             p.initial_condition,
             directed_percolation::InitialCondition::CentralSeed
@@ -90,7 +67,6 @@ impl From<&Params> for SimParameters {
         s.n_iterations = p.n_iterations;
         s.sample_period = p.sample_period;
         s.random_seed = p.random_seed;
-        s.growth_model_choice = p.simulation_kind.into();
         if p.initial_center {
             s.initial_condition = directed_percolation::InitialCondition::CentralSeed;
         } else {
@@ -101,7 +77,7 @@ impl From<&Params> for SimParameters {
 }
 
 #[wasm_bindgen]
-#[derive(Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Dims {
     pub n_x: usize,
     pub n_y: usize,
@@ -204,7 +180,7 @@ macro_rules! getter_setter {
 
 getter_setter! {Dims, dims, set_dims, (n_x, n_y, n_z)}
 getter_setter! {Probabilities, probabilities, set_probabilities, (p_initial, p_1, p_2)}
-getter_setter! {Params, params, set_params, (n_iterations, sample_period, random_seed,growth_model_choice, initial_condition)}
+getter_setter! {Params, params, set_params, (n_iterations, sample_period, random_seed, initial_condition)}
 
 #[wasm_bindgen]
 pub struct Simulation {
@@ -233,7 +209,7 @@ impl Simulation {
         self.parameters.clone()
     }
 
-    pub fn simulate(&mut self) -> Result<(), String> {
+    pub fn simulate(&mut self, kind: SimulationKind) -> Result<(), String> {
         self.parameters.0.do_edge_buffering = true;
         self.parameters.0.n_threads = 1;
         self.parameters.0.processing = directed_percolation::Processing::Serial;
@@ -242,23 +218,23 @@ impl Simulation {
         let dims = { if self.parameters.0.n_y < 2 { 1 } else { 2 } };
 
         let simulation_results = {
-            match (dims, self.parameters.0.growth_model_choice) {
-                (1, directed_percolation::GrowthModelChoice::SimplifiedDomanyKinzel) => {
+            match (dims, kind) {
+                (1, SimulationKind::SimplifiedDomanyKinzel) => {
                     sim_1d::<DKSimplified1D>(&self.parameters.0)
                 }
-                (1, directed_percolation::GrowthModelChoice::StaggeredDomanyKinzel) => {
+                (1, SimulationKind::StaggeredDomanyKinzel) => {
                     sim_1d::<DKStaggered1D>(&self.parameters.0)
                 }
-                (2, directed_percolation::GrowthModelChoice::SimplifiedDomanyKinzel) => {
+                (2, SimulationKind::SimplifiedDomanyKinzel) => {
                     sim_2d::<DKSimplified2D>(&self.parameters.0)
                 }
-                (2, directed_percolation::GrowthModelChoice::StaggeredDomanyKinzel) => {
+                (2, SimulationKind::StaggeredDomanyKinzel) => {
                     sim_2d::<DKStaggered2D>(&self.parameters.0)
                 }
                 _ => {
                     return Err(format!(
-                        "Unable to perform {dims}D simulation with {:?} growth model at present",
-                        self.parameters.0.growth_model_choice,
+                        "Unable to perform {dims}D simulation with {:?} simulation kind at present",
+                        kind,
                     ))
                     .into();
                 }
