@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::{DualState, SimParameters, Statistics};
+use crate::{DualState, Parameters, Statistics};
 
 pub trait CellSpace {
     /// The number of dimensions (1, 2 or 3)
@@ -13,7 +13,7 @@ pub trait CellSpace {
 pub trait EvolvableLatticeDualState<CS: CellSpace>: std::fmt::Debug + Sized {
     /// Create a fresh grid (vector of DualState cells) with all values=false,
     /// along with birth/survival rules set by the "born" and "survive" vectors.
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()>;
+    fn create_from_parameters(_parameters: &Parameters) -> Result<Self, ()>;
 
     /// Generate a randomized grid with cell values of 0 or 1 sampled
     /// from a de-facto Bernoulli distribution.

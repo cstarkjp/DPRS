@@ -1,4 +1,3 @@
-use directed_percolation::SimParameters;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
@@ -19,8 +18,8 @@ pub struct Params {
     pub simulation_kind: SimulationKind,
 }
 
-impl From<&SimParameters> for Params {
-    fn from(p: &SimParameters) -> Params {
+impl From<&directed_percolation::Parameters> for Params {
+    fn from(p: &directed_percolation::Parameters) -> Params {
         Params {
             n_iterations: p.n_iterations,
             sample_period: p.sample_period,
@@ -34,9 +33,9 @@ impl From<&SimParameters> for Params {
     }
 }
 
-impl From<&Params> for SimParameters {
-    fn from(p: &Params) -> SimParameters {
-        let mut s = SimParameters {
+impl From<&Params> for directed_percolation::Parameters {
+    fn from(p: &Params) -> directed_percolation::Parameters {
+        let mut s = directed_percolation::Parameters {
             n_iterations: p.n_iterations,
             sample_period: p.sample_period,
             random_seed: p.random_seed,

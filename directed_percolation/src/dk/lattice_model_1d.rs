@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use crate::{Cell1D, CellModel, EvolvableLatticeDualState, Statistics};
-use crate::{DualState, InitialCondition, SimParameters};
+use crate::{DualState, InitialCondition, Parameters};
 
 /// Model lattice in 1d.
 ///
@@ -19,7 +19,7 @@ pub struct LatticeModel1D<C: CellModel<Cell1D>> {
     /// The current lattice
     lattice: Vec<DualState>,
     /// Simulation parameters, only a few of which are used
-    parameters: SimParameters,
+    parameters: Parameters,
     /// Iteration of the simulation
     ///
     /// The first update is performed with iteration==1
@@ -106,7 +106,7 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
 }
 
 impl<C: CellModel<Cell1D>> EvolvableLatticeDualState<Cell1D> for LatticeModel1D<C> {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             cell_model: C::create_from_parameters(parameters)?,
             lattice_n_x: parameters.lattice_n_x(),

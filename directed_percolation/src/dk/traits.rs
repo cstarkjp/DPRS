@@ -1,5 +1,5 @@
 use super::{CellNbrhood2D, CellNbrhood3D};
-use crate::{CellSpace, DualState, SimParameters};
+use crate::{CellSpace, DualState, Parameters};
 use rand::Rng;
 
 /// Marker type for 1d-simulation of cells with on/off state (boolean)
@@ -35,7 +35,7 @@ impl CellSpace for Cell3D {
 /// different threads at the same time in the parallel working.
 pub trait CellModel<CS: CellSpace>: Sync + Sized + std::fmt::Debug {
     /// Create the cell model from the parameters
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()>;
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()>;
 
     /// Update the state of a cell given the iteration, current Rng state, and neighborhood
     fn update_state<R: Rng>(

@@ -2,7 +2,7 @@ use crate::{BoundaryCondition, DualState, InitialCondition, Processing, Topology
 
 /// The parameters for a simulation
 #[derive(Debug, Clone, Default)]
-pub struct SimParameters {
+pub struct Parameters {
     /// The size in the X dimension, which must be valid for any simulation
     pub n_x: usize,
 
@@ -77,7 +77,7 @@ pub struct SimParameters {
     pub n_threads: usize,
 }
 
-impl std::fmt::Display for SimParameters {
+impl std::fmt::Display for Parameters {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
@@ -104,7 +104,7 @@ impl std::fmt::Display for SimParameters {
 }
 
 /// Simulation parameters methods.
-impl SimParameters {
+impl Parameters {
     /// Returns the amount of padding in each axis
     pub fn padding(&self) -> usize {
         self.do_edge_buffering as usize

@@ -1,6 +1,4 @@
-pub use crate::{
-    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
-};
+pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
 use super::{Cell3D, CellModel, CellNbrhood3D, LatticeModel3D};
 use super::{run_nd, simulation_nd};
@@ -11,7 +9,7 @@ use rand::rngs::ChaCha8Rng;
 struct MoveDownRightModel3D {}
 
 impl CellModel<Cell3D> for MoveDownRightModel3D {
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(_parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {})
     }
     fn update_state<R: rand::Rng>(
@@ -30,7 +28,7 @@ fn test_3d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_y = 17;
     let n_z = 19;
 
-    let mut parameters = SimParameters::default();
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
     parameters.n_z = n_z;
@@ -70,7 +68,7 @@ fn test_3d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 13;
     let n_y = 17;
     let n_z = 19;
-    let mut parameters = SimParameters::default();
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
     parameters.n_z = n_z;
@@ -104,7 +102,7 @@ fn test_3d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     let n_y = 17;
     let n_z = 19;
 
-    let mut parameters = SimParameters::default();
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
     parameters.n_z = n_z;

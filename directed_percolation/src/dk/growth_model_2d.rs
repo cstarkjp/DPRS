@@ -1,6 +1,6 @@
 use super::CellNbrhood2D;
 use crate::{Cell2D, CellModel};
-use crate::{DualState, SimParameters};
+use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
 /// DKSimplified2D implements the CellModel2D trait, plus these.
@@ -14,7 +14,7 @@ pub struct DKSimplified2D {
 
 // Implement CellModel2D trait for DKSimplified2D.
 impl CellModel<Cell2D> for DKSimplified2D {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
@@ -81,7 +81,7 @@ pub struct DKStaggered2D {
 
 // Implement CellModel2D trait for DKStaggered2D.
 impl CellModel<Cell2D> for DKStaggered2D {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,

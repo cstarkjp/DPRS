@@ -1,5 +1,3 @@
-use directed_percolation::SimParameters;
-
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
@@ -10,8 +8,8 @@ pub struct Probabilities {
     pub p_2: f64,
 }
 
-impl From<&SimParameters> for Probabilities {
-    fn from(p: &SimParameters) -> Probabilities {
+impl From<&directed_percolation::Parameters> for Probabilities {
+    fn from(p: &directed_percolation::Parameters) -> Probabilities {
         Probabilities {
             p_initial: p.p_initial,
             p_1: p.p_1,
@@ -19,9 +17,9 @@ impl From<&SimParameters> for Probabilities {
         }
     }
 }
-impl From<&Probabilities> for SimParameters {
-    fn from(p: &Probabilities) -> SimParameters {
-        SimParameters {
+impl From<&Probabilities> for directed_percolation::Parameters {
+    fn from(p: &Probabilities) -> directed_percolation::Parameters {
+        directed_percolation::Parameters {
             p_initial: p.p_initial,
             p_1: p.p_1,
             p_2: p.p_2,

@@ -8,7 +8,7 @@ use crate::enums::{
     BoundaryCondition, Dimension, DprsError, GrowthModelChoice, InitialCondition, Processing,
     Topology,
 };
-use directed_percolation::SimParameters;
+use directed_percolation::Parameters;
 
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
@@ -70,7 +70,7 @@ impl std::fmt::Display for PyParameters {
 impl PyParameters {
     /// Copy Python-facing parameters.
 
-    pub fn fill(&self) -> Result<SimParameters, DprsError> {
+    pub fn fill(&self) -> Result<Parameters, DprsError> {
         use directed_percolation::*;
         let py_p = self.clone();
         // Trap errors in parameter bounds
@@ -134,7 +134,7 @@ impl PyParameters {
                 py_p.n_threads
             )));
         }
-        Ok(SimParameters {
+        Ok(Parameters {
             n_x: py_p.n_x,
             n_y: py_p.n_y,
             n_z: py_p.n_z,

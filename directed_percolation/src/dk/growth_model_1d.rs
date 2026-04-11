@@ -1,5 +1,5 @@
 use crate::{Cell1D, CellModel};
-use crate::{DualState, SimParameters};
+use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
 /// DKSimplified1D implements the CellModel1D trait, plus these.
@@ -14,7 +14,7 @@ pub struct DKSimplified1D {
 
 // Implement CellModel1D trait for DKSimplified1D.
 impl CellModel<Cell1D> for DKSimplified1D {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model and its parameters
         Ok(Self {
             p_1: parameters.p_1,
@@ -56,7 +56,7 @@ pub struct DKStaggered1D {
 
 // Implement CellModel1D trait for DKStaggered1D.
 impl CellModel<Cell1D> for DKStaggered1D {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model and its parameters
         Ok(Self {
             p_1: parameters.p_1,

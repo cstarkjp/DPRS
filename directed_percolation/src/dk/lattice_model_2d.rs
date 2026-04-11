@@ -3,7 +3,7 @@ use rayon::prelude::*;
 
 use super::{CellNbrhood2D, RowIterator2D};
 use crate::{Cell2D, CellModel, EvolvableLatticeDualState, Statistics};
-use crate::{DualState, InitialCondition, SimParameters};
+use crate::{DualState, InitialCondition, Parameters};
 
 /// Model lattice in 2d.
 ///
@@ -22,7 +22,7 @@ pub struct LatticeModel2D<C: CellModel<Cell2D>> {
     /// The current lattice
     lattice: Vec<DualState>,
     /// Simulation parameters, only a few of which are used
-    parameters: SimParameters,
+    parameters: Parameters,
     /// Iteration of the simulation
     ///
     /// The first update is performed with iteration==1
@@ -168,7 +168,7 @@ impl<C: CellModel<Cell2D>> LatticeModel2D<C> {
 }
 
 impl<C: CellModel<Cell2D>> EvolvableLatticeDualState<Cell2D> for LatticeModel2D<C> {
-    fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             cell_model: C::create_from_parameters(parameters)?,
             lattice_n_x: parameters.lattice_n_x(),

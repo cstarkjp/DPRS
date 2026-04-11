@@ -1,15 +1,13 @@
-use directed_percolation::SimParameters;
+use directed_percolation as dprs;
 use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
-
-
 
 use crate::{Dims, Params, Probabilities, TopoBc};
 
 #[wasm_bindgen]
 #[derive(Default, Clone)]
-pub struct Parameters(SimParameters);
+pub struct Parameters(dprs::Parameters);
 
 crate::getter_setter! {Parameters, Dims, dims, set_dims, (n_x, n_y, n_z)}
 crate::getter_setter! {Parameters, Probabilities, probabilities, set_probabilities, (p_initial, p_1, p_2)}
@@ -31,7 +29,7 @@ impl Parameters {
         if self.0.n_y < 2 { 1 } else { 2 }
     }
 
-    pub(crate) fn sim_parameters(&self) -> &SimParameters {
+    pub(crate) fn sim_parameters(&self) -> &dprs::Parameters {
         &self.0
     }
 

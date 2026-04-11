@@ -1,7 +1,5 @@
 use crate::TrackingHistory;
-pub use crate::{
-    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
-};
+pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
 use super::{Cell1D, CellModel, DKSimplified1D, DKStaggered1D, LatticeModel1D};
 
@@ -13,7 +11,7 @@ use rand::rngs::ChaCha8Rng;
 struct MoveRightModel1D {}
 
 impl CellModel<Cell1D> for MoveRightModel1D {
-    fn create_from_parameters(_parameters: &SimParameters) -> Result<Self, ()> {
+    fn create_from_parameters(_parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {})
     }
     fn update_state<R: rand::Rng>(
@@ -29,7 +27,7 @@ impl CellModel<Cell1D> for MoveRightModel1D {
 #[test]
 fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
-    let mut parameters = SimParameters::default();
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
@@ -50,7 +48,7 @@ fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
-    let mut parameters = SimParameters::default();
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
@@ -69,8 +67,8 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn run_1d_parameters(seed: usize, n_x: usize, n_iterations: usize) -> SimParameters {
-    let mut parameters = SimParameters::default();
+fn run_1d_parameters(seed: usize, n_x: usize, n_iterations: usize) -> Parameters {
+    let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.initial_condition = InitialCondition::Randomized;
     parameters.random_seed = seed;

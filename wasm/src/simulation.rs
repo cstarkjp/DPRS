@@ -1,4 +1,3 @@
-use directed_percolation::SimParameters;
 use directed_percolation::dk::{Cell1D, LatticeModel1D};
 use directed_percolation::dk::{Cell2D, LatticeModel2D};
 use directed_percolation::dk::{DKSimplified1D, DKSimplified2D};
@@ -18,14 +17,14 @@ use crate::{Parameters, SimulationKind};
 
 /// A 1D model simulation
 fn sim_1d<Model: CellModel<Cell1D>>(
-    parameters: &SimParameters,
+    parameters: &directed_percolation::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), DpError> {
     simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<Model>>(parameters)
 }
 
 /// A 2D model simulation
 fn sim_2d<Model: CellModel<Cell2D>>(
-    parameters: &SimParameters,
+    parameters: &directed_percolation::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), DpError> {
     simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<Model>>(parameters)
 }

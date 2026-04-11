@@ -20,4 +20,4 @@ pub use types::{LatticeHistory, LatticeSlices};
 pub mod dk;
 mod parameters;
 pub use enums::{BoundaryCondition, DualState, InitialCondition, Processing, Topology};
-pub use parameters::SimParameters;
+pub use parameters::Parameters;
