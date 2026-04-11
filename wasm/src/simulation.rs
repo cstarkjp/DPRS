@@ -4,7 +4,6 @@ use directed_percolation::dk::{Cell2D, LatticeModel2D};
 use directed_percolation::dk::{DKSimplified1D, DKSimplified2D};
 use directed_percolation::dk::{DKStaggered1D, DKStaggered2D};
 use directed_percolation::simulation_nd;
-use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
 

@@ -1,21 +1,11 @@
 use directed_percolation::SimParameters;
-use directed_percolation::dk::{Cell1D, LatticeModel1D};
-use directed_percolation::dk::{Cell2D, LatticeModel2D};
-use directed_percolation::dk::{DKSimplified1D, DKSimplified2D};
-use directed_percolation::dk::{DKStaggered1D, DKStaggered2D};
-use directed_percolation::simulation_nd;
 use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use directed_percolation::DkError;
-use directed_percolation::DualState;
-use directed_percolation::TrackingHistory;
-use directed_percolation::dk::CellModel;
 
-use rand::rngs::ChaCha8Rng;
 
-use crate::{Dims, Params, Probabilities, SimulationKind, TopoBc};
+use crate::{Dims, Params, Probabilities, TopoBc};
 
 #[wasm_bindgen]
 #[derive(Default, Clone)]
