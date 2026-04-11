@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::{DualState, SimParameters};
+use crate::{DualState, SimParameters, Statistics};
 
 pub trait CellDim {
     /// The number of dimensions (1, 2 or 3)
@@ -39,7 +39,7 @@ pub trait DramaticallySimulatable<D: CellDim>: std::fmt::Debug + Sized {
 
     /// Lattice occupancy statistics (mean order parameter, cluster radius, etc.)
     /// TODO - change this to provide the total of the occupancy of the unpadded region
-    fn statistics(&self) -> (f64, f64, f64);
+    fn statistics(&self, stats: &mut Statistics);
 
     /// Return the iteration number of the model
     fn iteration(&self) -> usize;

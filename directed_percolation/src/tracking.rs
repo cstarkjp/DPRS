@@ -7,9 +7,8 @@ pub struct Statistics {
     /// Iteration number for the statistic
     pub iteration: u32,
 
-    // TODO:
-    // /// Simulation time
-    // pub time: f32,
+    /// Simulation time
+    pub time: f32,
 
     /// The total mass, i.e. number of active cells, in the lattice
     pub mass: f32,
@@ -41,13 +40,9 @@ impl TrackingHistory {
         lattice_model: &T,
     ) {
         let mut statistics = Statistics::default();
-        let lm_s = lattice_model.statistics();
-        statistics.mass = lm_s.0 as f32;
-        statistics.mean_rho = lm_s.1 as f32;
-        statistics.mean_radius = lm_s.2 as f32;
         statistics.iteration = iteration as u32;
-        // TODO: implement recording of sim time (i/2 for staggered; irregular for CP)
-        // statistics.time = (iteration as f32)/2.;
+        // The iteration must be set before invoking the lattice model as it may use the value
+        lattice_model.statistics(&mut statistics);
         self.tracking.push(statistics);
     }
 

@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::{CellNbrhood2D, RowIterator2D};
-use crate::{Cell2D, CellModel, DramaticallySimulatable};
+use crate::{Cell2D, CellModel, DramaticallySimulatable, Statistics};
 use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 2d.
@@ -191,7 +191,7 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
         &self.lattice
     }
 
-    fn statistics(&self) -> (f64, f64, f64) {
+    fn statistics(&self, statistics: &mut Statistics) {
         // TODO: compute centroid and measure moment from there
         let total: usize = self
             .lattice()
@@ -221,7 +221,10 @@ impl<C: CellModel<Cell2D>> DramaticallySimulatable<Cell2D> for LatticeModel2D<C>
         let mean_rho = mass / (self.n_cells() as f64);
         let mean_radius = moment / mass;
 
-        (mass, mean_rho, mean_radius)
+        statistics.mass = mass as f32;
+        statistics.mean_rho = mean_rho as f32;
+        statistics.mean_radius = mean_radius as f32;
+        statistics.time = (statistics.iteration as f32) / 2.;
     }
 
     fn iteration(&self) -> usize {
