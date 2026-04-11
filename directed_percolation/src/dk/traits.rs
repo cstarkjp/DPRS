@@ -33,7 +33,7 @@ impl CellSpace for Cell3D {
 ///
 /// This must be [Sync] as the model can be accessed by
 /// different threads at the same time in the parallel working.
-pub trait CellModel<Dim: CellSpace>: Sync + Sized + std::fmt::Debug {
+pub trait CellModel<CS: CellSpace>: Sync + Sized + std::fmt::Debug {
     /// Create the cell model from the parameters
     fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()>;
 
@@ -42,6 +42,6 @@ pub trait CellModel<Dim: CellSpace>: Sync + Sized + std::fmt::Debug {
         &self,
         iteration: usize,
         rng: &mut R,
-        nbrhood: &Dim::Nbrhood,
+        nbrhood: &CS::Nbrhood,
     ) -> DualState;
 }
