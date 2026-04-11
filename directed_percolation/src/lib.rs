@@ -35,6 +35,5 @@ pub use types::{LatticeHistory, LatticeSlices};
 pub mod dk;
 mod parameters;
 pub use parameters::{
-    BoundaryCondition, Dimension, DualState, GrowthModelChoice, InitialCondition, Processing,
-    SimParameters, Topology,
+    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
 };

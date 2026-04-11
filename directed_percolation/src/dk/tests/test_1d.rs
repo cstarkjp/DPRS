@@ -1,6 +1,6 @@
 use crate::TrackingHistory;
 pub use crate::{
-    BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
+    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
 use super::{Cell1D, CellModel, DKSimplified1D, DKStaggered1D, LatticeModel1D};
@@ -31,7 +31,6 @@ fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = Dimension::D1;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
@@ -53,7 +52,6 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = Dimension::D1;
     parameters.initial_condition = InitialCondition::CentralSeed;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
@@ -74,7 +72,6 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
 fn run_1d_parameters(seed: usize, n_x: usize, n_iterations: usize) -> SimParameters {
     let mut parameters = SimParameters::default();
     parameters.n_x = n_x;
-    parameters.dim = Dimension::D1;
     parameters.initial_condition = InitialCondition::Randomized;
     parameters.random_seed = seed;
     parameters.processing = Processing::Parallel;
@@ -84,7 +81,6 @@ fn run_1d_parameters(seed: usize, n_x: usize, n_iterations: usize) -> SimParamet
     parameters.n_iterations = n_iterations;
     parameters.sample_period = n_iterations;
     parameters.do_edge_buffering = true;
-    parameters.growth_model_choice = crate::GrowthModelChoice::StaggeredDomanyKinzel;
 
     parameters.p_initial = 0.5;
     parameters.p_1 = 0.5; // staggered: prob if one nbr activated; simple used if activated
@@ -172,7 +168,6 @@ fn test_1d_run_random_simplified_critical() -> Result<(), Box<dyn std::error::Er
 fn test_1d_run_random_simplified_supercritical() -> Result<(), Box<dyn std::error::Error>> {
     // mean density = k. t^-delta; delta = 0.159646 for DK simplified
     let mut parameters = run_1d_parameters(0x1226, 100_000, 10_000);
-    parameters.growth_model_choice = crate::GrowthModelChoice::SimplifiedDomanyKinzel;
     parameters.initial_condition = InitialCondition::Randomized;
     parameters.p_initial = 0.5;
     parameters.p_1 = 0.57; // supercritical value

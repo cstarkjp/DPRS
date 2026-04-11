@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use crate::{Cell1D, CellModel, DramaticallySimulatable};
-use crate::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
+use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 1d.
 ///
@@ -51,11 +51,6 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
         // let chunk_length = (self.n_x + n_chunks - 1) / n_chunks;
         // Clippy recommendation:
         let chunk_length = self.lattice_n_x.div_ceil(n_chunks);
-
-        let _do_staggered = match self.parameters.growth_model_choice {
-            GrowthModelChoice::StaggeredDomanyKinzel => true,
-            _ => false,
-        };
 
         updated_lattice
             .par_chunks_mut(chunk_length)
