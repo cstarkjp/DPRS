@@ -15,15 +15,16 @@ macro_rules! console_log {
 
 /// Make a default constructor for a Wasm type given that supports 'Default'
 macro_rules! make_default_constructor {
-{$t: ident  } => {
-#[wasm_bindgen]
-impl $t {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
-        Self::default()
+    {$t: ident  } => {
+        #[wasm_bindgen]
+        impl $t {
+            #[wasm_bindgen(constructor)]
+            pub fn new() -> Self {
+                Self::default()
+            }
+        }
     }
 }
-}}
 
 /// Create 'getter' and 'setter' methods for elements of a type
 #[macro_export]
@@ -45,6 +46,9 @@ macro_rules! getter_setter {
 }
     }
 }
+
+mod params;
+pub use params::{Params, SimulationKind};
 
 mod wasm_export;
 pub use wasm_export::Parameters;
