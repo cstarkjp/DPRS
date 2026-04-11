@@ -2,9 +2,8 @@ use rand::{Rng, SeedableRng};
 use std::time::Instant;
 
 use crate::SimParameters;
-use crate::dk;
-use dk::{CellDim, DramaticallySimulatable, simulation_nd};
-use dk::{DkError, LatticeSlices, TrackingHistory};
+use crate::{CellDim, DramaticallySimulatable, simulation_nd};
+use crate::{DkError, LatticeSlices, TrackingHistory};
 
 /// Run a simulation and record how long the computation takes.
 ///

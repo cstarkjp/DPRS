@@ -1,7 +1,7 @@
 use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
-use super::{Cell1D, CellModel, DramaticallySimulatable};
+use crate::{Cell1D, CellModel, DramaticallySimulatable};
 use crate::{DualState, GrowthModelChoice, InitialCondition, SimParameters};
 
 /// Model lattice in 1d.

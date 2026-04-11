@@ -1,4 +1,5 @@
-use super::{Cell2D, CellModel, CellNbrhood2D};
+use super::CellNbrhood2D;
+use crate::{Cell2D, CellModel};
 use crate::{DualState, SimParameters};
 use rand::{Rng, RngExt};
 

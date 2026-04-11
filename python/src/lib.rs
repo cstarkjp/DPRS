@@ -8,7 +8,7 @@ pub mod parameters;
 use pyo3::prelude::*;
 #[pymodule]
 mod sim {
-    use directed_percolation::dk::sim_dk;
+    use directed_percolation::sim_dk;
     use pyo3::prelude::*;
     use rand::rngs::StdRng;
 

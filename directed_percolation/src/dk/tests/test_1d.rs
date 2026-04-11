@@ -1,4 +1,4 @@
-use crate::dk::TrackingHistory;
+use crate::TrackingHistory;
 pub use crate::{
     BoundaryCondition, Dimension, DualState, InitialCondition, Processing, SimParameters, Topology,
 };

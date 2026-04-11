@@ -1,11 +1,8 @@
 //! Documentation of Domany Kinzel models
 //!
-use rand::{Rng, SeedableRng};
-use thiserror::Error;
-
-mod tracking;
+//!
 mod traits;
-mod types;
+pub use traits::{Cell1D, Cell2D, Cell3D, CellModel};
 
 mod cell_nbrhood_2d;
 mod cell_nbrhood_3d;
@@ -15,17 +12,9 @@ mod growth_model_3d;
 mod lattice_model_1d;
 mod lattice_model_2d;
 mod lattice_model_3d;
-mod run;
-mod simulation;
-pub use run::run_nd;
 
 #[cfg(test)]
 mod tests;
-
-pub use simulation::simulation_nd;
-
-pub use tracking::{Statistics, TrackingHistory};
-pub use types::{LatticeHistory, LatticeSlices};
 
 pub use cell_nbrhood_2d::{CellNbrhood2D, RowIterator2D};
 pub use cell_nbrhood_3d::{CellNbrhood3D, RowIterator3D};
@@ -36,60 +25,3 @@ pub use growth_model_3d::DKSimplified3D;
 pub use lattice_model_1d::LatticeModel1D;
 pub use lattice_model_2d::LatticeModel2D;
 pub use lattice_model_3d::LatticeModel3D;
-pub use traits::{Cell1D, Cell2D, Cell3D, CellDim, CellModel, DramaticallySimulatable};
-
-/// Entry point to this module.
-use crate::{Dimension, GrowthModelChoice, SimParameters};
-
-#[derive(Debug, Default, Error)]
-pub enum DkError {
-    #[default]
-    #[error("unknown error in DK simulation")]
-    UnknownError,
-    #[error("error building rayon threads")]
-    ThreadBuildError(#[from] rayon::ThreadPoolBuildError),
-    #[error("Failed to create the lattice model")]
-    FailedToCreateModel,
-    #[error("Lattice history slicing error: {0}")]
-    LatticeHistoryError(String),
-}
-
-pub fn sim_dk<R: Rng + SeedableRng + Send>(
-    sim_parameters: SimParameters,
-) -> Result<(usize, LatticeSlices, TrackingHistory, f64), DkError> {
-    println!();
-    println!("{sim_parameters}");
-    println!();
-    let (t_run_time, n_lattices, lattice_slices, tracking) = match &sim_parameters.dim {
-        Dimension::D1 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell1D, LatticeModel1D<DKSimplified1D>>(&sim_parameters)?
-            }
-            GrowthModelChoice::StaggeredDomanyKinzel => {
-                run_nd::<R, Cell1D, LatticeModel1D<DKStaggered1D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-        Dimension::D2 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell2D, LatticeModel2D<DKSimplified2D>>(&sim_parameters)?
-            }
-            GrowthModelChoice::StaggeredDomanyKinzel => {
-                run_nd::<R, Cell2D, LatticeModel2D<DKStaggered2D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-        Dimension::D3 => match &sim_parameters.growth_model_choice {
-            GrowthModelChoice::SimplifiedDomanyKinzel => {
-                run_nd::<R, Cell3D, LatticeModel3D<DKSimplified3D>>(&sim_parameters)?
-            }
-            _ => todo!(),
-        },
-    };
-    println!(
-        "Simulation run time ({}): {:4.3}s",
-        sim_parameters.processing, t_run_time
-    );
-
-    Ok((n_lattices, lattice_slices, tracking, t_run_time))
-}
