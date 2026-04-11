@@ -1,8 +1,8 @@
 use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
-use super::{Cell2D, CellNbrhood2D, RowIterator2D};
-use super::{CellModel, DramaticallySimulatable};
+use super::{CellNbrhood2D, RowIterator2D};
+use crate::{Cell2D, CellModel, DramaticallySimulatable};
 use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 2d.

@@ -1,4 +1,4 @@
-use super::{Cell1D, CellModel};
+use crate::{Cell1D, CellModel};
 use crate::{DualState, SimParameters};
 use rand::{Rng, RngExt};
 
