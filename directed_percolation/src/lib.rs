@@ -25,7 +25,7 @@ pub enum DkError {
 }
 
 pub use dk::{Cell1D, Cell2D, Cell3D, CellModel};
-pub use traits::{CellDim, EvolvableLatticeDualState};
+pub use traits::{CellSpace, EvolvableLatticeDualState};
 
 pub use simulation::simulation_nd;
 

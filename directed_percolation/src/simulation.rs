@@ -1,6 +1,6 @@
 use rand::{Rng, SeedableRng};
 
-use crate::{CellDim, EvolvableLatticeDualState};
+use crate::{CellSpace, EvolvableLatticeDualState};
 use crate::{DkError, LatticeHistory, LatticeSlices, TrackingHistory};
 use crate::{InitialCondition, Processing, SimParameters};
 
@@ -9,7 +9,11 @@ use crate::{InitialCondition, Processing, SimParameters};
 /// Returns the number of lattices sampled, the sampled lattices, and tracking
 /// which is a Vec with first entry a vec of iteration numbers and the second
 /// entry a vec of mean density for the respective iteration.
-pub fn simulation_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: EvolvableLatticeDualState<D>>(
+pub fn simulation_nd<
+    R: Rng + SeedableRng + Send,
+    CS: CellSpace,
+    LM: EvolvableLatticeDualState<CS>,
+>(
     parameters: &SimParameters,
 ) -> Result<(usize, LatticeSlices, TrackingHistory), DkError> {
     let mut lm =
