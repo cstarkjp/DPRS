@@ -33,7 +33,9 @@ pub use tracking::{Statistics, TrackingHistory};
 pub use types::{LatticeHistory, LatticeSlices};
 
 pub mod dk;
+
+mod enums;
 mod parameters;
-pub use parameters::{
-    BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
-};
+
+pub use enums::{BoundaryCondition, DualState, InitialCondition, Processing, Topology};
+pub use parameters::SimParameters;
