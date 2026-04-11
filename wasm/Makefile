@@ -1,9 +1,9 @@
 .PHONY: all start_http serve help zip dprs.zip transfer
 
-WASM_PACK = wasm-pack build --dev --target web
-WASM_PACK = WASM_PACK_WASM_OPT=false wasm-pack build --release --target web
-WASM_PACK = WASM_PACK_WASM_OPT=true wasm-pack build --dev --target web
-WASM_PACK = wasm-pack build --dev --target web
+# WASM_PACK = wasm-pack build --dev --target web
+# WASM_PACK = WASM_PACK_WASM_OPT=false wasm-pack build --release --target web
+# WASM_PACK = WASM_PACK_WASM_OPT=true wasm-pack build --dev --target web
+# WASM_PACK = wasm-pack build --dev --target web
 WASM_PACK = WASM_PACK_WASM_OPT=true wasm-pack build --release --target web
 
 all:
@@ -32,8 +32,6 @@ zip: dprs.zip
 dprs.zip:
 	@echo "Zipping package"
 	zip dprs.zip favicon.ico
-# This file doesn't exist
-# 	zip dprs.zip http/favicon.ico
 	zip dprs.zip http/dk.js
 	zip dprs.zip http/html.js
 	zip dprs.zip http/log.js
@@ -52,5 +50,5 @@ dprs.zip:
 
 transfer:
 	@echo "Copying http/ and pkg/ to ../docs/live-demo"
-	cp -R http ../docs/live-demo
-	cp -R pkg ../docs/live-demo
+	cp -R http ../documentation/docs/live-demo
+	cp -R pkg ../documentation/docs/live-demo
