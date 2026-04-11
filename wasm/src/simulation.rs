@@ -17,15 +17,15 @@ use crate::{Parameters, SimulationKind};
 
 /// A 1D model simulation
 fn sim_1d<Model: CellModel<Cell1D>>(
-    parameters: &directed_percolation::Parameters,
-) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), DpError> {
+    parameters: &SimParameters,
+) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<Model>>(parameters)
 }
 
 /// A 2D model simulation
 fn sim_2d<Model: CellModel<Cell2D>>(
-    parameters: &directed_percolation::Parameters,
-) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), DpError> {
+    parameters: &SimParameters,
+) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<Model>>(parameters)
 }
 
