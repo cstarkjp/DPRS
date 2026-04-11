@@ -2,13 +2,13 @@ use rand::{Rng, SeedableRng};
 use std::time::Instant;
 
 use crate::SimParameters;
-use crate::{CellDim, DramaticallySimulatable, simulation_nd};
+use crate::{CellDim, EvolvableLatticeDualState, simulation_nd};
 use crate::{DkError, LatticeSlices, TrackingHistory};
 
 /// Run a simulation and record how long the computation takes.
 ///
 /// Returns the duration, number of lattices recorded, the lattices, and the tracking
-pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: DramaticallySimulatable<D>>(
+pub fn run_nd<R: Rng + SeedableRng + Send, D: CellDim, LM: EvolvableLatticeDualState<D>>(
     parameters: &SimParameters,
 ) -> Result<(f64, usize, LatticeSlices, TrackingHistory), DkError> {
     // Set up thread pool of size set by user

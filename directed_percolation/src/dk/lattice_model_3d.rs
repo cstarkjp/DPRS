@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::{CellNbrhood3D, RowIterator3D};
-use crate::{Cell3D, CellModel, DramaticallySimulatable};
+use crate::{Cell3D, CellModel, EvolvableLatticeDualState};
 use crate::{DualState, InitialCondition, SimParameters};
 
 /// Model lattice in 3d.
@@ -11,7 +11,7 @@ use crate::{DualState, InitialCondition, SimParameters};
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(Clone, Debug)]
-pub struct LatticeModel3D<C: CellModel<Cell3D>> {
+pub struct LatticeDualState3D<C: CellModel<Cell3D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3x3 cell neighborhoods in one time step and the next.
     cell_model: C,
@@ -31,7 +31,7 @@ pub struct LatticeModel3D<C: CellModel<Cell3D>> {
     iteration: usize,
 }
 
-impl<C: CellModel<Cell3D>> std::fmt::Display for LatticeModel3D<C> {
+impl<C: CellModel<Cell3D>> std::fmt::Display for LatticeDualState3D<C> {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             fmt,
@@ -61,7 +61,7 @@ impl<C: CellModel<Cell3D>> std::fmt::Display for LatticeModel3D<C> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
+impl<C: CellModel<Cell3D>> LatticeDualState3D<C> {
     /// Compute the cell index of a given (x, y, z) coordinate.
     fn i_cell(&self, x: usize, y: usize, z: usize) -> usize {
         x + self.lattice_n_x * y + self.lattice_n_x * self.lattice_n_y * z
@@ -231,7 +231,7 @@ impl<C: CellModel<Cell3D>> LatticeModel3D<C> {
     }
 }
 
-impl<C: CellModel<Cell3D>> DramaticallySimulatable<Cell3D> for LatticeModel3D<C> {
+impl<C: CellModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for LatticeDualState3D<C> {
     fn create_from_parameters(parameters: &SimParameters) -> Result<Self, ()> {
         Ok(Self {
             cell_model: C::create_from_parameters(parameters)?,

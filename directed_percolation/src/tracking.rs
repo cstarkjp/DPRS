@@ -1,4 +1,4 @@
-use super::{CellDim, DramaticallySimulatable};
+use super::{CellDim, EvolvableLatticeDualState};
 
 /// Statistics gathered for each iteration of a simulation (if the lattice model
 /// provides them)
@@ -10,7 +10,6 @@ pub struct Statistics {
     // TODO:
     // /// Simulation time
     // pub time: f32,
-
     /// The total mass, i.e. number of active cells, in the lattice
     pub mass: f32,
 
@@ -35,7 +34,7 @@ impl std::ops::Deref for TrackingHistory {
 }
 
 impl TrackingHistory {
-    pub fn update<D: CellDim, T: DramaticallySimulatable<D>>(
+    pub fn update<D: CellDim, T: EvolvableLatticeDualState<D>>(
         &mut self,
         iteration: usize,
         lattice_model: &T,

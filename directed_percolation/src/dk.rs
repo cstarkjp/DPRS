@@ -22,6 +22,6 @@ pub use growth_model_1d::{DKSimplified1D, DKStaggered1D};
 pub use growth_model_2d::{DKSimplified2D, DKStaggered2D};
 pub use growth_model_3d::DKSimplified3D;
 
-pub use lattice_model_1d::LatticeModel1D;
-pub use lattice_model_2d::LatticeModel2D;
-pub use lattice_model_3d::LatticeModel3D;
+pub use lattice_model_1d::LatticeDualState1D;
+pub use lattice_model_2d::LatticeDualState2D;
+pub use lattice_model_3d::LatticeDualState3D;

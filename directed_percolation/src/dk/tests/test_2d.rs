@@ -2,7 +2,7 @@ pub use crate::{
     BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
-use super::{Cell2D, CellModel, CellNbrhood2D, LatticeModel2D};
+use super::{Cell2D, CellModel, CellNbrhood2D, LatticeDualState2D};
 use super::{run_nd, simulation_nd};
 
 use rand::rngs::ChaCha8Rng;
@@ -42,7 +42,7 @@ fn test_2d_sim() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
+        simulation_nd::<ChaCha8Rng, Cell2D, LatticeDualState2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     // sim lattices are unpruned
@@ -77,7 +77,7 @@ fn test_2d_run() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell2D, LatticeDualState2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0][6 + 8 * 13], DualState::Occupied);
@@ -106,7 +106,7 @@ fn test_2d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 13 * 17;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<MoveDownRightModel2D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell2D, LatticeDualState2D<MoveDownRightModel2D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     assert_eq!(&lattices[1], &lattices[0]);

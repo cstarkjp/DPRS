@@ -3,7 +3,7 @@ pub use crate::{
     BoundaryCondition, DualState, InitialCondition, Processing, SimParameters, Topology,
 };
 
-use super::{Cell1D, CellModel, DKSimplified1D, DKStaggered1D, LatticeModel1D};
+use super::{Cell1D, CellModel, DKSimplified1D, DKStaggered1D, LatticeDualState1D};
 
 use super::{run_nd, simulation_nd};
 
@@ -39,7 +39,7 @@ fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters)?;
+        simulation_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<MoveRightModel1D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);
@@ -61,7 +61,7 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     parameters.do_edge_buffering = true;
 
     let (_duration, num_lattices, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<MoveRightModel1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<MoveRightModel1D>>(&parameters)?;
     assert_eq!(num_lattices, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0], lattices[10]);
@@ -110,7 +110,7 @@ fn test_1d_run_random_staggered_critical() -> Result<(), Box<dyn std::error::Err
     parameters.p_1 = 0.705485152; // critical value
     parameters.p_2 = 0.705485152; // critical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKStaggered1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKStaggered1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.08, 0.30);
@@ -125,7 +125,7 @@ fn test_1d_run_random_staggered_supercritical() -> Result<(), Box<dyn std::error
     parameters.p_1 = 0.710; // supercritical vlaue
     parameters.p_2 = 0.710; // supercritical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKStaggered1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKStaggered1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.3, 0.8);
@@ -141,7 +141,7 @@ fn test_1d_run_random_staggered_subcritical() -> Result<(), Box<dyn std::error::
     parameters.p_1 = 0.70; // subcritical vlaue
     parameters.p_2 = 0.70; // subcritical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKStaggered1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKStaggered1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.0, 0.01);
@@ -157,7 +157,7 @@ fn test_1d_run_random_simplified_critical() -> Result<(), Box<dyn std::error::Er
     parameters.p_1 = 0.545; // critical value
     parameters.p_2 = 0.545; // critical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKSimplified1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKSimplified1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.08, 0.30);
@@ -173,7 +173,7 @@ fn test_1d_run_random_simplified_supercritical() -> Result<(), Box<dyn std::erro
     parameters.p_1 = 0.57; // supercritical value
     parameters.p_2 = 0.57; // supercritical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKSimplified1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKSimplified1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.30, 0.80);
@@ -189,7 +189,7 @@ fn test_1d_run_random_simplified_subcritical() -> Result<(), Box<dyn std::error:
     parameters.p_1 = 0.53; // subcritical value
     parameters.p_2 = 0.53; // subcritical value
     let (_time, history_len, _lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<DKSimplified1D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell1D, LatticeDualState1D<DKSimplified1D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     check_1d_tracking_density(&tracking, 0.00, 0.01);
