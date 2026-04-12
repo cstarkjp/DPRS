@@ -89,8 +89,8 @@ export class SavedSimulations {
         if (!filename) {
             const date = new Date();
             const year = date.getFullYear();
-            const month = `00${date.getMonth()}`.slice(-2);
-            const day = `00${date.getDay()}`.slice(-2);
+            const month = `00${1 + date.getMonth()}`.slice(-2);
+            const day = `00${date.getDate()}`.slice(-2);
             const hour = `00${date.getHours()}`.slice(-2);
             const min = `00${date.getMinutes()}`.slice(-2);
             const sec = `00${date.getSeconds()}`.slice(-2);
