@@ -1,6 +1,6 @@
 import * as html from "./html.js";
 import * as log from "./log.js";
-import * as simulation from "./simulation.js";
+import * as js_parameters from "./js_parameters.js";
 
 export class SavedSimulations {
   constructor(logger, parent, div_id) {
@@ -28,10 +28,11 @@ export class SavedSimulations {
     this.descriptions = {};
     for (const f of this.storage.directory.files_of_type("json")) {
       const sim_json = this.storage.load_file(f, "json");
-      const sim = new simulation.SimParameters();
-      sim.from_json(sim_json);
+      const params = new js_parameters.JsParameters();
+      params.from_json(sim_json);
       this.descriptions[f] =
-        `${sim.dims.n_x}x${sim.dims.n_y}x${sim.dims.n_z}:${sim.probabilities.p_1}/${sim.probabilities.p_2}`;
+        `${params.dims.n_x}x${params.dims.n_y}x${params.dims.n_z}` +
+        `:${params.probabilities.p_1}/${params.probabilities.p_2}`;
     }
   }
 
@@ -108,7 +109,7 @@ export class SavedSimulations {
       this.log.pop_reason();
       return;
     }
-    const blah = new simulation.SimParameters();
+    const blah = new js_parameters.JsParameters();
     blah.from_json(json);
     this.log.info(`loaded ${filename}`);
     this.log.pop_reason();

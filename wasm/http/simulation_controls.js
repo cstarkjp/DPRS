@@ -1,6 +1,6 @@
 import init, { SimulationKind, Parameters } from "../pkg/dprs_wasm.js";
 import * as html from "./html.js";
-import * as simulation from "./simulation.js";
+import * as js_parameters from "./js_parameters.js";
 
 export function gbl_get_float(id, min, max) {
   const e = document.getElementById(id);
@@ -30,7 +30,8 @@ export function gbl_get_int(id, min, max) {
 
 export class SimulationControls {
   constructor(ele_id, div_id, dims) {
-    this.parameters = new Parameters();
+    this.parameters = new js_parameters.JsParameters();
+
     this.ele_id = ele_id;
     this.dims = dims;
     this.build_html(div_id);
@@ -69,50 +70,55 @@ export class SimulationControls {
     }
   }
 
-  populate_values(parameters) {
-    this.populate_value("p_1", parameters.probabilities.p_1);
-    this.populate_value("p_2", parameters.probabilities.p_2);
-    this.populate_value("p_initial", parameters.probabilities.p_initial);
-    this.populate_value("n_iterations", parameters.params.n_iterations);
-    this.populate_value("sample_period", parameters.params.sample_period);
-    this.populate_value("random_seed", parameters.params.random_seed);
-    this.populate_value("n_x", parameters.dims.n_x);
-    this.populate_value("n_y", parameters.dims.n_y);
-    this.populate_value("n_z", parameters.dims.n_z);
+  populate_values() {
+    this.populate_value("p_1", this.parameters.probabilities.p_1);
+    this.populate_value("p_2", this.parameters.probabilities.p_2);
+    this.populate_value("p_initial", this.parameters.probabilities.p_initial);
+    this.populate_value("n_iterations", this.parameters.params.n_iterations);
+    this.populate_value("sample_period", this.parameters.params.sample_period);
+    this.populate_value("random_seed", this.parameters.params.random_seed);
+    this.populate_value("n_x", this.parameters.dims.n_x);
+    this.populate_value("n_y", this.parameters.dims.n_y);
+    this.populate_value("n_z", this.parameters.dims.n_z);
     document.getElementById(this.ele_id + "initial_center").checked =
-      parameters.params.initial_center;
-    if (parameters.simulation_kind == SimulationKind.SimplifiedDomanyKinzel) {
+      this.parameters.params.initial_center;
+    if (this.parameters.simulation_kind == "simple_dk") {
       document.getElementById(this.ele_id + "sk_simple_dk").checked = true;
     } else {
       document.getElementById(this.ele_id + "sk_staggered_dk").checked = true;
     }
   }
 
-  simulation_parameters() {
-    const parameters = new simulation.SimParameters();
-
+  populate_parameters() {
     const simulation_choice = document
       .getElementById(this.ele_id + "sim_kind")
       .querySelector(":checked").value;
 
-    if (simulation_choice == "simple_dk") {
-      parameters.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
-    } else {
-      parameters.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
-    }
-
-    parameters.params.initial_center = document.getElementById(
+    const initial_center = document.getElementById(
       this.ele_id + "initial_center",
     ).checked;
-    parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
-    parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
-    parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
-    parameters.params.n_iterations = this.get_int("n_iterations", 0, 1000000);
-    parameters.params.sample_period = this.get_int("sample_period", 1, 100000);
-    parameters.params.random_seed = this.get_int("random_seed", 1, 100000);
-    parameters.dims.n_x = this.get_int("n_x", 10, 10000);
 
-    return parameters;
+    this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
+    this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
+    this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
+
+    this.parameters.params.simulation_kind = simulation_choice;
+    this.parameters.params.initial_center = initial_center;
+    this.parameters.params.n_iterations = this.get_int(
+      "n_iterations",
+      0,
+      1000000,
+    );
+    this.parameters.params.sample_period = this.get_int(
+      "sample_period",
+      1,
+      100000,
+    );
+    this.parameters.params.random_seed = this.get_int("random_seed", 1, 100000);
+
+    this.parameters.dims.n_x = this.get_int("n_x", 10, 10000);
+    this.parameters.dims.n_y = this.get_int("n_y", 10, 10000);
+    this.parameters.dims.n_z = this.get_int("n_z", 10, 10000);
   }
 
   build_html(div_id) {

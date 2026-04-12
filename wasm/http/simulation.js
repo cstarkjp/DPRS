@@ -7,99 +7,8 @@ import init, {
   Simulation,
   SimulationKind,
 } from "../pkg/dprs_wasm.js";
+import { JsParameters } from "./js_parameters.js";
 import * as log from "./log.js";
-
-export class SimParameters {
-  constructor() {
-    this.probabilities = new Probabilities();
-    this.probabilities.p_initial = 0.7;
-    this.probabilities.p_1 = 0.5;
-
-    this.params = new Params();
-    this.params.n_iterations = 600;
-    this.params.sample_period = 1;
-    this.params.random_seed = 1;
-    this.params.initial_center = true;
-
-    this.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
-
-    this.topo = [new TopoBc(), new TopoBc(), new TopoBc()];
-    this.topo[0].periodic = true;
-    this.topo[1].periodic = true;
-    this.topo[2].periodic = true;
-
-    this.dims = new Dims();
-    this.dims.n_x = 400;
-  }
-  topo_as_json(n) {
-    return { periodic: this.topo[n].periodic };
-  }
-  as_json() {
-    const probabilities = {
-      p_initial: this.probabilities.p_initial,
-      p_1: this.probabilities.p_1,
-      p_2: this.probabilities.p_2,
-    };
-    const params = {
-      n_iterations: this.params.n_iterations,
-      sample_period: this.params.sample_period,
-      random_seed: this.params.random_seed,
-      initial_center: this.params.initial_center,
-      simulation_kind: this.simulation_kind,
-    };
-    const topos = [
-      this.topo_as_json(0),
-      this.topo_as_json(1),
-      this.topo_as_json(2),
-    ];
-    const dims = {
-      n_x: this.dims.n_x,
-      n_y: this.dims.n_y,
-      n_z: this.dims.n_z,
-    };
-    const parameters = {
-      probabilities: probabilities,
-      params: params,
-      topo: topos,
-      dims: dims,
-    };
-    return JSON.stringify(parameters);
-  }
-  from_json(json) {
-    let obj = null;
-    try {
-      obj = JSON.parse(json);
-    } catch (error) {
-      console.log("Failed to parse json");
-      return;
-    }
-
-    for (const k of ["n_x", "n_y", "n_z"]) {
-      this.dims[k] = obj.dims[k];
-    }
-
-    for (const k of ["p_initial", "p_1", "p_2"]) {
-      this.probabilities[k] = obj.probabilities[k];
-    }
-
-    for (const k of [
-      "n_iterations",
-      "sample_period",
-      "random_seed",
-      "initial_center",
-    ]) {
-      this.params[k] = obj.params[k];
-    }
-
-    if (obj.params.simulation_kind != 0) {
-      this.simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
-    } else {
-      this.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
-    }
-
-    return;
-  }
-}
 
 export class Sim {
   constructor(logger) {
@@ -109,16 +18,11 @@ export class Sim {
     this.simulation = new Simulation(this.parameters);
   }
 
-  run(sim_parameters) {
+  // sim_parameters is a JsParameters
+  run(sim_parameters:JsParameters) {
     this.log.push_reason("run");
 
-    this.parameters.probabilities = sim_parameters.probabilities;
-    this.parameters.dims = sim_parameters.dims;
-    this.parameters.topo_bc_x = sim_parameters.topo[0];
-    this.parameters.topo_bc_y = sim_parameters.topo[1];
-    this.parameters.topo_bc_z = sim_parameters.topo[2];
-    this.parameters.params = sim_parameters.params;
-    this.params = sim_parameters.params;
+    this.parameters = sim_parameters.as_parameters();
 
     this.log.info(
       `Probabilities p_initial:${this.parameters.probabilities.p_initial} ` +
@@ -135,24 +39,30 @@ export class Sim {
         `sample_period:${this.parameters.params.sample_period} ` +
         `random_seed:${this.parameters.params.random_seed} ` +
         `initial_center:${this.parameters.params.initial_center} ` +
-        `simulation_kind:${sim_parameters.simulation_kind}`,
+        `simulation_kind:${sim_parameters.params.simulation_kind}`,
     );
 
     this.simulation = new Simulation(this.parameters);
-    this.simulation.simulate(sim_parameters.simulation_kind);
+    // console.log(this.simulation.simulate(sim_parameters.simulation_kind));
+    console.log(this.simulation.simulate(SimulationKind.StaggeredDomanyKinzel));
 
     this.log.info("Completed simulation");
     this.log.pop_reason();
   }
   n_results() {
-    return this.params.n_iterations / this.params.sample_period;
+    return (
+      this.parameters.params.n_iterations / this.parameters.params.sample_period
+    );
   }
   result(x) {
     return this.simulation.result(x);
   }
   results_are_staggered() {
-    if (this.params.simulation_kind == SimulationKind.StaggeredDomanyKinzel) {
-      return this.params.sample_period == 1;
+    if (
+      this.parameters.params.simulation_kind ==
+      SimulationKind.StaggeredDomanyKinzel
+    ) {
+      return this.parameters.params.sample_period == 1;
     }
     return false;
   }
