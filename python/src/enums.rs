@@ -32,10 +32,12 @@ pub enum GrowthModelChoice {
     #[default]
     SimplifiedDomanyKinzel,
     StaggeredDomanyKinzel,
+    Bedload,
     ContactProcess,
     PairContactProcess,
     TwoSpeciesContactProcess,
 }
+
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 #[pyclass(from_py_object, eq, eq_int)]
 pub enum Dimension {

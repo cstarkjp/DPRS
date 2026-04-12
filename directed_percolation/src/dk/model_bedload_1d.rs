@@ -4,7 +4,7 @@ use rand::{Rng, RngExt};
 
 /// DKBedload1D implements the CellModel1D trait, plus these.
 #[derive(Clone, Copy, Debug)]
-pub struct DKBedload1D {
+pub struct ModelBedload1D {
     /// The two Domany-Kinzel growth rule probabilities:
     /// p_1 relates more to a single (or centrally) occupied cell
     /// p_2 relates more to multiple (or non-centrally) occupied cells
@@ -13,7 +13,7 @@ pub struct DKBedload1D {
 }
 
 // Implement CellModel1D trait for DKBedload1D.
-impl CellModel<Cell1D> for DKBedload1D {
+impl CellModel<Cell1D> for ModelBedload1D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model and its parameters
         Ok(Self {
