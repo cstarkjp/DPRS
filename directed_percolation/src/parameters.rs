@@ -18,6 +18,9 @@ pub struct Parameters {
     /// A second probability, used by some of the specific GrowthModels
     pub p_2: f64,
 
+    /// A third probability, currently only used by ModelBedload1D
+    pub p_3: f64,
+
     /// The number of iterations to simulate for
     pub n_iterations: usize,
 

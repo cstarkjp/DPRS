@@ -19,6 +19,7 @@ pub struct PyParameters {
     pub n_z: usize,
     pub p_1: f64,
     pub p_2: f64,
+    pub p_3: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -45,6 +46,9 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
+        if self.growth_model==GrowthModel::Bedload {
+            writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
+        }
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
@@ -139,6 +143,7 @@ impl PyParameters {
             n_z: py_p.n_z,
             p_1: py_p.p_1,
             p_2: py_p.p_2,
+            p_3: py_p.p_3,
             n_iterations: py_p.n_iterations,
             sample_period: py_p.sample_period,
             initial_condition: InitialCondition::from(py_p.initial_condition),
