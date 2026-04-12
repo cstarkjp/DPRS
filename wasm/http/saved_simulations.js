@@ -7,10 +7,13 @@ import * as js_parameters from "./js_parameters.js";
  * The aim is to provide a simple means to list files of a specific 'suffix'
  */
 export class SavedSimulations {
-    constructor(logger, parent, div_id) {
+    /**
+     * Create a new SavedSimulation within the parent, with the given storage and using the given 'div_id'
+     */
+    constructor(logger, parent, storage, div_id) {
         this.log = new log.Logger(logger, "saved_sims");
         this.parent = parent;
-        this.storage = parent.storage;
+        this.storage = storage;
         this.descriptions = new Map();
         this.log.push_reason("init");
         const div = document.getElementById(div_id);
@@ -26,6 +29,9 @@ export class SavedSimulations {
         }
         this.log.pop_reason();
     }
+    /**
+     * Cache the contents of the local storage, to populate the HTML
+     */
     cache_contents() {
         this.descriptions = new Map();
         const files = this.storage.directory.files_of_type("json");
@@ -40,6 +46,11 @@ export class SavedSimulations {
                 `:${params.probabilities.p_1}/${params.probabilities.p_2}`);
         }
     }
+    /**
+     * Populate the 'div' this corresponds to with an HTML table containing all of the saved simulations that are in the Cache
+     *
+     * Refreshes the cache first (currently)
+     */
     populate_html() {
         this.cache_contents();
         this.div.clear();
@@ -64,10 +75,16 @@ export class SavedSimulations {
             }, "load_simulation_" + f, "load_simulation");
         }
     }
+    /**
+     * Delete a saved simulation file and repopulate the HTML
+     */
     delete_file(filename) {
         this.storage.delete_file(filename, "json");
         this.populate_html();
     }
+    /**
+     * Save a simulation described by a 'Json' string to a file and repopulate the HTML
+     */
     save(sim, filename) {
         if (!filename) {
             const date = new Date();
@@ -84,19 +101,22 @@ export class SavedSimulations {
             this.populate_html();
         });
     }
+    /**
+     * Load a saved simulation from its given filename
+     */
     load(filename) {
         this.log.push_reason("load");
         const json = this.storage.load_file(filename, "json");
         if (!json) {
             this.log.error(`failed to load ${filename}`);
             this.log.pop_reason();
-            return;
+            return null;
         }
-        const blah = new js_parameters.JsParameters();
-        blah.from_json(json);
+        const parameters = new js_parameters.JsParameters();
+        parameters.from_json(json);
         this.log.info(`loaded ${filename}`);
         this.log.pop_reason();
-        return blah;
+        return parameters;
     }
 }
 //# sourceMappingURL=saved_simulations.js.map

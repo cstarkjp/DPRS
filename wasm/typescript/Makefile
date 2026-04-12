@@ -8,3 +8,4 @@ blah:
 	cp js/js_simulation.js js/js_simulation.js.map ../http
 	cp js/js_parameters.js js/js_parameters.js.map ../http
 	cp js/saved_simulations.js js/saved_simulations.js.map ../http
+	cp js/visualize.js js/visualize.js.map ../http

@@ -19,10 +19,15 @@ class Main {
     this.storage = new storage.LocalStorage(window.localStorage, "dk/");
 
     this.simulation = new js_simulation.JsSimulation(window.log);
-    this.visualize = new visualize.Visualize(window.log, this.simulation);
+    this.visualize = new visualize.Visualize(
+      window.log,
+      this.simulation,
+      "Visualize",
+    );
     this.saved_sims = new saved_simulations.SavedSimulations(
       window.log,
       this,
+      this.storage,
       "SavedSimulations",
     );
 
@@ -144,11 +149,7 @@ class Main {
 
   redraw() {
     const zoom = simulation_controls.gbl_get_float("zoom", 1, 10);
-    this.visualize.canvas_simple(
-      "Visualize",
-      zoom,
-      this.simulation_controls_1d,
-    );
+    this.visualize.canvas_simple(zoom, this.simulation_controls_1d);
   }
 
   db_init(success) {

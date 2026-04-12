@@ -52,5 +52,6 @@
     "js_parameters.ts",
     "js_simulation.ts",
     "saved_simulations.ts",
+    "visualize.ts",
   ],
 }

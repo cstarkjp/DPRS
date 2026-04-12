@@ -29,12 +29,23 @@ export class SavedSimulations {
    */
   descriptions: Map<string, string>;
 
+  /**
+   * The HtmlElement containing the HTMLDivElement that this populates
+   */
   div: html.HtmlElement;
 
-  constructor(logger: log.Log, parent: any, div_id: string) {
+  /**
+   * Create a new SavedSimulation within the parent, with the given storage and using the given 'div_id'
+   */
+  constructor(
+    logger: log.Log,
+    parent: any,
+    storage: LocalStorage,
+    div_id: string,
+  ) {
     this.log = new log.Logger(logger, "saved_sims");
     this.parent = parent;
-    this.storage = parent.storage;
+    this.storage = storage;
     this.descriptions = new Map();
 
     this.log.push_reason("init");
@@ -57,6 +68,9 @@ export class SavedSimulations {
     this.log.pop_reason();
   }
 
+  /**
+   * Cache the contents of the local storage, to populate the HTML
+   */
   cache_contents() {
     this.descriptions = new Map();
     const files = this.storage.directory.files_of_type("json");
@@ -75,7 +89,12 @@ export class SavedSimulations {
     }
   }
 
-  populate_html() {
+  /**
+   * Populate the 'div' this corresponds to with an HTML table containing all of the saved simulations that are in the Cache
+   *
+   * Refreshes the cache first (currently)
+   */
+  populate_html(): void {
     this.cache_contents();
     this.div.clear();
 
@@ -114,12 +133,18 @@ export class SavedSimulations {
     }
   }
 
-  delete_file(filename: string) {
+  /**
+   * Delete a saved simulation file and repopulate the HTML
+   */
+  delete_file(filename: string): void {
     this.storage.delete_file(filename, "json");
     this.populate_html();
   }
 
-  save(sim: any, filename: string) {
+  /**
+   * Save a simulation described by a 'Json' string to a file and repopulate the HTML
+   */
+  save(sim: string, filename: string): void {
     if (!filename) {
       const date = new Date();
       const year = date.getFullYear();
@@ -136,18 +161,21 @@ export class SavedSimulations {
     });
   }
 
-  load(filename: string) {
+  /**
+   * Load a saved simulation from its given filename
+   */
+  load(filename: string): null | js_parameters.JsParameters {
     this.log.push_reason("load");
     const json = this.storage.load_file(filename, "json");
     if (!json) {
       this.log.error(`failed to load ${filename}`);
       this.log.pop_reason();
-      return;
+      return null;
     }
-    const blah = new js_parameters.JsParameters();
-    blah.from_json(json);
+    const parameters = new js_parameters.JsParameters();
+    parameters.from_json(json);
     this.log.info(`loaded ${filename}`);
     this.log.pop_reason();
-    return blah;
+    return parameters;
   }
 }
