@@ -36,9 +36,9 @@ pub use model_bedload_1d::ModelBedload1D;
 pub use nbrhood_2d::CellNbrhood2D;
 pub use nbrhood_3d::CellNbrhood3D;
 
-pub use lattice_1d::LatticeModel1D;
-pub use lattice_2d::LatticeModel2D;
-pub use lattice_3d::LatticeModel3D;
+pub use lattice_1d::Lattice1D;
+pub use lattice_2d::Lattice2D;
+pub use lattice_3d::Lattice3D;
 
 pub use rowiterator_2d::RowIterator2D;
 pub use rowiterator_3d::RowIterator3D;

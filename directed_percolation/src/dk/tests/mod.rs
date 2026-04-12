@@ -1,5 +1,5 @@
 pub use super::{Cell1D, Cell2D, Cell3D, CellModel, CellNbrhood2D, CellNbrhood3D};
-pub use super::{LatticeModel1D, LatticeModel2D, LatticeModel3D};
+pub use super::{Lattice1D, Lattice2D, Lattice3D};
 pub use super::{ModelSimplifiedDK1D, ModelStaggeredDK1D};
 use crate::{run_nd, simulation_nd};
 

@@ -1,6 +1,6 @@
 pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
-use super::{Cell3D, CellModel, CellNbrhood3D, LatticeModel3D};
+use super::{Cell3D, CellModel, CellNbrhood3D, Lattice3D};
 use super::{run_nd, simulation_nd};
 
 use rand::rngs::ChaCha8Rng;
@@ -44,7 +44,7 @@ fn test_3d_sim() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (history_len, lattices, _tracking) =
-        simulation_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
+        simulation_nd::<ChaCha8Rng, Cell3D, Lattice3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     // sim lattices are unpruned
@@ -84,7 +84,7 @@ fn test_3d_run() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 1;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, _tracking) =
-        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell3D, Lattice3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, parameters.n_iterations + 1);
 
     assert_eq!(lattices[0][6 + 8 * 13 + 9 * (13 * 17)], DualState::Occupied);
@@ -121,7 +121,7 @@ fn test_3d_run_random() -> Result<(), Box<dyn std::error::Error>> {
     parameters.sample_period = 13 * 17 * 19;
     parameters.do_edge_buffering = true;
     let (_time, history_len, lattices, tracking) =
-        run_nd::<ChaCha8Rng, Cell3D, LatticeModel3D<MoveDownRightModel3D>>(&parameters)?;
+        run_nd::<ChaCha8Rng, Cell3D, Lattice3D<MoveDownRightModel3D>>(&parameters)?;
     assert_eq!(history_len, 2);
 
     assert_eq!(&lattices[1], &lattices[0]);
