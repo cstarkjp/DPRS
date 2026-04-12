@@ -13,7 +13,16 @@ use directed_percolation::dk::CellModel;
 
 use rand::rngs::ChaCha8Rng;
 
-use crate::{Parameters, SimulationKind};
+#[wasm_bindgen]
+#[derive(Debug, Default, Clone, Copy)]
+pub enum SimulationKind {
+    #[default]
+    SimplifiedDomanyKinzel,
+    StaggeredDomanyKinzel,
+    Bedload,
+}
+
+use crate::Parameters;
 
 /// A 1D model simulation
 fn sim_1d<Model: CellModel<Cell1D>>(

@@ -1,12 +1,4 @@
-import init, {
-  Parameters,
-  Probabilities,
-  Params,
-  Dims,
-  TopoBc,
-  Simulation,
-  SimulationKind,
-} from "../pkg/dprs_wasm.js";
+import init, { Simulation, SimulationKind } from "../pkg/dprs_wasm.js";
 import { JsParameters } from "./js_parameters.js";
 import * as log from "./log.js";
 

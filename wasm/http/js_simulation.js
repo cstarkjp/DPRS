@@ -1,4 +1,4 @@
-import { Simulation, SimulationKind, } from "../pkg/dprs_wasm.js";
+import { Simulation, SimulationKind } from "../pkg/dprs_wasm.js";
 import { JsParameters } from "./js_parameters.js";
 import * as log from "./log.js";
 /**

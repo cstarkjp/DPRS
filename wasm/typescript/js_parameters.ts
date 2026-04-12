@@ -11,12 +11,10 @@ class Probabilities {
   p_initial: number = 0.5;
   p_1: number = 0.705485152;
   p_2: number = 0.705485152;
-  as_parameters(): DprsWasm.Probabilities {
-    const probabilities = new DprsWasm.Probabilities();
-    probabilities.p_initial = this.p_initial;
-    probabilities.p_1 = this.p_1;
-    probabilities.p_2 = this.p_2;
-    return probabilities;
+  set_parameters(parameters: DprsWasm.Parameters) {
+    parameters.p_initial = this.p_initial;
+    parameters.p_1 = this.p_1;
+    parameters.p_2 = this.p_2;
   }
   from_json(probabilities: any) {
     const p_initial = probabilities["p_initial"];
@@ -40,17 +38,11 @@ class Params {
   random_seed: number = 1;
   initial_center: boolean = true;
   simulation_kind: string = "staggered_dk";
-  as_parameters(): DprsWasm.Params {
-    const params = new DprsWasm.Params();
-    params.n_iterations = this.n_iterations;
-    params.sample_period = this.sample_period;
-    params.random_seed = this.random_seed;
-    params.initial_center = this.initial_center;
-    params.simulation_kind = DprsWasm.SimulationKind.SimplifiedDomanyKinzel;
-    if (this.simulation_kind == "staggered_dk") {
-      params.simulation_kind = DprsWasm.SimulationKind.StaggeredDomanyKinzel;
-    }
-    return params;
+  set_parameters(parameters: DprsWasm.Parameters) {
+    parameters.n_iterations = this.n_iterations;
+    parameters.sample_period = this.sample_period;
+    parameters.random_seed = this.random_seed;
+    parameters.initial_condition = this.initial_center;
   }
 
   wasm_simulation_kind() {
@@ -122,13 +114,10 @@ class Dims {
   n_x: number = 400;
   n_y: number = 0;
   n_z: number = 0;
-  as_parameters(): DprsWasm.Dims {
-    const dims = new DprsWasm.Dims();
-
-    dims.n_x = this.n_x;
-    dims.n_y = this.n_y;
-    dims.n_z = this.n_z;
-    return dims;
+  set_parameters(parameters: DprsWasm.Parameters) {
+    parameters.n_x = this.n_x;
+    parameters.n_y = this.n_y;
+    parameters.n_z = this.n_z;
   }
   from_json(dims: any) {
     const n_x = dims["n_x"];
@@ -176,13 +165,13 @@ export class JsParameters {
   }
 
   as_parameters() {
-    this.parameters.probabilities = this.probabilities.as_parameters();
-    this.parameters.params = this.params.as_parameters();
-    this.parameters.dims = this.dims.as_parameters();
+    this.probabilities.set_parameters(this.parameters);
+    this.params.set_parameters(this.parameters);
+    this.dims.set_parameters(this.parameters);
     this.parameters.topo_bc_x = this.topo[0]!.topo_bc();
     this.parameters.topo_bc_y = this.topo[1]!.topo_bc();
     this.parameters.topo_bc_z = this.topo[2]!.topo_bc();
-    console.log(this.parameters);
+
     return this.parameters;
   }
 
