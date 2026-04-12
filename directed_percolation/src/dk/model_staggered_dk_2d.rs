@@ -3,17 +3,17 @@ use crate::{Cell2D, CellModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
-/// DKStaggered2D implements the CellModel2D trait, plus these.
+/// ModelStaggeredDK2D implements the CellModel2D trait, plus these.
 #[derive(Clone, Copy, Debug)]
-pub struct DKStaggered2D {
+pub struct ModelStaggeredDK2D {
     /// The probability used in the model, where a cell is activated with this probability
     /// if *any* of its neighbors (including itself) is active
     p_1: f64,
     p_2: f64,
 }
 
-// Implement CellModel2D trait for DKStaggered2D.
-impl CellModel<Cell2D> for DKStaggered2D {
+// Implement CellModel2D trait for ModelStaggeredDK2D.
+impl CellModel<Cell2D> for ModelStaggeredDK2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             p_1: parameters.p_1,

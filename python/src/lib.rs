@@ -41,12 +41,12 @@ mod sim {
         let (t_run_time, n_lattices, lattices, tracking) =
             match (py_parameters.dim, py_parameters.growth_model_choice) {
                 (Dimension::D1, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKSimplified1D>>(
+                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::ModelSimplifiedDK1D>>(
                         &sim_parameters,
                     )
                 }
                 (Dimension::D1, GrowthModelChoice::StaggeredDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKStaggered1D>>(
+                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::ModelStaggeredDK1D>>(
                         &sim_parameters,
                     )
                 }
@@ -56,17 +56,17 @@ mod sim {
                     )
                 }
                 (Dimension::D2, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(
+                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::ModelSimplifiedDK2D>>(
                         &sim_parameters,
                     )
                 }
                 (Dimension::D2, GrowthModelChoice::StaggeredDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKStaggered2D>>(
+                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::ModelStaggeredDK2D>>(
                         &sim_parameters,
                     )
                 }
                 (Dimension::D3, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell3D, dk::LatticeModel3D<dk::DKSimplified3D>>(
+                    run_nd::<StdRng, dk::Cell3D, dk::LatticeModel3D<dk::ModelSimplifiedDK3D>>(
                         &sim_parameters,
                     )
                 }
