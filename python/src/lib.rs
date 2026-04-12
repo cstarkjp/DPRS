@@ -50,6 +50,11 @@ mod sim {
                         &sim_parameters,
                     )
                 }
+                (Dimension::D1, GrowthModelChoice::Bedload) => {
+                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::ModelBedload1D>>(
+                        &sim_parameters,
+                    )
+                }
                 (Dimension::D2, GrowthModelChoice::SimplifiedDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(
                         &sim_parameters,
@@ -65,6 +70,7 @@ mod sim {
                         &sim_parameters,
                     )
                 }
+                // TODO: The error this gives ("PanicException: not yet implemented") is not sufficient
                 _ => todo!(),
             }
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;

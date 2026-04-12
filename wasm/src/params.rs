@@ -6,6 +6,7 @@ pub enum SimulationKind {
     #[default]
     SimplifiedDomanyKinzel,
     StaggeredDomanyKinzel,
+    Bedload,
 }
 
 #[wasm_bindgen]

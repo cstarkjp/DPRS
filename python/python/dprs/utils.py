@@ -23,7 +23,7 @@ __all__ = [
 @dataclass
 class Parameters(): 
     """Dummy declaration: shadows definition in Rust."""
-    growth_model: sim.GrowthModel.DomanyKinzel
+    growth_model: sim.GrowthModel.SimplifiedDomanyKinzel
     dim: sim.Dimension.D1
     n_x: int
     n_y: int
@@ -118,6 +118,7 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
     match parameters.growth_model_choice:
         case GrowthModelChoice.SimplifiedDomanyKinzel: model="Simplified D-K:"
         case GrowthModelChoice.StaggeredDomanyKinzel: model="Staggered D-K:"
+        case GrowthModelChoice.Bedload: model="Bedload:"
         case _: model="Unspecified model"
     return (
         (
