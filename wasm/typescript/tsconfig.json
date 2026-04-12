@@ -32,5 +32,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "files": ["html.ts", "log.ts", "tabbed.ts"],
+  "files": ["html.ts", "log.ts", "tabbed.ts", "storage.ts"],
 }

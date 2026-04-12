@@ -32,7 +32,7 @@ class HtmlElement {
   }
 
   add_tags(tag_values: Map<string, string>) {
-    tag_values.forEach((tag, value) => {
+    tag_values.forEach((value, tag) => {
       this.ele.setAttribute(tag, value);
     });
     return this;

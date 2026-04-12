@@ -24,7 +24,7 @@ class HtmlElement {
         return new HtmlElement(ele);
     }
     add_tags(tag_values) {
-        tag_values.forEach((tag, value) => {
+        tag_values.forEach((value, tag) => {
             this.ele.setAttribute(tag, value);
         });
         return this;

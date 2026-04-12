@@ -16,7 +16,7 @@ class Main {
     this.log.push_reason("init");
     this.log.info("Starting dk");
 
-    this.storage = new storage.FileSet(window.localStorage, "dk/");
+    this.storage = new storage.LocalStorage(window.localStorage, "dk/");
 
     this.simulation = new simulation.Sim(window.log);
     this.visualize = new visualize.Visualize(window.log, this.simulation);
