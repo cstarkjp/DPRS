@@ -44,6 +44,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
+  "include": ["pkg/*"],
   "files": [
     "typescript/html.ts",
     "typescript/log.ts",

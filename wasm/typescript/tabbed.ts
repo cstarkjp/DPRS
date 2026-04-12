@@ -183,7 +183,7 @@ export class Tabs {
     window.addEventListener("hashchange", () => {
       me.hash_change(location.hash);
     });
-    if (this.hash_change(location.hash) === null) {
+    if (this.hash_change(location.hash) === undefined) {
       this.select_tab(0);
     }
   }
