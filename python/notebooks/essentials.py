@@ -8,7 +8,7 @@ from numpy.typing import NDArray
 import dprs
 from dprs import sim
 from dprs.sim import (
-    GrowthModelChoice, Dimension,
+    GrowthModel, Dimension,
     Topology, InitialCondition, BoundaryCondition, Processing
 )
 from dprs.viz import Viz

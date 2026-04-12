@@ -19,7 +19,7 @@ mod sim {
     #[pymodule_export]
     use crate::enums::Dimension;
     #[pymodule_export]
-    use crate::enums::GrowthModelChoice;
+    use crate::enums::GrowthModel;
     #[pymodule_export]
     use crate::enums::InitialCondition;
     #[pymodule_export]
@@ -39,31 +39,31 @@ mod sim {
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
 
         let (t_run_time, n_lattices, lattices, tracking) =
-            match (py_parameters.dim, py_parameters.growth_model_choice) {
-                (Dimension::D1, GrowthModelChoice::SimplifiedDomanyKinzel) => {
+            match (py_parameters.dim, py_parameters.growth_model) {
+                (Dimension::D1, GrowthModel::SimplifiedDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelSimplifiedDK1D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D1, GrowthModelChoice::StaggeredDomanyKinzel) => {
+                (Dimension::D1, GrowthModel::StaggeredDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelStaggeredDK1D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D1, GrowthModelChoice::Bedload) => {
+                (Dimension::D1, GrowthModel::Bedload) => {
                     run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelBedload1D>>(&sim_parameters)
                 }
-                (Dimension::D2, GrowthModelChoice::SimplifiedDomanyKinzel) => {
+                (Dimension::D2, GrowthModel::SimplifiedDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelSimplifiedDK2D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D2, GrowthModelChoice::StaggeredDomanyKinzel) => {
+                (Dimension::D2, GrowthModel::StaggeredDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelStaggeredDK2D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D3, GrowthModelChoice::SimplifiedDomanyKinzel) => {
+                (Dimension::D3, GrowthModel::SimplifiedDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell3D, dk::Lattice3D<dk::ModelSimplifiedDK3D>>(
                         &sim_parameters,
                     )

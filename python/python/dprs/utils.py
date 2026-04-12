@@ -9,7 +9,7 @@ import numpy as np
 from numpy.typing import NDArray
 from dprs import sim
 from dprs.sim import (
-    GrowthModelChoice, Dimension,
+    GrowthModel, Dimension,
 )
 warnings.filterwarnings("ignore")
 
@@ -67,7 +67,7 @@ def postprocessing(parameters, n_raw_lattices, raw_lattices, raw_tracking,):
     raw_tracking: Sequence[list]
     lattices: NDArray
     skip: int = (
-        2 if parameters.growth_model_choice==GrowthModelChoice.StaggeredDomanyKinzel 
+        2 if parameters.growth_model==GrowthModel.StaggeredDomanyKinzel 
         else 1
     )
     lattices: NDArray
@@ -115,10 +115,10 @@ def postprocessing(parameters, n_raw_lattices, raw_lattices, raw_tracking,):
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
     """Generate a string summarizing the sim for entitling plots."""
     model: str
-    match parameters.growth_model_choice:
-        case GrowthModelChoice.SimplifiedDomanyKinzel: model="Simplified D-K:"
-        case GrowthModelChoice.StaggeredDomanyKinzel: model="Staggered D-K:"
-        case GrowthModelChoice.Bedload: model="Bedload:"
+    match parameters.growth_model:
+        case GrowthModel.SimplifiedDomanyKinzel: model="Simplified D-K:"
+        case GrowthModel.StaggeredDomanyKinzel: model="Staggered D-K:"
+        case GrowthModel.Bedload: model="Bedload:"
         case _: model="Unspecified model"
     return (
         (
