@@ -5,4 +5,5 @@ blah:
 	cp js/storage.js js/storage.js.map ../http
 	cp js/tabbed.js js/tabbed.js.map ../http
 
+	cp js/js_simulation.js js/js_simulation.js.map ../http
 	cp js/js_parameters.js js/js_parameters.js.map ../http

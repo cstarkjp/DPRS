@@ -32,7 +32,7 @@ export class Directory {
 
   /**
    * Split the filename into a root and suffix
-   *  */
+   */
   static split_filename(filename: string) {
     const suffix = filename.split(".").pop();
     if (suffix) {

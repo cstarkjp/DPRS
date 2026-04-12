@@ -54,6 +54,15 @@ class Params {
       parameters.params.simulation_kind = SimulationKind.StaggeredDomanyKinzel;
     }
   }
+
+  wasm_simulation_kind() {
+    var simulation_kind = SimulationKind.SimplifiedDomanyKinzel;
+    if (this.simulation_kind == "staggered_dk") {
+      simulation_kind = SimulationKind.StaggeredDomanyKinzel;
+    }
+    return simulation_kind;
+  }
+
   from_json(params: any) {
     const n_iterations = params["n_iterations"];
     const sample_period = params["sample_period"];
@@ -172,6 +181,10 @@ export class JsParameters {
     this.parameters.topo_bc_y = this.topo[1]!.topo_bc();
     this.parameters.topo_bc_z = this.topo[2]!.topo_bc();
     return this.parameters;
+  }
+
+  wasm_simulation_kind() {
+    return this.params.wasm_simulation_kind();
   }
 
   as_json() {

@@ -32,5 +32,12 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "files": ["html.ts", "log.ts", "tabbed.ts", "storage.ts", "js_parameters.ts"],
+  "files": [
+    "html.ts",
+    "log.ts",
+    "tabbed.ts",
+    "storage.ts",
+    "js_parameters.ts",
+    "js_simulation.ts",
+  ],
 }

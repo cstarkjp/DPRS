@@ -4,7 +4,7 @@ import * as html from "./html.js";
 import * as utils from "./utils.js";
 import * as storage from "./storage.js";
 import * as visualize from "./visualize.js";
-import * as simulation from "./simulation.js";
+import * as js_simulation from "./js_simulation.js";
 import * as js_parameters from "./js_parameters.js";
 import * as simulation_controls from "./simulation_controls.js";
 import * as saved_simulations from "./saved_simulations.js";
@@ -18,7 +18,7 @@ class Main {
 
     this.storage = new storage.LocalStorage(window.localStorage, "dk/");
 
-    this.simulation = new simulation.Sim(window.log);
+    this.simulation = new js_simulation.JsSimulation(window.log);
     this.visualize = new visualize.Visualize(window.log, this.simulation);
     this.saved_sims = new saved_simulations.SavedSimulations(
       window.log,
