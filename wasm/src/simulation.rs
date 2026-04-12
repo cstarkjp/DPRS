@@ -1,13 +1,13 @@
-use directed_percolation::dk::{Cell1D, LatticeModel1D};
-use directed_percolation::dk::{Cell2D, LatticeModel2D};
-use directed_percolation::dk::{DKSimplified1D, DKSimplified2D};
-use directed_percolation::dk::{DKStaggered1D, DKStaggered2D};
+use directed_percolation::dk::{Cell1D, Lattice1D};
+use directed_percolation::dk::{Cell2D, Lattice2D};
+use directed_percolation::dk::{ModelDKSimplified1D, ModelDKSimplified2D};
+use directed_percolation::dk::{ModelStaggeredDK1D, ModelStaggeredDK2D};
 use directed_percolation::simulation_nd;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use directed_percolation::SimError;
 use directed_percolation::DualState;
+use directed_percolation::SimError;
 use directed_percolation::TrackingHistory;
 use directed_percolation::dk::CellModel;
 
@@ -19,14 +19,14 @@ use crate::{Parameters, SimulationKind};
 fn sim_1d<Model: CellModel<Cell1D>>(
     parameters: &SimParameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
-    simulation_nd::<ChaCha8Rng, Cell1D, LatticeModel1D<Model>>(parameters)
+    simulation_nd::<ChaCha8Rng, Cell1D, Lattice1D<Model>>(parameters)
 }
 
 /// A 2D model simulation
 fn sim_2d<Model: CellModel<Cell2D>>(
     parameters: &SimParameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
-    simulation_nd::<ChaCha8Rng, Cell2D, LatticeModel2D<Model>>(parameters)
+    simulation_nd::<ChaCha8Rng, Cell2D, Lattice2D<Model>>(parameters)
 }
 
 #[wasm_bindgen]
@@ -63,16 +63,16 @@ impl Simulation {
         let simulation_results = {
             match (dims, kind) {
                 (1, SimulationKind::SimplifiedDomanyKinzel) => {
-                    sim_1d::<DKSimplified1D>(self.parameters.sim_parameters())
+                    sim_1d::<ModelDKSimplified1D>(self.parameters.sim_parameters())
                 }
                 (1, SimulationKind::StaggeredDomanyKinzel) => {
-                    sim_1d::<DKStaggered1D>(self.parameters.sim_parameters())
+                    sim_1d::<ModelStaggeredDK1D>(self.parameters.sim_parameters())
                 }
                 (2, SimulationKind::SimplifiedDomanyKinzel) => {
-                    sim_2d::<DKSimplified2D>(self.parameters.sim_parameters())
+                    sim_2d::<ModelDKSimplified2D>(self.parameters.sim_parameters())
                 }
                 (2, SimulationKind::StaggeredDomanyKinzel) => {
-                    sim_2d::<DKStaggered2D>(self.parameters.sim_parameters())
+                    sim_2d::<ModelStaggeredDK2D>(self.parameters.sim_parameters())
                 }
                 _ => {
                     return Err(format!(

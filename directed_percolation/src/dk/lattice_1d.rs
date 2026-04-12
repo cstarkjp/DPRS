@@ -10,7 +10,7 @@ use crate::{DualState, InitialCondition, Parameters};
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(Clone, Debug)]
-pub struct LatticeModel1D<C: CellModel<Cell1D>> {
+pub struct Lattice1D<C: CellModel<Cell1D>> {
     /// The model that provides the cells and the mapping between
     /// 3x1 cell neighborhoods in one time step and the next.
     cell_model: C,
@@ -27,7 +27,7 @@ pub struct LatticeModel1D<C: CellModel<Cell1D>> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
+impl<C: CellModel<Cell1D>> Lattice1D<C> {
     /// Evolve the grid by one iteration using serial processing.
     ///
     /// Create a new row, fill that in one 'update' call, then set the lattice to that
@@ -105,7 +105,7 @@ impl<C: CellModel<Cell1D>> LatticeModel1D<C> {
     }
 }
 
-impl<C: CellModel<Cell1D>> EvolvableLatticeDualState<Cell1D> for LatticeModel1D<C> {
+impl<C: CellModel<Cell1D>> EvolvableLatticeDualState<Cell1D> for Lattice1D<C> {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
             cell_model: C::create_from_parameters(parameters)?,

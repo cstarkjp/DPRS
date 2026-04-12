@@ -5,16 +5,17 @@ use rand::{Rng, RngExt};
 
 /// GrowthModel3D implements the CellModel3D trait, plus these.
 #[derive(Clone, Copy, Debug)]
-pub struct DKSimplified3D {
+pub struct ModelDKSimplified3D {
     /// The probability used in the model, where a cell is activated with this probability if *any* of its neighbors (including itself) is active
     p_1: f64,
     #[allow(dead_code)]
     p_2: f64,
 }
 
-// Implement CellModel3D trait for DKSimplified3D.
-impl CellModel<Cell3D> for DKSimplified3D {
+// Implement CellModel3D trait for ModelDKSimplified3D.
+impl CellModel<Cell3D> for ModelDKSimplified3D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
+        // Growth model probabilities
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,

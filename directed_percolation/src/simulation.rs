@@ -1,7 +1,7 @@
 use rand::{Rng, SeedableRng};
 
 use crate::{CellSpace, EvolvableLatticeDualState};
-use crate::{InitialCondition, Processing, Parameters};
+use crate::{InitialCondition, Parameters, Processing};
 use crate::{LatticeHistory, LatticeSlices, SimError, TrackingHistory};
 
 /// Simulate simplified Domany-Kinzel model for n_iterations, either serially or in parallel.

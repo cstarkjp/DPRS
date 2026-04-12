@@ -5,21 +5,21 @@
 use pyo3::FromPyObject;
 
 use crate::enums::{
-    BoundaryCondition, Dimension, DprsError, GrowthModelChoice, InitialCondition, Processing,
-    Topology,
+    BoundaryCondition, Dimension, DprsError, GrowthModel, InitialCondition, Processing, Topology,
 };
 use directed_percolation::Parameters;
 
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
 pub struct PyParameters {
-    pub growth_model_choice: GrowthModelChoice,
+    pub growth_model: GrowthModel,
     pub dim: Dimension,
     pub n_x: usize,
     pub n_y: usize,
     pub n_z: usize,
     pub p_1: f64,
     pub p_2: f64,
+    pub p_3: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -41,11 +41,14 @@ pub struct PyParameters {
 
 impl std::fmt::Display for PyParameters {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        writeln!(fmt, "Growth model:  {:?}", self.growth_model_choice)?;
+        writeln!(fmt, "Growth model:  {:?}", self.growth_model)?;
         writeln!(fmt, "Dimension:     {:?}", self.dim)?;
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
+        if self.growth_model==GrowthModel::Bedload {
+            writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
+        }
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
@@ -140,6 +143,7 @@ impl PyParameters {
             n_z: py_p.n_z,
             p_1: py_p.p_1,
             p_2: py_p.p_2,
+            p_3: py_p.p_3,
             n_iterations: py_p.n_iterations,
             sample_period: py_p.sample_period,
             initial_condition: InitialCondition::from(py_p.initial_condition),

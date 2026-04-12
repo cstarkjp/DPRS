@@ -19,7 +19,7 @@ mod sim {
     #[pymodule_export]
     use crate::enums::Dimension;
     #[pymodule_export]
-    use crate::enums::GrowthModelChoice;
+    use crate::enums::GrowthModel;
     #[pymodule_export]
     use crate::enums::InitialCondition;
     #[pymodule_export]
@@ -39,32 +39,36 @@ mod sim {
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;
 
         let (t_run_time, n_lattices, lattices, tracking) =
-            match (py_parameters.dim, py_parameters.growth_model_choice) {
-                (Dimension::D1, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKSimplified1D>>(
+            match (py_parameters.dim, py_parameters.growth_model) {
+                (Dimension::D1, GrowthModel::SimplifiedDomanyKinzel) => {
+                    run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelDKSimplified1D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D1, GrowthModelChoice::StaggeredDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell1D, dk::LatticeModel1D<dk::DKStaggered1D>>(
+                (Dimension::D1, GrowthModel::StaggeredDomanyKinzel) => {
+                    run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelStaggeredDK1D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D2, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKSimplified2D>>(
+                (Dimension::D1, GrowthModel::Bedload) => {
+                    run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelBedload1D>>(&sim_parameters)
+                }
+                (Dimension::D2, GrowthModel::SimplifiedDomanyKinzel) => {
+                    run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelDKSimplified2D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D2, GrowthModelChoice::StaggeredDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell2D, dk::LatticeModel2D<dk::DKStaggered2D>>(
+                (Dimension::D2, GrowthModel::StaggeredDomanyKinzel) => {
+                    run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelStaggeredDK2D>>(
                         &sim_parameters,
                     )
                 }
-                (Dimension::D3, GrowthModelChoice::SimplifiedDomanyKinzel) => {
-                    run_nd::<StdRng, dk::Cell3D, dk::LatticeModel3D<dk::DKSimplified3D>>(
+                (Dimension::D3, GrowthModel::SimplifiedDomanyKinzel) => {
+                    run_nd::<StdRng, dk::Cell3D, dk::Lattice3D<dk::ModelDKSimplified3D>>(
                         &sim_parameters,
                     )
                 }
+                // TODO: The error this gives ("PanicException: not yet implemented") is not sufficient
                 _ => todo!(),
             }
             .map_err(|error| pyo3::exceptions::PyValueError::new_err(format!("{error:?}")))?;

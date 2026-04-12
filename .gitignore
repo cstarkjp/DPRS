@@ -6,6 +6,7 @@ python/target/
 directed_percolation/target/
 site/
 
+python/notebooks/plots/*
 notebooks/plots/*
 plots/*
 

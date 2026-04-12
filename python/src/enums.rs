@@ -28,7 +28,7 @@ macro_rules! py_of_enum {
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 #[pyclass(from_py_object, eq, eq_int)]
-pub enum GrowthModelChoice {
+pub enum GrowthModel {
     #[default]
     SimplifiedDomanyKinzel,
     StaggeredDomanyKinzel,

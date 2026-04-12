@@ -1,4 +1,4 @@
-use crate::{DualState, CellNbrhood3D};
+use crate::{CellNbrhood3D, DualState};
 
 /// An iterator over a lattice centred on a cell (x,y,z), with a 'move X by +1' method
 pub struct RowIterator3D<'a> {
