@@ -1,8 +1,8 @@
 import init from "../pkg/dprs_wasm.js";
 import { Log, Logger } from "./log.js";
-import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
+import { VisualizeControls } from "./visualize_controls.js";
 import { JsSimulation } from "./js_simulation.js";
 import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
@@ -16,6 +16,7 @@ class Main {
         this.storage = new LocalStorage(window.localStorage, "dk/");
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
+        this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
         this.saved_sims = new SavedSimulations(logger, this, this.storage, "SavedSimulations");
         const params_1d = new JsParameters();
         // For staggered p_c = 0.705485152
@@ -88,16 +89,16 @@ class Main {
         this.saved_sims.save(sim_parameters.as_json());
         this.log.pop_reason();
     }
-    run_simulation(dims) {
+    run_simulation(dim) {
         this.log.push_reason("sim");
-        this.log.info("Starting");
+        this.log.info(`Running simulation of dimension ${dim}`);
         this.simulation_controls_1d.populate_parameters();
         this.simulation_controls_2d.populate_parameters();
         this.simulation_controls_1d.parameters.dims.n_y = 1;
         this.simulation_controls_1d.parameters.dims.n_z = 1;
         this.simulation_controls_2d.parameters.dims.n_z = 1;
         var sim_parameters = this.simulation_controls_1d.parameters;
-        if (dims > 1) {
+        if (dim > 1) {
             sim_parameters = this.simulation_controls_2d.parameters;
         }
         this.simulation.run(sim_parameters);
@@ -106,8 +107,14 @@ class Main {
         this.log.pop_reason();
     }
     redraw() {
-        const zoom = html.get_input_float("zoom", 1, 10);
-        this.visualize.canvas_simple(zoom, this.simulation_controls_1d);
+        this.visualize_controls.populate_values(this.simulation);
+        const dim = this.simulation.dim;
+        if (dim > 1) {
+            this.visualize.canvas_2d(this.simulation_controls_2d);
+        }
+        else {
+            this.visualize.canvas_1d(this.simulation_controls_1d);
+        }
     }
     tab_selected(id) {
         console.log("Selected tab", id);
