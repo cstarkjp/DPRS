@@ -82,49 +82,53 @@ export class SimulationControls {
         {
             const tr = dims_table.add_ele("tr", ele_id + "dims");
             const td = tr.add_ele("td");
-            td.add_label("n_x").set_content("n_x:");
-            td.add_input_text("n_x", "20", this.ele_id + "n_x", "dimensions");
+            td.add_label("n_x", "sim_controls_label").set_content("nx:");
+            td.add_input_text("n_x", "20", this.ele_id + "n_x", "sim_controls_text dims_n_text");
             if (dims >= 2) {
                 const td = tr.add_ele("td");
-                td.add_label("n_y").set_content("n_y:");
-                td.add_input_text("n_y", "20", this.ele_id + "n_y", "dimensions");
+                td.add_label("n_y", "sim_controls_label").set_content("ny:");
+                td.add_input_text("n_y", "20", this.ele_id + "n_y", "sim_controls_text dims_n_text");
             }
             if (dims >= 3) {
                 const td = tr.add_ele("td");
-                td.add_label("n_z").set_content("n_z:");
-                td.add_input_text("n_z", "20", this.ele_id + "n_z", "dimensions");
+                td.add_label("n_z", "sim_controls_label").set_content("nz:");
+                td.add_input_text("n_z", "20", this.ele_id + "n_z", "sim_controls_text dims_n_text");
             }
+            td.set_style("padding", "0px");
         }
         {
             const tr = probs_table.add_ele("tr", ele_id + "probability");
-            for (const thing of ["p_1", "p_2", "p_initial"]) {
+            for (const [label, thing] of [["p1", "p_1"], ["p2", "p_2"], ["p0", "p_initial"],]) {
                 const td = tr.add_ele("td");
-                td.add_label(thing).set_content(thing + ":");
-                td.add_input_text(thing, "0.5", this.ele_id + thing, "probability");
+                td.add_label(thing, "sim_controls_label").set_content(label + ":");
+                td.add_input_text(thing, "0.5", this.ele_id + thing, "sim_controls_text prob_text");
+                td.set_style("padding", "0px");
             }
         }
         {
             const tr = param_table.add_ele("tr", ele_id + "sim_controls");
-            for (const [name, value] of [
-                ["n_iterations", "1000"],
-                ["sample_period", "20"],
-                ["random_seed", "1"],
+            for (const [label, name, value] of [
+                ["Steps", "n_iterations", "1000"],
+                ["Sampling", "sample_period", "20"],
+                ["Seed", "random_seed", "1"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_label(name).set_content(name + ":");
-                td.add_input_text(name, value, this.ele_id + name, "sim_controls " + name);
+                td.add_label(name, "sim_controls_label").set_content(label + ":");
+                td.add_input_text(name, value, this.ele_id + name, "sim_controls_text params_text");
+                td.set_style("padding", "0px");
             }
         }
         {
             const tr = seed_table.add_ele("tr", ele_id + "_seed_kind");
             for (const [name, value] of [
-                ["center", "Center"],
-                ["edge", "Edge"],
-                ["random", "Random"],
+                ["center", "Center cell"],
+                ["edge", "Edge cell"],
+                ["random", "Randomized"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_input_radio(ele_id + "_seed_kind", name, true, ele_id + "seed_" + name, "seed_kind " + name);
-                td.add_label(ele_id + "seed_" + name).set_content(value);
+                td.add_input_radio(ele_id + "_seed_kind", name, true, ele_id + "seed_" + name, "sim_controls_radio " + name);
+                td.add_label(ele_id + "seed_" + name, "sim_controls_label").set_content(value);
+                td.set_style("padding", "3px");
             }
         }
         {
@@ -135,8 +139,9 @@ export class SimulationControls {
                 ["bedload", "Bedload"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_input_radio(ele_id + "_sim_kind", name, true, ele_id + "sk_" + name, "sim_kind " + name);
-                td.add_label(ele_id + "sk_" + name).set_content(value);
+                td.add_input_radio(ele_id + "_sim_kind", name, true, ele_id + "sk_" + name, "sim_controls_radio " + name);
+                td.add_label(ele_id + "sk_" + name, "sim_controls_label").set_content(value);
+                td.set_style("padding", "3px");
             }
         }
         {
@@ -149,6 +154,9 @@ export class SimulationControls {
             td_save.add_input_button("Save simulation", () => {
                 window.main.save_simulation(dims);
             }, ele_id + "save_simulation", "controls save_simulation");
+            tr.set_style("padding", "0px");
+            td_run.set_style("padding", "0px");
+            td_save.set_style("padding", "0px");
         }
     }
 }

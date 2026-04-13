@@ -8,8 +8,8 @@ class Probabilities {
          * This contains JsParameters
          */
         this.p_initial = 0.5;
-        this.p_1 = 0.705485152;
-        this.p_2 = 0.705485152;
+        this.p_1 = 0.70548515;
+        this.p_2 = 0.70548515;
     }
     set_parameters(parameters) {
         parameters.p_initial = this.p_initial;
@@ -114,7 +114,7 @@ class Topo {
 }
 class Dims {
     constructor() {
-        this.n_x = 400;
+        this.n_x = 350;
         this.n_y = 0;
         this.n_z = 0;
     }
@@ -151,7 +151,7 @@ export class JsParameters {
         this.topo[0].periodic = true;
         this.topo[1].periodic = true;
         this.topo[2].periodic = true;
-        this.dims.n_x = 400;
+        this.dims.n_x = 350;
         this.dims.n_y = 0;
         this.dims.n_z = 0;
     }
