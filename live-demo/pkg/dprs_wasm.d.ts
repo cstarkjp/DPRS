@@ -9,7 +9,7 @@ export class Parameters {
      */
     constructor();
     sim_dimension(): number;
-    initial_condition: boolean;
+    initial_condition: string;
     n_iterations: number;
     n_x: number;
     n_y: number;
@@ -67,7 +67,7 @@ export interface InitOutput {
     readonly simulation_set_parameters: (a: number, b: number) => void;
     readonly simulation_simulate: (a: number, b: number, c: number) => [number, number];
     readonly __wbg_parameters_free: (a: number, b: number) => void;
-    readonly parameters_initial_condition: (a: number) => number;
+    readonly parameters_initial_condition: (a: number) => [number, number];
     readonly parameters_n_iterations: (a: number) => number;
     readonly parameters_n_x: (a: number) => number;
     readonly parameters_n_y: (a: number) => number;
@@ -78,7 +78,7 @@ export interface InitOutput {
     readonly parameters_p_initial: (a: number) => number;
     readonly parameters_random_seed: (a: number) => number;
     readonly parameters_sample_period: (a: number) => number;
-    readonly parameters_set_initial_condition: (a: number, b: number) => void;
+    readonly parameters_set_initial_condition: (a: number, b: number, c: number) => void;
     readonly parameters_set_n_iterations: (a: number, b: number) => void;
     readonly parameters_set_n_x: (a: number, b: number) => void;
     readonly parameters_set_n_y: (a: number, b: number) => void;

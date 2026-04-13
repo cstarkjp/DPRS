@@ -19,11 +19,19 @@ export class Parameters {
         wasm.__wbg_parameters_free(ptr, 0);
     }
     /**
-     * @returns {boolean}
+     * @returns {string}
      */
     get initial_condition() {
-        const ret = wasm.parameters_initial_condition(this.__wbg_ptr);
-        return ret !== 0;
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.parameters_initial_condition(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
     }
     /**
      * @returns {number}
@@ -98,10 +106,12 @@ export class Parameters {
         return ret >>> 0;
     }
     /**
-     * @param {boolean} value
+     * @param {string} value
      */
     set initial_condition(value) {
-        wasm.parameters_set_initial_condition(this.__wbg_ptr, value);
+        const ptr0 = passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.parameters_set_initial_condition(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @param {number} value
