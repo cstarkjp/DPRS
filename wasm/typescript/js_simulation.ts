@@ -22,12 +22,18 @@ export class JsSimulation {
   parameters: JsParameters;
 
   /**
+   * Dimension of last simulation run
+   */
+  dim: number;
+
+  /**
    * Construct a new JsSimulation with a default set of parameters
    */
   constructor(logger: log.Log) {
     this.log = new log.Logger(logger, "sim");
     this.parameters = new JsParameters();
     this.simulation = new Simulation(this.parameters.as_parameters());
+    this.dim = 1;
   }
 
   /**
@@ -59,6 +65,7 @@ export class JsSimulation {
     this.simulation = new Simulation(this.parameters.as_parameters());
 
     this.simulation.simulate(this.parameters.wasm_simulation_kind());
+    this.dim = this.parameters.dim();
 
     this.log.info("Completed simulation");
     this.log.pop_reason();

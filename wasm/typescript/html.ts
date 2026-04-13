@@ -38,6 +38,14 @@ export function set_input_checked(id: string, checked: boolean): void {
   }
 }
 
+export function set_input_range(id: string, min: any, max: any): void {
+  const e = document.getElementById(id);
+  if (e instanceof HTMLInputElement) {
+    e.min = min.toString();
+    e.max = max.toString();
+  }
+}
+
 export function get_input_checked(id: string): boolean {
   const e = document.getElementById(id);
   if (e instanceof HTMLInputElement) {
@@ -61,8 +69,8 @@ export function get_input_radio_checked(parent_id: string): null | string {
 }
 
 export class HtmlElement {
-  ele: Element;
-  constructor(ele: Element) {
+  ele: HTMLElement;
+  constructor(ele: HTMLElement) {
     this.ele = ele;
   }
 
@@ -157,6 +165,34 @@ export class HtmlElement {
     return new HtmlElement(input);
   }
 
+  add_input_range(
+    name: string,
+    value: string,
+    min: string,
+    max: string,
+    callback: () => void,
+    id?: string,
+    classes?: string,
+  ) {
+    const input = document.createElement("input");
+    input.setAttribute("type", "range");
+    input.setAttribute("name", name);
+    input.setAttribute("value", value);
+    input.setAttribute("min", min);
+    input.setAttribute("max", max);
+    // const x: HTMLInputElement = new HTMLInputElement();
+    // x.on
+    input.oninput = callback;
+    if (id) {
+      input.id = id;
+    }
+    if (classes) {
+      input.className = classes;
+    }
+    this.ele.appendChild(input);
+    return new HtmlElement(input);
+  }
+
   add_input_text(name: string, value: string, id?: string, classes?: string) {
     const input = document.createElement("input");
     input.setAttribute("type", "text");
@@ -193,6 +229,21 @@ export class HtmlElement {
       this.ele.appendChild(content.ele);
     } else {
       this.ele.insertAdjacentText("afterbegin", content);
+    }
+  }
+
+  set_style(style: string, value?: string) {
+    /* This is not supported by FireFox
+    if (value) {
+      this.ele.attributeStyleMap.set(style, value);
+    } else {
+      this.ele.attributeStyleMap.delete(style);
+    }
+    */
+    if (value) {
+      this.ele.style = `${style}: ${value};`;
+    } else {
+      this.ele.style = "";
     }
   }
 }

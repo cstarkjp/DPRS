@@ -34,6 +34,13 @@ export function set_input_checked(id, checked) {
         e.checked = checked;
     }
 }
+export function set_input_range(id, min, max) {
+    const e = document.getElementById(id);
+    if (e instanceof HTMLInputElement) {
+        e.min = min.toString();
+        e.max = max.toString();
+    }
+}
 export function get_input_checked(id) {
     const e = document.getElementById(id);
     if (e instanceof HTMLInputElement) {
@@ -133,6 +140,25 @@ export class HtmlElement {
         this.ele.appendChild(input);
         return new HtmlElement(input);
     }
+    add_input_range(name, value, min, max, callback, id, classes) {
+        const input = document.createElement("input");
+        input.setAttribute("type", "range");
+        input.setAttribute("name", name);
+        input.setAttribute("value", value);
+        input.setAttribute("min", min);
+        input.setAttribute("max", max);
+        // const x: HTMLInputElement = new HTMLInputElement();
+        // x.on
+        input.oninput = callback;
+        if (id) {
+            input.id = id;
+        }
+        if (classes) {
+            input.className = classes;
+        }
+        this.ele.appendChild(input);
+        return new HtmlElement(input);
+    }
     add_input_text(name, value, id, classes) {
         const input = document.createElement("input");
         input.setAttribute("type", "text");
@@ -169,6 +195,21 @@ export class HtmlElement {
         }
         else {
             this.ele.insertAdjacentText("afterbegin", content);
+        }
+    }
+    set_style(style, value) {
+        /* This is not supported by FireFox
+        if (value) {
+          this.ele.attributeStyleMap.set(style, value);
+        } else {
+          this.ele.attributeStyleMap.delete(style);
+        }
+        */
+        if (value) {
+            this.ele.style = `${style}: ${value};`;
+        }
+        else {
+            this.ele.style = "";
         }
     }
 }
