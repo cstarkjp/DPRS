@@ -31,8 +31,11 @@ export class SimulationControls {
         this.populate_value("n_x", this.parameters.dims.n_x);
         this.populate_value("n_y", this.parameters.dims.n_y);
         this.populate_value("n_z", this.parameters.dims.n_z);
-        if (this.parameters.params.initial_center) {
+        if (this.parameters.params.seed_kind == "center") {
             html.set_input_checked(this.ele_id + "seed_center", true);
+        }
+        else if (this.parameters.params.seed_kind == "edge") {
+            html.set_input_checked(this.ele_id + "seed_edge", true);
         }
         else {
             html.set_input_checked(this.ele_id + "seed_random", true);
@@ -50,18 +53,15 @@ export class SimulationControls {
     populate_parameters() {
         const simulation_choice = html.get_input_radio_checked(this.ele_id + "sim_kind");
         const seed_kind = html.get_input_radio_checked(this.ele_id + "_seed_kind");
-        console.log(seed_kind);
-        var initial_center = false;
-        if (seed_kind == "center") {
-            initial_center = true;
-        }
         this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
         this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
         this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
         if (simulation_choice !== null) {
             this.parameters.params.simulation_kind = simulation_choice;
         }
-        this.parameters.params.initial_center = initial_center;
+        if (seed_kind !== null) {
+            this.parameters.params.seed_kind = seed_kind;
+        }
         this.parameters.params.n_iterations = this.get_int("n_iterations", 0, 1000000);
         this.parameters.params.sample_period = this.get_int("sample_period", 1, 100000);
         this.parameters.params.random_seed = this.get_int("random_seed", 1, 100000);

@@ -2,6 +2,7 @@ use directed_percolation as dprs;
 use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
+use web_sys::console::dir;
 
 use crate::TopoBc;
 
@@ -82,6 +83,31 @@ impl Parameters {
         self.0.bcs_z = (bc0, bc1);
         self.0.bc_values_z = (bc_v_0.into(), bc_v_1.into());
     }
+
+    #[wasm_bindgen(getter)]
+    pub fn initial_condition(&self) -> String {
+        match self.0.initial_condition {
+            directed_percolation::InitialCondition::CentralCell => "center",
+            directed_percolation::InitialCondition::EdgeCell => "edge",
+            _ => "random",
+        }
+        .into()
+    }
+
+    #[wasm_bindgen(setter)]
+    pub fn set_initial_condition(&mut self, value: &str) {
+        match value {
+            "center" => {
+                self.0.initial_condition = directed_percolation::InitialCondition::CentralCell;
+            }
+            "edge" => {
+                self.0.initial_condition = directed_percolation::InitialCondition::EdgeCell;
+            }
+            _ => {
+                self.0.initial_condition = directed_percolation::InitialCondition::Randomized;
+            }
+        }
+    }
 }
 
 field_getter_setter! {Parameters, u32, n_x, {|a| a as u32}, set_n_x, {|a| a as usize}}
@@ -95,9 +121,3 @@ field_getter_setter! {Parameters, f64, p_2, {|a| a}, set_p_2, {|a| a}}
 field_getter_setter! {Parameters, u32, n_iterations, {|a| a as u32}, set_n_iterations, {|a| a as usize}}
 field_getter_setter! {Parameters, u32, sample_period, {|a| a as u32}, set_sample_period, {|a| a as usize}}
 field_getter_setter! {Parameters, u32, random_seed, {|a| a as u32}, set_random_seed, {|a| a as usize}}
-// TODO: needs updating since we now have EdgeCell as well
-field_getter_setter! {Parameters, bool, initial_condition, {|a| matches![
-    a,
-    directed_percolation::InitialCondition::CentralCell
-]}, set_initial_condition, {|a| if a {directed_percolation::InitialCondition::CentralCell} else {directed_percolation::InitialCondition::Randomized}}}
-// field_getter_setter! {Parameters, crate::SimulationKind, simulation_kind, {|a| (&a).into()}, set_simulation_kind, {|a| a.into() }}
