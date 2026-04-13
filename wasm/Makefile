@@ -9,6 +9,9 @@ WASM_PACK = WASM_PACK_WASM_OPT=true wasm-pack build --release --target web
 all:
 	${WASM_PACK}
 
+js:
+	npx tsc -b
+
 start_http:
 	python3 -m http.server 3003
 
@@ -25,6 +28,15 @@ help:
 	@echo "To run a local server:"
 	@echo "    make serve"
 	@echo "Then open a browser to http:://127.0.0.1:3003/http"
+	@echo
+	@echo "To compile the typescript and copy it to the http (which is also commited into git):"
+	@echo "    make js"
+	@echo
+	@echo "To install 'tsc' first install node (sad face): node-v24.14.1.pkg"
+	@echo "Then"
+	@echo "    npm install typescript"
+	@echo ""
+	@echo "To use the compiler (tsc) use : npx tsc"
 
 zip: dprs.zip
 	@echo "Package zipped"

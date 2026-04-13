@@ -48,16 +48,30 @@ macro_rules! getter_setter {
     }
 }
 
-mod dims;
+/// Create 'getter' and 'setter' methods for elements of a type
+#[macro_export]
+macro_rules! field_getter_setter {
+{$parent:ty, $t: ty, $field:ident, $get_map:tt, $set_field:ident, $set_map:tt } => {
+
+        #[wasm_bindgen] impl $parent {
+            #[wasm_bindgen(getter)]
+            pub fn $field(&self) -> $t {
+                ($get_map)(self.0.$field)
+            }
+
+            #[wasm_bindgen(setter)]
+            pub fn $set_field(&mut self, value: $t) {
+                self.0.$field = ($set_map)(value);
+            }
+
+        }
+    }
+}
+
 mod parameters;
-mod params;
-mod probabilities;
 mod simulation;
 mod topo_bc;
 
-pub use dims::Dims;
 pub use parameters::Parameters;
-pub use params::{Params, SimulationKind};
-pub use probabilities::Probabilities;
 pub use simulation::Simulation;
 pub use topo_bc::TopoBc;

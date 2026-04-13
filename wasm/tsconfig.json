@@ -1,0 +1,60 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    "rootDir": "./typescript/",
+    "outDir": "./http",
+
+    // No idea what this is but it breaks stuff
+    // "module": "commonjs",
+
+    // Need at least 2015 for set iteration; does not seem onerous
+    "target": "ES2015",
+
+    // Presumably libraries that we target
+    // "lib": ["DOM", "ES2017", "DOM.Iterable", "ScriptHost"],
+
+    // Whether to generate sourceMap?
+    "sourceMap": false,
+
+    // Whether to generate ts declaration files?
+    "declaration": false,
+
+    // Whether to generate ts declaration map files?
+    "declarationMap": false,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+
+    // "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+  },
+  "include": ["pkg/*"],
+  "files": [
+    "typescript/html.ts",
+    "typescript/log.ts",
+    "typescript/tabbed.ts",
+    "typescript/storage.ts",
+    "typescript/js_parameters.ts",
+    "typescript/js_simulation.ts",
+    "typescript/simulation_controls.ts",
+    "typescript/saved_simulations.ts",
+    "typescript/visualize.ts",
+    "typescript/dk.ts",
+  ],
+}
