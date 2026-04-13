@@ -1,53 +1,16 @@
-# Live demo
+# Live 1D demo
 
-Here you go
+The 1D demo
 
 <div>
     <link href="./http/index.css" rel="stylesheet" type="text/css" />
-    <script type="module" src="./http/dk.js"></script>
-    <div id="tab-list" class="tab-list">
-        <ul>
-            <li><a href="#tab-1D">1D sims</a></li>
-            <li><a href="#tab-2D">2D sim</a></li>
-            <li><a href="#tab-saved">Saved</a></li>
-            <li><a href="#tab-log">Log</a></li>
-            <li><a href="#tab-help">Help</a></li>
-        </ul>
-    </div>
-
-    <div id="upper">
-        <div id="tab-help">
-            <h2>Directed Percolation demonstration</h2>
-            This is a demonstration of the directed percolation library,
-            built in Rust, using a 'WASM' wrapper and so running in a
-            browser
-            <p></p>
-            This utilizes the 'directed_percolation' Rust crate, which is
-            also used by the Python wrapper and the python notebooks;
-            however, 'WASM' provides only a single thread, and so the
-            simulations that are performed in the browser are all single
-            threaded, and much lower performance than native simulations -
-            so the scale of simulations within the browser is somewhat
-            limited.
-        </div>
+    <script type="module" src="./http/1d.js"></script>
         <div id="tab-1D">
-            <h2>1D DP example</h2>
             <div id="1d_sim_controls"></div>
         </div>
-        <div id="tab-2D">
-            <h2>2D DP example</h2>
-            <div id="2d_sim_controls"></div>
-        </div>
-        <div id="tab-saved">
-            <h2>Saved simulations</h2>
-            <div id="SavedSimulations"></div>
-        </div>
-        <div id="tab-log">
+        <div id="tab-log" style="display:none">
             <div id="Log"></div>
         </div>
-    </div>
-    <!-- <hr /> -->
-    <br />
     <div id="VisualizationControls"></div>
     <div id="Visualize"></div>
 </div>
