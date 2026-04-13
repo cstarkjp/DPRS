@@ -40,10 +40,11 @@ impl GrowthModel<Cell2D> for ModelBedload2D {
         let interesting_upstream_nbrs = nbrhood.bitmask() & !ignore_nbrs;
         let n_occupied_upstream_nbrs = interesting_upstream_nbrs.count_ones();
         let are_some_upstream_nbrs_occupied = n_occupied_upstream_nbrs >= 1;
-
-        let do_survive = ((is_here_occupied | are_some_upstream_nbrs_occupied)
-            & rng.random_bool(self.p_1))
-            | ((is_here_occupied & are_some_upstream_nbrs_occupied) & rng.random_bool(self.p_2));
+        let do_keep_moving_or_do_collective_entrainment =
+            (is_here_occupied | are_some_upstream_nbrs_occupied) & rng.random_bool(self.p_1);
+        let not_do_collective_detrainment =
+            (is_here_occupied & are_some_upstream_nbrs_occupied) & rng.random_bool(self.p_2);
+        let do_survive = do_keep_moving_or_do_collective_entrainment | not_do_collective_detrainment;
         do_survive.into()
     }
 }
