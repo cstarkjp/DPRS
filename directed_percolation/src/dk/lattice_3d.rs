@@ -220,9 +220,9 @@ impl<GM: GrowthModel<Cell3D>> Lattice3D<GM> {
                 return;
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
-                *cell = self
-                    .growth_model
-                    .update_state(self.iteration, rng, lattice_window.nbrhood());
+                *cell =
+                    self.growth_model
+                        .update_state(self.iteration, rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
                 }
