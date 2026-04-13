@@ -1,0 +1,66 @@
+.tab-list ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #ccc;
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    /* same as li.active a */
+    border-bottom-color: #666;
+}
+
+.tab-list ul li {
+    float: left;
+}
+
+.tab-list ul li.active a {
+    pointer-events: none;
+    color: #fff;
+    background: #666;
+}
+
+.tab-list ul li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.tab-list ul li a:hover {
+    background-color: #111;
+}
+
+.dims_n_text {
+    width: 6ch;
+}
+
+.prob_text {
+    width: 6ch;
+}
+
+.params_text {
+    width: 6ch;
+}
+
+.controls {
+    margin-right: 15px;
+}
+
+.sim_controls_text {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+#upper {
+    overflow-y: scroll;
+
+    /* This height SHOULD be fixed */
+    height: 260px;
+}
+
+/* Would do phone stuff like this */
+@media (min-width: 320px) {
+    /* smartphones, portrait */
+}
