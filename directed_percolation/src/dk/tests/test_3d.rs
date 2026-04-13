@@ -1,6 +1,6 @@
 pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
-use super::{Cell3D, CellModel, CellNbrhood3D, Lattice3D};
+use super::{Cell3D, GrowthModel, CellNbrhood3D, Lattice3D};
 use super::{run_nd, simulation_nd};
 
 use rand::rngs::ChaCha8Rng;
@@ -8,7 +8,7 @@ use rand::rngs::ChaCha8Rng;
 #[derive(Clone, Copy, Debug)]
 struct MoveDownRightModel3D {}
 
-impl CellModel<Cell3D> for MoveDownRightModel3D {
+impl GrowthModel<Cell3D> for MoveDownRightModel3D {
     fn create_from_parameters(_parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {})
     }

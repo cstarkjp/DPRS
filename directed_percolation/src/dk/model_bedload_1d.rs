@@ -1,4 +1,4 @@
-use crate::{Cell1D, CellModel};
+use crate::{Cell1D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
@@ -36,7 +36,7 @@ pub struct ModelBedload1D {
 }
 
 // Implement CellModel1D trait for ModelBedload1D.
-impl CellModel<Cell1D> for ModelBedload1D {
+impl GrowthModel<Cell1D> for ModelBedload1D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
         Ok(Self {

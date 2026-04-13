@@ -1,7 +1,7 @@
 use crate::TrackingHistory;
 pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
-use super::{Cell1D, CellModel, Lattice1D, ModelDKSimplified1D, ModelStaggeredDK1D};
+use super::{Cell1D, GrowthModel, Lattice1D, ModelDKSimplified1D, ModelStaggeredDK1D};
 
 use super::{run_nd, simulation_nd};
 
@@ -10,7 +10,7 @@ use rand::rngs::ChaCha8Rng;
 #[derive(Clone, Copy, Debug)]
 struct MoveRightModel1D {}
 
-impl CellModel<Cell1D> for MoveRightModel1D {
+impl GrowthModel<Cell1D> for MoveRightModel1D {
     fn create_from_parameters(_parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {})
     }

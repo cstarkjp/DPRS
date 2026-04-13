@@ -11,7 +11,7 @@ mod traits;
 mod types;
 
 pub use dk::{
-    Cell1D, Cell2D, Cell3D, CellModel, CellNbrhood2D, CellNbrhood3D, RowIterator2D, RowIterator3D,
+    Cell1D, Cell2D, Cell3D, CellNbrhood2D, CellNbrhood3D, GrowthModel, RowIterator2D, RowIterator3D,
 };
 pub use enums::SimError;
 pub use simulation::simulation_nd;

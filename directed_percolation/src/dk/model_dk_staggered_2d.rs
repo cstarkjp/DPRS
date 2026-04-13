@@ -1,5 +1,5 @@
 use super::CellNbrhood2D;
-use crate::{Cell2D, CellModel};
+use crate::{Cell2D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
@@ -13,7 +13,7 @@ pub struct ModelStaggeredDK2D {
 }
 
 // Implement CellModel2D trait for ModelStaggeredDK2D.
-impl CellModel<Cell2D> for ModelStaggeredDK2D {
+impl GrowthModel<Cell2D> for ModelStaggeredDK2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
         Ok(Self {
