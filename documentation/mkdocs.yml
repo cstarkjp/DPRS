@@ -112,8 +112,9 @@ extra:
 nav:
     - Home: index.md
     # - Navigation: navigation.md
-    - Live demo: 
-        - live-demo/index.md
+    - Live demos: 
+        - live-demos/live_demo_1d.md
+        - live-demos/live_demo_2d.md
     - Jupyter notebooks: 
         - jupyter-notebooks/index.md
     - Python demos: 
