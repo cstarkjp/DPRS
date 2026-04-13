@@ -7,7 +7,7 @@
 [![](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml)
 [![](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache)](https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml)
 
-[Live WASM demo](live-demo/http)
+[Live WASM demo](live-demo/index.md)
 
 In this project, we implement directed percolation models in Rust. The [Rust code](https://github.com/cstarkjp/DPRS/tree/main/src) is accessed via a [Python wrapper](https://github.com/cstarkjp/DPRS/tree/main/src/sim.rs) to make experimentation as convenient as possible. Jupyter notebooks are used to implement the Python-wrapped simulations. 
 
