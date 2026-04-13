@@ -12,6 +12,7 @@ export class JsSimulation {
         this.log = new log.Logger(logger, "sim");
         this.parameters = new JsParameters();
         this.simulation = new Simulation(this.parameters.as_parameters());
+        this.dim = 1;
     }
     /**
      * Run a simulation with the given JsParameters
@@ -28,10 +29,11 @@ export class JsSimulation {
         this.log.info(`Params n_iterations:${parameters.params.n_iterations} ` +
             `sample_period:${parameters.params.sample_period} ` +
             `random_seed:${parameters.params.random_seed} ` +
-            `initial_center:${parameters.params.initial_center} ` +
+            `seed_kind:${parameters.params.seed_kind} ` +
             `simulation_kind:${parameters.params.simulation_kind}`);
         this.simulation = new Simulation(this.parameters.as_parameters());
         this.simulation.simulate(this.parameters.wasm_simulation_kind());
+        this.dim = this.parameters.dim();
         this.log.info("Completed simulation");
         this.log.pop_reason();
     }

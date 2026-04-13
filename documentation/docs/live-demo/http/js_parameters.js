@@ -36,14 +36,14 @@ class Params {
         this.n_iterations = 600;
         this.sample_period = 1;
         this.random_seed = 1;
-        this.initial_center = true;
+        this.seed_kind = "center";
         this.simulation_kind = "staggered_dk";
     }
     set_parameters(parameters) {
         parameters.n_iterations = this.n_iterations;
         parameters.sample_period = this.sample_period;
         parameters.random_seed = this.random_seed;
-        parameters.initial_condition = this.initial_center;
+        parameters.initial_condition = this.seed_kind;
     }
     wasm_simulation_kind() {
         var simulation_kind = "simplified_dk";
@@ -59,7 +59,7 @@ class Params {
         const n_iterations = params["n_iterations"];
         const sample_period = params["sample_period"];
         const random_seed = params["random_seed"];
-        const initial_center = params["initial_center"];
+        const seed_kind = params["seed_kind"];
         const simulation_kind = params["simulation_kind"];
         if (typeof n_iterations == "number") {
             this.n_iterations = n_iterations;
@@ -70,8 +70,8 @@ class Params {
         if (typeof random_seed == "number") {
             this.random_seed = random_seed;
         }
-        if (typeof initial_center == "boolean") {
-            this.initial_center = initial_center;
+        if (typeof seed_kind == "string") {
+            this.seed_kind = seed_kind;
         }
         if (typeof simulation_kind == "string") {
             this.simulation_kind = simulation_kind;
@@ -149,8 +149,8 @@ export class JsParameters {
         this.topo = [new Topo(), new Topo(), new Topo()];
         this.dims = new Dims();
         this.topo[0].periodic = true;
-        this.topo[1].periodic = false;
-        this.topo[2].periodic = false;
+        this.topo[1].periodic = true;
+        this.topo[2].periodic = true;
         this.dims.n_x = 400;
         this.dims.n_y = 0;
         this.dims.n_z = 0;
@@ -166,6 +166,12 @@ export class JsParameters {
     }
     wasm_simulation_kind() {
         return this.params.wasm_simulation_kind();
+    }
+    dim() {
+        if (this.dims.n_y > 1) {
+            return 2;
+        }
+        return 1;
     }
     as_json() {
         const parameters = {
