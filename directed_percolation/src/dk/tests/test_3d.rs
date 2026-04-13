@@ -1,6 +1,6 @@
 pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
-use super::{Cell3D, GrowthModel, CellNbrhood3D, Lattice3D};
+use super::{Cell3D, CellNbrhood3D, GrowthModel, Lattice3D};
 use super::{run_nd, simulation_nd};
 
 use rand::rngs::ChaCha8Rng;
@@ -32,7 +32,7 @@ fn test_3d_sim() -> Result<(), Box<dyn std::error::Error>> {
     parameters.n_x = n_x;
     parameters.n_y = n_y;
     parameters.n_z = n_z;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
@@ -72,7 +72,7 @@ fn test_3d_run() -> Result<(), Box<dyn std::error::Error>> {
     parameters.n_x = n_x;
     parameters.n_y = n_y;
     parameters.n_z = n_z;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);

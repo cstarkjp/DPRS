@@ -1,6 +1,6 @@
 pub use crate::{BoundaryCondition, DualState, InitialCondition, Parameters, Processing, Topology};
 
-use super::{Cell2D, GrowthModel, CellNbrhood2D, Lattice2D};
+use super::{Cell2D, CellNbrhood2D, GrowthModel, Lattice2D};
 use super::{run_nd, simulation_nd};
 
 use rand::rngs::ChaCha8Rng;
@@ -30,7 +30,7 @@ fn test_2d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
@@ -65,7 +65,7 @@ fn test_2d_run() -> Result<(), Box<dyn std::error::Error>> {
     let mut parameters = Parameters::default();
     parameters.n_x = n_x;
     parameters.n_y = n_y;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);

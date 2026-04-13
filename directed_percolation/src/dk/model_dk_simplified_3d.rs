@@ -3,7 +3,7 @@ use crate::{Cell3D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
-/// GrowthModel3D implements the CellModel3D trait, plus these.
+/// ModelDKSimplified3D implements the GrowthModel<Cell3D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct ModelDKSimplified3D {
     /// The probability used in the model, where a cell is activated with this probability if *any* of its neighbors (including itself) is active
@@ -12,7 +12,7 @@ pub struct ModelDKSimplified3D {
     p_2: f64,
 }
 
-// Implement CellModel3D trait for ModelDKSimplified3D.
+// Implement GrowthModel<Cell3D> trait for ModelDKSimplified3D.
 impl GrowthModel<Cell3D> for ModelDKSimplified3D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities

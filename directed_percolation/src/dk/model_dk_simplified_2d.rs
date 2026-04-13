@@ -3,7 +3,7 @@ use crate::{Cell2D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
-/// ModelDKSimplified2D implements the CellModel2D trait, plus these.
+/// ModelDKSimplified2D implements the GrowthModel<Cell2D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct ModelDKSimplified2D {
     /// The probability used in the model, where a cell is activated with this probability
@@ -12,7 +12,7 @@ pub struct ModelDKSimplified2D {
     p_2: f64,
 }
 
-// Implement CellModel2D trait for ModelDKSimplified2D.
+// Implement GrowthModel<Cell2D> trait for ModelDKSimplified2D.
 impl GrowthModel<Cell2D> for ModelDKSimplified2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
@@ -56,12 +56,12 @@ impl GrowthModel<Cell2D> for ModelDKSimplified2D {
             // Count the interesting (nonignored) neighbors
             let n_occupied_nbrs = interesting_nbrs.count_ones();
 
-            let are_several_nbrs_occupied = n_occupied_nbrs >= 1;
+            let are_some_nbrs_occupied = n_occupied_nbrs >= 1;
 
-            if are_several_nbrs_occupied || is_here_occupied {
+            if are_some_nbrs_occupied || is_here_occupied {
                 let uniform_variate: f64 = rng.random();
                 (is_here_occupied && (uniform_variate < self.p_1))
-                    || (are_several_nbrs_occupied && (uniform_variate < self.p_2))
+                    || (are_some_nbrs_occupied && (uniform_variate < self.p_2))
             } else {
                 false
             }

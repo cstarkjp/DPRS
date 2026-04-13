@@ -5,6 +5,7 @@ mod traits;
 pub use traits::{Cell1D, Cell2D, Cell3D, GrowthModel};
 
 mod model_bedload_1d;
+mod model_bedload_2d;
 mod model_dk_simplified_1d;
 mod model_dk_simplified_2d;
 mod model_dk_simplified_3d;
@@ -32,6 +33,7 @@ pub use model_dk_staggered_1d::ModelStaggeredDK1D;
 pub use model_dk_staggered_2d::ModelStaggeredDK2D;
 
 pub use model_bedload_1d::ModelBedload1D;
+pub use model_bedload_2d::ModelBedload2D;
 
 pub use nbrhood_2d::CellNbrhood2D;
 pub use nbrhood_3d::CellNbrhood3D;

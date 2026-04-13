@@ -271,7 +271,7 @@ impl<GM: GrowthModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for Lattice3D<GM
         let mass = total as f64;
         // Don't bother computing the mean radius unless we're central seeding
         let moment = match self.parameters.initial_condition {
-            InitialCondition::CentralSeed => (0..self.lattice_n_z)
+            InitialCondition::CentralCell => (0..self.lattice_n_z)
                 .flat_map(|k| {
                     (0..self.lattice_n_y).flat_map(move |j| {
                         (0..self.lattice_n_x).map(move |i| {
@@ -320,8 +320,8 @@ impl<GM: GrowthModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for Lattice3D<GM
         rng.random_bool(p).into()
     }
 
-    /// Seed the simulation with a central patch.
-    fn create_seeded_lattice(&mut self) {
+    /// Seed the simulation by occupying the central cell at t=0.
+    fn create_central_cell_seeded_lattice(&mut self) {
         self.lattice = vec![DualState::default(); self.n_cells()];
         let i = self.i_cell(
             self.lattice_n_x / 2,
@@ -330,6 +330,18 @@ impl<GM: GrowthModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for Lattice3D<GM
         );
         self.lattice[i] = DualState::Occupied;
     }
+
+    /// Seed the simulation by occupying the edge-central (x=1) cell at t=0.
+    fn create_edge_cell_seeded_lattice(&mut self) {
+        self.lattice = vec![DualState::default(); self.n_cells()];
+        let i = self.i_cell(
+            1,
+            self.lattice_n_y / 2,
+            self.lattice_n_z / 2,
+        );
+        self.lattice[i] = DualState::Occupied;
+    }
+
 
     /// Enforce edge topology specifications.
     fn apply_axial_topologies(&mut self) {

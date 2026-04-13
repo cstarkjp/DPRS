@@ -27,7 +27,7 @@ use rand::{Rng, RngExt};
 /// To apply it, we then also need a flag to turn the moving frame on or off,
 /// and we need the sim time, which currently is not passed in.
 ///
-/// ModelBedload1D implements the CellModel1D trait, plus these.
+/// ModelBedload1D implements the GrowthModel<Cell1D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct ModelBedload1D {
     p_1: f64,
@@ -35,7 +35,7 @@ pub struct ModelBedload1D {
     _p_3: f64,
 }
 
-// Implement CellModel1D trait for ModelBedload1D.
+// Implement GrowthModel<Cell1D> trait for ModelBedload1D.
 impl GrowthModel<Cell1D> for ModelBedload1D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
@@ -53,9 +53,9 @@ impl GrowthModel<Cell1D> for ModelBedload1D {
         nbrhood: &[bool; 3],
     ) -> DualState {
         let is_upstream_occupied = nbrhood[0];
-        let is_occupied = nbrhood[1];
-        let do_survive = ((is_occupied | is_upstream_occupied) & rng.random_bool(self.p_1))
-            | ((is_occupied & is_upstream_occupied) & rng.random_bool(self.p_2));
+        let is_here_occupied = nbrhood[1];
+        let do_survive = ((is_here_occupied | is_upstream_occupied) & rng.random_bool(self.p_1))
+            | ((is_here_occupied & is_upstream_occupied) & rng.random_bool(self.p_2));
         do_survive.into()
     }
 }

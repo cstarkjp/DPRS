@@ -29,7 +29,7 @@ fn test_1d_sim() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = Parameters::default();
     parameters.n_x = n_x;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);
@@ -50,7 +50,7 @@ fn test_1d_run() -> Result<(), Box<dyn std::error::Error>> {
     let n_x = 10;
     let mut parameters = Parameters::default();
     parameters.n_x = n_x;
-    parameters.initial_condition = InitialCondition::CentralSeed;
+    parameters.initial_condition = InitialCondition::CentralCell;
     parameters.processing = Processing::Serial;
     parameters.topology_x = Topology::Periodic;
     parameters.bcs_x = (BoundaryCondition::Floating, BoundaryCondition::Floating);

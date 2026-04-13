@@ -205,7 +205,7 @@ impl<GM: GrowthModel<Cell2D>> EvolvableLatticeDualState<Cell2D> for Lattice2D<GM
         let mass = total as f64;
         // Don't bother computing the mean radius unless we're central seeding
         let moment = match self.parameters.initial_condition {
-            InitialCondition::CentralSeed => (0..self.lattice_n_y)
+            InitialCondition::CentralCell => (0..self.lattice_n_y)
                 .flat_map(|j| {
                     (0..self.lattice_n_x).map(move |i| {
                         let x = (i as i64) - (self.lattice_n_x as i64) / 2;
@@ -253,10 +253,17 @@ impl<GM: GrowthModel<Cell2D>> EvolvableLatticeDualState<Cell2D> for Lattice2D<GM
         rng.random_bool(p).into()
     }
 
-    /// Seed the simulation with a central patch.
-    fn create_seeded_lattice(&mut self) {
+    /// Seed the simulation by occupying the central cell at t=0.
+    fn create_central_cell_seeded_lattice(&mut self) {
         self.lattice = vec![DualState::default(); self.n_cells()];
         let i = self.i_cell(self.lattice_n_x / 2, self.lattice_n_y / 2);
+        self.lattice[i] = DualState::Occupied;
+    }
+
+    /// Seed the simulation by occupying the edge-central (x=1) cell at t=0.
+    fn create_edge_cell_seeded_lattice(&mut self) {
+        self.lattice = vec![DualState::default(); self.n_cells()];
+        let i = self.i_cell(1, self.lattice_n_y / 2);
         self.lattice[i] = DualState::Occupied;
     }
 

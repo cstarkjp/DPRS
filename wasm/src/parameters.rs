@@ -95,8 +95,9 @@ field_getter_setter! {Parameters, f64, p_2, {|a| a}, set_p_2, {|a| a}}
 field_getter_setter! {Parameters, u32, n_iterations, {|a| a as u32}, set_n_iterations, {|a| a as usize}}
 field_getter_setter! {Parameters, u32, sample_period, {|a| a as u32}, set_sample_period, {|a| a as usize}}
 field_getter_setter! {Parameters, u32, random_seed, {|a| a as u32}, set_random_seed, {|a| a as usize}}
+// TODO: needs updating since we now have EdgeCell as well
 field_getter_setter! {Parameters, bool, initial_condition, {|a| matches![
     a,
-    directed_percolation::InitialCondition::CentralSeed
-]}, set_initial_condition, {|a| if a {directed_percolation::InitialCondition::CentralSeed} else {directed_percolation::InitialCondition::Randomized}}}
+    directed_percolation::InitialCondition::CentralCell
+]}, set_initial_condition, {|a| if a {directed_percolation::InitialCondition::CentralCell} else {directed_percolation::InitialCondition::Randomized}}}
 // field_getter_setter! {Parameters, crate::SimulationKind, simulation_kind, {|a| (&a).into()}, set_simulation_kind, {|a| a.into() }}

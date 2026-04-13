@@ -53,6 +53,9 @@ mod sim {
                 (Dimension::D1, GrowthModel::Bedload) => {
                     run_nd::<StdRng, dk::Cell1D, dk::Lattice1D<dk::ModelBedload1D>>(&sim_parameters)
                 }
+                (Dimension::D2, GrowthModel::Bedload) => {
+                    run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelBedload2D>>(&sim_parameters)
+                }
                 (Dimension::D2, GrowthModel::SimplifiedDomanyKinzel) => {
                     run_nd::<StdRng, dk::Cell2D, dk::Lattice2D<dk::ModelDKSimplified2D>>(
                         &sim_parameters,

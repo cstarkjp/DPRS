@@ -90,7 +90,7 @@ class Viz:
         fig.set_dpi(dpi_)
         return fig
 
-    def image_lattice_history(
+    def lattice_history(
             self,
             name: str,
             title: str,
@@ -99,7 +99,7 @@ class Viz:
             x: int | None=None, 
             t: int | None=None,
             fig_size: tuple[float,float]=(6,4,),
-        ) -> tuple[Figure, Any]:
+        ) -> None:
         """
         Plot colorized image of 1d lattice history.
         """
@@ -109,8 +109,10 @@ class Viz:
         x_span = (lattices.shape[0] if x is None else min(x, lattices.shape[0]))
         t = (lattices.shape[1] if t is None else min(t, lattices.shape[1]))
         match p.initial_condition:
-            case InitialCondition.CentralSeed: 
+            case InitialCondition.CentralCell: 
                 x = (lattices.shape[0]//2-x_span, lattices.shape[0]//2+x_span,)
+            case InitialCondition.EdgeCell: 
+                x = (0, lattices.shape[0]//2+x_span,)
             case InitialCondition.Randomized: 
                 x = (0, x_span,)
             case _:
@@ -133,7 +135,7 @@ class Viz:
         plt.grid(ls=":")
         # plt.close()
 
-    def image_lattice(
+    def lattice(
             self,
             name: str,
             title: str,
@@ -144,7 +146,7 @@ class Viz:
             y: int | None=None,
             z: int | None=None,
             fig_size: tuple[float,float]=(6,4,),
-        ) -> tuple[Figure, Any]:
+        ) -> None:
         """
         Plot colorized image of lattice.
         """
@@ -177,7 +179,7 @@ class Viz:
         plt.grid(ls=":")
         # plt.close()
 
-    def plot_lattice_statistic(
+    def lattice_statistic(
             self,
             name: str,
             title: str,
@@ -218,3 +220,45 @@ class Viz:
         plt.ylabel(rf"{labels[0]}")
         plt.xlabel(r"Time  $t$")
         plt.grid(ls=":")
+        # plt.close()
+
+    def phase_diagram(
+            self,
+            name: str,
+            title: str,
+            expts: dict,
+            i_equal: int,
+            fig_size: tuple[float,float]=(4,4,),
+        ) -> None:
+        """
+        Plot p_1-p_2 phase diagram for the DP bedload model.
+        """
+        _ = self.create_figure(fig_name=name, fig_size=fig_size,)
+        plt.title(title, fontdict={"fontsize": 11.5})
+
+        p1_p2 = np.array([ (expt["p_1"], expt["p_2"]) for (key, expt,) in expts.items()]).T
+        p1 = np.concat([p1_p2[0, :], [p1_p2[0, -1]], [0, 0, p1_p2[0, 0], p1_p2[0, 0]]])
+        p2 = np.concat([p1_p2[1, :], [0], [0, 1, 1, p1_p2[1, 0]]])
+        p1c = np.concat([p1_p2[0, :], [p1_p2[0, -1]], [1, 1, p1_p2[0, 0], p1_p2[0, 0]]])
+        p2c = np.concat([p1_p2[1, :], [0], [0, 1, 1, p1_p2[1, 0]]])
+
+        # plt.plot(*p1_p2, "o", ms=3, color="DarkBlue",)
+        plt.plot(*p1_p2, "-", color="DarkBlue",)
+        plt.fill(p1, p2, color="DarkBlue", alpha=0.1,)
+        plt.fill(p1c, p2c, color="DarkRed", alpha=0.1,)
+        plt.plot((0,1), (0,1), ":", color="DarkBlue", alpha=0.3,)
+        sym_expt = expts[i_equal]
+        plt.plot(sym_expt["p_1"], sym_expt["p_2"], "o", ms=5, color="DarkBlue",)
+        plt.xlim(0, 1,)
+        plt.ylim(0, 1,)
+        plt.xlabel(r"Collective entrainment - solo detrainment  $p_1$")
+        plt.ylabel(r"Collective detrainment  $p_2$")
+        axes = plt.gca()
+        axes.set_aspect(1)
+        plt.text(x=0.15, y=0.47, s="static bed", color="DarkBlue", font={"size": 14},)
+        plt.text(
+            x=0.85, y=0.55, s="mobile\nbed", color="DarkRed", 
+            horizontalalignment="center", font={"size": 14},
+        )
+        plt.grid(ls=":")
+        # plt.close()
