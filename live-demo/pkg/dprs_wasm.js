@@ -1,71 +1,5 @@
 /* @ts-self-types="./dprs_wasm.d.ts" */
 
-export class Dims {
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Dims.prototype);
-        obj.__wbg_ptr = ptr;
-        DimsFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        DimsFinalization.unregister(this);
-        return ptr;
-    }
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_dims_free(ptr, 0);
-    }
-    constructor() {
-        const ret = wasm.dims_new();
-        this.__wbg_ptr = ret >>> 0;
-        DimsFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @returns {number}
-     */
-    get n_x() {
-        const ret = wasm.__wbg_get_dims_n_x(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @returns {number}
-     */
-    get n_y() {
-        const ret = wasm.__wbg_get_dims_n_y(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @returns {number}
-     */
-    get n_z() {
-        const ret = wasm.__wbg_get_dims_n_z(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @param {number} arg0
-     */
-    set n_x(arg0) {
-        wasm.__wbg_set_dims_n_x(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set n_y(arg0) {
-        wasm.__wbg_set_dims_n_y(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set n_z(arg0) {
-        wasm.__wbg_set_dims_n_z(this.__wbg_ptr, arg0);
-    }
-}
-if (Symbol.dispose) Dims.prototype[Symbol.dispose] = Dims.prototype.free;
-
 export class Parameters {
     static __wrap(ptr) {
         ptr = ptr >>> 0;
@@ -85,11 +19,39 @@ export class Parameters {
         wasm.__wbg_parameters_free(ptr, 0);
     }
     /**
-     * @returns {Dims}
+     * @returns {boolean}
      */
-    get dims() {
-        const ret = wasm.parameters_dims(this.__wbg_ptr);
-        return Dims.__wrap(ret);
+    get initial_condition() {
+        const ret = wasm.parameters_initial_condition(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * @returns {number}
+     */
+    get n_iterations() {
+        const ret = wasm.parameters_n_iterations(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    get n_x() {
+        const ret = wasm.parameters_n_x(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    get n_y() {
+        const ret = wasm.parameters_n_y(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    get n_z() {
+        const ret = wasm.parameters_n_z(this.__wbg_ptr);
+        return ret >>> 0;
     }
     /**
      * Create a new [Parameters]
@@ -101,39 +63,99 @@ export class Parameters {
         return this;
     }
     /**
-     * @returns {Params}
+     * @returns {number}
      */
-    get params() {
-        const ret = wasm.parameters_params(this.__wbg_ptr);
-        return Params.__wrap(ret);
+    get p_1() {
+        const ret = wasm.parameters_p_1(this.__wbg_ptr);
+        return ret;
     }
     /**
-     * @returns {Probabilities}
+     * @returns {number}
      */
-    get probabilities() {
-        const ret = wasm.parameters_probabilities(this.__wbg_ptr);
-        return Probabilities.__wrap(ret);
+    get p_2() {
+        const ret = wasm.parameters_p_2(this.__wbg_ptr);
+        return ret;
     }
     /**
-     * @param {Dims} value
+     * @returns {number}
      */
-    set dims(value) {
-        _assertClass(value, Dims);
-        wasm.parameters_set_dims(this.__wbg_ptr, value.__wbg_ptr);
+    get p_initial() {
+        const ret = wasm.parameters_p_initial(this.__wbg_ptr);
+        return ret;
     }
     /**
-     * @param {Params} value
+     * @returns {number}
      */
-    set params(value) {
-        _assertClass(value, Params);
-        wasm.parameters_set_params(this.__wbg_ptr, value.__wbg_ptr);
+    get random_seed() {
+        const ret = wasm.parameters_random_seed(this.__wbg_ptr);
+        return ret >>> 0;
     }
     /**
-     * @param {Probabilities} value
+     * @returns {number}
      */
-    set probabilities(value) {
-        _assertClass(value, Probabilities);
-        wasm.parameters_set_probabilities(this.__wbg_ptr, value.__wbg_ptr);
+    get sample_period() {
+        const ret = wasm.parameters_sample_period(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {boolean} value
+     */
+    set initial_condition(value) {
+        wasm.parameters_set_initial_condition(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set n_iterations(value) {
+        wasm.parameters_set_n_iterations(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set n_x(value) {
+        wasm.parameters_set_n_x(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set n_y(value) {
+        wasm.parameters_set_n_y(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set n_z(value) {
+        wasm.parameters_set_n_z(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set p_1(value) {
+        wasm.parameters_set_p_1(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set p_2(value) {
+        wasm.parameters_set_p_2(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set p_initial(value) {
+        wasm.parameters_set_p_initial(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set random_seed(value) {
+        wasm.parameters_set_random_seed(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set sample_period(value) {
+        wasm.parameters_set_sample_period(this.__wbg_ptr, value);
     }
     /**
      * @param {TopoBc} value
@@ -157,6 +179,13 @@ export class Parameters {
         wasm.parameters_set_topo_bc_z(this.__wbg_ptr, value.__wbg_ptr);
     }
     /**
+     * @returns {number}
+     */
+    sim_dimension() {
+        const ret = wasm.parameters_sim_dimension(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
      * @returns {TopoBc}
      */
     get topo_bc_x() {
@@ -165,164 +194,6 @@ export class Parameters {
     }
 }
 if (Symbol.dispose) Parameters.prototype[Symbol.dispose] = Parameters.prototype.free;
-
-export class Params {
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Params.prototype);
-        obj.__wbg_ptr = ptr;
-        ParamsFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        ParamsFinalization.unregister(this);
-        return ptr;
-    }
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_params_free(ptr, 0);
-    }
-    /**
-     * @returns {boolean}
-     */
-    get initial_center() {
-        const ret = wasm.__wbg_get_params_initial_center(this.__wbg_ptr);
-        return ret !== 0;
-    }
-    /**
-     * @returns {number}
-     */
-    get n_iterations() {
-        const ret = wasm.__wbg_get_params_n_iterations(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @returns {number}
-     */
-    get random_seed() {
-        const ret = wasm.__wbg_get_params_random_seed(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @returns {number}
-     */
-    get sample_period() {
-        const ret = wasm.__wbg_get_params_sample_period(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-     * @returns {SimulationKind}
-     */
-    get simulation_kind() {
-        const ret = wasm.__wbg_get_params_simulation_kind(this.__wbg_ptr);
-        return ret;
-    }
-    constructor() {
-        const ret = wasm.params_new();
-        this.__wbg_ptr = ret >>> 0;
-        ParamsFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @param {boolean} arg0
-     */
-    set initial_center(arg0) {
-        wasm.__wbg_set_params_initial_center(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set n_iterations(arg0) {
-        wasm.__wbg_set_params_n_iterations(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set random_seed(arg0) {
-        wasm.__wbg_set_params_random_seed(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set sample_period(arg0) {
-        wasm.__wbg_set_params_sample_period(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {SimulationKind} arg0
-     */
-    set simulation_kind(arg0) {
-        wasm.__wbg_set_params_simulation_kind(this.__wbg_ptr, arg0);
-    }
-}
-if (Symbol.dispose) Params.prototype[Symbol.dispose] = Params.prototype.free;
-
-export class Probabilities {
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Probabilities.prototype);
-        obj.__wbg_ptr = ptr;
-        ProbabilitiesFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        ProbabilitiesFinalization.unregister(this);
-        return ptr;
-    }
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_probabilities_free(ptr, 0);
-    }
-    /**
-     * @returns {number}
-     */
-    get p_1() {
-        const ret = wasm.__wbg_get_probabilities_p_1(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-     * @returns {number}
-     */
-    get p_2() {
-        const ret = wasm.__wbg_get_probabilities_p_2(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-     * @returns {number}
-     */
-    get p_initial() {
-        const ret = wasm.__wbg_get_probabilities_p_initial(this.__wbg_ptr);
-        return ret;
-    }
-    constructor() {
-        const ret = wasm.probabilities_new();
-        this.__wbg_ptr = ret >>> 0;
-        ProbabilitiesFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @param {number} arg0
-     */
-    set p_1(arg0) {
-        wasm.__wbg_set_probabilities_p_1(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set p_2(arg0) {
-        wasm.__wbg_set_probabilities_p_2(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @param {number} arg0
-     */
-    set p_initial(arg0) {
-        wasm.__wbg_set_probabilities_p_initial(this.__wbg_ptr, arg0);
-    }
-}
-if (Symbol.dispose) Probabilities.prototype[Symbol.dispose] = Probabilities.prototype.free;
 
 export class Simulation {
     __destroy_into_raw() {
@@ -373,19 +244,19 @@ export class Simulation {
         _assertClass(parameters, Parameters);
         wasm.simulation_set_parameters(this.__wbg_ptr, parameters.__wbg_ptr);
     }
-    simulate() {
-        wasm.simulation_simulate(this.__wbg_ptr);
+    /**
+     * @param {string} kind
+     */
+    simulate(kind) {
+        const ptr0 = passStringToWasm0(kind, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.simulation_simulate(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
 }
 if (Symbol.dispose) Simulation.prototype[Symbol.dispose] = Simulation.prototype.free;
-
-/**
- * @enum {0 | 1}
- */
-export const SimulationKind = Object.freeze({
-    SimplifiedDomanyKinzel: 0, "0": "SimplifiedDomanyKinzel",
-    StaggeredDomanyKinzel: 1, "1": "StaggeredDomanyKinzel",
-});
 
 export class TopoBc {
     static __wrap(ptr) {
@@ -472,6 +343,11 @@ function __wbg_get_imports() {
         __wbg___wbindgen_throw_81fc77679af83bc6: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
+        __wbindgen_cast_0000000000000001: function(arg0, arg1) {
+            // Cast intrinsic for `Ref(String) -> Externref`.
+            const ret = getStringFromWasm0(arg0, arg1);
+            return ret;
+        },
         __wbindgen_init_externref_table: function() {
             const table = wasm.__wbindgen_externrefs;
             const offset = table.grow(4);
@@ -488,18 +364,9 @@ function __wbg_get_imports() {
     };
 }
 
-const DimsFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_dims_free(ptr >>> 0, 1));
 const ParametersFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_parameters_free(ptr >>> 0, 1));
-const ParamsFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_params_free(ptr >>> 0, 1));
-const ProbabilitiesFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_probabilities_free(ptr >>> 0, 1));
 const SimulationFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_simulation_free(ptr >>> 0, 1));
@@ -531,6 +398,49 @@ function getUint8ArrayMemory0() {
     return cachedUint8ArrayMemory0;
 }
 
+function passStringToWasm0(arg, malloc, realloc) {
+    if (realloc === undefined) {
+        const buf = cachedTextEncoder.encode(arg);
+        const ptr = malloc(buf.length, 1) >>> 0;
+        getUint8ArrayMemory0().subarray(ptr, ptr + buf.length).set(buf);
+        WASM_VECTOR_LEN = buf.length;
+        return ptr;
+    }
+
+    let len = arg.length;
+    let ptr = malloc(len, 1) >>> 0;
+
+    const mem = getUint8ArrayMemory0();
+
+    let offset = 0;
+
+    for (; offset < len; offset++) {
+        const code = arg.charCodeAt(offset);
+        if (code > 0x7F) break;
+        mem[ptr + offset] = code;
+    }
+    if (offset !== len) {
+        if (offset !== 0) {
+            arg = arg.slice(offset);
+        }
+        ptr = realloc(ptr, len, len = offset + arg.length * 3, 1) >>> 0;
+        const view = getUint8ArrayMemory0().subarray(ptr + offset, ptr + len);
+        const ret = cachedTextEncoder.encodeInto(arg, view);
+
+        offset += ret.written;
+        ptr = realloc(ptr, len, offset, 1) >>> 0;
+    }
+
+    WASM_VECTOR_LEN = offset;
+    return ptr;
+}
+
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_externrefs.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
+}
+
 let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
 cachedTextDecoder.decode();
 const MAX_SAFARI_DECODE_BYTES = 2146435072;
@@ -544,6 +454,21 @@ function decodeText(ptr, len) {
     }
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
+
+const cachedTextEncoder = new TextEncoder();
+
+if (!('encodeInto' in cachedTextEncoder)) {
+    cachedTextEncoder.encodeInto = function (arg, view) {
+        const buf = cachedTextEncoder.encode(arg);
+        view.set(buf);
+        return {
+            read: arg.length,
+            written: buf.length
+        };
+    };
+}
+
+let WASM_VECTOR_LEN = 0;
 
 let wasmModule, wasm;
 function __wbg_finalize_init(instance, module) {

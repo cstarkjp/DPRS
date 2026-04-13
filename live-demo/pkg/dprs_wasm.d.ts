@@ -1,15 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export class Dims {
-    free(): void;
-    [Symbol.dispose](): void;
-    constructor();
-    n_x: number;
-    n_y: number;
-    n_z: number;
-}
-
 export class Parameters {
     free(): void;
     [Symbol.dispose](): void;
@@ -17,32 +8,20 @@ export class Parameters {
      * Create a new [Parameters]
      */
     constructor();
-    dims: Dims;
-    params: Params;
-    probabilities: Probabilities;
-    topo_bc_x: TopoBc;
-    set topo_bc_y(value: TopoBc);
-    set topo_bc_z(value: TopoBc);
-}
-
-export class Params {
-    free(): void;
-    [Symbol.dispose](): void;
-    constructor();
-    initial_center: boolean;
+    sim_dimension(): number;
+    initial_condition: boolean;
     n_iterations: number;
-    random_seed: number;
-    sample_period: number;
-    simulation_kind: SimulationKind;
-}
-
-export class Probabilities {
-    free(): void;
-    [Symbol.dispose](): void;
-    constructor();
+    n_x: number;
+    n_y: number;
+    n_z: number;
     p_1: number;
     p_2: number;
     p_initial: number;
+    random_seed: number;
+    sample_period: number;
+    topo_bc_x: TopoBc;
+    set topo_bc_y(value: TopoBc);
+    set topo_bc_z(value: TopoBc);
 }
 
 export class Simulation {
@@ -53,13 +32,8 @@ export class Simulation {
      */
     constructor(parameters: Parameters);
     result(index: number): Uint8Array | undefined;
-    simulate(): void;
+    simulate(kind: string): void;
     parameters: Parameters;
-}
-
-export enum SimulationKind {
-    SimplifiedDomanyKinzel = 0,
-    StaggeredDomanyKinzel = 1,
 }
 
 export class TopoBc {
@@ -76,64 +50,54 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly __wbg_dims_free: (a: number, b: number) => void;
-    readonly __wbg_get_dims_n_x: (a: number) => number;
-    readonly __wbg_get_dims_n_y: (a: number) => number;
-    readonly __wbg_get_dims_n_z: (a: number) => number;
-    readonly __wbg_get_params_initial_center: (a: number) => number;
-    readonly __wbg_get_params_simulation_kind: (a: number) => number;
-    readonly __wbg_get_probabilities_p_1: (a: number) => number;
-    readonly __wbg_get_probabilities_p_2: (a: number) => number;
-    readonly __wbg_get_probabilities_p_initial: (a: number) => number;
-    readonly __wbg_get_topobc_fix_max: (a: number) => number;
-    readonly __wbg_get_topobc_fix_min: (a: number) => number;
-    readonly __wbg_get_topobc_fix_value: (a: number) => number;
-    readonly __wbg_get_topobc_periodic: (a: number) => number;
     readonly __wbg_parameters_free: (a: number, b: number) => void;
-    readonly __wbg_params_free: (a: number, b: number) => void;
-    readonly __wbg_probabilities_free: (a: number, b: number) => void;
-    readonly __wbg_set_dims_n_x: (a: number, b: number) => void;
-    readonly __wbg_set_dims_n_y: (a: number, b: number) => void;
-    readonly __wbg_set_dims_n_z: (a: number, b: number) => void;
-    readonly __wbg_set_params_initial_center: (a: number, b: number) => void;
-    readonly __wbg_set_params_simulation_kind: (a: number, b: number) => void;
-    readonly __wbg_set_probabilities_p_1: (a: number, b: number) => void;
-    readonly __wbg_set_probabilities_p_2: (a: number, b: number) => void;
-    readonly __wbg_set_probabilities_p_initial: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_max: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_min: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_value: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_periodic: (a: number, b: number) => void;
-    readonly __wbg_simulation_free: (a: number, b: number) => void;
-    readonly __wbg_topobc_free: (a: number, b: number) => void;
-    readonly dims_new: () => number;
-    readonly parameters_dims: (a: number) => number;
+    readonly parameters_initial_condition: (a: number) => number;
+    readonly parameters_n_iterations: (a: number) => number;
+    readonly parameters_n_x: (a: number) => number;
+    readonly parameters_n_y: (a: number) => number;
+    readonly parameters_n_z: (a: number) => number;
     readonly parameters_new: () => number;
-    readonly parameters_params: (a: number) => number;
-    readonly parameters_probabilities: (a: number) => number;
-    readonly parameters_set_dims: (a: number, b: number) => void;
-    readonly parameters_set_params: (a: number, b: number) => void;
-    readonly parameters_set_probabilities: (a: number, b: number) => void;
+    readonly parameters_p_1: (a: number) => number;
+    readonly parameters_p_2: (a: number) => number;
+    readonly parameters_p_initial: (a: number) => number;
+    readonly parameters_random_seed: (a: number) => number;
+    readonly parameters_sample_period: (a: number) => number;
+    readonly parameters_set_initial_condition: (a: number, b: number) => void;
+    readonly parameters_set_n_iterations: (a: number, b: number) => void;
+    readonly parameters_set_n_x: (a: number, b: number) => void;
+    readonly parameters_set_n_y: (a: number, b: number) => void;
+    readonly parameters_set_n_z: (a: number, b: number) => void;
+    readonly parameters_set_p_1: (a: number, b: number) => void;
+    readonly parameters_set_p_2: (a: number, b: number) => void;
+    readonly parameters_set_p_initial: (a: number, b: number) => void;
+    readonly parameters_set_random_seed: (a: number, b: number) => void;
+    readonly parameters_set_sample_period: (a: number, b: number) => void;
     readonly parameters_set_topo_bc_x: (a: number, b: number) => void;
     readonly parameters_set_topo_bc_y: (a: number, b: number) => void;
     readonly parameters_set_topo_bc_z: (a: number, b: number) => void;
+    readonly parameters_sim_dimension: (a: number) => number;
     readonly parameters_topo_bc_x: (a: number) => number;
-    readonly params_new: () => number;
-    readonly probabilities_new: () => number;
+    readonly __wbg_simulation_free: (a: number, b: number) => void;
     readonly simulation_new: (a: number) => number;
     readonly simulation_parameters: (a: number) => number;
     readonly simulation_result: (a: number, b: number) => [number, number];
     readonly simulation_set_parameters: (a: number, b: number) => void;
-    readonly simulation_simulate: (a: number) => void;
+    readonly simulation_simulate: (a: number, b: number, c: number) => [number, number];
+    readonly __wbg_get_topobc_fix_max: (a: number) => number;
+    readonly __wbg_get_topobc_fix_min: (a: number) => number;
+    readonly __wbg_get_topobc_fix_value: (a: number) => number;
+    readonly __wbg_get_topobc_periodic: (a: number) => number;
+    readonly __wbg_set_topobc_fix_max: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_fix_min: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_fix_value: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_periodic: (a: number, b: number) => void;
+    readonly __wbg_topobc_free: (a: number, b: number) => void;
     readonly topobc_new: () => number;
-    readonly __wbg_get_params_n_iterations: (a: number) => number;
-    readonly __wbg_get_params_random_seed: (a: number) => number;
-    readonly __wbg_get_params_sample_period: (a: number) => number;
-    readonly __wbg_set_params_n_iterations: (a: number, b: number) => void;
-    readonly __wbg_set_params_random_seed: (a: number, b: number) => void;
-    readonly __wbg_set_params_sample_period: (a: number, b: number) => void;
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+    readonly __wbindgen_malloc: (a: number, b: number) => number;
+    readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+    readonly __externref_table_dealloc: (a: number) => void;
     readonly __wbindgen_start: () => void;
 }
 
