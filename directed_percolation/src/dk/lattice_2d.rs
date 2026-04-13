@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::{CellNbrhood2D, RowIterator2D};
-use crate::{Cell2D, CellModel, EvolvableLatticeDualState, Statistics};
+use crate::{Cell2D, EvolvableLatticeDualState, GrowthModel, Statistics};
 use crate::{DualState, InitialCondition, Parameters};
 
 /// Model lattice in 2d.
@@ -11,10 +11,10 @@ use crate::{DualState, InitialCondition, Parameters};
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(Clone, Debug)]
-pub struct Lattice2D<C: CellModel<Cell2D>> {
+pub struct Lattice2D<GM: GrowthModel<Cell2D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3 cell neighborhoods in one time step and the next.
-    cell_model: C,
+    growth_model: GM,
     /// Lattice dimension x
     lattice_n_x: usize,
     /// Lattice dimension y
@@ -29,7 +29,7 @@ pub struct Lattice2D<C: CellModel<Cell2D>> {
     iteration: usize,
 }
 
-impl<C: CellModel<Cell2D>> std::fmt::Display for Lattice2D<C> {
+impl<GM: GrowthModel<Cell2D>> std::fmt::Display for Lattice2D<GM> {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             fmt,
@@ -52,7 +52,7 @@ impl<C: CellModel<Cell2D>> std::fmt::Display for Lattice2D<C> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel<Cell2D>> Lattice2D<C> {
+impl<GM: GrowthModel<Cell2D>> Lattice2D<GM> {
     /// Compute the cell index of a given (x, y) coordinate.
     fn i_cell(&self, x: usize, y: usize) -> usize {
         x + self.lattice_n_x * y
@@ -80,7 +80,8 @@ impl<C: CellModel<Cell2D>> Lattice2D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y);
-                    self.cell_model.update_state(self.iteration, rng, &nbrhood)
+                    self.growth_model
+                        .update_state(self.iteration, rng, &nbrhood)
                 } else {
                     DualState::default()
                 }
@@ -158,7 +159,7 @@ impl<C: CellModel<Cell2D>> Lattice2D<C> {
 
         for cell in row.iter_mut().skip(1).take(row_span) {
             *cell = self
-                .cell_model
+                .growth_model
                 .update_state(self.iteration, rng, lattice_window.nbrhood());
             if !lattice_window.next() {
                 break;
@@ -167,10 +168,10 @@ impl<C: CellModel<Cell2D>> Lattice2D<C> {
     }
 }
 
-impl<C: CellModel<Cell2D>> EvolvableLatticeDualState<Cell2D> for Lattice2D<C> {
+impl<GM: GrowthModel<Cell2D>> EvolvableLatticeDualState<Cell2D> for Lattice2D<GM> {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
-            cell_model: C::create_from_parameters(parameters)?,
+            growth_model: GM::create_from_parameters(parameters)?,
             lattice_n_x: parameters.lattice_n_x(),
             lattice_n_y: parameters.lattice_n_y(),
             lattice: vec![

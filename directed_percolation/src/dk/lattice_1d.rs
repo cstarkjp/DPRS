@@ -1,7 +1,7 @@
 use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
-use crate::{Cell1D, CellModel, EvolvableLatticeDualState, Statistics};
+use crate::{Cell1D, EvolvableLatticeDualState, GrowthModel, Statistics};
 use crate::{DualState, InitialCondition, Parameters};
 
 /// Model lattice in 1d.
@@ -10,10 +10,10 @@ use crate::{DualState, InitialCondition, Parameters};
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(Clone, Debug)]
-pub struct Lattice1D<C: CellModel<Cell1D>> {
+pub struct Lattice1D<GM: GrowthModel<Cell1D>> {
     /// The model that provides the cells and the mapping between
     /// 3x1 cell neighborhoods in one time step and the next.
-    cell_model: C,
+    growth_model: GM,
     /// Lattice dimension x
     lattice_n_x: usize,
     /// The current lattice
@@ -27,7 +27,7 @@ pub struct Lattice1D<C: CellModel<Cell1D>> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel<Cell1D>> Lattice1D<C> {
+impl<GM: GrowthModel<Cell1D>> Lattice1D<GM> {
     /// Evolve the grid by one iteration using serial processing.
     ///
     /// Create a new row, fill that in one 'update' call, then set the lattice to that
@@ -100,15 +100,17 @@ impl<C: CellModel<Cell1D>> Lattice1D<C> {
             .zip(lattice.windows(3))
         {
             let nbrhood = [window[0].into(), window[1].into(), window[2].into()];
-            *cell = self.cell_model.update_state(self.iteration, rng, &nbrhood);
+            *cell = self
+                .growth_model
+                .update_state(self.iteration, rng, &nbrhood);
         }
     }
 }
 
-impl<C: CellModel<Cell1D>> EvolvableLatticeDualState<Cell1D> for Lattice1D<C> {
+impl<GM: GrowthModel<Cell1D>> EvolvableLatticeDualState<Cell1D> for Lattice1D<GM> {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
-            cell_model: C::create_from_parameters(parameters)?,
+            growth_model: GM::create_from_parameters(parameters)?,
             lattice_n_x: parameters.lattice_n_x(),
             lattice: vec![DualState::default(); parameters.lattice_n_x()],
             parameters: parameters.clone(),

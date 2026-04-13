@@ -1,5 +1,5 @@
 use super::CellNbrhood3D;
-use crate::{Cell3D, CellModel};
+use crate::{Cell3D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
@@ -13,7 +13,7 @@ pub struct ModelDKSimplified3D {
 }
 
 // Implement CellModel3D trait for ModelDKSimplified3D.
-impl CellModel<Cell3D> for ModelDKSimplified3D {
+impl GrowthModel<Cell3D> for ModelDKSimplified3D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
         Ok(Self {

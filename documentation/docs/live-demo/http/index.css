@@ -18,6 +18,25 @@
     width: 6ch;
 }
 
+.save_simulation {
+    margin-right: 15px;
+}
+.run_simulation {
+    margin-right: 15px;
+}
+.dimensions {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.probability {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+.sim_controls {
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
 #upper {
     overflow-y: scroll;
 

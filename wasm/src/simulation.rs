@@ -10,21 +10,21 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use directed_percolation::DualState;
 use directed_percolation::SimError;
 use directed_percolation::TrackingHistory;
-use directed_percolation::dk::CellModel;
+use directed_percolation::dk::GrowthModel;
 
 use rand::rngs::ChaCha8Rng;
 
 use crate::Parameters;
 
 /// A 1D model simulation
-fn sim_1d<Model: CellModel<Cell1D>>(
+fn sim_1d<Model: GrowthModel<Cell1D>>(
     parameters: &directed_percolation::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell1D, Lattice1D<Model>>(parameters)
 }
 
 /// A 2D model simulation
-fn sim_2d<Model: CellModel<Cell2D>>(
+fn sim_2d<Model: GrowthModel<Cell2D>>(
     parameters: &directed_percolation::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell2D, Lattice2D<Model>>(parameters)
