@@ -1,8 +1,8 @@
 import init from "../pkg/dprs_wasm.js";
 import { Log, Logger } from "./log.js";
-import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
+import { VisualizeControls } from "./visualize_controls.js";
 import { JsSimulation } from "./js_simulation.js";
 import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
@@ -16,6 +16,7 @@ class Main {
         this.storage = new LocalStorage(window.localStorage, "dk/");
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
+        this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
         this.saved_sims = new SavedSimulations(logger, this, this.storage, "SavedSimulations");
         const params_1d = new JsParameters();
         // For staggered p_c = 0.705485152
@@ -106,11 +107,9 @@ class Main {
         this.log.pop_reason();
     }
     redraw() {
+        this.visualize_controls.populate_values(this.simulation);
         const dim = this.simulation.dim;
-        const zoom = html.get_input_float("zoom", 1, 10);
-        this.visualize.scale = zoom;
         if (dim > 1) {
-            this.visualize.slice = this.simulation.n_results() - 1;
             this.visualize.canvas_2d(this.simulation_controls_2d);
         }
         else {

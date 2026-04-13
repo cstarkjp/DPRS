@@ -38,6 +38,14 @@ export function set_input_checked(id: string, checked: boolean): void {
   }
 }
 
+export function set_input_range(id: string, min: any, max: any): void {
+  const e = document.getElementById(id);
+  if (e instanceof HTMLInputElement) {
+    e.min = min.toString();
+    e.max = max.toString();
+  }
+}
+
 export function get_input_checked(id: string): boolean {
   const e = document.getElementById(id);
   if (e instanceof HTMLInputElement) {
@@ -147,6 +155,34 @@ export class HtmlElement {
     if (required) {
       input.setAttribute("required", "true");
     }
+    if (id) {
+      input.id = id;
+    }
+    if (classes) {
+      input.className = classes;
+    }
+    this.ele.appendChild(input);
+    return new HtmlElement(input);
+  }
+
+  add_input_range(
+    name: string,
+    value: string,
+    min: string,
+    max: string,
+    callback: () => void,
+    id?: string,
+    classes?: string,
+  ) {
+    const input = document.createElement("input");
+    input.setAttribute("type", "range");
+    input.setAttribute("name", name);
+    input.setAttribute("value", value);
+    input.setAttribute("min", min);
+    input.setAttribute("max", max);
+    // const x: HTMLInputElement = new HTMLInputElement();
+    // x.on
+    input.oninput = callback;
     if (id) {
       input.id = id;
     }

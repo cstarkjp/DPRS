@@ -55,6 +55,7 @@
     "typescript/simulation_controls.ts",
     "typescript/saved_simulations.ts",
     "typescript/visualize.ts",
+    "typescript/visualize_controls.ts",
     "typescript/dk.ts",
   ],
 }

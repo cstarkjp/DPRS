@@ -3,6 +3,7 @@ import { Log, Logger } from "./log.js";
 import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
+import { VisualizeControls } from "./visualize_controls.js";
 import { JsSimulation } from "./js_simulation.js";
 import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
@@ -14,6 +15,7 @@ class Main {
   storage: LocalStorage;
   simulation: JsSimulation;
   visualize: Visualize;
+  visualize_controls: VisualizeControls;
   saved_sims: SavedSimulations;
 
   simulation_controls_1d: SimulationControls;
@@ -29,6 +31,12 @@ class Main {
 
     this.simulation = new JsSimulation(logger);
     this.visualize = new Visualize(logger, this.simulation, "Visualize");
+    this.visualize_controls = new VisualizeControls(
+      logger,
+      this,
+      this.visualize,
+      "VisualizationControls",
+    );
     this.saved_sims = new SavedSimulations(
       logger,
       this,
@@ -155,11 +163,9 @@ class Main {
   }
 
   redraw() {
+    this.visualize_controls.populate_values(this.simulation);
     const dim = this.simulation.dim;
-    const zoom = html.get_input_float("zoom", 1, 10);
-    this.visualize.scale = zoom;
     if (dim > 1) {
-      this.visualize.slice = this.simulation.n_results() - 1;
       this.visualize.canvas_2d(this.simulation_controls_2d);
     } else {
       this.visualize.canvas_1d(this.simulation_controls_1d);
