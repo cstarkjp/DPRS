@@ -58,7 +58,7 @@ export class JsSimulation {
       `Params n_iterations:${parameters.params.n_iterations} ` +
         `sample_period:${parameters.params.sample_period} ` +
         `random_seed:${parameters.params.random_seed} ` +
-        `initial_center:${parameters.params.initial_center} ` +
+        `seed_kind:${parameters.params.seed_kind} ` +
         `simulation_kind:${parameters.params.simulation_kind}`,
     );
 

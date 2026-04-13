@@ -36,13 +36,13 @@ class Params {
   n_iterations: number = 600;
   sample_period: number = 1;
   random_seed: number = 1;
-  initial_center: boolean = true;
+  seed_kind: string = "center";
   simulation_kind: string = "staggered_dk";
   set_parameters(parameters: DprsWasm.Parameters) {
     parameters.n_iterations = this.n_iterations;
     parameters.sample_period = this.sample_period;
     parameters.random_seed = this.random_seed;
-    parameters.initial_condition = this.initial_center;
+    parameters.initial_condition = this.seed_kind;
   }
 
   wasm_simulation_kind(): string {
@@ -60,7 +60,7 @@ class Params {
     const n_iterations = params["n_iterations"];
     const sample_period = params["sample_period"];
     const random_seed = params["random_seed"];
-    const initial_center = params["initial_center"];
+    const seed_kind = params["seed_kind"];
     const simulation_kind = params["simulation_kind"];
     if (typeof n_iterations == "number") {
       this.n_iterations = n_iterations;
@@ -71,8 +71,8 @@ class Params {
     if (typeof random_seed == "number") {
       this.random_seed = random_seed;
     }
-    if (typeof initial_center == "boolean") {
-      this.initial_center = initial_center;
+    if (typeof seed_kind == "string") {
+      this.seed_kind = seed_kind;
     }
     if (typeof simulation_kind == "string") {
       this.simulation_kind = simulation_kind;
