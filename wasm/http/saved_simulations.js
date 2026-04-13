@@ -1,5 +1,5 @@
 import * as html from "./html.js";
-import * as log from "./log.js";
+import { Logger } from "./log.js";
 import * as js_parameters from "./js_parameters.js";
 /**
  * A directory that contains sets of files identified by the 'root' with specific 'suffixes'
@@ -11,7 +11,7 @@ export class SavedSimulations {
      * Create a new SavedSimulation within the parent, with the given storage and using the given 'div_id'
      */
     constructor(logger, parent, storage, div_id) {
-        this.log = new log.Logger(logger, "saved_sims");
+        this.log = new Logger(logger, "saved_sims");
         this.parent = parent;
         this.storage = storage;
         this.descriptions = new Map();

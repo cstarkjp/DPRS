@@ -1,5 +1,5 @@
 import * as html from "./html.js";
-import * as log from "./log.js";
+import { Log, Logger } from "./log.js";
 import * as js_parameters from "./js_parameters.js";
 import { LocalStorage } from "./storage.js";
 
@@ -17,7 +17,7 @@ export class SavedSimulations {
   /**
    * Logger to report progress to (as a source of 'sim')
    */
-  log: log.Logger;
+  log: Logger;
 
   /**
    * storage where the simulations are soted
@@ -37,13 +37,8 @@ export class SavedSimulations {
   /**
    * Create a new SavedSimulation within the parent, with the given storage and using the given 'div_id'
    */
-  constructor(
-    logger: log.Log,
-    parent: any,
-    storage: LocalStorage,
-    div_id: string,
-  ) {
-    this.log = new log.Logger(logger, "saved_sims");
+  constructor(logger: Log, parent: any, storage: LocalStorage, div_id: string) {
+    this.log = new Logger(logger, "saved_sims");
     this.parent = parent;
     this.storage = storage;
     this.descriptions = new Map();

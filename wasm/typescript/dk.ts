@@ -3,6 +3,7 @@ import { Log, Logger } from "./log.js";
 import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
+import { VisualizeControls } from "./visualize_controls.js";
 import { JsSimulation } from "./js_simulation.js";
 import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
@@ -14,6 +15,7 @@ class Main {
   storage: LocalStorage;
   simulation: JsSimulation;
   visualize: Visualize;
+  visualize_controls: VisualizeControls;
   saved_sims: SavedSimulations;
 
   simulation_controls_1d: SimulationControls;
@@ -29,6 +31,12 @@ class Main {
 
     this.simulation = new JsSimulation(logger);
     this.visualize = new Visualize(logger, this.simulation, "Visualize");
+    this.visualize_controls = new VisualizeControls(
+      logger,
+      this,
+      this.visualize,
+      "VisualizationControls",
+    );
     this.saved_sims = new SavedSimulations(
       logger,
       this,
@@ -131,9 +139,9 @@ class Main {
     this.log.pop_reason();
   }
 
-  run_simulation(dims: number) {
+  run_simulation(dim: number) {
     this.log.push_reason("sim");
-    this.log.info("Starting");
+    this.log.info(`Running simulation of dimension ${dim}`);
 
     this.simulation_controls_1d.populate_parameters();
     this.simulation_controls_2d.populate_parameters();
@@ -142,7 +150,7 @@ class Main {
     this.simulation_controls_2d.parameters.dims.n_z = 1;
 
     var sim_parameters = this.simulation_controls_1d.parameters;
-    if (dims > 1) {
+    if (dim > 1) {
       sim_parameters = this.simulation_controls_2d.parameters;
     }
 
@@ -155,8 +163,13 @@ class Main {
   }
 
   redraw() {
-    const zoom = html.get_input_float("zoom", 1, 10);
-    this.visualize.canvas_simple(zoom, this.simulation_controls_1d);
+    this.visualize_controls.populate_values(this.simulation);
+    const dim = this.simulation.dim;
+    if (dim > 1) {
+      this.visualize.canvas_2d(this.simulation_controls_2d);
+    } else {
+      this.visualize.canvas_1d(this.simulation_controls_1d);
+    }
   }
 
   tab_selected(id: string) {
