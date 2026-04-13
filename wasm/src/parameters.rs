@@ -3,15 +3,11 @@ use directed_percolation::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{Dims, Params, Probabilities, TopoBc};
+use crate::TopoBc;
 
 #[wasm_bindgen]
 #[derive(Default, Clone)]
 pub struct Parameters(dprs::Parameters);
-
-crate::getter_setter! {Parameters, Dims, dims, set_dims, (n_x, n_y, n_z)}
-crate::getter_setter! {Parameters, Probabilities, probabilities, set_probabilities, (p_initial, p_1, p_2)}
-crate::getter_setter! {Parameters, Params, params, set_params, (n_iterations, sample_period, random_seed, initial_condition)}
 
 #[wasm_bindgen]
 impl Parameters {
@@ -87,3 +83,20 @@ impl Parameters {
         self.0.bc_values_z = (bc_v_0.into(), bc_v_1.into());
     }
 }
+
+field_getter_setter! {Parameters, u32, n_x, {|a| a as u32}, set_n_x, {|a| a as usize}}
+field_getter_setter! {Parameters, u32, n_y, {|a| a as u32}, set_n_y, {|a| a as usize}}
+field_getter_setter! {Parameters, u32, n_z, {|a| a as u32}, set_n_z, {|a| a as usize}}
+
+field_getter_setter! {Parameters, f64, p_initial, {|a| a}, set_p_initial, {|a|a}}
+field_getter_setter! {Parameters, f64, p_1, {|a| a}, set_p_1, {|a| a}}
+field_getter_setter! {Parameters, f64, p_2, {|a| a}, set_p_2, {|a| a}}
+
+field_getter_setter! {Parameters, u32, n_iterations, {|a| a as u32}, set_n_iterations, {|a| a as usize}}
+field_getter_setter! {Parameters, u32, sample_period, {|a| a as u32}, set_sample_period, {|a| a as usize}}
+field_getter_setter! {Parameters, u32, random_seed, {|a| a as u32}, set_random_seed, {|a| a as usize}}
+field_getter_setter! {Parameters, bool, initial_condition, {|a| matches![
+    a,
+    directed_percolation::InitialCondition::CentralSeed
+]}, set_initial_condition, {|a| if a {directed_percolation::InitialCondition::CentralSeed} else {directed_percolation::InitialCondition::Randomized}}}
+// field_getter_setter! {Parameters, crate::SimulationKind, simulation_kind, {|a| (&a).into()}, set_simulation_kind, {|a| a.into() }}

@@ -1,3 +1,4 @@
+use directed_percolation::dk::ModelBedload1D;
 use directed_percolation::dk::{Cell1D, Lattice1D};
 use directed_percolation::dk::{Cell2D, Lattice2D};
 use directed_percolation::dk::{ModelDKSimplified1D, ModelDKSimplified2D};
@@ -13,7 +14,7 @@ use directed_percolation::dk::CellModel;
 
 use rand::rngs::ChaCha8Rng;
 
-use crate::{Parameters, SimulationKind};
+use crate::Parameters;
 
 /// A 1D model simulation
 fn sim_1d<Model: CellModel<Cell1D>>(
@@ -56,22 +57,23 @@ impl Simulation {
         self.parameters.clone()
     }
 
-    pub fn simulate(&mut self, kind: SimulationKind) -> Result<(), String> {
+    pub fn simulate(&mut self, kind: &str) -> Result<(), String> {
         // No doubt there is a better way of doing this
         let dims = self.parameters.sim_dimension();
 
         let simulation_results = {
             match (dims, kind) {
-                (1, SimulationKind::SimplifiedDomanyKinzel) => {
+                (1, "simplified_dk") => {
                     sim_1d::<ModelDKSimplified1D>(self.parameters.sim_parameters())
                 }
-                (1, SimulationKind::StaggeredDomanyKinzel) => {
+                (1, "staggered_dk") => {
                     sim_1d::<ModelStaggeredDK1D>(self.parameters.sim_parameters())
                 }
-                (2, SimulationKind::SimplifiedDomanyKinzel) => {
+                (1, "bedload") => sim_1d::<ModelBedload1D>(self.parameters.sim_parameters()),
+                (2, "simplified_dk") => {
                     sim_2d::<ModelDKSimplified2D>(self.parameters.sim_parameters())
                 }
-                (2, SimulationKind::StaggeredDomanyKinzel) => {
+                (2, "staggered_dk") => {
                     sim_2d::<ModelStaggeredDK2D>(self.parameters.sim_parameters())
                 }
                 _ => {
