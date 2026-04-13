@@ -60,6 +60,7 @@
     height: 260px;
 }
 
+/* Would do phone stuff like this */
 @media (min-width: 320px) {
     /* smartphones, portrait */
 }

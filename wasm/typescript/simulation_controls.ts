@@ -173,9 +173,9 @@ export class SimulationControls {
     {
       const tr = seed_table.add_ele("tr", ele_id + "_seed_kind");
       for (const [name, value] of [
-        ["center", "Center"],
-        ["edge", "Edge"],
-        ["random", "Random"],
+        ["center", "Center cell"],
+        ["edge", "Edge cell"],
+        ["random", "Randomized"],
       ]) {
         const td = tr.add_ele("td");
         td.add_input_radio(

@@ -76,6 +76,7 @@ export class VisualizeControls {
       td_slice.add_label("slice").set_content("Slice");
     }
   }
+
   populate_values(simulation: JsSimulation) {
     if (simulation.dim < 2) {
       this.td_slice!.set_style("display", "none");

@@ -52,13 +52,16 @@ class Main {
     params_1d.probabilities.p_1 = 0.705485152;
     params_1d.probabilities.p_2 = 0.705485152;
 
-    params_1d.params.n_iterations = 600;
+    params_1d.params.n_iterations = 500;
     params_1d.params.sample_period = 1;
-    params_1d.params.random_seed = 3;
+    params_1d.params.random_seed = 1;
 
     params_1d.dims.n_x = 400;
     params_1d.dims.n_y = 1;
     params_1d.dims.n_z = 1;
+
+    params_1d.params.seed_kind = "random";
+    params_1d.params.simulation_kind = "staggered_dk";
 
     // 0.62 is good
     const params_2d = new JsParameters();
@@ -68,11 +71,14 @@ class Main {
 
     params_2d.params.n_iterations = 600;
     params_2d.params.sample_period = 1;
-    params_2d.params.random_seed = 3;
+    params_2d.params.random_seed = 6;
 
     params_2d.dims.n_x = 300;
     params_2d.dims.n_y = 150;
     params_2d.dims.n_z = 1;
+
+    params_2d.params.seed_kind = "edge";
+    params_2d.params.simulation_kind = "bedload";
 
     this.simulation_controls_1d = new SimulationControls(
       "1d_sc_",
