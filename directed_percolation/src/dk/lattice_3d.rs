@@ -2,7 +2,7 @@ use rand::{Rng, RngExt};
 use rayon::prelude::*;
 
 use super::CellNbrhood3D;
-use crate::{Cell3D, CellModel, EvolvableLatticeDualState, RowIterator3D, Statistics};
+use crate::{Cell3D, EvolvableLatticeDualState, GrowthModel, RowIterator3D, Statistics};
 use crate::{DualState, InitialCondition, Parameters};
 
 /// Model lattice in 3d.
@@ -11,10 +11,10 @@ use crate::{DualState, InitialCondition, Parameters};
 /// the boolean lattice (true=occupied) stored as a linear vector;
 /// birth and survival rules as a set of constants.
 #[derive(Clone, Debug)]
-pub struct Lattice3D<C: CellModel<Cell3D>> {
+pub struct Lattice3D<GM: GrowthModel<Cell3D>> {
     /// The model that provides the cells and the mapping between
     /// 3x3x3 cell neighborhoods in one time step and the next.
-    cell_model: C,
+    growth_model: GM,
     /// Lattice dimension x
     lattice_n_x: usize,
     /// Lattice dimension y
@@ -31,7 +31,7 @@ pub struct Lattice3D<C: CellModel<Cell3D>> {
     iteration: usize,
 }
 
-impl<C: CellModel<Cell3D>> std::fmt::Display for Lattice3D<C> {
+impl<GM: GrowthModel<Cell3D>> std::fmt::Display for Lattice3D<GM> {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             fmt,
@@ -61,7 +61,7 @@ impl<C: CellModel<Cell3D>> std::fmt::Display for Lattice3D<C> {
 }
 
 /// Lattice model methods.
-impl<C: CellModel<Cell3D>> Lattice3D<C> {
+impl<GM: GrowthModel<Cell3D>> Lattice3D<GM> {
     /// Compute the cell index of a given (x, y, z) coordinate.
     fn i_cell(&self, x: usize, y: usize, z: usize) -> usize {
         x + self.lattice_n_x * y + self.lattice_n_x * self.lattice_n_y * z
@@ -111,7 +111,7 @@ impl<C: CellModel<Cell3D>> Lattice3D<C> {
 
                 if is_in_bounds {
                     let nbrhood = self.cell_nbrhood(x, y, z);
-                    self.cell_model
+                    self.growth_model
                         .update_state(self.iteration, &mut rng, &nbrhood)
                 } else {
                     DualState::default()
@@ -221,7 +221,7 @@ impl<C: CellModel<Cell3D>> Lattice3D<C> {
             };
             for cell in row.iter_mut().skip(1).take(row_span) {
                 *cell = self
-                    .cell_model
+                    .growth_model
                     .update_state(self.iteration, rng, lattice_window.nbrhood());
                 if !lattice_window.next() {
                     break;
@@ -231,10 +231,10 @@ impl<C: CellModel<Cell3D>> Lattice3D<C> {
     }
 }
 
-impl<C: CellModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for Lattice3D<C> {
+impl<GM: GrowthModel<Cell3D>> EvolvableLatticeDualState<Cell3D> for Lattice3D<GM> {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         Ok(Self {
-            cell_model: C::create_from_parameters(parameters)?,
+            growth_model: GM::create_from_parameters(parameters)?,
             lattice_n_x: parameters.lattice_n_x(),
             lattice_n_y: parameters.lattice_n_y(),
             lattice_n_z: parameters.lattice_n_z(),

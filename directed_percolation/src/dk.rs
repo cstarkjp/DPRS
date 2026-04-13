@@ -2,7 +2,7 @@
 //!
 //!
 mod traits;
-pub use traits::{Cell1D, Cell2D, Cell3D, CellModel};
+pub use traits::{Cell1D, Cell2D, Cell3D, GrowthModel};
 
 mod model_bedload_1d;
 mod model_dk_simplified_1d;
