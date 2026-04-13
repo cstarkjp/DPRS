@@ -22,8 +22,11 @@ pub trait EvolvableLatticeDualState<CS: CellSpace>: std::fmt::Debug + Sized {
     /// Randomize the state of the cell, usually using p_initial from the original parameters
     fn randomize_state<R: Rng>(&self, rng: &mut R, p: f64) -> DualState;
 
-    /// Seed the simulation with a central patch.
-    fn create_seeded_lattice(&mut self);
+    /// Seed the simulation by occupying the central cell at t=0.
+    fn create_central_cell_seeded_lattice(&mut self);
+
+    /// Seed the simulation by occupying the edge-central (x=0) cell at t=0.
+    fn create_edge_cell_seeded_lattice(&mut self);
 
     /// Borrow the current lattice
     fn lattice(&self) -> &[DualState];

@@ -55,6 +55,7 @@ py_of_enum! {
             #[default]
             Randomized,
             CentralCell,
+            EdgeCell,
             Preserved,
         )
 }

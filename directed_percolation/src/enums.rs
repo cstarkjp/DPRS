@@ -36,6 +36,7 @@ pub enum InitialCondition {
     #[default]
     Randomized,
     CentralCell,
+    EdgeCell,
     Preserved,
 }
 

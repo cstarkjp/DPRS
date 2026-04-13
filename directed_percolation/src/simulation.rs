@@ -24,7 +24,10 @@ pub fn simulation_nd<
             lm.create_randomized_lattice(&mut rng);
         }
         InitialCondition::CentralCell => {
-            lm.create_seeded_lattice();
+            lm.create_central_cell_seeded_lattice();
+        }
+        InitialCondition::EdgeCell => {
+            lm.create_edge_cell_seeded_lattice();
         }
         InitialCondition::Preserved => {}
     }

@@ -111,6 +111,8 @@ class Viz:
         match p.initial_condition:
             case InitialCondition.CentralCell: 
                 x = (lattices.shape[0]//2-x_span, lattices.shape[0]//2+x_span,)
+            case InitialCondition.EdgeCell: 
+                x = (0, lattices.shape[0]//2+x_span,)
             case InitialCondition.Randomized: 
                 x = (0, x_span,)
             case _:
