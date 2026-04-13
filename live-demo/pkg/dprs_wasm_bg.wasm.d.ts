@@ -1,6 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const __wbg_simulation_free: (a: number, b: number) => void;
+export const simulation_new: (a: number) => number;
+export const simulation_parameters: (a: number) => number;
+export const simulation_result: (a: number, b: number) => [number, number];
+export const simulation_set_parameters: (a: number, b: number) => void;
+export const simulation_simulate: (a: number, b: number, c: number) => [number, number];
 export const __wbg_parameters_free: (a: number, b: number) => void;
 export const parameters_initial_condition: (a: number) => number;
 export const parameters_n_iterations: (a: number) => number;
@@ -28,12 +34,6 @@ export const parameters_set_topo_bc_y: (a: number, b: number) => void;
 export const parameters_set_topo_bc_z: (a: number, b: number) => void;
 export const parameters_sim_dimension: (a: number) => number;
 export const parameters_topo_bc_x: (a: number) => number;
-export const __wbg_simulation_free: (a: number, b: number) => void;
-export const simulation_new: (a: number) => number;
-export const simulation_parameters: (a: number) => number;
-export const simulation_result: (a: number, b: number) => [number, number];
-export const simulation_set_parameters: (a: number, b: number) => void;
-export const simulation_simulate: (a: number, b: number, c: number) => [number, number];
 export const __wbg_get_topobc_fix_max: (a: number) => number;
 export const __wbg_get_topobc_fix_min: (a: number) => number;
 export const __wbg_get_topobc_fix_value: (a: number) => number;
