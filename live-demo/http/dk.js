@@ -32,9 +32,9 @@ class Main {
         params_1d.dims.n_y = 1;
         params_1d.dims.n_z = 1;
         const params_2d = new JsParameters();
-        params_2d.probabilities.p_initial = 0.7;
-        params_2d.probabilities.p_1 = 0.344555;
-        params_2d.probabilities.p_2 = 0.344555;
+        params_2d.probabilities.p_initial = 0.03;
+        params_2d.probabilities.p_1 = 0.62;
+        params_2d.probabilities.p_2 = 0.62;
         params_2d.params.n_iterations = 600;
         params_2d.params.sample_period = 1;
         params_2d.params.random_seed = 3;
@@ -45,7 +45,7 @@ class Main {
         this.simulation_controls_1d.parameters = params_1d;
         this.simulation_controls_1d.populate_values();
         this.simulation_controls_2d = new SimulationControls("2d_sc_", "2d_sim_controls", 2);
-        this.simulation_controls_1d.parameters = params_2d;
+        this.simulation_controls_2d.parameters = params_2d;
         this.simulation_controls_2d.populate_values();
         this.log.info("HTML built, running initial simulation");
         this.run_simulation(1);
