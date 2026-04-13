@@ -149,8 +149,8 @@ export class JsParameters {
         this.topo = [new Topo(), new Topo(), new Topo()];
         this.dims = new Dims();
         this.topo[0].periodic = true;
-        this.topo[1].periodic = false;
-        this.topo[2].periodic = false;
+        this.topo[1].periodic = true;
+        this.topo[2].periodic = true;
         this.dims.n_x = 400;
         this.dims.n_y = 0;
         this.dims.n_z = 0;
@@ -166,6 +166,12 @@ export class JsParameters {
     }
     wasm_simulation_kind() {
         return this.params.wasm_simulation_kind();
+    }
+    dim() {
+        if (this.dims.n_y > 1) {
+            return 2;
+        }
+        return 1;
     }
     as_json() {
         const parameters = {

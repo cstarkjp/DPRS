@@ -131,9 +131,9 @@ class Main {
     this.log.pop_reason();
   }
 
-  run_simulation(dims: number) {
+  run_simulation(dim: number) {
     this.log.push_reason("sim");
-    this.log.info("Starting");
+    this.log.info(`Running simulation of dimension ${dim}`);
 
     this.simulation_controls_1d.populate_parameters();
     this.simulation_controls_2d.populate_parameters();
@@ -142,7 +142,7 @@ class Main {
     this.simulation_controls_2d.parameters.dims.n_z = 1;
 
     var sim_parameters = this.simulation_controls_1d.parameters;
-    if (dims > 1) {
+    if (dim > 1) {
       sim_parameters = this.simulation_controls_2d.parameters;
     }
 
@@ -155,8 +155,15 @@ class Main {
   }
 
   redraw() {
+    const dim = this.simulation.dim;
     const zoom = html.get_input_float("zoom", 1, 10);
-    this.visualize.canvas_simple(zoom, this.simulation_controls_1d);
+    this.visualize.scale = zoom;
+    if (dim > 1) {
+      this.visualize.slice = this.simulation.n_results() - 1;
+      this.visualize.canvas_2d(this.simulation_controls_2d);
+    } else {
+      this.visualize.canvas_1d(this.simulation_controls_1d);
+    }
   }
 
   tab_selected(id: string) {

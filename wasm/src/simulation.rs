@@ -88,7 +88,12 @@ impl Simulation {
 
         self.results = simulation_results
             .1
-            .iter()
+            .into_iter()
+            .map(|lattice| {
+                self.parameters
+                    .sim_parameters()
+                    .pruned_lattice(lattice, dims)
+            })
             .map(|array| {
                 array
                     .iter()
