@@ -113,6 +113,7 @@ nav:
     - Home: index.md
     # - Navigation: navigation.md
     - Live demos: 
+        - live-demos/index.md
         - live-demos/live_demo_1d.md
         - live-demos/live_demo_2d.md
     - Jupyter notebooks: 
