@@ -1,4 +1,4 @@
-# 1d DP-type simulations
+# 1d DP simulations
 
 <div>
     <link href="../http/index.css" rel="stylesheet" type="text/css" />
