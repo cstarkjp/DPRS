@@ -1,3 +1,5 @@
+# 2d DP-type simulations
+
 <div>
     <link href="../http/index.css" rel="stylesheet" type="text/css" />
     <script type="module" src="../http/2d.js"></script>

@@ -1,3 +1,5 @@
+# 1d DP-type simulations
+
 <div>
     <link href="../http/index.css" rel="stylesheet" type="text/css" />
     <script type="module" src="../http/1d.js"></script>
