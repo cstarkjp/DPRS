@@ -62,7 +62,7 @@
     overflow-y: scroll;
 
     /* This height SHOULD be fixed */
-    height: 260px;
+    /* height: 260px; */
 }
 
 /* Would do phone stuff like this */
@@ -70,6 +70,9 @@
     /* smartphones, portrait */
 }
 
-/* input, textarea, iframe {
+/* This appears not to work, darn it */
+input,
+textarea,
+iframe {
     border: none;
-} */
+}
