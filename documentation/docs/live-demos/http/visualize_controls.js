@@ -30,6 +30,8 @@ export class VisualizeControls {
             }, "slice");
             td_slice.add_label("slice").set_content("Slice");
         }
+        table.set_style("border", "none");
+        zoom_table.set_style("border", "none");
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {

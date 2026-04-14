@@ -58,6 +58,22 @@
     margin-right: 10px;
 }
 
+table.dims td {
+    padding: 0px;
+}
+table.probability td {
+    padding: 0px;
+}
+table.param td {
+    padding: 0px;
+}
+table.seed td {
+    padding: 3px;
+}
+table.control td {
+    padding: 0px;
+}
+
 #upper {
     overflow-y: scroll;
 
