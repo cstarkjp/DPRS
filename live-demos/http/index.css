@@ -37,20 +37,20 @@
 }
 
 .prob_text {
-    width: 13ch;
+    width: 6ch;
 }
 
 .params_text {
-    width: 5ch;
+    width: 6ch;
 }
 
 .controls {
-    border: 2px solid black;
+    border: 1px solid rgb(83, 83, 83);
     margin-right: 15px;
 }
 
 .sim_controls_text {
-    border: 2px solid rgb(142, 142, 207);
+    border: 1px solid rgb(142, 142, 207);
     margin-left: 5px;
     margin-right: 10px;
 }
