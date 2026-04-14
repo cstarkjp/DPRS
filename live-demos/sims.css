@@ -72,7 +72,7 @@ table.control tr td {
 
 /* Hack for very top spacing (above title) */
 .md-content__inner {
-    padding-top: 1rem;
+    padding-top: 0rem;
 }
 
 /* Hack for slider spacings */
