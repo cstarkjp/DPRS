@@ -141,11 +141,11 @@ export class SimulationControls {
 
     {
       const tr = probs_table.add_ele("tr", ele_id + "probability");
-      for (const thing of ["p_1", "p_2", "p_initial"]) {
+      for (const [label, thing] of [["p1", "p_1"], ["p2", "p_2"], ["p0", "p_initial"],]) {
         const td = tr.add_ele("td");
-        td.add_label(thing, "sim_controls_label").set_content(thing + ":");
+        td.add_label(thing!, "sim_controls_label").set_content(label + ":");
         td.add_input_text(
-          thing,
+          thing!,
           "0.5",
           this.ele_id + thing,
           "sim_controls_text prob_text",
