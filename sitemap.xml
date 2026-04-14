@@ -5,11 +5,11 @@
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/HOWTO/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/DomanyKinzel/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
@@ -29,19 +29,27 @@
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/python-demos/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/python-scripts/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/python-modules/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/python-scripts/DomanyKinzel/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/python-modules/utils-reference/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/technical/HOWTO/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/python-modules/viz-reference/</loc>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/</loc>
+         <lastmod>2026-04-14</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/utils-reference/</loc>
+         <lastmod>2026-04-14</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/viz-reference/</loc>
          <lastmod>2026-04-14</lastmod>
     </url>
 </urlset>
