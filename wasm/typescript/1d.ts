@@ -39,7 +39,7 @@ class Main {
     params_1d.params.sample_period = 1;
     params_1d.params.random_seed = 1;
 
-    params_1d.dims.n_x = 400;
+    params_1d.dims.n_x = 350;
     params_1d.dims.n_y = 1;
     params_1d.dims.n_z = 1;
 

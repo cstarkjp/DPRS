@@ -114,7 +114,7 @@ class Topo {
 }
 
 class Dims {
-  n_x: number = 400;
+  n_x: number = 350;
   n_y: number = 0;
   n_z: number = 0;
   set_parameters(parameters: DprsWasm.Parameters) {
@@ -162,7 +162,7 @@ export class JsParameters {
     this.topo[1]!.periodic = true;
     this.topo[2]!.periodic = true;
 
-    this.dims.n_x = 400;
+    this.dims.n_x = 350;
     this.dims.n_y = 0;
     this.dims.n_z = 0;
   }
