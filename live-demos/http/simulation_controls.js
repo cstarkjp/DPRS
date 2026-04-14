@@ -82,38 +82,38 @@ export class SimulationControls {
         {
             const tr = dims_table.add_ele("tr", ele_id + "dims");
             const td = tr.add_ele("td");
-            td.add_label("n_x", "sim_controls_label").set_content("n_x:");
+            td.add_label("n_x", "sim_controls_label").set_content("nx:");
             td.add_input_text("n_x", "20", this.ele_id + "n_x", "sim_controls_text dims_n_text");
             if (dims >= 2) {
                 const td = tr.add_ele("td");
-                td.add_label("n_y", "sim_controls_label").set_content("n_y:");
+                td.add_label("n_y", "sim_controls_label").set_content("ny:");
                 td.add_input_text("n_y", "20", this.ele_id + "n_y", "sim_controls_text dims_n_text");
             }
             if (dims >= 3) {
                 const td = tr.add_ele("td");
-                td.add_label("n_z", "sim_controls_label").set_content("n_z:");
+                td.add_label("n_z", "sim_controls_label").set_content("nz:");
                 td.add_input_text("n_z", "20", this.ele_id + "n_z", "sim_controls_text dims_n_text");
             }
             td.set_style("padding", "0px");
         }
         {
             const tr = probs_table.add_ele("tr", ele_id + "probability");
-            for (const thing of ["p_1", "p_2", "p_initial"]) {
+            for (const [label, thing] of [["p1", "p_1"], ["p2", "p_2"], ["p0", "p_initial"],]) {
                 const td = tr.add_ele("td");
-                td.add_label(thing, "sim_controls_label").set_content(thing + ":");
+                td.add_label(thing, "sim_controls_label").set_content(label + ":");
                 td.add_input_text(thing, "0.5", this.ele_id + thing, "sim_controls_text prob_text");
                 td.set_style("padding", "0px");
             }
         }
         {
             const tr = param_table.add_ele("tr", ele_id + "sim_controls");
-            for (const [name, value] of [
-                ["n_iterations", "1000"],
-                ["sample_period", "20"],
-                ["random_seed", "1"],
+            for (const [label, name, value] of [
+                ["Steps", "n_iterations", "1000"],
+                ["Sampling", "sample_period", "20"],
+                ["Seed", "random_seed", "1"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_label(name, "sim_controls_label").set_content(name + ":");
+                td.add_label(name, "sim_controls_label").set_content(label + ":");
                 td.add_input_text(name, value, this.ele_id + name, "sim_controls_text params_text");
                 td.set_style("padding", "0px");
             }
