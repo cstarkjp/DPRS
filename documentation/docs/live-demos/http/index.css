@@ -37,18 +37,23 @@
 }
 
 .prob_text {
-    width: 13ch;
+    width: 12ch;
 }
 
 .params_text {
-    width: 5ch;
+    padding: 5px;
+    width: 6ch;
 }
 
 .controls {
+    border: 1px solid rgb(83, 83, 83);
+    padding: 5px;
+    margin-left: 10px;
     margin-right: 15px;
 }
 
 .sim_controls_text {
+    border: 1px solid rgb(142, 142, 207);
     margin-left: 5px;
     margin-right: 10px;
 }
@@ -57,10 +62,16 @@
     overflow-y: scroll;
 
     /* This height SHOULD be fixed */
-    height: 260px;
+    /* height: 260px; */
 }
 
 /* Would do phone stuff like this */
 @media (min-width: 320px) {
     /* smartphones, portrait */
+}
+
+table,
+th,
+td {
+    border: none !important;
 }
