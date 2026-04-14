@@ -79,12 +79,12 @@ export class HtmlElement {
             this.ele.removeChild(this.ele.firstChild);
         }
     }
-    add_ele(ele_type, id, classes) {
+    add_ele(ele_type, id = "", classes) {
         const ele = document.createElement(ele_type);
-        if (id !== undefined) {
+        if (id != "") {
             ele.setAttribute("id", id);
         }
-        if (classes) {
+        if (classes !== undefined) {
             ele.className = classes;
         }
         this.ele.appendChild(ele);
