@@ -81,7 +81,6 @@ export class SimulationControls {
         const control_table = table.add_ele("tr").add_ele("td").add_ele("table");
         {
             const tr = dims_table.add_ele("tr", ele_id + "dims");
-            tr.set_style("line-height", "1px");
             const td = tr.add_ele("td");
             td.add_label("n_x", "sim_controls_label").set_content("n_x:");
             td.add_input_text("n_x", "20", this.ele_id + "n_x", "sim_controls_text dims_n_text");
