@@ -109,7 +109,7 @@ export class SimulationControls {
     {
       const tr = dims_table.add_ele("tr", ele_id + "dims");
       const td = tr.add_ele("td");
-      td.add_label("n_x", "sim_controls_label").set_content("n_x:");
+      td.add_label("n_x", "sim_controls_label").set_content("nx:");
       td.add_input_text(
         "n_x",
         "20",
@@ -118,7 +118,7 @@ export class SimulationControls {
       );
       if (dims >= 2) {
         const td = tr.add_ele("td");
-        td.add_label("n_y", "sim_controls_label").set_content("n_y:");
+        td.add_label("n_y", "sim_controls_label").set_content("ny:");
         td.add_input_text(
           "n_y",
           "20",
@@ -128,7 +128,7 @@ export class SimulationControls {
       }
       if (dims >= 3) {
         const td = tr.add_ele("td");
-        td.add_label("n_z", "sim_controls_label").set_content("n_z:");
+        td.add_label("n_z", "sim_controls_label").set_content("nz:");
         td.add_input_text(
           "n_z",
           "20",
