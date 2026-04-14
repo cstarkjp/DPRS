@@ -70,9 +70,8 @@
     /* smartphones, portrait */
 }
 
-/* This appears not to work, darn it */
-input,
-textarea,
-iframe {
-    border: none;
+table,
+th,
+td {
+    border: none !important;
 }
