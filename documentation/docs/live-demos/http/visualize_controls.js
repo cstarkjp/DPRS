@@ -19,7 +19,7 @@ export class VisualizeControls {
         {
             const tr = zoom_table.add_ele("tr", "zoom_slice");
             const td_zoom = tr.add_ele("td");
-            td_zoom.add_input_range("zoom", "1.0", "1.0", "10", () => {
+            td_zoom.add_input_range("zoom", "1.0", "1.0", "5", () => {
                 this.parent.redraw();
             }, "zoom");
             td_zoom.add_label("zoom").set_content("Zoom");
@@ -41,7 +41,7 @@ export class VisualizeControls {
             this.td_slice.set_style("display");
         }
         html.set_input_range("slice", 0, simulation.n_results() - 1);
-        this.visualize.scale = html.get_input_float("zoom", 1, 10);
+        this.visualize.scale = html.get_input_float("zoom", 1, 5);
         this.visualize.slice = html.get_input_int("slice", 0, simulation.n_results() - 1);
     }
 }
