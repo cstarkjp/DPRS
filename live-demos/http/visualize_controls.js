@@ -15,26 +15,23 @@ export class VisualizeControls {
     build_html() {
         this.div.clear();
         const table = this.div.add_ele("table");
-        table.set_style("border", "none");
         const zoom_table = table.add_ele("tr").add_ele("td").add_ele("table");
-        zoom_table.set_style("border", "none");
         {
             const tr = zoom_table.add_ele("tr", "zoom_slice");
-            // tr.set_style("border", "none");
             const td_zoom = tr.add_ele("td");
             td_zoom.add_input_range("zoom", "1.0", "1.0", "10", () => {
                 this.parent.redraw();
             }, "zoom");
             td_zoom.add_label("zoom").set_content("Zoom");
-            // td_zoom.set_style("border", "none");
             const td_slice = tr.add_ele("td", "slice_input");
             this.td_slice = td_slice;
             td_slice.add_input_range("slice", "1.0", "1.0", "10", () => {
                 this.parent.redraw();
             }, "slice");
             td_slice.add_label("slice").set_content("Slice");
-            // td_slice.set_style("border", "none");
         }
+        table.set_style("border", "none");
+        zoom_table.set_style("border", "none");
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {
