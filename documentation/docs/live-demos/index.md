@@ -1,4 +1,4 @@
 # Live demos
 
-- [1d](live_demo_1d.md)
-- [2d](live_demo_2d.md)
+- [1d DP simulations](1d_DP_simulations.md)
+- [2d DP simulations](2d_DP_simulations.md)
