@@ -75,6 +75,8 @@ export class VisualizeControls {
       );
       td_slice.add_label("slice").set_content("Slice");
     }
+    table.set_style("border", "none");
+    zoom_table.set_style("border", "none");
   }
 
   populate_values(simulation: JsSimulation) {

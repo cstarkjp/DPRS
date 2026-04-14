@@ -136,6 +136,7 @@ export class SimulationControls {
           "sim_controls_text dims_n_text",
         );
       }
+      td.set_style("padding", "0px");
     }
 
     {
@@ -149,6 +150,7 @@ export class SimulationControls {
           this.ele_id + thing,
           "sim_controls_text prob_text",
         );
+        td.set_style("padding", "0px");
       }
     }
 
@@ -167,6 +169,7 @@ export class SimulationControls {
           this.ele_id + name,
           "sim_controls_text params_text",
         );
+        td.set_style("padding", "0px");
       }
     }
 
@@ -188,6 +191,7 @@ export class SimulationControls {
         td.add_label(ele_id + "seed_" + name, "sim_controls_label").set_content(
           value,
         );
+        td.set_style("padding", "3px");
       }
     }
 
@@ -209,6 +213,7 @@ export class SimulationControls {
         td.add_label(ele_id + "sk_" + name, "sim_controls_label").set_content(
           value,
         );
+        td.set_style("padding", "3px");
       }
     }
 
@@ -234,6 +239,10 @@ export class SimulationControls {
         ele_id + "save_simulation",
         "controls save_simulation",
       );
+
+      tr.set_style("padding", "0px");
+      td_run.set_style("padding", "0px");
+      td_save.set_style("padding", "0px");
     }
   }
 }

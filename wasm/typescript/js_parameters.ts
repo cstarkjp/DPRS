@@ -9,8 +9,8 @@ class Probabilities {
    * This contains JsParameters
    */
   p_initial: number = 0.5;
-  p_1: number = 0.705485152;
-  p_2: number = 0.705485152;
+  p_1: number = 0.70548515;
+  p_2: number = 0.70548515;
   set_parameters(parameters: DprsWasm.Parameters) {
     parameters.p_initial = this.p_initial;
     parameters.p_1 = this.p_1;

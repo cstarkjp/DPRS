@@ -7,6 +7,6 @@
         <div id="tab-log" style="display:none">
             <div id="Log"></div>
         </div>
-    <div id="VisualizationControls"></div>
+    <div id="VisualizationControls""></div>
     <div id="Visualize"></div>
 </div>

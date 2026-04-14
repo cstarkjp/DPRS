@@ -8,8 +8,8 @@ class Probabilities {
          * This contains JsParameters
          */
         this.p_initial = 0.5;
-        this.p_1 = 0.705485152;
-        this.p_2 = 0.705485152;
+        this.p_1 = 0.70548515;
+        this.p_2 = 0.70548515;
     }
     set_parameters(parameters) {
         parameters.p_initial = this.p_initial;
