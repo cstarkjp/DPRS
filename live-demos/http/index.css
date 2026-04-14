@@ -37,7 +37,7 @@
 }
 
 .prob_text {
-    width: 13ch;
+    width: 11ch;
 }
 
 .params_text {
@@ -66,3 +66,7 @@
 @media (min-width: 320px) {
     /* smartphones, portrait */
 }
+
+/* input, textarea, iframe {
+    border: none;
+} */
