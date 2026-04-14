@@ -118,13 +118,16 @@ nav:
         - live-demos/2d_DP_simulations.md
     - Jupyter notebooks: 
         - jupyter-notebooks/index.md
-    - Python demos: 
-        - python-demos/index.md
-    - Python modules: 
-        - python-modules/index.md
-        - python-modules/viz-reference.md
-        - python-modules/utils-reference.md
-    - Wrapping Rust with Python: HOWTO.md
+        - jupyter-notebooks/DomanyKinzel.md
+    - Python scripts: 
+        - python-scripts/index.md
+          - python-scripts/DomanyKinzel.md
+    - Technical:
+      - Wrap Rust in Python: HOWTO.md
+      - Python modules: 
+          - python-modules/index.md
+          - python-modules/viz-reference.md
+          - python-modules/utils-reference.md
     # - References: references.md
 
 # https://analog-garage.github.io/mkdocstrings-python-xref/latest/
