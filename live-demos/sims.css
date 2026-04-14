@@ -64,15 +64,30 @@ table.control tr td {
     padding: 0px;
 }
 
+/* Hack title spacing */
 .md-typeset h1 {
     margin-top: 0px;
     margin-bottom: 20px;
 }
 
+/* Hack for very top spacing (above title) */
 .md-content__inner {
-    padding-top: .0rem;
+    padding-top: 1rem;
 }
 
+/* Hack for slider spacings */
+.md-typeset table:not([class]) td {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 5px;
+    font-size: 0.8rem;
+}
+
+/* Hack for slide label font size */
+.md-typeset table:not([class]) {
+    font-size: 0.8rem;
+}
 
 #upper {
     overflow-y: scroll;
