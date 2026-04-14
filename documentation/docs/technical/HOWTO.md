@@ -1,6 +1,8 @@
-# Recipe for wrapping Rust with Python
+# Wrapping Rust in Python
 
 Here are some notes on how to wrap a Python package around fast, parallelized Rust code. 
+
+## Rust-Python project
 
 Create a mixed Rust-Python project:
 
@@ -9,16 +11,24 @@ Create a mixed Rust-Python project:
 and then, if you want, rename the directory `dprs/`, to e.g. `DPRS/`. In principle, this will become the name of your `pip` package.
 Enter this directory, `cd DPRS/`.
 
+## Virtual env
+
 Create a Python virtual environment using `uv`, activate it, and install whatever Python libraries are going to be needed:
 
     uv venv --python=3.14
     source .venv/bin/activate
     uv pip install maturin ipython numpy
 
+## Initialize Python package
+
 Set up the minimal elements of a Python package:
 
     mkdir -p python/dprs
     touch python/dprs/__init__.py
+
+Add `<path>/DPRS/python` to VSCode's extra paths for Pylance, if you're using it.
+
+## Set up Rust
 
 Add the requisite Rust packages, e.g.,
     
@@ -31,6 +41,7 @@ Check `Cargo.toml`  to ensure that these crate dependencies have been added (see
     rand = "0.10.0"
     rayon = "1.11.0"
 
+## Implement the Rust library
 
 Implement `src/lib.rs`. The Python module can follow this naming pattern:
 
@@ -51,7 +62,9 @@ For this to build correctly, mod `pyproject.toml` like this:
     python-source = "python"
     module-name = "dprs.sim"
 
-Add `<path>/DPRS/python` to VS Code's extra paths for Pylance.
+
+
+## Build the libraries
 
 Compile the Rust and build a Python binary:
 
@@ -65,10 +78,13 @@ Build a Python wheel:
 
 which writes to e.g. `<path>/DPRS/target/wheels/dprs-0.1.0-cp314-cp314-macosx_11_0_arm64.whl` as well as creating `dylib` file in 'target/maturin' etc.
 
+## Install the Python library locally
+
 Then install the Python wheel into the local venv using `uv pip`:
 
     uv pip install target/wheels/*.whl 
 
+## Test with a demo script
 
 Create a Python demo script, and maybe also a Jupyter notebook to match, e.g.,:
 
@@ -86,6 +102,8 @@ Put at least the following into `demo.py`:
 
     sim.dk(n_x, n_y, n_iterations)
 
+## How it should look
+
 The `DPRS` folder tree should now look like this, more or less:
 
-![folder tree](images/tree.jpg)
+![folder tree](../images/tree.jpg)

@@ -28,7 +28,7 @@ export class SimParameters {
     this.topo[2].periodic = true;
 
     this.dims = new Dims();
-    this.dims.n_x = 400;
+    this.dims.n_x = 350;
   }
   topo_as_json(n) {
     return { periodic: this.topo[n].periodic };
