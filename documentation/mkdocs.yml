@@ -121,13 +121,14 @@ nav:
         - jupyter-notebooks/DomanyKinzel.md
     - Python scripts: 
         - python-scripts/index.md
-          - python-scripts/DomanyKinzel.md
-    - Technical:
-      - Wrap Rust in Python: HOWTO.md
+        - python-scripts/DomanyKinzel.md
+    - Technical info:
+      - Wrapping Rust in Python: 
+          - technical/HOWTO.md
       - Python modules: 
-          - python-modules/index.md
-          - python-modules/viz-reference.md
-          - python-modules/utils-reference.md
+          - technical/python-modules/index.md
+          - technical/python-modules/viz-reference.md
+          - technical/python-modules/utils-reference.md
     # - References: references.md
 
 # https://analog-garage.github.io/mkdocstrings-python-xref/latest/

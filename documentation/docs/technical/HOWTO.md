@@ -1,4 +1,4 @@
-# Recipe for wrapping Rust with Python
+# Wrapping Rust in Python
 
 Here are some notes on how to wrap a Python package around fast, parallelized Rust code. 
 
@@ -106,4 +106,4 @@ Put at least the following into `demo.py`:
 
 The `DPRS` folder tree should now look like this, more or less:
 
-![folder tree](images/tree.jpg)
+![folder tree](../images/tree.jpg)
