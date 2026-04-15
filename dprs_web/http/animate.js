@@ -26,6 +26,10 @@ export class Animate {
         this.cancel_cb = null;
         this.animation_pending = false;
     }
+    restart(delay_ms = 0, start_cb) {
+        this.start_cb = start_cb;
+        this.schedule(delay_ms);
+    }
     schedule(delay_ms = 0, cb) {
         if (cb !== undefined) {
             this.animation_cb = cb;
@@ -34,17 +38,11 @@ export class Animate {
             window.clearTimeout(this.pending_timer);
             this.pending_timer = null;
         }
+        this.animation_pending = true;
         if (delay_ms > 0) {
-            this.pending_timer = window.setTimeout(() => this.timeout_expired(), delay_ms);
+            this.pending_timer = window.setTimeout(() => this.animate(performance.now()), delay_ms);
         }
-        if (this.pending_timer === null) {
-            this.timeout_expired();
-        }
-    }
-    timeout_expired() {
-        this.pending_timer = null;
-        if (!this.animation_pending) {
-            this.animation_pending = true;
+        else {
             requestAnimationFrame((time) => this.animate(time));
         }
     }
