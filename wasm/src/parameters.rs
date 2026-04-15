@@ -1,5 +1,5 @@
-use directed_percolation as dprs;
-use directed_percolation::{BoundaryCondition, Topology};
+use dprs_core as dprs;
+use dprs_core::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::console::dir;
@@ -18,7 +18,7 @@ impl Parameters {
         let mut s = Self::default();
         s.0.do_edge_buffering = true;
         s.0.n_threads = 1;
-        s.0.processing = directed_percolation::Processing::Serial;
+        s.0.processing = dprs_core::Processing::Serial;
         s
     }
 
@@ -87,8 +87,8 @@ impl Parameters {
     #[wasm_bindgen(getter)]
     pub fn initial_condition(&self) -> String {
         match self.0.initial_condition {
-            directed_percolation::InitialCondition::CentralCell => "center",
-            directed_percolation::InitialCondition::EdgeCell => "edge",
+            dprs_core::InitialCondition::CentralCell => "center",
+            dprs_core::InitialCondition::EdgeCell => "edge",
             _ => "random",
         }
         .into()
@@ -98,13 +98,13 @@ impl Parameters {
     pub fn set_initial_condition(&mut self, value: &str) {
         match value {
             "center" => {
-                self.0.initial_condition = directed_percolation::InitialCondition::CentralCell;
+                self.0.initial_condition = dprs_core::InitialCondition::CentralCell;
             }
             "edge" => {
-                self.0.initial_condition = directed_percolation::InitialCondition::EdgeCell;
+                self.0.initial_condition = dprs_core::InitialCondition::EdgeCell;
             }
             _ => {
-                self.0.initial_condition = directed_percolation::InitialCondition::Randomized;
+                self.0.initial_condition = dprs_core::InitialCondition::Randomized;
             }
         }
     }

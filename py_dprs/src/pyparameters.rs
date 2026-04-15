@@ -7,7 +7,7 @@ use pyo3::FromPyObject;
 use crate::enums::{
     BoundaryCondition, Dimension, DprsError, GrowthModel, InitialCondition, Processing, Topology,
 };
-use directed_percolation::Parameters;
+use dprs_core::Parameters;
 
 /// Model parameter bundle derived from Python Parameters class instance.
 #[derive(FromPyObject, Debug, Clone, Default)]
@@ -46,7 +46,7 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
-        if self.growth_model==GrowthModel::Bedload {
+        if self.growth_model == GrowthModel::Bedload {
             writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
         }
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
@@ -74,7 +74,7 @@ impl PyParameters {
     /// Copy Python-facing parameters.
 
     pub fn fill(&self) -> Result<Parameters, DprsError> {
-        use directed_percolation::*;
+        use dprs_core::*;
         let py_p = self.clone();
         // Trap errors in parameter bounds
         if py_p.n_x == 0 {

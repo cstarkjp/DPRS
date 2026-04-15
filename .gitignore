@@ -3,7 +3,7 @@
 wasm/target/
 wasm/dprs.zip
 py_dprs/target/
-directed_percolation/target/
+dprs_core/target/
 site/
 
 py_dprs/notebooks/plots/*

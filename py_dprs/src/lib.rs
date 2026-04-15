@@ -31,8 +31,8 @@ mod sim {
 
     #[pyfunction]
     fn dk(py_parameters: PyParameters) -> PyResult<(usize, Vec<Vec<bool>>, Vec<Vec<f64>>, f64)> {
-        use directed_percolation::dk;
-        use directed_percolation::run_nd;
+        use dprs_core::dk;
+        use dprs_core::run_nd;
 
         let sim_parameters = py_parameters
             .fill()

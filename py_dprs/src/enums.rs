@@ -49,7 +49,7 @@ pub enum Dimension {
 
 py_of_enum! {
     /// Initial lattice condition.
-    directed_percolation::InitialCondition,
+    dprs_core::InitialCondition,
     InitialCondition,
         (
             #[default]
@@ -62,7 +62,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Edge topology.
-    directed_percolation::Topology,
+    dprs_core::Topology,
     Topology,
         (
             /// No copying etc is done from one edge to another
@@ -79,7 +79,7 @@ py_of_enum! {
     /// Edge boundary conditions
     ///
     /// This is in essence what is around the outside of the lattice
-    directed_percolation::BoundaryCondition,
+    dprs_core::BoundaryCondition,
     BoundaryCondition,
         (
             Unspecified,
@@ -98,7 +98,7 @@ py_of_enum! {
 
 py_of_enum! {
     /// Choice of processing type: will become a Py-passable parameter.
-    directed_percolation::Processing,
+    dprs_core::Processing,
     Processing,
         (
             #[default]

@@ -1,5 +1,5 @@
 [package]
-name = "directed_percolation"
+name = "dprs_core"
 version = "0.1.26"
 edition = "2024"
 

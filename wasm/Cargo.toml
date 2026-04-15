@@ -16,14 +16,12 @@ version = ">=0.2.92"
 [dependencies.js-sys]
 version = ">=0.3.64"
 
-[dependencies.directed_percolation]
+[dependencies.dprs_core]
 version = "0.1"
-path = "../directed_percolation"
+path = "../dprs_core"
 
 [dependencies.web-sys]
-features = [
-  'console',
-]
+features = ['console']
 version = ">=0.3.40"
 
 [dependencies.rand]

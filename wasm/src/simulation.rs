@@ -1,16 +1,16 @@
-use directed_percolation::dk::{Cell1D, Lattice1D};
-use directed_percolation::dk::{Cell2D, Lattice2D};
-use directed_percolation::dk::{ModelBedload1D, ModelBedload2D};
-use directed_percolation::dk::{ModelDKSimplified1D, ModelDKSimplified2D};
-use directed_percolation::dk::{ModelStaggeredDK1D, ModelStaggeredDK2D};
-use directed_percolation::simulation_nd;
+use dprs_core::dk::{Cell1D, Lattice1D};
+use dprs_core::dk::{Cell2D, Lattice2D};
+use dprs_core::dk::{ModelBedload1D, ModelBedload2D};
+use dprs_core::dk::{ModelDKSimplified1D, ModelDKSimplified2D};
+use dprs_core::dk::{ModelStaggeredDK1D, ModelStaggeredDK2D};
+use dprs_core::simulation_nd;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use directed_percolation::DualState;
-use directed_percolation::SimError;
-use directed_percolation::TrackingHistory;
-use directed_percolation::dk::GrowthModel;
+use dprs_core::DualState;
+use dprs_core::SimError;
+use dprs_core::TrackingHistory;
+use dprs_core::dk::GrowthModel;
 
 use rand::rngs::ChaCha8Rng;
 
@@ -18,14 +18,14 @@ use crate::Parameters;
 
 /// A 1D model simulation
 fn sim_1d<Model: GrowthModel<Cell1D>>(
-    parameters: &directed_percolation::Parameters,
+    parameters: &dprs_core::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell1D, Lattice1D<Model>>(parameters)
 }
 
 /// A 2D model simulation
 fn sim_2d<Model: GrowthModel<Cell2D>>(
-    parameters: &directed_percolation::Parameters,
+    parameters: &dprs_core::Parameters,
 ) -> Result<(usize, Vec<Vec<DualState>>, TrackingHistory), SimError> {
     simulation_nd::<ChaCha8Rng, Cell2D, Lattice2D<Model>>(parameters)
 }

@@ -36,7 +36,7 @@ macro_rules! getter_setter {
 #[wasm_bindgen] impl $parent {
     #[wasm_bindgen(setter)]
     pub fn $set_fn(&mut self, value: &$t) {
-        let p : directed_percolation::Parameters = value.into();
+        let p : dprs_core::Parameters = value.into();
         $( self.0.$others = p.$others; )*
     }
 

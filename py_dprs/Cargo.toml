@@ -14,6 +14,6 @@ pyo3 = "0.28.2"
 rand = "0.10.0"
 thiserror = "2.0.18"
 
-[dependencies.directed_percolation]
+[dependencies.dprs_core]
 version = "0.1"
-path = "../directed_percolation"
+path = "../dprs_core"
