@@ -61,6 +61,6 @@ dprs.zip:
 	zip dprs.zip pkg/dprs_wasm_bg.wasm.d.ts
 
 transfer:
-	@echo "Copying http/ and pkg/ to ../documentation/docs/live-demo"
-	cp -R http ../documentation/docs/live-demos
-	cp -R pkg ../documentation/docs/live-demos
+	@echo "Copying http/ and pkg/ to ../web/docs/live-demo"
+	cp -R http ../web/docs/live-demos
+	cp -R pkg ../web/docs/live-demos

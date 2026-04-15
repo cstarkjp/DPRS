@@ -7,16 +7,16 @@
 
 In this project, we implement a variety of directed percolation models in Rust. The Rust code is accessed via a Python wrapper to make experimentation as convenient as possible. Jupyter notebooks are used to implement the Python-wrapped simulations. 
 
-![1d DP-class, simplified Domany-Kinzel evolution for p_c ~ p=0.53891, n_x=300, t=200](https://raw.githubusercontent.com/cstarkjp/DPRS/main/documentation/docs/images/lattice_p0p538910_s5_nx300.png)
+![1d DP-class, simplified Domany-Kinzel evolution for p_c ~ p=0.53891, n_x=300, t=200](https://raw.githubusercontent.com/cstarkjp/DPRS/main/web/docs/images/lattice_p0p538910_s5_nx300.png)
 
 We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). 
 Fast run times are achieved through parallelization using the [`Rayon`](https://docs.rs/rayon/latest/rayon/) crate. 
 We anticipate boosting performance further with GPU-compute using [`wgpu`](https://wgpu.rs/).
 
-See [here](documentation/docs/HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python.
+See [here](web/docs/HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python.
 
 
-![2d DP-class, simplified Domany-Kinzel t-decay of mean order parameter mean ρ(t), for p_c ~ p=0.163145, n_x=30000, n_y=30000, t=50000](https://raw.githubusercontent.com/cstarkjp/DPRS/main/documentation/docs/images/ρmean_p0p163145_s1_nx30000_ny30000.png)
+![2d DP-class, simplified Domany-Kinzel t-decay of mean order parameter mean ρ(t), for p_c ~ p=0.163145, n_x=30000, n_y=30000, t=50000](https://raw.githubusercontent.com/cstarkjp/DPRS/main/web/docs/images/ρmean_p0p163145_s1_nx30000_ny30000.png)
 
 ## Demos
 

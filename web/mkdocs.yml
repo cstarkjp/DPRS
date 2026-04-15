@@ -11,7 +11,7 @@ repo_name: cstarkjp/DPRS
 repo_url: https://github.com/cstarkjp/DPRS
 
 # https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/?h=edit+uri#code-actions
-edit_uri: edit/main/documentation/docs/
+edit_uri: edit/main/web/docs/
 
 # Copyright
 copyright: Copyright &copy; 2026 Colin P. Stark & Gavin J. Stark
