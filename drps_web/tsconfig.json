@@ -46,6 +46,7 @@
   },
   "include": ["pkg/*"],
   "files": [
+    "typescript/animate.ts",
     "typescript/html.ts",
     "typescript/log.ts",
     "typescript/tabbed.ts",

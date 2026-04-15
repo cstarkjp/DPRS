@@ -9,6 +9,7 @@ import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
+import { Animate } from "./animate.js";
 
 class Main {
   log: Logger;
@@ -17,6 +18,8 @@ class Main {
   visualize: Visualize;
   visualize_controls: VisualizeControls;
   saved_sims: SavedSimulations;
+  anim: Animate;
+  tick: number;
 
   simulation_controls_1d: SimulationControls;
   simulation_controls_2d: SimulationControls;
@@ -28,6 +31,8 @@ class Main {
     this.log.info("Starting dk");
 
     this.storage = new LocalStorage(window.localStorage, "dk/");
+    this.anim = new Animate((time) => this.animation_tick(time));
+    this.tick = 0;
 
     this.simulation = new JsSimulation(logger);
     this.visualize = new Visualize(logger, this.simulation, "Visualize");
@@ -146,7 +151,7 @@ class Main {
     this.log.pop_reason();
   }
 
-  run_simulation(dim: number) {
+  run_simulation(dim: number): void {
     this.log.push_reason("sim");
     this.log.info(`Running simulation of dimension ${dim}`);
 
@@ -166,10 +171,21 @@ class Main {
       `Simulation complete with ${this.simulation.n_results()} results`,
     );
     this.redraw();
+    this.anim.schedule();
     this.log.pop_reason();
   }
 
-  redraw() {
+  animation_tick(_time: number): void {
+    if (this.tick <= this.simulation.n_results() - 1) {
+      html.set_input_value("slice", this.tick);
+      this.redraw();
+      if (this.tick < this.simulation.n_results() - 1) {
+        this.tick = this.tick + 1;
+        this.anim.schedule(100);
+      }
+    }
+  }
+  redraw(): void {
     this.visualize_controls.populate_values(this.simulation);
     const dim = this.simulation.dim;
     if (dim > 1) {

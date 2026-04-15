@@ -1,5 +1,6 @@
 import init from "../pkg/dprs_wasm.js";
 import { Log, Logger } from "./log.js";
+import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
 import { VisualizeControls } from "./visualize_controls.js";
@@ -8,12 +9,15 @@ import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
+import { Animate } from "./animate.js";
 class Main {
     constructor(logger, params) {
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");
         this.storage = new LocalStorage(window.localStorage, "dk/");
+        this.anim = new Animate((time) => this.animation_tick(time));
+        this.tick = 0;
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
@@ -109,7 +113,18 @@ class Main {
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
         this.redraw();
+        this.anim.schedule();
         this.log.pop_reason();
+    }
+    animation_tick(_time) {
+        if (this.tick <= this.simulation.n_results() - 1) {
+            html.set_input_value("slice", this.tick);
+            this.redraw();
+            if (this.tick < this.simulation.n_results() - 1) {
+                this.tick = this.tick + 1;
+                this.anim.schedule(100);
+            }
+        }
     }
     redraw() {
         this.visualize_controls.populate_values(this.simulation);
