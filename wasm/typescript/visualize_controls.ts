@@ -54,7 +54,7 @@ export class VisualizeControls {
         "zoom",
         "1.0",
         "1.0",
-        "10",
+        "5",
         () => {
           this.parent.redraw();
         },
@@ -86,7 +86,7 @@ export class VisualizeControls {
       this.td_slice!.set_style("display");
     }
     html.set_input_range("slice", 0, simulation.n_results() - 1);
-    this.visualize.scale = html.get_input_float("zoom", 1, 10);
+    this.visualize.scale = html.get_input_float("zoom", 1, 5);
     this.visualize.slice = html.get_input_int(
       "slice",
       0,

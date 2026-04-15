@@ -13,13 +13,18 @@
 
 .controls {
     border: 1px solid rgb(83, 83, 83);
-    padding: 5px;
-    margin-left: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
     margin-right: 15px;
 }
 
 .sim_controls_text {
     border: 1px solid rgb(142, 142, 207);
+    /* margin-top: 20px; */
     margin-left: 5px;
     margin-right: 10px;
 }
@@ -29,7 +34,7 @@ table.probability td {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 5px;
 }
 
 table.dims td {
@@ -53,6 +58,7 @@ table.seed td {
 }
 
 table.seed td input {
+    margin-top: 10px;
     margin-right: 7px;
 }
 
@@ -60,12 +66,30 @@ table.control tr td {
     padding: 0px;
 }
 
-
-
-/* .md-typeset h1 {
+/* Hack title spacing */
+.md-typeset h1 {
+    margin-top: 0px;
     margin-bottom: 20px;
-} */
+}
 
+/* Hack for very top spacing (above title) */
+.md-content__inner {
+    padding-top: 0rem;
+}
+
+/* Hack for slider spacings */
+.md-typeset table:not([class]) td {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 5px;
+    font-size: 0.8rem;
+}
+
+/* Hack for slide label font size */
+.md-typeset table:not([class]) {
+    font-size: 0.8rem;
+}
 
 #upper {
     overflow-y: scroll;
