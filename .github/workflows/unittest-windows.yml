@@ -56,12 +56,12 @@ jobs:
         run: python -m unittest discover tests -p "*dprs*"
       - name: Run all unit tests
         run: python -m unittest discover tests 
-      - name: Run demo dp_test_1d.py in Python
+      - name: Run demo dp_1d.py in Python
         shell: powershell
         run: |
           # $userBinPath = "$env:USERPROFILE\.local\bin"
           # Add-Content -Path $env:GITHUB_PATH -Value $userBinPath
-          python demos\dp_test_1d.py
+          python demos\dp_1d.py
       # - name: Run DemoDP.ipynb in IPython
       #   shell: powershell
       #   run: |
