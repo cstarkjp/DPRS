@@ -50,7 +50,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter --manifest-path dprs_py/Cargo.toml
           sccache: ${{ github.event_name == 'workflow_dispatch' }}
           # sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
@@ -83,7 +83,7 @@ jobs:
   #       uses: PyO3/maturin-action@v1
   #       with:
   #         target: ${{ matrix.platform.target }}
-  #         args: --release --out dist --find-interpreter
+  #         args: --release --out dist --find-interpreter --manifest-path dprs_py/Cargo.toml
   #         sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
   #         manylinux: musllinux_1_2
   #     - name: Upload wheels
@@ -118,7 +118,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter --manifest-path dprs_py/Cargo.toml
           sccache: ${{ github.event_name == 'workflow_dispatch' }}
           rust-toolchain: stable
           # sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -149,7 +149,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --find-interpreter --manifest-path dprs_py/Cargo.toml
           sccache: ${{ github.event_name == 'workflow_dispatch' }}
           # sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
@@ -167,7 +167,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist
+          args: --out dist --manifest-path dprs_py/Cargo.toml
       - name: Upload sdist
         uses: actions/upload-artifact@v5
         with:
