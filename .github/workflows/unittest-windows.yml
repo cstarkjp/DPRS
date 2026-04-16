@@ -53,7 +53,7 @@ jobs:
           where python
           pip list
       - name: Run version no. unit test
-        run: python -m unittest discover tests -p "*dprs*"
+        run: python -m unittest discover tests -p "DPRS/*dprs*"
       - name: Run all unit tests
         run: python -m unittest discover tests 
       - name: Run demo dp_1d.py in Python
