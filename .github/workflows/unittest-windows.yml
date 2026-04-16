@@ -63,7 +63,7 @@ jobs:
           # $userBinPath = "$env:USERPROFILE\.local\bin"
           # Add-Content -Path $env:GITHUB_PATH -Value $userBinPath
           dir
-          python demos\dp_1d.py
+          python dprs_py\demos\dp_1d.py
       # - name: Run DemoDP.ipynb in IPython
       #   shell: powershell
       #   run: |
