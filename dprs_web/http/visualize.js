@@ -88,7 +88,11 @@ export class Visualize {
         var y_scale = this.scale;
         this.width = this.simulation.parameters.dims.n_x * x_scale;
         this.height = this.simulation.parameters.dims.n_y * y_scale;
-        this.log.info(`Created canvas size ${this.width} x ${this.height} with scale ${x_scale}x${y_scale}`);
+        /*
+        this.log.info(
+          `Created canvas size ${this.width} x ${this.height} with scale ${x_scale}x${y_scale}`,
+        );
+        */
         this.div.clear();
         const canvas = this.div.add_ele("canvas", "", "visualize canvas_2d");
         const canvas_ele = canvas.ele;
@@ -118,7 +122,9 @@ export class Visualize {
                 }
             }
         }
+        /*
         this.log.info("Completed canvas");
+        */
         this.log.pop_reason();
     }
 }

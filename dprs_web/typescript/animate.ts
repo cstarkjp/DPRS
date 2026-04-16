@@ -20,11 +20,11 @@ anim_restart(): void {
 */
 
 export class Animate {
-  animation_pending: boolean;
-  pending_timer: number | null;
-  start_cb: null | ((time: number) => void);
-  animation_cb: (time: number) => void;
-  cancel_cb: null | ((time: number) => void);
+  private animation_pending: boolean;
+  private pending_timer: number | null;
+  private start_cb: null | ((time: number) => void);
+  private animation_cb: (time: number) => void;
+  private cancel_cb: null | ((time: number) => void);
   constructor(
     animation_cb: (time: number) => void,
     start_cb: null | ((time: number) => void) = null,
@@ -37,6 +37,11 @@ export class Animate {
     this.animation_pending = false;
   }
 
+  restart(delay_ms: number = 0, start_cb: (time: number) => void) {
+    this.start_cb = start_cb;
+    this.schedule(delay_ms);
+  }
+
   schedule(delay_ms: number = 0, cb?: (time: number) => void) {
     if (cb !== undefined) {
       this.animation_cb = cb;
@@ -45,21 +50,13 @@ export class Animate {
       window.clearTimeout(this.pending_timer);
       this.pending_timer = null;
     }
+    this.animation_pending = true;
     if (delay_ms > 0) {
       this.pending_timer = window.setTimeout(
-        () => this.timeout_expired(),
+        () => this.animate(performance.now()),
         delay_ms,
       );
-    }
-    if (this.pending_timer === null) {
-      this.timeout_expired();
-    }
-  }
-
-  private timeout_expired(): void {
-    this.pending_timer = null;
-    if (!this.animation_pending) {
-      this.animation_pending = true;
+    } else {
       requestAnimationFrame((time) => this.animate(time));
     }
   }
