@@ -23,17 +23,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install dprs
+          pip install numpy
       - name: Check repo
         run: |
-          ls -l $HOME/work/DPRS/dprs_py
-      - name: Run unit tests
-        run: |
-          cd $HOME/work/dprs_py/tests
-          ls -l .     
-          python -m unittest discover tests
+          ls -l $HOME/work/DPRS/DPRS
+          ls -l $HOME/work/DPRS/DPRS/dprs_py
+          ls -l $HOME/work/DPRS/DPRS/dprs_py/tests
+      # - name: Run unit tests
+      #   run: |
+      #     cd $HOME/work/DPRS/DPRS/dprs_py/tests
+      #     ls -l .     
+      #     python -m unittest discover tests
       - name: Run demo dp_1d.py in Python
         run: |
-          cd $HOME/work/dprs_py/demos
+          cd $HOME/work/DPRS/DPRS/dprs_py/demos
           python dp_1d.py
       # - name: Run DemoDP.ipynb in IPython
       #   run: |

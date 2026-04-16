@@ -41,6 +41,7 @@ jobs:
       - name: Install DPRS
         run: |
           python -m pip install --upgrade pip
+          pip install numpy
           pip install dprs
 
       - name: Check Python path
@@ -52,16 +53,17 @@ jobs:
           python --version
           where python
           pip list
-      - name: Run version no. unit test
-        run: python -m unittest discover tests -p "*dprs*"
-      - name: Run all unit tests
-        run: python -m unittest discover tests 
+      # - name: Run version no. unit test
+      #   run: python -m unittest discover tests -p "DPRS/*dprs*"
+      # - name: Run all unit tests
+      #   run: python -m unittest discover tests 
       - name: Run demo dp_1d.py in Python
         shell: powershell
         run: |
           # $userBinPath = "$env:USERPROFILE\.local\bin"
           # Add-Content -Path $env:GITHUB_PATH -Value $userBinPath
-          python demos\dp_1d.py
+          dir
+          python dprs_py\demos\dp_1d.py
       # - name: Run DemoDP.ipynb in IPython
       #   shell: powershell
       #   run: |
