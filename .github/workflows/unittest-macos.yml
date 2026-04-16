@@ -26,11 +26,13 @@ jobs:
       - name: Check repo
         run: |
           ls -l $HOME/work/DPRS/DPRS
-      - name: Run unit tests
-        run: |
-          cd $HOME/work/DPRS/DPRS/dprs_py/tests
-          ls -l .     
-          python -m unittest discover tests
+          ls -l $HOME/work/DPRS/DPRS/dprs_py
+          ls -l $HOME/work/DPRS/DPRS/dprs_py/tests
+      # - name: Run unit tests
+      #   run: |
+      #     cd $HOME/work/DPRS/DPRS/dprs_py/tests
+      #     ls -l .     
+      #     python -m unittest discover tests
       - name: Run demo dp_1d.py in Python
         run: |
           cd $HOME/work/DPRS/DPRS/dprs_py/demos

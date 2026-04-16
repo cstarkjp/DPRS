@@ -7,9 +7,9 @@
 import unittest
 import dprs
 
-class TestLangevinVersion(unittest.TestCase):
+class TestDPRSVersion(unittest.TestCase):
 
-    def test_langevin_version(self):
+    def test_dprs_version(self):
         self.assertIn("__version__", dprs.__dict__)
         print(f"DPRS version:  {dprs.__version__}")
 
