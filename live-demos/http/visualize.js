@@ -88,7 +88,11 @@ export class Visualize {
         var y_scale = this.scale;
         this.width = this.simulation.parameters.dims.n_x * x_scale;
         this.height = this.simulation.parameters.dims.n_y * y_scale;
-        this.log.info(`Created canvas size ${this.width} x ${this.height} with scale ${x_scale}x${y_scale}`);
+        /*
+        this.log.info(
+          `Created canvas size ${this.width} x ${this.height} with scale ${x_scale}x${y_scale}`,
+        );
+        */
         this.div.clear();
         const canvas = this.div.add_ele("canvas", "", "visualize canvas_2d");
         const canvas_ele = canvas.ele;
@@ -100,25 +104,39 @@ export class Visualize {
             this.log.pop_reason();
             return;
         }
+        ctx.fillStyle = "lightgrey";
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.fillStyle = "purple";
         let data = this.simulation.result(this.slice);
         if (!data) {
             this.log.info(`No data in slice ${this.slice}`);
         }
         else {
+            var n = 0;
             for (let y = 0; y < this.simulation.parameters.dims.n_y; y++) {
+                var last = null;
+                var x_start = null;
                 for (let x = 0; x < this.simulation.parameters.dims.n_x; x += 1) {
-                    const n = y * this.simulation.parameters.dims.n_x + x;
-                    if (data[n] != 0) {
-                        ctx.fillStyle = "purple";
+                    const d = data[n];
+                    if (last !== null && d != last) {
+                        if (last != 0) {
+                            ctx.fillRect(x_start * x_scale, y * y_scale, (x - x_start) * x_scale, y_scale);
+                        }
                     }
-                    else {
-                        ctx.fillStyle = "lightgrey";
+                    if (d != last) {
+                        x_start = x;
+                        last = d;
                     }
-                    ctx.fillRect(x * x_scale, y * y_scale, x_scale, y_scale);
+                    n = n + 1;
+                }
+                if (last != 0) {
+                    ctx.fillRect(x_start * x_scale, y * y_scale, (this.simulation.parameters.dims.n_x - x_start) * x_scale, y_scale);
                 }
             }
         }
+        /*
         this.log.info("Completed canvas");
+        */
         this.log.pop_reason();
     }
 }

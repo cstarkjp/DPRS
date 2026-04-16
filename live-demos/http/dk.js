@@ -1,5 +1,6 @@
 import init from "../pkg/dprs_wasm.js";
 import { Log, Logger } from "./log.js";
+import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
 import { VisualizeControls } from "./visualize_controls.js";
@@ -8,12 +9,19 @@ import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
+import { Animate } from "./animate.js";
 class Main {
     constructor(logger, params) {
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");
         this.storage = new LocalStorage(window.localStorage, "dk/");
+        this.anim = new Animate((time) => this.animation_tick(time));
+        this.tick = 0;
+        this.last_time = 0;
+        this.frames_per_second = 25;
+        this.first_frame_time = 0;
+        this.last_frame_time = 0;
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
@@ -107,9 +115,53 @@ class Main {
             sim_parameters = this.simulation_controls_2d.parameters;
         }
         this.simulation.run(sim_parameters);
-        this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
-        this.redraw();
-        this.log.pop_reason();
+        this.log.info(`Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`);
+        if (dim < 2) {
+            this.redraw();
+        }
+        else {
+            this.anim.restart(0, (time) => this.animation_start(time));
+            this.log.pop_reason();
+        }
+    }
+    animation_start(time) {
+        this.log.info("animation", "Start");
+        if (this.simulation.dim < 2) {
+            return;
+        }
+        this.tick = 0;
+        this.last_time = time;
+        this.first_frame_time = time;
+        this.anim.schedule();
+    }
+    animation_tick(time) {
+        if (this.simulation.dim < 2) {
+            this.log.error("animation", "Should not reach here with dim < 2");
+            return;
+        }
+        const time_delay = time - this.last_time;
+        this.last_time = time;
+        if (this.tick < this.simulation.n_results()) {
+            html.set_input_value("slice", this.tick);
+            this.redraw();
+            if (this.tick < this.simulation.n_results() - 1) {
+                this.tick = this.tick + 1;
+                // The *next* frame should occur at time + one frame period - now
+                var delay = time + 1000 / this.frames_per_second - performance.now();
+                if (delay < 0) {
+                    // Not keeping up with frame rate
+                    delay = 0;
+                }
+                this.anim.schedule(delay);
+            }
+            else {
+                this.last_frame_time = time;
+                const total_time = this.last_frame_time - this.first_frame_time;
+                const n_frames = this.simulation.n_results();
+                const fps = (n_frames / total_time) * 1000;
+                this.log.info("animation", `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`);
+            }
+        }
     }
     redraw() {
         this.visualize_controls.populate_values(this.simulation);
