@@ -171,12 +171,25 @@ class Main {
     this.log.info(
       `Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`,
     );
-    if (dim < 2) {
-      this.redraw();
-    } else {
-      this.anim.restart(0, (time) => this.animation_start(time));
-      this.log.pop_reason();
+    this.set_slice();
+    this.redraw();
+  }
+
+  set_slice(): void {
+    this.anim.stop();
+    this.visualize_controls.populate_values(this.simulation);
+    this.redraw();
+  }
+
+  playback_simulation(fps: number): void {
+    if (fps == 0) {
+      this.anim.stop();
+      return;
     }
+    this.frames_per_second = fps;
+    console.log("Set fps to", this.frames_per_second);
+    this.tick = this.visualize.slice;
+    this.anim.restart(0, (time) => this.animation_start(time));
   }
 
   animation_start(time: number): void {
@@ -185,7 +198,6 @@ class Main {
     if (this.simulation.dim < 2) {
       return;
     }
-    this.tick = 0;
     this.anim.schedule();
   }
 
@@ -197,12 +209,14 @@ class Main {
 
     if (this.tick < this.simulation.n_results()) {
       html.set_input_value("slice", this.tick);
+      this.visualize.slice = this.tick;
       this.redraw();
     }
 
     if (this.tick < this.simulation.n_results() - 1) {
       this.tick = this.tick + 1;
       this.anim.schedule_at(time + 1000 / this.frames_per_second);
+      console.log(this.frames_per_second);
     } else {
       const total_time = this.anim.duration();
       const n_frames = this.simulation.n_results();
@@ -215,7 +229,6 @@ class Main {
   }
 
   redraw(): void {
-    this.visualize_controls.populate_values(this.simulation);
     const dim = this.simulation.dim;
     if (dim > 1) {
       this.visualize.canvas_2d(this.simulation_controls_2d);

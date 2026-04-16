@@ -113,20 +113,29 @@ class Main {
         }
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`);
-        if (dim < 2) {
-            this.redraw();
+        this.set_slice();
+        this.redraw();
+    }
+    set_slice() {
+        this.anim.stop();
+        this.visualize_controls.populate_values(this.simulation);
+        this.redraw();
+    }
+    playback_simulation(fps) {
+        if (fps == 0) {
+            this.anim.stop();
+            return;
         }
-        else {
-            this.anim.restart(0, (time) => this.animation_start(time));
-            this.log.pop_reason();
-        }
+        this.frames_per_second = fps;
+        console.log("Set fps to", this.frames_per_second);
+        this.tick = this.visualize.slice;
+        this.anim.restart(0, (time) => this.animation_start(time));
     }
     animation_start(time) {
         this.log.info("animation", "Start");
         if (this.simulation.dim < 2) {
             return;
         }
-        this.tick = 0;
         this.anim.schedule();
     }
     animation_tick(time) {
@@ -136,21 +145,22 @@ class Main {
         }
         if (this.tick < this.simulation.n_results()) {
             html.set_input_value("slice", this.tick);
+            this.visualize.slice = this.tick;
             this.redraw();
         }
         if (this.tick < this.simulation.n_results() - 1) {
             this.tick = this.tick + 1;
             this.anim.schedule_at(time + 1000 / this.frames_per_second);
+            console.log(this.frames_per_second);
         }
         else {
-            const total_time = this.anim.last_time_ms - this.anim.start_time_ms;
+            const total_time = this.anim.duration();
             const n_frames = this.simulation.n_results();
             const fps = (n_frames / total_time) * 1000;
             this.log.info("animation", `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`);
         }
     }
     redraw() {
-        this.visualize_controls.populate_values(this.simulation);
         const dim = this.simulation.dim;
         if (dim > 1) {
             this.visualize.canvas_2d(this.simulation_controls_2d);

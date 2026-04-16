@@ -175,7 +175,9 @@ export class HtmlElement {
     }
     add_label(for_input, id, classes) {
         const label = document.createElement("label");
-        label.setAttribute("for", for_input);
+        if (for_input) {
+            label.setAttribute("for", for_input);
+        }
         if (id) {
             label.id = id;
         }

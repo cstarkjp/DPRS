@@ -29,21 +29,24 @@ export class Animate {
         this.animation_cb = animation_cb;
         this.start_cb = start_cb;
     }
+    duration() {
+        return this.last_time_ms - this.start_time_ms;
+    }
     restart(delay_ms = 0, start_cb) {
         this.start_cb = start_cb;
         this.schedule(delay_ms);
     }
+    stop() {
+        this.clear_pending_timers();
+    }
     schedule_at(when_ms, cb) {
-        var delay = performance.now() - when_ms;
+        var delay = when_ms - performance.now();
         if (delay < 0) {
             delay = 0;
         }
         this.schedule(delay, cb);
     }
-    schedule(delay_ms = 0, cb) {
-        if (cb !== undefined) {
-            this.animation_cb = cb;
-        }
+    clear_pending_timers() {
         if (this.pending_timer !== null) {
             window.clearTimeout(this.pending_timer);
             this.pending_timer = null;
@@ -52,6 +55,12 @@ export class Animate {
             window.cancelAnimationFrame(this.animation_frame);
             this.animation_frame = null;
         }
+    }
+    schedule(delay_ms = 0, cb) {
+        if (cb !== undefined) {
+            this.animation_cb = cb;
+        }
+        this.clear_pending_timers();
         if (delay_ms > 0) {
             this.pending_timer = window.setTimeout(() => this.animate(performance.now()), delay_ms);
         }
