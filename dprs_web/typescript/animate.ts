@@ -46,18 +46,19 @@ export class Animate {
     this.schedule(delay_ms);
   }
 
+  stop(): void {
+    this.clear_pending_timers();
+  }
+
   schedule_at(when_ms: number, cb?: (time: number) => void) {
-    var delay = performance.now() - when_ms;
+    var delay = when_ms - performance.now();
     if (delay < 0) {
       delay = 0;
     }
     this.schedule(delay, cb);
   }
 
-  schedule(delay_ms: number = 0, cb?: (time: number) => void) {
-    if (cb !== undefined) {
-      this.animation_cb = cb;
-    }
+  private clear_pending_timers(): void {
     if (this.pending_timer !== null) {
       window.clearTimeout(this.pending_timer);
       this.pending_timer = null;
@@ -66,6 +67,12 @@ export class Animate {
       window.cancelAnimationFrame(this.animation_frame);
       this.animation_frame = null;
     }
+  }
+  schedule(delay_ms: number = 0, cb?: (time: number) => void) {
+    if (cb !== undefined) {
+      this.animation_cb = cb;
+    }
+    this.clear_pending_timers();
     if (delay_ms > 0) {
       this.pending_timer = window.setTimeout(
         () => this.animate(performance.now()),
