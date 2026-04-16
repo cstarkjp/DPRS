@@ -20,11 +20,14 @@ anim_restart(): void {
 */
 
 export class Animate {
-  private animation_pending: boolean;
-  private pending_timer: number | null;
-  private start_cb: null | ((time: number) => void);
+  private animation_frame: number | null = null;
+  private pending_timer: number | null = null;
+  private start_cb: null | ((time: number) => void) = null;
   private animation_cb: (time: number) => void;
-  private cancel_cb: null | ((time: number) => void);
+  private cancel_cb: null | ((time: number) => void) = null;
+  start_time_ms: number = 0;
+  last_time_ms: number = 0;
+
   constructor(
     animation_cb: (time: number) => void,
     start_cb: null | ((time: number) => void) = null,
@@ -32,14 +35,23 @@ export class Animate {
   ) {
     this.animation_cb = animation_cb;
     this.start_cb = start_cb;
-    this.pending_timer = null;
-    this.cancel_cb = null;
-    this.animation_pending = false;
+  }
+
+  duration(): number {
+    return this.last_time_ms - this.start_time_ms;
   }
 
   restart(delay_ms: number = 0, start_cb: (time: number) => void) {
     this.start_cb = start_cb;
     this.schedule(delay_ms);
+  }
+
+  schedule_at(when_ms: number, cb?: (time: number) => void) {
+    var delay = performance.now() - when_ms;
+    if (delay < 0) {
+      delay = 0;
+    }
+    this.schedule(delay, cb);
   }
 
   schedule(delay_ms: number = 0, cb?: (time: number) => void) {
@@ -50,19 +62,31 @@ export class Animate {
       window.clearTimeout(this.pending_timer);
       this.pending_timer = null;
     }
-    this.animation_pending = true;
+    if (this.animation_frame !== null) {
+      window.cancelAnimationFrame(this.animation_frame);
+      this.animation_frame = null;
+    }
     if (delay_ms > 0) {
       this.pending_timer = window.setTimeout(
         () => this.animate(performance.now()),
         delay_ms,
       );
     } else {
-      requestAnimationFrame((time) => this.animate(time));
+      this.animation_frame = requestAnimationFrame((time) =>
+        this.animate(time),
+      );
     }
   }
 
   private animate(time: number) {
-    this.animation_pending = false;
+    this.animation_frame = null;
+    this.pending_timer = null;
+
+    this.last_time_ms = time;
+    if (this.start_cb !== null) {
+      this.start_time_ms = time;
+    }
+
     if (this.cancel_cb !== null) {
       this.cancel_cb(time);
       return;

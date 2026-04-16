@@ -20,15 +20,25 @@ anim_restart(): void {
 */
 export class Animate {
     constructor(animation_cb, start_cb = null, delay = 0) {
+        this.animation_frame = null;
+        this.pending_timer = null;
+        this.start_cb = null;
+        this.cancel_cb = null;
+        this.start_time_ms = 0;
+        this.last_time_ms = 0;
         this.animation_cb = animation_cb;
         this.start_cb = start_cb;
-        this.pending_timer = null;
-        this.cancel_cb = null;
-        this.animation_pending = false;
     }
     restart(delay_ms = 0, start_cb) {
         this.start_cb = start_cb;
         this.schedule(delay_ms);
+    }
+    schedule_at(when_ms, cb) {
+        var delay = performance.now() - when_ms;
+        if (delay < 0) {
+            delay = 0;
+        }
+        this.schedule(delay, cb);
     }
     schedule(delay_ms = 0, cb) {
         if (cb !== undefined) {
@@ -38,16 +48,24 @@ export class Animate {
             window.clearTimeout(this.pending_timer);
             this.pending_timer = null;
         }
-        this.animation_pending = true;
+        if (this.animation_frame !== null) {
+            window.cancelAnimationFrame(this.animation_frame);
+            this.animation_frame = null;
+        }
         if (delay_ms > 0) {
             this.pending_timer = window.setTimeout(() => this.animate(performance.now()), delay_ms);
         }
         else {
-            requestAnimationFrame((time) => this.animate(time));
+            this.animation_frame = requestAnimationFrame((time) => this.animate(time));
         }
     }
     animate(time) {
-        this.animation_pending = false;
+        this.animation_frame = null;
+        this.pending_timer = null;
+        this.last_time_ms = time;
+        if (this.start_cb !== null) {
+            this.start_time_ms = time;
+        }
         if (this.cancel_cb !== null) {
             this.cancel_cb(time);
             return;

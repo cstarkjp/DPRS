@@ -19,15 +19,13 @@ class Main {
   visualize_controls: VisualizeControls;
   saved_sims: SavedSimulations;
   anim: Animate;
-  tick: number;
-  last_time: number;
-  first_frame_time: number;
-  last_frame_time: number;
-  frames_per_second: number;
 
   simulation_controls_1d: SimulationControls;
   simulation_controls_2d: SimulationControls;
   tabs?: Tabs;
+
+  tick: number = 0;
+  frames_per_second: number = 25;
 
   constructor(logger: Log, params: string) {
     this.log = new Logger(logger, "dk_main");
@@ -36,11 +34,6 @@ class Main {
 
     this.storage = new LocalStorage(window.localStorage, "dk/");
     this.anim = new Animate((time) => this.animation_tick(time));
-    this.tick = 0;
-    this.last_time = 0;
-    this.frames_per_second = 25;
-    this.first_frame_time = 0;
-    this.last_frame_time = 0;
 
     this.simulation = new JsSimulation(logger);
     this.visualize = new Visualize(logger, this.simulation, "Visualize");
@@ -193,8 +186,6 @@ class Main {
       return;
     }
     this.tick = 0;
-    this.last_time = time;
-    this.first_frame_time = time;
     this.anim.schedule();
   }
 
@@ -204,31 +195,22 @@ class Main {
       return;
     }
 
-    const time_delay = time - this.last_time;
-
-    this.last_time = time;
     if (this.tick < this.simulation.n_results()) {
       html.set_input_value("slice", this.tick);
       this.redraw();
-      if (this.tick < this.simulation.n_results() - 1) {
-        this.tick = this.tick + 1;
-        // The *next* frame should occur at time + one frame period - now
-        var delay = time + 1000 / this.frames_per_second - performance.now();
-        if (delay < 0) {
-          // Not keeping up with frame rate
-          delay = 0;
-        }
-        this.anim.schedule(delay);
-      } else {
-        this.last_frame_time = time;
-        const total_time = this.last_frame_time - this.first_frame_time;
-        const n_frames = this.simulation.n_results();
-        const fps = (n_frames / total_time) * 1000;
-        this.log.info(
-          "animation",
-          `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`,
-        );
-      }
+    }
+
+    if (this.tick < this.simulation.n_results() - 1) {
+      this.tick = this.tick + 1;
+      this.anim.schedule_at(time + 1000 / this.frames_per_second);
+    } else {
+      const total_time = this.anim.duration();
+      const n_frames = this.simulation.n_results();
+      const fps = (n_frames / total_time) * 1000;
+      this.log.info(
+        "animation",
+        `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`,
+      );
     }
   }
 
