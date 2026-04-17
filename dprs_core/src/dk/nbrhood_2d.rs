@@ -11,7 +11,7 @@
 ///
 /// The lattice must be 'Y-major' and 'X-minor' - that is lattice[n+1] has an X
 /// coordinate of x+1 compared to lattice[n] with x as its X coordinate (unless
-/// it hits the end of a row); succssive rows have a larger step (i.e. adding
+/// it hits the end of a row); successive rows have a larger step (i.e. adding
 /// one to the y coordinate has a larger change on the offset into the lattice)
 ///
 /// This is designed to provide a fast method to move +1 in the X direction of
