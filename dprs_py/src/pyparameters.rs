@@ -47,7 +47,7 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
-        if self.growth_model == GrowthModel::Bedload {
+        if self.growth_model == GrowthModel::BedloadA {
             writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
         }
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
