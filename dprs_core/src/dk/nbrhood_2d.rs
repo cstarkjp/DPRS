@@ -175,12 +175,14 @@ fn cell_nbrhood() {
         );
         assert_eq!(
             l_nbrhood.is_occupied(2, 1),
-            (nbrhood & CellNbrhood2D::BITMASK_EDGE_XPLUS & CellNbrhood2D::BITMASK_CENTRALSTRIP_Y) != 0,
+            (nbrhood & CellNbrhood2D::BITMASK_EDGE_XPLUS & CellNbrhood2D::BITMASK_CENTRALSTRIP_Y)
+                != 0,
             "The is_occupied method should match (x+1, y) bit being set"
         );
         assert_eq!(
             l_nbrhood.is_occupied(1, 0),
-            (nbrhood & CellNbrhood2D::BITMASK_CENTRALSTRIP_X & CellNbrhood2D::BITMASK_EDGE_YMINUS) != 0,
+            (nbrhood & CellNbrhood2D::BITMASK_CENTRALSTRIP_X & CellNbrhood2D::BITMASK_EDGE_YMINUS)
+                != 0,
             "The is_occupied method should match (x, y-1) bit being set"
         );
     }

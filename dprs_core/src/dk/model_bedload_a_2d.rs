@@ -50,8 +50,7 @@ impl GrowthModel<Cell2D> for ModelBedloadA2D {
         let keep_moving_because_nbrs =
             (is_here_occupied & are_some_upstream_nbrs_occupied) & rng.random_bool(self.p_2);
         let entrain_solo = rng.random_bool(self.p_3);
-        let do_survive =
-            keep_moving_or_entrain_by_nbr | keep_moving_because_nbrs | entrain_solo;
+        let do_survive = keep_moving_or_entrain_by_nbr | keep_moving_because_nbrs | entrain_solo;
         do_survive.into()
     }
 }
