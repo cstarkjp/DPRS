@@ -234,7 +234,7 @@ class Viz:
         Plot p_1-p_2 phase diagram for the DP bedload model.
         """
         _ = self.create_figure(fig_name=name, fig_size=fig_size,)
-        plt.title(title, fontdict={"fontsize": 11.5})
+        plt.title(title, fontdict={"fontsize": 12.5}, y=1.02,)
 
         p1_p2 = np.array([ (expt["p_1"], expt["p_2"]) for (key, expt,) in expts.items()]).T
         p1 = np.concat([p1_p2[0, :], [p1_p2[0, -1]], [0, 0, p1_p2[0, 0], p1_p2[0, 0]]])
