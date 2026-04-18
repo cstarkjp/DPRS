@@ -5,16 +5,16 @@ use rand::{Rng, RngExt};
 
 /// See ModelBedload1D for explanation of model physics.
 ///
-/// ModelBedload2D implements the GrowthModel<Cell2D> trait, plus these.
+/// ModelBedloadB2D implements the GrowthModel<Cell2D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
-pub struct ModelBedload2D {
+pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
     p_3: f64,
 }
 
-// Implement GrowthModel<Cell2D> trait for ModelBedload2D.
-impl GrowthModel<Cell2D> for ModelBedload2D {
+// Implement GrowthModel<Cell2D> trait for ModelBedloadB2D.
+impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
         Ok(Self {
