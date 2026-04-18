@@ -32,8 +32,10 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         rng: &mut R,
         nbrhood: &CellNbrhood2D,
     ) -> DualState {
+        let is_here_occupied = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
         let n_occupied = nbrhood.bitmask().count_ones();
-        let do_survive = (n_occupied > 0) & rng.random_bool(self.p_1);
+        let do_survive = ((n_occupied >= 1) & rng.random_bool(self.p_1))
+            | (is_here_occupied & (n_occupied >= 2) & rng.random_bool(self.p_2));
         do_survive.into()
 
     // fn update_state<R: Rng>(
