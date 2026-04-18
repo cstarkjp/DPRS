@@ -36,15 +36,14 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         let is_here_occupied = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
         // TODO: working on lowering p_c
         // Ignore the central ("here") cell
-        let mut ignored_cells: u16 = CellNbrhood2D::BITMASK_NOT_EDGE_XMINUS;
+        let mut ignored_cells: u16 = !CellNbrhood2D::BITMASK_EDGE_XMINUS;
         // Randomly ignore the 3 cells along the x-1 edge
-        ignored_cells |= CellNbrhood2D::BITMASK_EDGE_XMINUS & rng.random::<u16>();
+        ignored_cells |= (CellNbrhood2D::BITMASK_EDGE_XMINUS) & rng.random::<u16>();
         // Trial deweighting of diagonal neighbors:
         //    - randomly ignore corner cells along x-1 edge
         ignored_cells |= CellNbrhood2D::BITMASK_EDGE_XMINUS_CORNERS & rng.random::<u16>();
         // Stencil of upstream nbrs to be considered in this step
         let interesting_upstream_nbrs = nbrhood.bitmask() & !ignored_cells;
-
         let n_occupied_upstream_nbrs = interesting_upstream_nbrs.count_ones();
         let are_some_upstream_nbrs_occupied = n_occupied_upstream_nbrs >= 1;
 
