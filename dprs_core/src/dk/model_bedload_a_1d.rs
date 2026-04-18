@@ -27,16 +27,16 @@ use rand::{Rng, RngExt};
 /// To apply it, we then also need a flag to turn the moving frame on or off,
 /// and we need the sim time, which currently is not passed in.
 ///
-/// ModelBedload1D implements the GrowthModel<Cell1D> trait, plus these.
+/// ModelBedloadA1D implements the GrowthModel<Cell1D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
-pub struct ModelBedload1D {
+pub struct ModelBedloadA1D {
     p_1: f64,
     p_2: f64,
     p_3: f64,
 }
 
-// Implement GrowthModel<Cell1D> trait for ModelBedload1D.
-impl GrowthModel<Cell1D> for ModelBedload1D {
+// Implement GrowthModel<Cell1D> trait for ModelBedloadA1D.
+impl GrowthModel<Cell1D> for ModelBedloadA1D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
         Ok(Self {
