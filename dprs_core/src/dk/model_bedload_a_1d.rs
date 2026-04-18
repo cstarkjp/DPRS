@@ -19,7 +19,7 @@ use rand::{Rng, RngExt};
 ///
 /// We further deduce the following probabilities for an equivalent micro-scale model:
 ///   1+3) collective entrainment - detrainment = p_1 (needs 1 occupied)
-///   2) collective detrainment = p_2 (needs 2 occupied)
+///   2) collective detrainment = 1-p_2 (needs 2 occupied)
 ///   4) entrainment rate = p_3 (needs 0 occupied)
 ///
 /// So far we have assumed a frame of reference moving with the mean speed of grains downstream.
