@@ -30,9 +30,9 @@ impl GrowthModel<Cell2D> for ModelBedloadA2D {
         rng: &mut R,
         nbrhood: &CellNbrhood2D,
     ) -> DualState {
+        // "here" central cell occupation
         let is_here_occupied = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
-
-        // TODO: working on lowering p_c
+        // TODO: model not yet finalized; this is a decent first attempt
         // Ignore the central ("here") cell
         let mut ignored_cells: u16 = CellNbrhood2D::BITMASK_NOT_EDGE_XMINUS;
         // Randomly ignore the 3 cells along the x-1 edge
