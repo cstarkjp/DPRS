@@ -1,6 +1,6 @@
 use dprs_core::dk::{Cell1D, Lattice1D};
 use dprs_core::dk::{Cell2D, Lattice2D};
-use dprs_core::dk::{ModelBedload1D, ModelBedload2D};
+use dprs_core::dk::{ModelBedloadA1D, ModelBedload2D};
 use dprs_core::dk::{ModelDKSimplified1D, ModelDKSimplified2D};
 use dprs_core::dk::{ModelStaggeredDK1D, ModelStaggeredDK2D};
 use dprs_core::simulation_nd;
@@ -69,7 +69,7 @@ impl Simulation {
                 (1, "staggered_dk") => {
                     sim_1d::<ModelStaggeredDK1D>(self.parameters.sim_parameters())
                 }
-                (1, "bedload") => sim_1d::<ModelBedload1D>(self.parameters.sim_parameters()),
+                (1, "bedload") => sim_1d::<ModelBedloadA1D>(self.parameters.sim_parameters()),
                 (2, "simplified_dk") => {
                     sim_2d::<ModelDKSimplified2D>(self.parameters.sim_parameters())
                 }
