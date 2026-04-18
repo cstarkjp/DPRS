@@ -118,7 +118,8 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
     match parameters.growth_model:
         case GrowthModel.SimplifiedDomanyKinzel: model="Simplified D-K:"
         case GrowthModel.StaggeredDomanyKinzel: model="Staggered D-K:"
-        case GrowthModel.Bedload: model="Bedload:"
+        case GrowthModel.BedloadA: model="BedloadA:"
+        case GrowthModel.BedloadB: model="BedloadB:"
         case _: model="Unspecified model"
     return (
         (
