@@ -43,6 +43,9 @@ impl CellNbrhood2D {
     /// Bitmask for the three neighbors that have have the same X coordinate as the center
     pub const BITMASK_CENTRALSTRIP_X: u16 = 0b_000_111_000;
 
+    /// Bitmask for the three neighbors that have have the same X coordinate as the center
+    pub const BITMASK_CENTRALSTRIP_X_NOT_CENTER: u16 = 0b_000_101_000;
+
     /// Bitmask for the three neighbors that have have a 'dx' of +1 relative to the center coordinate
     pub const BITMASK_EDGE_XPLUS: u16 = 0b_111_000_000;
 
@@ -51,6 +54,9 @@ impl CellNbrhood2D {
 
     /// Bitmask for the three neighbors that have have the same Y coordinate as the center
     pub const BITMASK_CENTRALSTRIP_Y: u16 = 0b_010_010_010;
+
+    /// Bitmask for the three neighbors that have have the same Y coordinate as the center
+    pub const BITMASK_CENTRALSTRIP_Y_NOT_CENTER: u16 = 0b_010_000_010;
 
     /// Bitmask for the three neighbors that have have a 'dy' of +1 relative to the center coordinate
     pub const BITMASK_EDGE_YPLUS: u16 = 0b_100_100_100;
