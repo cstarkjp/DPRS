@@ -20,6 +20,7 @@ pub struct PyParameters {
     pub p_1: f64,
     pub p_2: f64,
     pub p_3: f64,
+    pub bias: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -70,6 +71,8 @@ impl std::fmt::Display for PyParameters {
     }
 }
 
+// TODO: reimplement print function for PyParameters - need in nbs
+
 impl PyParameters {
     /// Copy Python-facing parameters.
 
@@ -107,10 +110,17 @@ impl PyParameters {
                 py_p.p_2
             )));
         }
+        // TODO: add trap for p_3
         if py_p.p_initial < 0. || py_p.p_initial > 1. {
             return Err(DprsError::BadParameter(format!(
                 "Probability p_initial={} must be [0,1]",
                 py_p.p_initial
+            )));
+        }
+        if py_p.bias < 0. || py_p.bias > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability bias={} must be [0,1]",
+                py_p.bias
             )));
         }
         if py_p.n_iterations == 0 {
@@ -144,6 +154,7 @@ impl PyParameters {
             p_1: py_p.p_1,
             p_2: py_p.p_2,
             p_3: py_p.p_3,
+            bias: py_p.bias,
             n_iterations: py_p.n_iterations,
             sample_period: py_p.sample_period,
             initial_condition: InitialCondition::from(py_p.initial_condition),
