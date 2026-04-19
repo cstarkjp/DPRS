@@ -1365,10 +1365,10 @@
 <a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache"></a></p>
 <p><figure id="_figure-1"><img alt="1d DP-class, simplified Domany-Kinzel evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)" src="images/lattice_p0p538910_s5_nx300.png" width="600"><figcaption>Figure 1: 1d DP-class, simplified Domany-Kinzel evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)</figcaption></figure></p>
 <h2 id="dprs">DPRS<a class="headerlink" href="#dprs" title="Permanent link">¶</a></h2>
-<p>DPRS implements solvers for a variety of directed-percolation class models. The code is largely written in Rust.
-The <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_core/src">solver</a> is accessed via a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_py/src">wrapper</a> that exposes it to Python. This wrapping makes experimentation more convenient. </p>
-<p>The Python wrapper is available as a <a href="https://pypi.org/project/dprs/">PyPI package called DPRS</a> and can be installed using <code>pip</code>. It has multi-platform support.
-Jupyter notebooks are used to implement the Python-wrapped simulations. </p>
+<p>DPRS implements solvers for a variety of directed-percolation (DP) class cellular automata models. </p>
+<p>The <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_core/src">core code</a> is written in Rust, as is a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_py/src">Python wrapper</a> that provides easy access to the solvers, and a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_web/src">Typescript wrapper</a> that allow them to be run directly in a web browser using WebAssembly. 
+Jupyter notebooks are used to implement the DP simulations. </p>
+<p>Access to the Python wrapper is provided by the <code>pip</code>-installable PyPI package <a href="https://pypi.org/project/dprs/">DPRS</a>. This package has multi-platform support, and should run on macOS, Windows and Linux without any difficulty (<code>pip</code> can rebuild the package from source if necessary).</p>
 <h2 id="live-demos">Live demos<a class="headerlink" href="#live-demos" title="Permanent link">¶</a></h2>
 <p>You can experiment with <a href="live-demos/">interactive demos of the DP solver here.</a>
 These demos run the same Rust code as the Python-wrapped solver, but instead are made available using WebAssembly and accessed via a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_web/src">Typescript/Javascript wrapper</a>.</p>
