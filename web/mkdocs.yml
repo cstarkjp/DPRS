@@ -123,12 +123,16 @@ nav:
         - python-scripts/index.md
         - python-scripts/DomanyKinzel.md
     - Technical info:
-      - Wrapping Rust in Python: 
-          - technical/HOWTO.md
+      - Wrappers: 
+          - technical/Rust-Python.md
+          - technical/Rust-Wasm.md
       - Python modules: 
+          - technical/python-modules/file.md
           - technical/python-modules/index.md
-          - technical/python-modules/viz-reference.md
-          - technical/python-modules/utils-reference.md
+          - technical/python-modules/initialize.md
+          - technical/python-modules/serialize.md
+          - technical/python-modules/utils.md
+          - technical/python-modules/viz.md
     # - References: references.md
 
 # https://analog-garage.github.io/mkdocstrings-python-xref/latest/

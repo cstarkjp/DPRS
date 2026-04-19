@@ -86,6 +86,10 @@ impl Simulation {
                     sim_2d::<ModelBedloadA2D>(self.parameters.sim_parameters())
                 },
                 // (2, "bedload_b") => {
+                //     sim_2d::<ModelBedloadAB2D>(self.parameters.sim_parameters())
+                // },
+                //     sim_2d::<ModelBedloadB2D>(self.parameters.sim_parameters())
+                // },
                 //     sim_2d::<ModelBedloadB2D>(self.parameters.sim_parameters())
                 // },
                 _ => {

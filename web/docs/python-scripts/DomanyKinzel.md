@@ -1,4 +1,4 @@
-# Domany-Kinzel
+# Domany-Kinzel models
 
 Simplified DP-class Domany-Kinzel model simulations are demonstrated in the Python scripts below.
 

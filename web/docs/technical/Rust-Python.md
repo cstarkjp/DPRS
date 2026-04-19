@@ -1,4 +1,4 @@
-# Wrapping Rust in Python
+# Wrap Rust in Python
 
 Here are some notes on how to wrap a Python package around fast, parallelized Rust code. 
 
