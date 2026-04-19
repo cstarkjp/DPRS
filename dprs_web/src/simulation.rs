@@ -83,15 +83,19 @@ impl Simulation {
                     sim_2d::<ModelStaggeredDK2D>(self.parameters.sim_parameters())
                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
                 (2, "bedload") => sim_2d::<ModelBedloadA2D>(self.parameters.sim_parameters()),
 =======
 =======
 >>>>>>> 92c2d6b (Fix breaks in dprs_web because of a,b split)
+=======
+>>>>>>> main
                 (2, "bedload") => {
                     sim_2d::<ModelBedloadA2D>(self.parameters.sim_parameters())
                 },
                 // (2, "bedload_b") => {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 //     sim_2d::<ModelBedloadAB2D>(self.parameters.sim_parameters())
                 // },
@@ -100,6 +104,10 @@ impl Simulation {
                 //     sim_2d::<ModelBedloadB2D>(self.parameters.sim_parameters())
                 // },
 >>>>>>> 92c2d6b (Fix breaks in dprs_web because of a,b split)
+=======
+                //     sim_2d::<ModelBedloadB2D>(self.parameters.sim_parameters())
+                // },
+>>>>>>> main
                 _ => {
                     return Err(format!(
                         "Unable to perform {dims}D simulation with {:?} simulation kind at present",
