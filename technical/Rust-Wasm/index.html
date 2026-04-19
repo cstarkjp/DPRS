@@ -12,29 +12,31 @@
         <meta name="author" content="Colin P. Stark">
       
       
-        <link rel="canonical" href="https://cstarkjp.github.io/DPRS/">
+        <link rel="canonical" href="https://cstarkjp.github.io/DPRS/technical/Rust-Wasm/">
       
       
+        <link rel="prev" href="../Rust-Python/">
       
-        <link rel="next" href="live-demos/">
+      
+        <link rel="next" href="../python-modules/file/">
       
       
         
       
       
-      <link rel="icon" href="images/DP1.png">
+      <link rel="icon" href="../../images/DP1.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
-        <title>DPRS</title>
+        <title>Embed Rust in a web page - DPRS</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,11 +55,11 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="../../style.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -92,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#directed-percolation-solver-in-rustpython" class="md-skip">
+        <a href="#embed-rust-in-a-web-page" class="md-skip">
           Skip to content
         </a>
       
@@ -106,9 +108,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="DPRS" class="md-header__button md-logo" aria-label="DPRS" data-md-component="logo">
+    <a href="../.." title="DPRS" class="md-header__button md-logo" aria-label="DPRS" data-md-component="logo">
       
-  <img src="assets/DP5.png" alt="logo">
+  <img src="../../assets/DP5.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -125,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Embed Rust in a web page
             
           </span>
         </div>
@@ -251,11 +253,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="live-demos/" class="md-tabs__link">
+        <a href="../../live-demos/" class="md-tabs__link">
           
   
   
@@ -298,7 +298,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="jupyter-notebooks/" class="md-tabs__link">
+        <a href="../../jupyter-notebooks/" class="md-tabs__link">
           
   
   
@@ -320,7 +320,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="python-scripts/" class="md-tabs__link">
+        <a href="../../python-scripts/" class="md-tabs__link">
           
   
   
@@ -338,6 +338,8 @@
   
   
   
+    
+  
   
     
     
@@ -345,11 +347,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="technical/Rust-Python/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Rust-Python/" class="md-tabs__link">
           
   
   
@@ -388,9 +392,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="DPRS" class="md-nav__button md-logo" aria-label="DPRS" data-md-component="logo">
+    <a href="../.." title="DPRS" class="md-nav__button md-logo" aria-label="DPRS" data-md-component="logo">
       
-  <img src="assets/DP5.png" alt="logo">
+  <img src="../../assets/DP5.png" alt="logo">
 
     </a>
     DPRS
@@ -414,37 +418,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -460,59 +437,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dprs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DPRS
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#live-demos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Live demos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#technical-motivation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Technical motivation
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -551,7 +475,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="live-demos/" class="md-nav__link ">
+            <a href="../../live-demos/" class="md-nav__link ">
               
   
   
@@ -595,7 +519,7 @@
   
   
     <li class="md-nav__item">
-      <a href="live-demos/1d_DP_simulations/" class="md-nav__link">
+      <a href="../../live-demos/1d_DP_simulations/" class="md-nav__link">
         
   
   
@@ -623,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="live-demos/2d_DP_simulations/" class="md-nav__link">
+      <a href="../../live-demos/2d_DP_simulations/" class="md-nav__link">
         
   
   
@@ -683,7 +607,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="jupyter-notebooks/" class="md-nav__link ">
+            <a href="../../jupyter-notebooks/" class="md-nav__link ">
               
   
   
@@ -727,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="jupyter-notebooks/DomanyKinzel/" class="md-nav__link">
+      <a href="../../jupyter-notebooks/DomanyKinzel/" class="md-nav__link">
         
   
   
@@ -787,7 +711,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="python-scripts/" class="md-nav__link ">
+            <a href="../../python-scripts/" class="md-nav__link ">
               
   
   
@@ -831,7 +755,7 @@
   
   
     <li class="md-nav__item">
-      <a href="python-scripts/DomanyKinzel/" class="md-nav__link">
+      <a href="../../python-scripts/DomanyKinzel/" class="md-nav__link">
         
   
   
@@ -863,8 +787,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -876,19 +802,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -906,7 +835,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -921,8 +850,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -935,18 +866,21 @@
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
-          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="">
             
   
   
@@ -964,7 +898,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -982,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/Rust-Python/" class="md-nav__link">
+      <a href="../Rust-Python/" class="md-nav__link">
         
   
   
@@ -1007,10 +941,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="technical/Rust-Wasm/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1026,6 +969,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1068,10 +1012,13 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -1079,7 +1026,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="technical/python-modules/" class="md-nav__link ">
+            <a href="../python-modules/" class="md-nav__link ">
               
   
   
@@ -1097,7 +1044,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5_2" id="__nav_5_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -1121,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/python-modules/file/" class="md-nav__link">
+      <a href="../python-modules/file/" class="md-nav__link">
         
   
   
@@ -1151,7 +1098,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/python-modules/initialize/" class="md-nav__link">
+      <a href="../python-modules/initialize/" class="md-nav__link">
         
   
   
@@ -1179,7 +1126,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/python-modules/serialize/" class="md-nav__link">
+      <a href="../python-modules/serialize/" class="md-nav__link">
         
   
   
@@ -1207,7 +1154,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/python-modules/utils/" class="md-nav__link">
+      <a href="../python-modules/utils/" class="md-nav__link">
         
   
   
@@ -1235,7 +1182,7 @@
   
   
     <li class="md-nav__item">
-      <a href="technical/python-modules/viz/" class="md-nav__link">
+      <a href="../python-modules/viz/" class="md-nav__link">
         
   
   
@@ -1291,47 +1238,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#dprs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DPRS
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#live-demos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Live demos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#technical-motivation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Technical motivation
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1351,34 +1257,15 @@
     
       
     
-    <a href="https://github.com/cstarkjp/DPRS/raw/main/web/docs/index.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/cstarkjp/DPRS/raw/main/web/docs/technical/Rust-Wasm.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="directed-percolation-solver-in-rustpython"><a href="https://pypi.org/project/dprs/"><strong>Directed percolation solver in Rust/Python</strong></a><a class="headerlink" href="#directed-percolation-solver-in-rustpython" title="Permanent link">¶</a></h1>
-<p><a href="https://github.com/cstarkjp/DPRS/actions/workflows/PyPI.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/PyPI.yml/badge.svg?style=cache-control=no-cache"></a>
-<a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-macos.yml/badge.svg?style=cache-control=no-cache"></a>
-<a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-linux.yml/badge.svg?style=cache-control=no-cache"></a>
-<a href="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml"><img alt="" src="https://github.com/cstarkjp/DPRS/actions/workflows/unittest-windows.yml/badge.svg?style=cache-control=no-cache"></a></p>
-<p><figure id="_figure-1"><img alt="1d DP-class, simplified Domany-Kinzel evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)" src="images/lattice_p0p538910_s5_nx300.png" width="600"><figcaption>Figure 1: 1d DP-class, simplified Domany-Kinzel evolution for \(p_c \approx p=0.53891\), \(n_x=300\), \(t=200\)</figcaption></figure></p>
-<h2 id="dprs">DPRS<a class="headerlink" href="#dprs" title="Permanent link">¶</a></h2>
-<p>DPRS implements solvers for a variety of directed-percolation class models. The code is largely written in Rust.
-The <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_core/src">solver</a> is accessed via a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_py/src">wrapper</a> that exposes it to Python. This wrapping makes experimentation more convenient. </p>
-<p>The Python wrapper is available as a <a href="https://pypi.org/project/dprs/">PyPI package called DPRS</a> and can be installed using <code>pip</code>. It has multi-platform support.
-Jupyter notebooks are used to implement the Python-wrapped simulations. </p>
-<h2 id="live-demos">Live demos<a class="headerlink" href="#live-demos" title="Permanent link">¶</a></h2>
-<p>You can experiment with <a href="live-demos/">interactive demos of the DP solver here.</a>
-These demos run the same Rust code as the Python-wrapped solver, but instead are made available using WebAssembly and accessed via a <a href="https://github.com/cstarkjp/DPRS/tree/main/dprs_web/src">Typescript/Javascript wrapper</a>.</p>
-<h2 id="technical-motivation">Technical motivation<a class="headerlink" href="#technical-motivation" title="Permanent link">¶</a></h2>
-<p>We have two motivations for adopting Rust: one is to ensure maximum performance; another is to achieve this in a memory-safe and bug-free fashion (which is not easy to do in C or C++). 
-Fast run times are achieved through parallelization using the <a href="https://docs.rs/rayon/latest/rayon/"><code>Rayon</code> crate</a>. 
-We anticipate boosting performance further with GPU-compute using <a href="https://wgpu.rs/"><code>wgpu</code></a>.</p>
-<!-- See [here](demos-reference.md) for some demos.
-
-See [here](HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python. -->
+<h1 id="embed-rust-in-a-web-page">Embed Rust in a web page<a class="headerlink" href="#embed-rust-in-a-web-page" title="Permanent link">¶</a></h1>
+<p>TBD</p>
 
 
 
@@ -1411,15 +1298,31 @@ See [here](HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python.
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href="../Rust-Python/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Wrap Rust in Python">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Wrap Rust in Python
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="live-demos/" class="md-footer__link md-footer__link--next" aria-label="Next: Live demos">
+          <a href="../python-modules/file/" class="md-footer__link md-footer__link--next" aria-label="Next: file.py">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Live demos
+                file.py
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1476,18 +1379,18 @@ See [here](HOWTO.md) for some rough "how-to" notes on wrapping Rust with Python.
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.footnote.tooltips", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.footnote.tooltips", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="javascripts/mathjax.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
-        <script src="javascripts/extra.js"></script>
+        <script src="../../javascripts/extra.js"></script>
       
     
   </body>

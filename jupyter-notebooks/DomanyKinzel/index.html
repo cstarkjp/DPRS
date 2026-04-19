@@ -29,7 +29,7 @@
     
     
       
-        <title>Domany-Kinzel - DPRS</title>
+        <title>Domany-Kinzel models - DPRS</title>
       
     
     
@@ -94,7 +94,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domany-kinzel" class="md-skip">
+        <a href="#domany-kinzel-models" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Domany-Kinzel
+              Domany-Kinzel models
             
           </span>
         </div>
@@ -351,7 +351,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../technical/HOWTO/" class="md-tabs__link">
+        <a href="../../technical/Rust-Python/" class="md-tabs__link">
           
   
   
@@ -670,7 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Domany-Kinzel
+    Domany-Kinzel models
   
 
     
@@ -775,7 +775,7 @@
   <span class="md-ellipsis">
     
   
-    Domany-Kinzel
+    Domany-Kinzel models
   
 
     
@@ -865,6 +865,8 @@
       
         
       
+        
+      
     
     
     
@@ -888,7 +890,7 @@
   <span class="md-ellipsis">
     
   
-    Wrapping Rust in Python
+    Wrappers
   
 
     
@@ -904,7 +906,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Wrapping Rust in Python
+    Wrappers
   
 
           </label>
@@ -917,14 +919,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../technical/HOWTO/" class="md-nav__link">
+      <a href="../../technical/Rust-Python/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Wrapping Rust in Python
+    Wrap Rust in Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technical/Rust-Wasm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Embed Rust in a web page
   
 
     
@@ -956,7 +986,13 @@
     
       
         
+      
+        
           
+        
+      
+        
+      
         
       
         
@@ -1016,6 +1052,34 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technical/python-modules/file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    file.py
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
             
               
                 
@@ -1024,14 +1088,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../technical/python-modules/viz-reference/" class="md-nav__link">
+      <a href="../../technical/python-modules/initialize/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    viz.py
+    initialize.py
   
 
     
@@ -1052,7 +1116,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../../technical/python-modules/utils-reference/" class="md-nav__link">
+      <a href="../../technical/python-modules/serialize/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    serialize.py
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technical/python-modules/utils/" class="md-nav__link">
         
   
   
@@ -1060,6 +1152,34 @@
     
   
     utils.py
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technical/python-modules/viz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    viz.py
   
 
     
@@ -1134,17 +1254,17 @@
   
 
 
-<h1 id="domany-kinzel">Domany-Kinzel<a class="headerlink" href="#domany-kinzel" title="Permanent link">¶</a></h1>
-<p>Simplified DP-class Domany-Kinzel model simulations are demonstrated in the following Jupyter notebooks:</p>
+<h1 id="domany-kinzel-models">Domany-Kinzel models<a class="headerlink" href="#domany-kinzel-models" title="Permanent link">¶</a></h1>
+<p>The following Jupyter notebooks illustrate simulation of cellular automata of Domany-Kinzel type, and directed-percolation universality class, in 1d, 2d, and 3d.  Lattice sizes range from modest to very large, and the total number of iteration can range very high (and which, in parallel processing mode on a fast machine, can still take several hours to run). Their main focus is to show that <span class="arithmatex">\(t\)</span>-decay of the lattice-mean order parameter <span class="arithmatex">\(\overline\rho(t)\)</span> exhibits scaling consistent with DP-universality.</p>
 <ul>
 <li>
-<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/dp_1d.ipynb"><strong>1d DP</strong> for a very large lattice and large number of iterations, to validate <span class="arithmatex">\(t\)</span>-decay of <span class="arithmatex">\(\overline\rho(t)\)</span> </a></p>
+<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/DP1D.ipynb"><strong>1d D-K</strong> </a></p>
 </li>
 <li>
-<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/dp_3d.ipynb"><strong>2d DP</strong> for a large lattice and large number of iterations, to validate <span class="arithmatex">\(t\)</span>-decay of <span class="arithmatex">\(\overline\rho(t)\)</span> </a></p>
+<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/DP2D.ipynb"><strong>2d D-K</strong></a></p>
 </li>
 <li>
-<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/dp_3d.ipynb"><strong>3d DP</strong> for a medium-size lattice and large number of iterations, to validate <span class="arithmatex">\(t\)</span>-decay of <span class="arithmatex">\(\overline\rho(t)\)</span> </a></p>
+<p><a href="https://github.com/cstarkjp/DPRS/tree/main/py_dprs/notebooks/DP3D.ipynb"><strong>3d D-K</strong></a></p>
 </li>
 </ul>
 

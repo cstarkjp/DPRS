@@ -2,54 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cstarkjp.github.io/DPRS/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/jupyter-notebooks/DomanyKinzel/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/live-demos/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/live-demos/1d_DP_simulations/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/live-demos/2d_DP_simulations/</loc>
-         <lastmod>2026-04-16</lastmod>
-    </url>
-    <url>
-         <loc>https://cstarkjp.github.io/DPRS/notes/ContactProcess/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-scripts/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/python-scripts/DomanyKinzel/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/technical/HOWTO/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <loc>https://cstarkjp.github.io/DPRS/technical/Rust-Python/</loc>
+         <lastmod>2026-04-19</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/Rust-Wasm/</loc>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
          <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/utils-reference/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/file/</loc>
+         <lastmod>2026-04-19</lastmod>
     </url>
     <url>
-         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/viz-reference/</loc>
-         <lastmod>2026-04-16</lastmod>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/initialize/</loc>
+         <lastmod>2026-04-19</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/serialize/</loc>
+         <lastmod>2026-04-19</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/utils/</loc>
+         <lastmod>2026-04-19</lastmod>
+    </url>
+    <url>
+         <loc>https://cstarkjp.github.io/DPRS/technical/python-modules/viz/</loc>
+         <lastmod>2026-04-19</lastmod>
     </url>
 </urlset>
