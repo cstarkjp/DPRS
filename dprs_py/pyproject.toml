@@ -8,28 +8,26 @@ requires-python = ">=3.12"
 description = 'Directed percolation-type models implemented in Rust and wrapped in Python'
 readme = 'README.md'
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Environment :: WebAssembly",
-    "Framework :: Jupyter",
-    "Framework :: MkDocs",
-    "Intended Audience :: Science/Research",
-    "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: TypeScript",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Operating System :: MacOS",
-    "Operating System :: POSIX :: Linux",
-    "Operating System :: Microsoft :: Windows",
-    "Topic :: Scientific/Engineering :: Physics",
+  "Development Status :: 3 - Alpha",
+  "Environment :: WebAssembly",
+  "Framework :: Jupyter",
+  "Framework :: MkDocs",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Rust",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: JavaScript",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Topic :: Scientific/Engineering :: Physics",
 ]
-authors = [
-  {name = 'Colin P. Stark', email = 'cstarkjp@gmail.com'},
-]
+authors = [{ name = 'Colin P. Stark', email = 'cstarkjp@gmail.com' }]
 keywords = [
   'directed percolation',
   'phase transition',
   'Domany-Kinzel',
-  'contact process'
+  'contact process',
 ]
 dynamic = ["version"]
 
