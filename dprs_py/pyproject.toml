@@ -6,7 +6,7 @@ build-backend = "maturin"
 name = "dprs"
 requires-python = ">=3.12"
 description = 'Directed percolation-type models implemented in Rust and wrapped in Python'
-readme = '../README.md'
+readme = 'README.md'
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
