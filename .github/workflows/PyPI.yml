@@ -167,8 +167,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-  # NOTE: --find-interpreter not included in maturin build of this CI, is CPS addition
-          args: --out dist --find-interpreter --manifest-path dprs_py/Cargo.toml
+          args: --out dist --manifest-path dprs_py/Cargo.toml
       - name: Upload sdist
         uses: actions/upload-artifact@v6
         with:
