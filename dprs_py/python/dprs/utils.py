@@ -14,8 +14,9 @@ from dprs.sim import (
 warnings.filterwarnings("ignore")
 
 __all__ = [
-    "DUAL",
     "Parameters"
+    "DUAL",
+    "postprocessing",
     "make_title",
     "make_name",
 ]
@@ -110,7 +111,6 @@ def postprocessing(parameters, n_raw_lattices, raw_lattices, raw_tracking,):
     )
 
     return (n_lattices, lattices, tracking)
-
 
 def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|None = None): 
     """Generate a string summarizing the sim for entitling plots."""
