@@ -3,11 +3,22 @@ import { Visualize } from "./visualize.js";
 import { JsSimulation } from "./js_simulation.js";
 import { Log, Logger } from "./log.js";
 
+export interface VisualizationControlClient {
+  /** Play or pause/stop an animated simulation display
+   *
+   * @param {number} fps The frames-per-second to set replay to; if this is 0,
+   *                     then stop; if this is -ve then a backwards animation is desired
+   */
+  playback_simulation(fps: number): void;
+  set_zoom(zoom: number): void;
+  set_slice(slice: number): void;
+}
+
 export class VisualizeControls {
   /**
    * Parent of this widget
    */
-  parent: any;
+  parent: VisualizationControlClient;
 
   /**
    * Logger to report progress to (as a source of 'sim')
@@ -27,7 +38,12 @@ export class VisualizeControls {
   td_slice?: html.HtmlElement;
   td_playback?: html.HtmlElement;
 
-  constructor(logger: Log, parent: any, visualize: Visualize, div_id: string) {
+  constructor(
+    logger: Log,
+    parent: VisualizationControlClient,
+    visualize: Visualize,
+    div_id: string,
+  ) {
     this.parent = parent;
     this.log = new Logger(logger, "vis_control");
     this.visualize = visualize;
@@ -64,13 +80,11 @@ export class VisualizeControls {
     const td_zoom = tr_zoom.add_ele("td");
     td_zoom.add_input_range(
       "zoom",
-      "1.0",
-      "1.0",
-      "5",
-      () => {
-        this.parent.redraw();
+      { min: 1, max: 5, step: 0.1 },
+      (_e: Event, value) => {
+        this.parent.set_zoom(value);
       },
-      "zoom",
+      { id: "zoom" },
     );
     td_zoom.add_label("zoom").set_content("Zoom");
 
@@ -81,13 +95,11 @@ export class VisualizeControls {
     const td_slice = tr_slice.add_ele("td", "slice_input");
     td_slice.add_input_range(
       "slice",
-      "1.0",
-      "1.0",
-      "10",
-      () => {
-        this.parent.set_slice();
+      { min: 0, max: 1, step: 1 },
+      (_e: Event, value) => {
+        this.parent.set_slice(value);
       },
-      "slice",
+      { id: "slice" },
     );
     td_slice.add_label("slice").set_content("Slice");
 
@@ -99,40 +111,42 @@ export class VisualizeControls {
       () => {
         this.parent.playback_simulation(60);
       },
-      "",
-      "controls playback_60fps",
+      { classes: "controls playback_60fps" },
     );
     td_playback.add_input_button(
       "30fps",
       () => {
         this.parent.playback_simulation(30);
       },
-      "",
-      "controls playback_30fps",
+      { classes: "controls playback_30fps" },
     );
     td_playback.add_input_button(
       "10fps",
       () => {
         this.parent.playback_simulation(10);
       },
-      "",
-      "controls playback_10fps",
+      { classes: "controls playback_10fps" },
     );
     td_playback.add_input_button(
       "5fps",
       () => {
         this.parent.playback_simulation(5);
       },
-      "",
-      "controls playback_5fps",
+      { classes: "controls playback_5fps" },
     );
     td_playback.add_input_button(
       "Pause",
       () => {
         this.parent.playback_simulation(0);
       },
-      "",
-      "controls playback_pause",
+      { classes: "controls playback_pause" },
+    );
+    td_playback.add_input_button(
+      "rev 10fps",
+      () => {
+        this.parent.playback_simulation(-10);
+      },
+      { classes: "controls playback_m10fps" },
     );
   }
 

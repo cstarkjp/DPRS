@@ -25,6 +25,7 @@ class Main {
   tabs?: Tabs;
 
   tick: number = 0;
+  tick_delta: number = 1;
   frames_per_second: number = 25;
 
   constructor(logger: Log, params: string) {
@@ -171,13 +172,19 @@ class Main {
     this.log.info(
       `Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`,
     );
-    this.set_slice();
+
+    this.visualize_controls.populate_values(this.simulation);
     this.redraw();
   }
 
-  set_slice(): void {
+  set_zoom(zoom: number): void {
+    this.visualize.scale = zoom;
+    this.redraw();
+  }
+
+  set_slice(slice: number): void {
     this.anim.stop();
-    this.visualize_controls.populate_values(this.simulation);
+    this.visualize.slice = slice;
     this.redraw();
   }
 
@@ -185,6 +192,11 @@ class Main {
     if (fps == 0) {
       this.anim.stop();
       return;
+    }
+    this.tick_delta = 1;
+    if (fps < 0) {
+      this.tick_delta = -1;
+      fps = -fps;
     }
     this.frames_per_second = fps;
     console.log("Set fps to", this.frames_per_second);
@@ -207,16 +219,16 @@ class Main {
       return;
     }
 
-    if (this.tick < this.simulation.n_results()) {
+    if (this.tick >= 0 && this.tick < this.simulation.n_results()) {
       html.set_input_value("slice", this.tick);
       this.visualize.slice = this.tick;
       this.redraw();
     }
 
-    if (this.tick < this.simulation.n_results() - 1) {
-      this.tick = this.tick + 1;
+    var next_tick = this.tick + this.tick_delta;
+    if (next_tick > 0 && next_tick < this.simulation.n_results()) {
+      this.tick = next_tick;
       this.anim.schedule_at(time + 1000 / this.frames_per_second);
-      console.log(this.frames_per_second);
     } else {
       const total_time = this.anim.duration();
       const n_frames = this.simulation.n_results();
