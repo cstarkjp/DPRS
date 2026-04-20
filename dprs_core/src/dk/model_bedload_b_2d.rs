@@ -16,7 +16,7 @@ pub struct ModelBedloadB2D {
 ///
 /// Here, an occupied cell <=> a moving grain at that cell location.
 ///
-/// Consider the following stencil, which selects all the upstream nbrs and the central cell:
+/// Consider the following stencil, which selects all the upstream nbrs & the central cell:
 ///     1 0 0
 ///     1 1 0
 ///     1 0 0
@@ -44,7 +44,8 @@ pub struct ModelBedloadB2D {
 ///        )
 ///  )
 ///
-/// Currently, p_nbr=1/2 and p_diag=1/2. We could use p_3 and p_bias to supply these numbers.
+/// Currently, p_nbr=1/2 and p_diag=1/2. 
+/// We could use p_3 and p_bias to supply these numbers.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
