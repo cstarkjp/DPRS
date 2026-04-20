@@ -70,7 +70,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         let keep_moving_or_get_collectively_entrained: bool =
             (is_moving | do_collectively_entrain) & coin_toss_p1;
         // In the next time step, consider central cell to be moving
-        //   - if it's already moving /AND/ it's kept in motion by of an upstream interaction
+        //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p2, succeeds
         let get_multicollectively_entrained: bool =
             (is_moving & do_collectively_entrain) & coin_toss_p2;
