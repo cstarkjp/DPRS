@@ -110,8 +110,10 @@ export class SavedSimulations {
         () => {
           this.delete_file(f);
         },
-        "delete_simulation_" + f,
-        "delete_simulation",
+        {
+          id: "delete_simulation_" + f,
+          classes: "delete_simulation",
+        },
       );
       tr.add_ele("th").set_content(f);
       tr.add_ele("td").set_content(desc);
@@ -122,8 +124,10 @@ export class SavedSimulations {
         () => {
           this.parent.load_simulation(f);
         },
-        "load_simulation_" + f,
-        "load_simulation",
+        {
+          id: "load_simulation_" + f,
+          classes: "load_simulation",
+        },
       );
     }
   }

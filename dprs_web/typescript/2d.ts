@@ -80,6 +80,18 @@ class Main {
     const dim = this.simulation.dim;
     this.visualize.canvas_2d(this.simulation_controls_2d);
   }
+
+  set_zoom(zoom: number): void {
+    this.visualize.scale = zoom;
+    this.redraw();
+  }
+
+  set_slice(slice: number): void {
+    this.visualize.slice = slice;
+    this.redraw();
+  }
+
+  playback_simulation(fps: number): void {}
 }
 
 (window as any).main = null;

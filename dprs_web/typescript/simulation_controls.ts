@@ -124,32 +124,30 @@ export class SimulationControls {
     {
       const tr = dims_table.add_ele("tr", ele_id + "dims");
       const td = tr.add_ele("td");
-      td.add_label("n_x", "sim_controls_label").set_content("nx:");
-      td.add_input_text(
-        "n_x",
-        "20",
-        this.ele_id + "n_x",
-        "sim_controls_text dims_n_text",
-      );
+      td.add_label("n_x", { classes: "sim_controls_label" }).set_content("nx:");
+      td.add_input_text("n_x", "20", {
+        id: this.ele_id + "n_x",
+        classes: "sim_controls_text dims_n_text",
+      });
       if (dims >= 2) {
         const td = tr.add_ele("td");
-        td.add_label("n_y", "sim_controls_label").set_content("ny:");
-        td.add_input_text(
-          "n_y",
-          "20",
-          this.ele_id + "n_y",
-          "sim_controls_text dims_n_text",
+        td.add_label("n_y", { classes: "sim_controls_label" }).set_content(
+          "ny:",
         );
+        td.add_input_text("n_y", "20", {
+          id: this.ele_id + "n_y",
+          classes: "sim_controls_text dims_n_text",
+        });
       }
       if (dims >= 3) {
         const td = tr.add_ele("td");
-        td.add_label("n_z", "sim_controls_label").set_content("nz:");
-        td.add_input_text(
-          "n_z",
-          "20",
-          this.ele_id + "n_z",
-          "sim_controls_text dims_n_text",
+        td.add_label("n_z", { classes: "sim_controls_label" }).set_content(
+          "nz:",
         );
+        td.add_input_text("n_z", "20", {
+          id: this.ele_id + "n_z",
+          classes: "sim_controls_text dims_n_text",
+        });
       }
     }
 
@@ -161,13 +159,13 @@ export class SimulationControls {
         ["p0", "p_initial"],
       ]) {
         const td = tr.add_ele("td");
-        td.add_label(thing!, "sim_controls_label").set_content(label + ":");
-        td.add_input_text(
-          thing!,
-          "0.5",
-          this.ele_id + thing,
-          "sim_controls_text prob_text",
+        td.add_label(thing!, { classes: "sim_controls_label" }).set_content(
+          label + ":",
         );
+        td.add_input_text(thing!, "0.5", {
+          id: this.ele_id + thing,
+          classes: "sim_controls_text prob_text",
+        });
       }
     }
 
@@ -179,13 +177,13 @@ export class SimulationControls {
         ["Seed", "random_seed", "1"],
       ]) {
         const td = tr.add_ele("td");
-        td.add_label(name!, "sim_controls_label").set_content(label + ":");
-        td.add_input_text(
-          name!,
-          value!,
-          this.ele_id + name,
-          "sim_controls_text params_text",
+        td.add_label(name!, { classes: "sim_controls_label" }).set_content(
+          label + ":",
         );
+        td.add_input_text(name!, value!, {
+          id: this.ele_id + name,
+          classes: "sim_controls_text params_text",
+        });
       }
     }
 
@@ -197,16 +195,13 @@ export class SimulationControls {
         ["edge", "Edge cell"],
       ]) {
         const td = tr.add_ele("td");
-        td.add_input_radio(
-          ele_id + "_seed_kind",
-          name!,
-          true,
-          ele_id + "seed_" + name,
-          "sim_controls_radio " + name,
-        );
-        td.add_label(ele_id + "seed_" + name, "sim_controls_label").set_content(
-          value,
-        );
+        td.add_input_radio(ele_id + "_seed_kind", name!, true, {
+          id: ele_id + "seed_" + name,
+          classes: "sim_controls_radio " + name,
+        });
+        td.add_label(ele_id + "seed_" + name, {
+          classes: "sim_controls_label",
+        }).set_content(value);
       }
     }
 
@@ -218,16 +213,13 @@ export class SimulationControls {
         ["bedload", "Bedload"],
       ]) {
         const td = tr.add_ele("td");
-        td.add_input_radio(
-          ele_id + "_sim_kind",
-          name!,
-          true,
-          ele_id + "sk_" + name,
-          "sim_controls_radio " + name,
-        );
-        td.add_label(ele_id + "sk_" + name, "sim_controls_label").set_content(
-          value,
-        );
+        td.add_input_radio(ele_id + "_sim_kind", name!, true, {
+          id: ele_id + "sk_" + name,
+          classes: "sim_controls_radio " + name,
+        });
+        td.add_label(ele_id + "sk_" + name, {
+          classes: "sim_controls_label",
+        }).set_content(value);
       }
     }
 
@@ -240,8 +232,10 @@ export class SimulationControls {
         () => {
           (window as any).main.run_simulation(dims);
         },
-        ele_id + "run_simulation",
-        "controls run_simulation",
+        {
+          id: ele_id + "run_simulation",
+          classes: "controls run_simulation",
+        },
       );
 
       const td_save = tr.add_ele("td");
@@ -250,8 +244,10 @@ export class SimulationControls {
         () => {
           (window as any).main.save_simulation(dims);
         },
-        ele_id + "save_simulation",
-        "controls save_simulation",
+        {
+          id: ele_id + "save_simulation",
+          classes: "controls save_simulation",
+        },
       );
     }
   }

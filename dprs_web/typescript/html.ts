@@ -68,6 +68,18 @@ export function get_input_radio_checked(parent_id: string): null | string {
   }
 }
 
+interface IdClasses {
+  id?: string;
+  classes?: string;
+}
+
+interface Range {
+  min: number;
+  max: number;
+  value?: number;
+  step?: number;
+}
+
 export class HtmlElement {
   ele: HTMLElement;
   constructor(ele: HTMLElement) {
@@ -88,12 +100,12 @@ export class HtmlElement {
     }
   }
 
-  add_ele(ele_type: string, id: string = "", classes?: string) {
+  add_ele(ele_type: string, id: string = "", classes: string = "") {
     const ele = document.createElement(ele_type);
-    if (id != "") {
+    if (id) {
       ele.setAttribute("id", id);
     }
-    if (classes !== undefined) {
+    if (classes) {
       ele.className = classes;
     }
     this.ele.appendChild(ele);
@@ -107,36 +119,34 @@ export class HtmlElement {
     return this;
   }
 
+  static set_id_classes(doc_ele: Element, id_classes: IdClasses): void {
+    if (id_classes.id !== undefined) {
+      doc_ele.id = id_classes.id;
+    }
+    if (id_classes.classes !== undefined) {
+      doc_ele.className = id_classes.classes;
+    }
+  }
+
   add_input_button(
     value: string,
     callback: () => void,
-    id?: string,
-    classes?: string,
+    id_classes: IdClasses = {},
   ) {
     const input = document.createElement("input");
     input.setAttribute("type", "button");
     input.setAttribute("value", value);
     input.onclick = callback;
-    if (id) {
-      input.id = id;
-    }
-    if (classes) {
-      input.className = classes;
-    }
+    HtmlElement.set_id_classes(input, id_classes);
     this.ele.appendChild(input);
     return new HtmlElement(input);
   }
 
-  add_input_checkbox(name: string, id?: string, classes?: string) {
+  add_input_checkbox(name: string, id_classes: IdClasses = {}) {
     const input = document.createElement("input");
     input.setAttribute("type", "checkbox");
     input.setAttribute("name", name);
-    if (id) {
-      input.id = id;
-    }
-    if (classes) {
-      input.className = classes;
-    }
+    HtmlElement.set_id_classes(input, id_classes);
     this.ele.appendChild(input);
     return new HtmlElement(input);
   }
@@ -145,8 +155,7 @@ export class HtmlElement {
     name: string,
     value: string,
     required: boolean,
-    id?: string,
-    classes?: string,
+    id_classes: IdClasses = {},
   ) {
     const input = document.createElement("input");
     input.setAttribute("type", "radio");
@@ -155,70 +164,64 @@ export class HtmlElement {
     if (required) {
       input.setAttribute("required", "true");
     }
-    if (id) {
-      input.id = id;
-    }
-    if (classes) {
-      input.className = classes;
-    }
+    HtmlElement.set_id_classes(input, id_classes);
     this.ele.appendChild(input);
     return new HtmlElement(input);
   }
 
   add_input_range(
     name: string,
-    value: string,
-    min: string,
-    max: string,
-    callback: () => void,
-    id?: string,
-    classes?: string,
+    range: Range,
+    callback: (event: Event, value: number) => void,
+    id_classes: IdClasses = {},
   ) {
+    var value = range.min;
+    var step = 1;
+    if (range.value !== undefined) {
+      value = range.value;
+    }
+    if (range.step !== undefined) {
+      step = range.step;
+    }
     const input = document.createElement("input");
     input.setAttribute("type", "range");
     input.setAttribute("name", name);
-    input.setAttribute("value", value);
-    input.setAttribute("min", min);
-    input.setAttribute("max", max);
+    input.setAttribute("value", value.toString());
+    input.setAttribute("min", range.min.toString());
+    input.setAttribute("max", range.max.toString());
+    input.setAttribute("step", step.toString());
     // const x: HTMLInputElement = new HTMLInputElement();
     // x.on
-    input.oninput = callback;
-    if (id) {
-      input.id = id;
-    }
-    if (classes) {
-      input.className = classes;
-    }
+    input.oninput = (e) => {
+      var value;
+      if (step == 1) {
+        value = Number.parseFloat(input.value);
+      } else {
+        value = Number.parseFloat(input.value);
+      }
+      callback(e, value);
+    };
+    HtmlElement.set_id_classes(input, id_classes);
     this.ele.appendChild(input);
     return new HtmlElement(input);
   }
 
-  add_input_text(name: string, value: string, id?: string, classes?: string) {
+  add_input_text(name: string, value: string, id_classes: IdClasses = {}) {
     const input = document.createElement("input");
     input.setAttribute("type", "text");
     input.setAttribute("name", name);
     input.setAttribute("value", value);
-    if (id) {
-      input.id = id;
-    }
-    if (classes) {
-      input.className = classes;
-    }
+    HtmlElement.set_id_classes(input, id_classes);
     this.ele.appendChild(input);
     return new HtmlElement(input);
   }
 
-  add_label(for_input?: string, id?: string, classes?: string) {
+  add_label(for_input?: string, id_classes: IdClasses = {}) {
     const label = document.createElement("label");
     if (for_input) {
       label.setAttribute("for", for_input);
     }
-    if (id) {
-      label.id = id;
-    }
-    if (classes) {
-      label.className = classes;
-    }
+    HtmlElement.set_id_classes(label, id_classes);
     this.ele.appendChild(label);
     return new HtmlElement(label);
   }
