@@ -1,11 +1,11 @@
 import * as html from "./html.js";
 import * as log from "./log.js";
 import { JsSimulation } from "./js_simulation.js";
+import { SimulationControls } from "./simulation_controls.js";
+import { Animate } from "./animate.js";
 
 /**
  * A visualization 'div' for simulations
- *
- * At present this can only display 1D simulations
  *
  */
 
@@ -22,40 +22,47 @@ export class Visualize {
    */
   simulation: JsSimulation;
 
-  /**
+  /** The simulation controls in use for this visualization
    *
-   * Div element for the visualize
+   * This may be changed if a simulation of a different dimension is run
+   */
+  simulation_controls: null | SimulationControls = null;
+
+  /** Animation class to allow for animated visualization */
+  anim: Animate;
+
+  /** Div element for the visualize
    *
    */
   div: html.HtmlElement;
 
-  /**
-   *
-   * width of the required canvs
+  /** Width of the required canvs
    *
    */
-  width: number;
+  width: number = 0;
 
-  /**
-   *
-   * height of the required canvs
+  /** Height of the required canvs
    *
    */
-  height: number;
+  height: number = 0;
 
-  /**
-   *
-   * Zoom scale to use
+  /** Zoom scale to use
    *
    */
-  scale: number;
+  scale: number = 1;
 
-  /**
-   *
-   * Which 'time slice' to use for 2D
+  /** Which 'time slice' to use for 2D
    *
    */
   slice: number;
+
+  /** Which direction to animate 'time slice' when animating
+   *
+   */
+  slice_delta: number = 1;
+
+  /** Target frames per second of animation */
+  frames_per_second: number = 25;
 
   /**
    *
@@ -67,9 +74,7 @@ export class Visualize {
   constructor(logger: log.Log, simulation: JsSimulation, div_id: string) {
     this.log = new log.Logger(logger, "viz");
     this.simulation = simulation;
-    this.width = 0;
-    this.height = 0;
-    this.scale = 1;
+    this.anim = new Animate((time) => this.animation_tick(time));
     this.slice = 0;
 
     const div = document.getElementById(div_id);
@@ -217,5 +222,88 @@ export class Visualize {
     this.log.info("Completed canvas");
     */
     this.log.pop_reason();
+  }
+
+  /** Set redraw */
+  set_redraw(simulation_controls: SimulationControls): void {
+    this.simulation_controls = simulation_controls;
+  }
+
+  /** Redraw */
+  redraw(): void {
+    const dim = this.simulation.dim;
+    if (dim > 1) {
+      this.canvas_2d(this.simulation_controls);
+    } else {
+      this.canvas_1d(this.simulation_controls);
+    }
+  }
+
+  /** Stop any animation
+   *
+   */
+  stop_animation(): void {
+    this.anim.stop();
+  }
+
+  set_zoom(zoom: number): void {
+    this.scale = zoom;
+    this.redraw();
+  }
+
+  set_slice(slice: number): void {
+    this.stop_animation();
+    this.slice = slice;
+    this.redraw();
+  }
+
+  playback_simulation(fps: number): void {
+    if (fps == 0) {
+      this.anim.stop();
+      return;
+    }
+    this.slice_delta = 1;
+    if (fps < 0) {
+      this.slice_delta = -1;
+      fps = -fps;
+    }
+    this.frames_per_second = fps;
+    console.log("Set fps to", this.frames_per_second);
+    this.anim.restart(0, (time) => this.animation_start(time));
+  }
+
+  animation_start(time: number): void {
+    this.log.info("animation", "Start");
+
+    if (this.simulation.dim < 2) {
+      return;
+    }
+    this.anim.schedule();
+  }
+
+  animation_tick(time: number): void {
+    if (this.simulation.dim < 2) {
+      this.log.error("animation", "Should not reach here with dim < 2");
+      return;
+    }
+
+    if (this.slice >= 0 && this.slice < this.simulation.n_results()) {
+      html.set_input_value("slice", this.slice);
+      this.redraw();
+    }
+
+    var next_slice = this.slice + this.slice_delta;
+    if (next_slice > 0 && next_slice < this.simulation.n_results()) {
+      this.slice = next_slice;
+      this.anim.schedule_at(time + 1000 / this.frames_per_second);
+    } else {
+      const total_time = this.anim.duration();
+      const n_frames = this.simulation.n_results();
+      const fps = (n_frames / total_time) * 1000;
+      this.log.info(
+        "animation",
+        `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`,
+      );
+    }
   }
 }
