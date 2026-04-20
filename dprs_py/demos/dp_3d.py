@@ -14,6 +14,7 @@ class Parameters:
     p_1: float = 0.05
     p_2: float = 0
     p_3: float = 0
+    bias: float = 0
     n_iterations: int = 1000
     sample_period: int  = 0
     initial_condition = sim.InitialCondition.Randomized
