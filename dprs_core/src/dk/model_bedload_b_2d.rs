@@ -39,20 +39,23 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
     // IF at iteration i:
     //  (
     //         (1)    the central cell is moving AND Bern(p_1)
-    //    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(1/2)
-    //    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(1/2) AND Bern(p_diag)
-    //    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(1/2) AND Bern(p_diag)
+    //    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
+    //    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+    //    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
     //  )
     //  OR
     //  (
     //    the central cell is moving AND Bern(p_1)
     //    and
     //       (
-    //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(1/2)
-    //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(1/2) AND Bern(p_diag)
-    //         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(1/2) AND Bern(p_diag)
+    //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
+    //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
+    //         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
     //       )
     //  )
+    //
+    // Currently, p_nbr=1/2 and p_diag=1/2.
+    //
     fn update_state<R: Rng>(
         &self,
         _iteration: usize,
@@ -71,16 +74,19 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // In the 3x3 window, check if the central cell is occupied => moving
         let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
 
-        // Check if the W (upstream x=-1, y=0) nbr cell is occupied, and randomly select it if so
+        // Check if the W (upstream x=-1, y=0) nbr cell is occupied,
+        //    and randomly select it with p_nbr=1/2 if so
         let entrain_by_upstream_ycenter: bool =
             (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YCENTER & random_bits) != 0;
-        // Check if the NW (upstream x=-1, y=+1) nbr cell is occupied, and randomly select it if so
-        //   - but then randomly deselect to debias this diagonal direction with p_diag=1/2
+        // Check if the NW (upstream x=-1, y=+1) nbr cell is occupied,
+        //    and randomly select it with p_nbr=1/2 if so
+        //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yplus: bool =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
                 & random_bit1;
-        // Check if the SW (upstream x=-1, y=-1) nbr cell is occupied, and randomly select it if so
-        //   - but then randomly deselect to debias this diagonal direction with p_diag=1/2
+        // Check if the SW (upstream x=-1, y=-1) nbr cell is occupied,
+        //    and randomly select it with p_nbr=1/2 if so
+        //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yminus: bool =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YMINUS & random_bits) != 0)
                 & random_bit2;
