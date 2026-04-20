@@ -44,24 +44,27 @@ export class VisualizeControls {
         const tr_playback = playback_table.add_ele("tr", "zoom_playback");
         const td_playback = tr_playback.add_ele("td", "playback_input");
         td_playback.add_label().set_content("Playback:");
-        td_playback.add_input_button("60fps", () => {
-            this.parent.playback_simulation(60);
-        }, { classes: "controls playback_60fps" });
-        td_playback.add_input_button("30fps", () => {
-            this.parent.playback_simulation(30);
-        }, { classes: "controls playback_30fps" });
-        td_playback.add_input_button("10fps", () => {
-            this.parent.playback_simulation(10);
-        }, { classes: "controls playback_10fps" });
-        td_playback.add_input_button("5fps", () => {
-            this.parent.playback_simulation(5);
-        }, { classes: "controls playback_5fps" });
-        td_playback.add_input_button("Pause", () => {
-            this.parent.playback_simulation(0);
-        }, { classes: "controls playback_pause" });
-        td_playback.add_input_button("rev 10fps", () => {
+        td_playback.add_input_button("⏮", () => {
+            this.parent.playback_simulation(-30);
+        }, { classes: "controls playback_m10fps" });
+        td_playback.add_input_button("⏪", () => {
             this.parent.playback_simulation(-10);
         }, { classes: "controls playback_m10fps" });
+        td_playback.add_input_button("⏴", () => {
+            this.parent.playback_simulation(-5);
+        }, { classes: "controls playback_m10fps" });
+        td_playback.add_input_button("⏸", () => {
+            this.parent.playback_simulation(0);
+        }, { classes: "controls playback_pause" });
+        td_playback.add_input_button("⏵", () => {
+            this.parent.playback_simulation(5);
+        }, { classes: "controls playback_5fps" });
+        td_playback.add_input_button("⏩", () => {
+            this.parent.playback_simulation(10);
+        }, { classes: "controls playback_10fps" });
+        td_playback.add_input_button("⏭", () => {
+            this.parent.playback_simulation(30);
+        }, { classes: "controls playback_30fps" });
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {

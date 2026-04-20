@@ -12,7 +12,7 @@ class Main {
         this.log.info("Starting dk");
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
-        this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
+        this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
         const params_1d = new JsParameters();
         // For staggered p_c = 0.70548515
         //
@@ -45,23 +45,11 @@ class Main {
         const sim_parameters = this.simulation_controls_1d.parameters;
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
-        this.redraw();
+        this.visualize_controls.populate_values(this.simulation);
+        this.visualize.set_redraw(this.simulation_controls_1d);
+        this.visualize.redraw();
         this.log.pop_reason();
     }
-    redraw() {
-        this.visualize_controls.populate_values(this.simulation);
-        const dim = this.simulation.dim;
-        this.visualize.canvas_1d(this.simulation_controls_1d);
-    }
-    set_zoom(zoom) {
-        this.visualize.scale = zoom;
-        this.redraw();
-    }
-    set_slice(slice) {
-        this.visualize.slice = slice;
-        this.redraw();
-    }
-    playback_simulation(fps) { }
 }
 window.main = null;
 function complete_init() {

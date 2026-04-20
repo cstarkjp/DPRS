@@ -1,6 +1,5 @@
 import init from "../pkg/dprs_wasm.js";
 import { Log, Logger } from "./log.js";
-import * as html from "./html.js";
 import { LocalStorage } from "./storage.js";
 import { Visualize } from "./visualize.js";
 import { VisualizeControls } from "./visualize_controls.js";
@@ -9,20 +8,15 @@ import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
-import { Animate } from "./animate.js";
 class Main {
     constructor(logger, params) {
-        this.tick = 0;
-        this.tick_delta = 1;
-        this.frames_per_second = 25;
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");
         this.storage = new LocalStorage(window.localStorage, "dk/");
-        this.anim = new Animate((time) => this.animation_tick(time));
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
-        this.visualize_controls = new VisualizeControls(logger, this, this.visualize, "VisualizationControls");
+        this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
         this.saved_sims = new SavedSimulations(logger, this, this.storage, "SavedSimulations");
         const params_1d = new JsParameters();
         // For staggered p_c = 0.70548515
@@ -103,6 +97,7 @@ class Main {
     run_simulation(dim) {
         this.log.push_reason("sim");
         this.log.info(`Running simulation of dimension ${dim}`);
+        this.visualize.stop_animation();
         this.simulation_controls_1d.populate_parameters();
         this.simulation_controls_2d.populate_parameters();
         this.simulation_controls_1d.parameters.dims.n_y = 1;
@@ -115,69 +110,13 @@ class Main {
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`);
         this.visualize_controls.populate_values(this.simulation);
-        this.redraw();
-    }
-    set_zoom(zoom) {
-        this.visualize.scale = zoom;
-        this.redraw();
-    }
-    set_slice(slice) {
-        this.anim.stop();
-        this.visualize.slice = slice;
-        this.redraw();
-    }
-    playback_simulation(fps) {
-        if (fps == 0) {
-            this.anim.stop();
-            return;
-        }
-        this.tick_delta = 1;
-        if (fps < 0) {
-            this.tick_delta = -1;
-            fps = -fps;
-        }
-        this.frames_per_second = fps;
-        console.log("Set fps to", this.frames_per_second);
-        this.tick = this.visualize.slice;
-        this.anim.restart(0, (time) => this.animation_start(time));
-    }
-    animation_start(time) {
-        this.log.info("animation", "Start");
-        if (this.simulation.dim < 2) {
-            return;
-        }
-        this.anim.schedule();
-    }
-    animation_tick(time) {
-        if (this.simulation.dim < 2) {
-            this.log.error("animation", "Should not reach here with dim < 2");
-            return;
-        }
-        if (this.tick >= 0 && this.tick < this.simulation.n_results()) {
-            html.set_input_value("slice", this.tick);
-            this.visualize.slice = this.tick;
-            this.redraw();
-        }
-        var next_tick = this.tick + this.tick_delta;
-        if (next_tick > 0 && next_tick < this.simulation.n_results()) {
-            this.tick = next_tick;
-            this.anim.schedule_at(time + 1000 / this.frames_per_second);
+        if (this.simulation.dim > 1) {
+            this.visualize.set_redraw(this.simulation_controls_2d);
         }
         else {
-            const total_time = this.anim.duration();
-            const n_frames = this.simulation.n_results();
-            const fps = (n_frames / total_time) * 1000;
-            this.log.info("animation", `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`);
+            this.visualize.set_redraw(this.simulation_controls_1d);
         }
-    }
-    redraw() {
-        const dim = this.simulation.dim;
-        if (dim > 1) {
-            this.visualize.canvas_2d(this.simulation_controls_2d);
-        }
-        else {
-            this.visualize.canvas_1d(this.simulation_controls_1d);
-        }
+        this.visualize.redraw();
     }
     tab_selected(id) {
         console.log("Selected tab", id);
