@@ -24,20 +24,24 @@ pub struct ModelBedloadB2D {
 /// The central cell in the next iteration i+1 is occupied <=> its grain is moving
 /// IF at iteration i:
 ///  (
-///         (1)    the central cell is moving AND Bern(p_1)
-///    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
-///    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-///    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///        Bern(p_1) 
+///    AND (
+///         either ((1) the central cell is moving 
+///             or (2) the  W-upstream nbr is moving AND Bern(p_nbr)
+///             or (3) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///             or (4) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///        )
 ///  )
 ///  OR
 ///  (
-///        the central cell is moving AND Bern(p_1)
-///    AND
-///       (
-///              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
-///         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-///         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-///       )
+///        the central cell is moving 
+///    AND 
+///        Bern(p_1)
+///    AND (
+///         either (5) the  W-upstream nbr is moving AND Bern(p_nbr)
+///             or (6) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///             or (7) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///        )
 ///  )
 ///
 /// Currently, p_nbr=1/2 and p_diag=1/2. We could use p_3 and p_bias to supply these numbers.
