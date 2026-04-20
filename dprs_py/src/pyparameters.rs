@@ -47,14 +47,13 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
-        if self.growth_model == GrowthModel::BedloadA {
-            writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
-        }
+        writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
+        writeln!(fmt, "Bias:          {}", self.bias)?;
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
+        writeln!(fmt, "Random seed:   {}", self.random_seed)?;
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
         writeln!(fmt, "Initial prob.: {}", self.p_initial)?;
-        writeln!(fmt, "Random seed:   {}", self.random_seed)?;
         writeln!(fmt, "Topology x:    {:?}", self.topology_x)?;
         writeln!(fmt, "Topology y:    {:?}", self.topology_y)?;
         writeln!(fmt, "Topology z:    {:?}", self.topology_z)?;
