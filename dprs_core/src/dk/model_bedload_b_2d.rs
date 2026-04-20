@@ -20,7 +20,7 @@ pub struct ModelBedloadB2D {
 ///     1 0 0
 ///     1 1 0
 ///     1 0 0
-/// "Flow" is to the right (E), "upstream" is to the left (W), and +x is to the right.
+/// "Flow" is towards the right (E), "upstream" is to the left (W), and +x is to the right.
 ///
 /// The central cell in the next iteration i+1 is occupied <=> its grain is moving
 /// IF at iteration i:
@@ -28,7 +28,7 @@ pub struct ModelBedloadB2D {
 ///  (
 ///        Bern(p_1) 
 ///    AND (
-///         either (1) the central cell is moving 
+///         either (1) the central grain is moving 
 ///             or (2) the  W-upstream nbr is moving AND Bern(p_nbr)
 ///             or (3) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
 ///             or (4) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
@@ -36,9 +36,7 @@ pub struct ModelBedloadB2D {
 ///  )
 ///  OR
 ///  (
-///        the central cell is moving 
-///    AND 
-///        Bern(p_2)
+///        Bern(p_2) AND the central grain is moving
 ///    AND (
 ///         either (5) the  W-upstream nbr is moving AND Bern(p_nbr)
 ///             or (6) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
