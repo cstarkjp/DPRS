@@ -3,8 +3,6 @@ use crate::{Cell2D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
-/// See ModelBedload1D for explanation of model physics.
-///
 /// ModelBedloadB2D implements the GrowthModel<Cell2D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct ModelBedloadB2D {
@@ -14,7 +12,36 @@ pub struct ModelBedloadB2D {
     // p_bias: f64,
 }
 
-// Implement GrowthModel<Cell2D> trait for ModelBedloadB2D.
+/// Growth rules for ModelBedloadB2D.
+///
+/// Here, an occupied cell <=> a moving grain at that cell location.
+///
+/// Consider the following stencil, which selects all the upstream nbrs and the central cell:
+///     1 0 0
+///     1 1 0
+///     1 0 0
+///
+/// The central cell in the next iteration i+1 is occupied <=> its grain is moving
+/// IF at iteration i:
+///  (
+///         (1)    the central cell is moving AND Bern(p_1)
+///    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
+///    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///  )
+///  OR
+///  (
+///        the central cell is moving AND Bern(p_1)
+///    AND
+///       (
+///              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
+///         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
+///         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
+///       )
+///  )
+///
+/// Currently, p_nbr=1/2 and p_diag=1/2. We could use p_3 and p_bias to supply these numbers.
+///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
@@ -26,36 +53,6 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         })
     }
 
-    // Growth rules for ModelBedloadB2D.
-    //
-    // Here, an occupied cell <=> a moving grain at that cell location.
-    //
-    // Consider the following stencil, which selects all the upstream nbrs and the central cell:
-    //     1 0 0
-    //     1 1 0
-    //     1 0 0
-    //
-    // The central cell in the next iteration i+1 is occupied <=> its grain is moving
-    // IF at iteration i:
-    //  (
-    //         (1)    the central cell is moving AND Bern(p_1)
-    //    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
-    //    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-    //    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-    //  )
-    //  OR
-    //  (
-    //        the central cell is moving AND Bern(p_1)
-    //    AND
-    //       (
-    //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
-    //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-    //         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-    //       )
-    //  )
-    //
-    // Currently, p_nbr=1/2 and p_diag=1/2.
-    //
     fn update_state<R: Rng>(
         &self,
         _iteration: usize,
