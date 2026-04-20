@@ -10,8 +10,8 @@ use rand::{Rng, RngExt};
 pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
-    p_3: f64,
-    bias: f64,
+    // p_3: f64,
+    // bias: f64,
 }
 
 // Implement GrowthModel<Cell2D> trait for ModelBedloadB2D.
@@ -21,12 +21,38 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
-            p_3: parameters.p_3,
-            bias: parameters.bias,
+            // p_3: parameters.p_3,
+            // bias: parameters.bias,
         })
     }
 
-    // Growth model rules.
+    // Growth rules for ModelBedloadB2D.
+    //
+    // Here, an occupied cell <=> a moving grain at that cell location.
+    //
+    // Consider the following window, which selects all the upstream nbrs and the central cell:
+    //     1 0 0
+    //     1 1 0
+    //     1 0 0
+    //
+    // The central cell in the next iteration i+1 is occupied <=> its grain is moving
+    // IF at iteration i:
+    //  (
+    //         (1)    the central cell is moving AND Bern(p_1)
+    //    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(1/2)
+    //    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(1/2) AND Bern(p_diag)
+    //    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(1/2) AND Bern(p_diag)
+    //  )
+    //  OR
+    //  (
+    //    the central cell is moving AND Bern(p_1)
+    //    and
+    //       (
+    //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(1/2)
+    //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(1/2) AND Bern(p_diag)
+    //         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(1/2) AND Bern(p_diag)
+    //       )
+    //  )
     fn update_state<R: Rng>(
         &self,
         _iteration: usize,
@@ -46,38 +72,47 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
 
         // Check if the W (upstream x=-1, y=0) nbr cell is occupied, and randomly select it if so
-        let entrain_by_upstream_ycenter =
+        let entrain_by_upstream_ycenter: bool =
             (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YCENTER & random_bits) != 0;
         // Check if the NW (upstream x=-1, y=+1) nbr cell is occupied, and randomly select it if so
-        //   - but then randomly deselect to debias this diagonal direction
-        let entrain_by_upstream_yplus =
+        //   - but then randomly deselect to debias this diagonal direction with p_diag=1/2
+        let entrain_by_upstream_yplus: bool =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
                 & random_bit1;
         // Check if the SW (upstream x=-1, y=-1) nbr cell is occupied, and randomly select it if so
-        //   - but then randomly deselect to debias this diagonal direction
-        let entrain_by_upstream_yminus =
+        //   - but then randomly deselect to debias this diagonal direction with p_diag=1/2
+        let entrain_by_upstream_yminus: bool =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YMINUS & random_bits) != 0)
                 & random_bit2;
         // If any of the above three upstream nbr cells are selected,
         //   consider collective entrainment to *perhaps* take place at the central cell
         //   i.e., perhaps get the central moving because of an upstream interaction
-        let do_collectively_entrain =
+        let do_entrain =
             entrain_by_upstream_yplus | entrain_by_upstream_ycenter | entrain_by_upstream_yminus;
 
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /or/ it's forced into motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p1, succeeds
-        let keep_moving_or_get_collectively_entrained: bool =
-            (is_moving | do_collectively_entrain) & coin_toss_p1;
+        let keep_moving_or_get_entrained = (is_moving | do_entrain) & coin_toss_p1;
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p2, succeeds
-        let get_multicollectively_entrained: bool =
-            (is_moving & do_collectively_entrain) & coin_toss_p2;
+        let get_multientrained = (is_moving & do_entrain) & coin_toss_p2;
+
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
-        let do_survive =
-            keep_moving_or_get_collectively_entrained | get_multicollectively_entrained;
+        let do_survive = keep_moving_or_get_entrained | get_multientrained;
         do_survive.into()
     }
 }
+
+//  let coin_toss_p3 = rng.random_bool(self.p_3);
+// // In the next time step, consider central cell to be moving
+// //   - if it's already moving /or/ it's forced into motion by an upstream interaction
+// //   - AND if a biased coin toss, with probability p1, succeeds
+// let keep_moving_or_get_entrained: bool =
+//     (is_moving & coin_toss_p1) | (do_entrain & coin_toss_p2);
+// // In the next time step, consider central cell to be moving
+// //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
+// //   - AND if a biased coin toss, with probability p2, succeeds
+// let get_multientrained: bool = (is_moving & do_entrain) & coin_toss_p3;
