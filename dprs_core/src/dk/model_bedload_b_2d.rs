@@ -26,9 +26,9 @@ pub struct ModelBedloadB2D {
 /// IF at iteration i:
 ///  EITHER
 ///  (
-///        Bern(p_1) 
+///        Bern(p_1)
 ///    AND (
-///         either (1) the central grain is moving 
+///         either (1) the central grain is moving
 ///             or (2) the  W-upstream nbr is moving AND Bern(p_nbr)
 ///             or (3) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
 ///             or (4) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
@@ -44,7 +44,7 @@ pub struct ModelBedloadB2D {
 ///        )
 ///  )
 ///
-/// Currently, p_nbr=1/2 and p_diag=1/2. 
+/// Currently, p_nbr=1/2 and p_diag=1/2.
 /// We could use p_3 and p_bias to supply these numbers.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
@@ -95,17 +95,17 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // If any of the above three upstream nbr cells are selected,
         //   consider collective entrainment to *perhaps* take place at the central cell
         //   i.e., perhaps get the central moving because of an upstream interaction
-        let do_entrain =
+        let has_active_upstream_nbrs =
             entrain_by_upstream_yplus | entrain_by_upstream_ycenter | entrain_by_upstream_yminus;
 
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /or/ it's forced into motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p1, succeeds
-        let keep_moving_or_get_entrained = (is_moving | do_entrain) & coin_toss_p1;
+        let keep_moving_or_get_entrained = (is_moving | has_active_upstream_nbrs) & coin_toss_p1;
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p2, succeeds
-        let get_multientrained = (is_moving & do_entrain) & coin_toss_p2;
+        let get_multientrained = (is_moving & has_active_upstream_nbrs) & coin_toss_p2;
 
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
