@@ -23,6 +23,7 @@ pub struct ModelBedloadB2D {
 ///
 /// The central cell in the next iteration i+1 is occupied <=> its grain is moving
 /// IF at iteration i:
+///  EITHER
 ///  (
 ///        Bern(p_1) 
 ///    AND (
