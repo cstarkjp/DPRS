@@ -32,9 +32,39 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         rng: &mut R,
         nbrhood: &CellNbrhood2D,
     ) -> DualState {
-        let n_occupied = nbrhood.bitmask().count_ones();
-        let do_survive = (n_occupied > 0) & rng.random_bool(self.p_1);
+        let random_bits = rng.random::<u16>();
+        let random_bit1 = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
+        let random_bit2 = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
+        let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
+        let entrain_by_upstream_yplus =
+            ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
+                & random_bit1;
+        let entrain_by_upstream_ycenter =
+            (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YCENTER & random_bits) != 0;
+        let entrain_by_upstream_yminus =
+            ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YMINUS & random_bits) != 0)
+                & random_bit2;
+        let do_collectively_entrain =
+            entrain_by_upstream_yplus | entrain_by_upstream_ycenter | entrain_by_upstream_yminus;
+        let keep_moving_or_get_collectively_entrained =
+            (is_moving | do_collectively_entrain) & rng.random_bool(self.p_1);
+        let get_multicollectively_entrained =
+            (is_moving & do_collectively_entrain) & rng.random_bool(self.p_2);
+
+        let do_survive =
+            keep_moving_or_get_collectively_entrained | get_multicollectively_entrained;
         do_survive.into()
+    }
+
+    // fn update_state<R: Rng>(
+    //     &self,
+    //     _iteration: usize,
+    //     rng: &mut R,
+    //     nbrhood: &CellNbrhood2D,
+    // ) -> DualState {
+    //     let n_occupied = nbrhood.bitmask().count_ones();
+    //     let do_survive = (n_occupied > 0) & rng.random_bool(self.p_1);
+    //     do_survive.into()
 
     // fn update_state<R: Rng>(
     //     &self,
@@ -47,7 +77,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
     //     let do_survive = ((n_occupied >= 1) & rng.random_bool(self.p_1))
     //         | (is_here_occupied & (n_occupied >= 2) & rng.random_bool(self.p_2));
     //     do_survive.into()
-    }
+    // }
 
     // fn update_state<R: Rng>(
     //     &self,

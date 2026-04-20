@@ -28,6 +28,13 @@ pub struct CellNbrhood2D {
 }
 
 impl CellNbrhood2D {
+    /// Spare random Bernoulli variable bit#1
+    pub const BITMASK_SPARE_BIT1: u16 = 0b_001_000_000_000;
+    /// Spare random Bernoulli variable bit#2
+    pub const BITMASK_SPARE_BIT2: u16 = 0b_010_000_000_000;
+    /// Spare random Bernoulli variable bit#3
+    pub const BITMASK_SPARE_BIT3: u16 = 0b_100_000_000_000;
+
     /// Bitmask for the center cell
     pub const BITMASK_CENTER: u16 = 0b_000_010_000;
 
@@ -36,6 +43,15 @@ impl CellNbrhood2D {
 
     /// Bitmask for the three neighbors that have have a 'dx' of -1 relative to the center coordinate
     pub const BITMASK_EDGE_XMINUS: u16 = 0b_000_000_111;
+
+    /// Bitmask for the three neighbors that have have a 'dx' of -1 relative to the center coordinate
+    pub const BITMASK_CORNER_XMINUS_YPLUS: u16 = 0b_000_000_100;
+
+    /// Bitmask for the three neighbors that have have a 'dx' of -1 relative to the center coordinate
+    pub const BITMASK_CORNER_XMINUS_YCENTER: u16 = 0b_000_000_010;
+
+    /// Bitmask for the three neighbors that have have a 'dx' of -1 relative to the center coordinate
+    pub const BITMASK_CORNER_XMINUS_YMINUS: u16 = 0b_000_000_001;
 
     /// Bitmask for the two neighbors that have have a 'dx' of -1 diagonally relative to the center coordinate
     pub const BITMASK_EDGE_XMINUS_CORNERS: u16 = 0b_000_000_101;
