@@ -11,7 +11,7 @@ pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
     // p_3: f64,
-    // bias: f64,
+    // p_bias: f64,
 }
 
 // Implement GrowthModel<Cell2D> trait for ModelBedloadB2D.
@@ -22,7 +22,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
             // p_3: parameters.p_3,
-            // bias: parameters.bias,
+            // p_bias: parameters.p_bias,
         })
     }
 

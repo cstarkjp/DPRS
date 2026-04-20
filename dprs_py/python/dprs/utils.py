@@ -32,7 +32,7 @@ __all__ = [
 #     p_1: float
 #     p_2: float
 #     p_3: float
-#     bias: float
+#     p_bias: float
 #     n_iterations: int
 #     sample_period: int
 #     random_seed: int
