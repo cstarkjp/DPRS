@@ -21,33 +21,35 @@ __all__ = [
     "make_name",
 ]
 
-@dataclass
-class Parameters(): 
-    """Dummy declaration: shadows definition in Rust."""
-    growth_model: sim.GrowthModel.SimplifiedDomanyKinzel
-    dim: sim.Dimension.D1
-    n_x: int
-    n_y: int
-    n_z: int
-    p_1: float
-    p_2: float
-    n_iterations: int
-    sample_period: int
-    initial_condition: sim.InitialCondition.Randomized
-    p_initial: float
-    random_seed: int
-    topology_x: sim.Topology
-    topology_y: sim.Topology
-    topology_z: sim.Topology
-    bcs_x: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    bcs_y: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    bcs_z: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
-    bc_values_x: tuple[bool, bool]
-    bc_values_y: tuple[bool, bool]
-    bc_values_z: tuple[bool, bool]
-    do_edge_buffering: bool
-    processing: sim.Processing
-    n_threads: int
+# @dataclass
+# class Parameters(): 
+#     """Dummy declaration: shadows definition in Rust."""
+#     growth_model: sim.GrowthModel.SimplifiedDomanyKinzel
+#     dim: sim.Dimension.D1
+#     n_x: int
+#     n_y: int
+#     n_z: int
+#     p_1: float
+#     p_2: float
+#     p_3: float
+#     bias: float
+#     n_iterations: int
+#     sample_period: int
+#     random_seed: int
+#     initial_condition: sim.InitialCondition.Randomized
+#     p_initial: float
+#     topology_x: sim.Topology
+#     topology_y: sim.Topology
+#     topology_z: sim.Topology
+#     bcs_x: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+#     bcs_y: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+#     bcs_z: tuple[sim.BoundaryCondition, sim.BoundaryCondition]
+#     bc_values_x: tuple[bool, bool]
+#     bc_values_y: tuple[bool, bool]
+#     bc_values_z: tuple[bool, bool]
+#     do_edge_buffering: bool
+#     processing: sim.Processing
+#     n_threads: int
 
 class DUAL(Enum):
     """Abstract DP cell state."""
