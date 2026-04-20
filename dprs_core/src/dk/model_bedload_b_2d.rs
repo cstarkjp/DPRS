@@ -37,7 +37,7 @@ pub struct ModelBedloadB2D {
 ///  (
 ///        the central cell is moving 
 ///    AND 
-///        Bern(p_1)
+///        Bern(p_2)
 ///    AND (
 ///         either (5) the  W-upstream nbr is moving AND Bern(p_nbr)
 ///             or (6) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
