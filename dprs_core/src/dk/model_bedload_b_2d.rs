@@ -30,7 +30,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
     //
     // Here, an occupied cell <=> a moving grain at that cell location.
     //
-    // Consider the following window, which selects all the upstream nbrs and the central cell:
+    // Consider the following stencil, which selects all the upstream nbrs and the central cell:
     //     1 0 0
     //     1 1 0
     //     1 0 0
@@ -111,14 +111,3 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         do_survive.into()
     }
 }
-
-//  let coin_toss_p3 = rng.random_bool(self.p_3);
-// // In the next time step, consider central cell to be moving
-// //   - if it's already moving /or/ it's forced into motion by an upstream interaction
-// //   - AND if a biased coin toss, with probability p1, succeeds
-// let keep_moving_or_get_entrained: bool =
-//     (is_moving & coin_toss_p1) | (do_entrain & coin_toss_p2);
-// // In the next time step, consider central cell to be moving
-// //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
-// //   - AND if a biased coin toss, with probability p2, succeeds
-// let get_multientrained: bool = (is_moving & do_entrain) & coin_toss_p3;
