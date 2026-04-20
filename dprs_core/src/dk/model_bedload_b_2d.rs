@@ -3,18 +3,45 @@ use crate::{Cell2D, GrowthModel};
 use crate::{DualState, Parameters};
 use rand::{Rng, RngExt};
 
-/// See ModelBedload1D for explanation of model physics.
-///
 /// ModelBedloadB2D implements the GrowthModel<Cell2D> trait, plus these.
 #[derive(Clone, Copy, Debug)]
 pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
     // p_3: f64,
-    // bias: f64,
+    // p_bias: f64,
 }
 
-// Implement GrowthModel<Cell2D> trait for ModelBedloadB2D.
+/// Growth rules for ModelBedloadB2D.
+///
+/// Here, an occupied cell <=> a moving grain at that cell location.
+///
+/// Consider the following stencil, which selects all the upstream nbrs and the central cell:
+///     1 0 0
+///     1 1 0
+///     1 0 0
+///
+/// The central cell in the next iteration i+1 is occupied <=> its grain is moving
+/// IF at iteration i:
+///  (
+///         (1)    the central cell is moving AND Bern(p_1)
+///    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
+///    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///  )
+///  OR
+///  (
+///        the central cell is moving AND Bern(p_1)
+///    AND
+///       (
+///              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
+///         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
+///         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
+///       )
+///  )
+///
+/// Currently, p_nbr=1/2 and p_diag=1/2. We could use p_3 and p_bias to supply these numbers.
+///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
         // Growth model probabilities
@@ -22,40 +49,10 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
             // p_3: parameters.p_3,
-            // bias: parameters.bias,
+            // p_bias: parameters.p_bias,
         })
     }
 
-    // Growth rules for ModelBedloadB2D.
-    //
-    // Here, an occupied cell <=> a moving grain at that cell location.
-    //
-    // Consider the following window, which selects all the upstream nbrs and the central cell:
-    //     1 0 0
-    //     1 1 0
-    //     1 0 0
-    //
-    // The central cell in the next iteration i+1 is occupied <=> its grain is moving
-    // IF at iteration i:
-    //  (
-    //         (1)    the central cell is moving AND Bern(p_1)
-    //    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
-    //    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-    //    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-    //  )
-    //  OR
-    //  (
-    //    the central cell is moving AND Bern(p_1)
-    //    and
-    //       (
-    //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
-    //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-    //         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-    //       )
-    //  )
-    //
-    // Currently, p_nbr=1/2 and p_diag=1/2.
-    //
     fn update_state<R: Rng>(
         &self,
         _iteration: usize,
@@ -111,14 +108,3 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         do_survive.into()
     }
 }
-
-//  let coin_toss_p3 = rng.random_bool(self.p_3);
-// // In the next time step, consider central cell to be moving
-// //   - if it's already moving /or/ it's forced into motion by an upstream interaction
-// //   - AND if a biased coin toss, with probability p1, succeeds
-// let keep_moving_or_get_entrained: bool =
-//     (is_moving & coin_toss_p1) | (do_entrain & coin_toss_p2);
-// // In the next time step, consider central cell to be moving
-// //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
-// //   - AND if a biased coin toss, with probability p2, succeeds
-// let get_multientrained: bool = (is_moving & do_entrain) & coin_toss_p3;

@@ -22,7 +22,7 @@ pub struct Parameters {
     pub p_3: f64,
 
     /// "Downstream" bias factor used in some ModelBedload*
-    pub bias: f64,
+    pub p_bias: f64,
 
     /// The number of iterations to simulate for
     pub n_iterations: usize,

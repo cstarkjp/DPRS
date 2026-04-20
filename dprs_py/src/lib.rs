@@ -113,6 +113,11 @@ mod sim {
 
         Ok((n_lattices, bool_lattices, tracking, t_run_time))
     }
+
+    #[pyfunction]
+    fn print(py_parameters: PyParameters) {
+        println!("{}", py_parameters);
+    }
 }
 
 // Exports

@@ -33,7 +33,7 @@ pub struct ModelBedloadB1D {
     p_1: f64,
     p_2: f64,
     p_3: f64,
-    bias: f64,
+    p_bias: f64,
 }
 
 // Implement GrowthModel<Cell1D> trait for ModelBedloadB1D.
@@ -44,7 +44,7 @@ impl GrowthModel<Cell1D> for ModelBedloadB1D {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
             p_3: parameters.p_3,
-            bias: parameters.bias,
+            p_bias: parameters.p_bias,
         })
     }
 
@@ -58,11 +58,10 @@ impl GrowthModel<Cell1D> for ModelBedloadB1D {
         let is_here_occupied = nbrhood[1];
         let is_downstream_occupied = nbrhood[2];
         // let do_survive = ((is_here_occupied | is_upstream_occupied | is_downstream_occupied)
-        let do_survive = ((is_here_occupied | is_upstream_occupied)
-            & rng.random_bool(self.p_1))
+        let do_survive = ((is_here_occupied | is_upstream_occupied) & rng.random_bool(self.p_1))
             | ((is_here_occupied & is_upstream_occupied) & rng.random_bool(self.p_2))
             | ((is_here_occupied & is_downstream_occupied)
-                & rng.random_bool(self.p_2 * (1.0 - self.bias)))
+                & rng.random_bool(self.p_2 * (1.0 - self.p_bias)))
             | rng.random_bool(self.p_3);
         do_survive.into()
     }

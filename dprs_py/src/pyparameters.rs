@@ -20,7 +20,7 @@ pub struct PyParameters {
     pub p_1: f64,
     pub p_2: f64,
     pub p_3: f64,
-    pub bias: f64,
+    pub p_bias: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -47,14 +47,13 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
-        if self.growth_model == GrowthModel::BedloadA {
-            writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
-        }
+        writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
+        writeln!(fmt, "Prob. p_bias:  {}", self.p_bias)?;
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
+        writeln!(fmt, "Random seed:   {}", self.random_seed)?;
         writeln!(fmt, "Initial cond.: {:?}", self.initial_condition)?;
         writeln!(fmt, "Initial prob.: {}", self.p_initial)?;
-        writeln!(fmt, "Random seed:   {}", self.random_seed)?;
         writeln!(fmt, "Topology x:    {:?}", self.topology_x)?;
         writeln!(fmt, "Topology y:    {:?}", self.topology_y)?;
         writeln!(fmt, "Topology z:    {:?}", self.topology_z)?;
@@ -70,8 +69,6 @@ impl std::fmt::Display for PyParameters {
         Ok(())
     }
 }
-
-// TODO: reimplement print function for PyParameters - need in nbs
 
 impl PyParameters {
     /// Copy Python-facing parameters.
@@ -110,17 +107,22 @@ impl PyParameters {
                 py_p.p_2
             )));
         }
-        // TODO: add trap for p_3
+        if py_p.p_3 < 0. || py_p.p_3 > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_3={} must be [0,1]",
+                py_p.p_3
+            )));
+        }
+        if py_p.p_bias < 0. || py_p.p_bias > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_bias={} must be [0,1]",
+                py_p.p_bias
+            )));
+        }
         if py_p.p_initial < 0. || py_p.p_initial > 1. {
             return Err(DprsError::BadParameter(format!(
                 "Probability p_initial={} must be [0,1]",
                 py_p.p_initial
-            )));
-        }
-        if py_p.bias < 0. || py_p.bias > 1. {
-            return Err(DprsError::BadParameter(format!(
-                "Probability bias={} must be [0,1]",
-                py_p.bias
             )));
         }
         if py_p.n_iterations == 0 {
@@ -154,7 +156,7 @@ impl PyParameters {
             p_1: py_p.p_1,
             p_2: py_p.p_2,
             p_3: py_p.p_3,
-            bias: py_p.bias,
+            p_bias: py_p.p_bias,
             n_iterations: py_p.n_iterations,
             sample_period: py_p.sample_period,
             initial_condition: InitialCondition::from(py_p.initial_condition),
