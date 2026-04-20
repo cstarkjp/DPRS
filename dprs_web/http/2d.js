@@ -49,6 +49,15 @@ class Main {
         const dim = this.simulation.dim;
         this.visualize.canvas_2d(this.simulation_controls_2d);
     }
+    set_zoom(zoom) {
+        this.visualize.scale = zoom;
+        this.redraw();
+    }
+    set_slice(slice) {
+        this.visualize.slice = slice;
+        this.redraw();
+    }
+    playback_simulation(fps) { }
 }
 window.main = null;
 function complete_init() {

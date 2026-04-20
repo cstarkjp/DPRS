@@ -29,36 +29,39 @@ export class VisualizeControls {
             .add_ele("table", "", "playback");
         const tr_zoom = zoom_table.add_ele("tr", "zoom_slice");
         const td_zoom = tr_zoom.add_ele("td");
-        td_zoom.add_input_range("zoom", "1.0", "1.0", "5", () => {
-            this.parent.redraw();
-        }, "zoom");
+        td_zoom.add_input_range("zoom", { min: 1, max: 5, step: 0.1 }, (_e, value) => {
+            this.parent.set_zoom(value);
+        }, { id: "zoom" });
         td_zoom.add_label("zoom").set_content("Zoom");
         this.td_slice = slice_table;
         this.td_playback = playback_table;
         const tr_slice = slice_table.add_ele("tr", "zoom_slice");
         const td_slice = tr_slice.add_ele("td", "slice_input");
-        td_slice.add_input_range("slice", "1.0", "1.0", "10", () => {
-            this.parent.set_slice();
-        }, "slice");
+        td_slice.add_input_range("slice", { min: 0, max: 1, step: 1 }, (_e, value) => {
+            this.parent.set_slice(value);
+        }, { id: "slice" });
         td_slice.add_label("slice").set_content("Slice");
         const tr_playback = playback_table.add_ele("tr", "zoom_playback");
         const td_playback = tr_playback.add_ele("td", "playback_input");
         td_playback.add_label().set_content("Playback:");
         td_playback.add_input_button("60fps", () => {
             this.parent.playback_simulation(60);
-        }, "", "controls playback_60fps");
+        }, { classes: "controls playback_60fps" });
         td_playback.add_input_button("30fps", () => {
             this.parent.playback_simulation(30);
-        }, "", "controls playback_30fps");
+        }, { classes: "controls playback_30fps" });
         td_playback.add_input_button("10fps", () => {
             this.parent.playback_simulation(10);
-        }, "", "controls playback_10fps");
+        }, { classes: "controls playback_10fps" });
         td_playback.add_input_button("5fps", () => {
             this.parent.playback_simulation(5);
-        }, "", "controls playback_5fps");
+        }, { classes: "controls playback_5fps" });
         td_playback.add_input_button("Pause", () => {
             this.parent.playback_simulation(0);
-        }, "", "controls playback_pause");
+        }, { classes: "controls playback_pause" });
+        td_playback.add_input_button("rev 10fps", () => {
+            this.parent.playback_simulation(-10);
+        }, { classes: "controls playback_m10fps" });
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {

@@ -13,6 +13,7 @@ import { Animate } from "./animate.js";
 class Main {
     constructor(logger, params) {
         this.tick = 0;
+        this.tick_delta = 1;
         this.frames_per_second = 25;
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
@@ -113,18 +114,27 @@ class Main {
         }
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`);
-        this.set_slice();
+        this.visualize_controls.populate_values(this.simulation);
         this.redraw();
     }
-    set_slice() {
+    set_zoom(zoom) {
+        this.visualize.scale = zoom;
+        this.redraw();
+    }
+    set_slice(slice) {
         this.anim.stop();
-        this.visualize_controls.populate_values(this.simulation);
+        this.visualize.slice = slice;
         this.redraw();
     }
     playback_simulation(fps) {
         if (fps == 0) {
             this.anim.stop();
             return;
+        }
+        this.tick_delta = 1;
+        if (fps < 0) {
+            this.tick_delta = -1;
+            fps = -fps;
         }
         this.frames_per_second = fps;
         console.log("Set fps to", this.frames_per_second);
@@ -143,15 +153,15 @@ class Main {
             this.log.error("animation", "Should not reach here with dim < 2");
             return;
         }
-        if (this.tick < this.simulation.n_results()) {
+        if (this.tick >= 0 && this.tick < this.simulation.n_results()) {
             html.set_input_value("slice", this.tick);
             this.visualize.slice = this.tick;
             this.redraw();
         }
-        if (this.tick < this.simulation.n_results() - 1) {
-            this.tick = this.tick + 1;
+        var next_tick = this.tick + this.tick_delta;
+        if (next_tick > 0 && next_tick < this.simulation.n_results()) {
+            this.tick = next_tick;
             this.anim.schedule_at(time + 1000 / this.frames_per_second);
-            console.log(this.frames_per_second);
         }
         else {
             const total_time = this.anim.duration();
