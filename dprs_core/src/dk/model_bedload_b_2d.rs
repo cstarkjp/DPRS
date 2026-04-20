@@ -45,8 +45,8 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
     //  )
     //  OR
     //  (
-    //    the central cell is moving AND Bern(p_1)
-    //    and
+    //        the central cell is moving AND Bern(p_1)
+    //    AND
     //       (
     //              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
     //         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
