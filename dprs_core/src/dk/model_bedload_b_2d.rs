@@ -17,14 +17,14 @@ pub struct ModelBedloadB2D {
 /// If a cell is occupied <=> the grain located there is moving.
 ///
 /// Consider the following stencil, which selects all the upstream nbrs & the central cell:
-///     1 0 0
-///     1 1 0
-///     1 0 0
-/// "Flow" is towards the right (E), "upstream" is to the left (W), and +x is to the right.
+///     1 0 0                          NW  -  -
+///     1 1 0    which we can label     W  C  -
+///     1 0 0                          SW  -  -
+/// "Flow" and +x is towards the right (E), "upstream" is to the left (W).
 ///
 ///
-/// Part #1: Decide whether one of the upstream neighbors is "active",
-///          i.e., that it may (or may not) trigger motion in the central cell.
+/// Part #1: Decide whether one of the upstream neighbors (NW, W, SW) is "active",
+///          i.e., that it may (or may not) trigger motion in the central cell C.
 ///
 /// decide whether there is {upstream activity} =
 ///    (
@@ -34,7 +34,7 @@ pub struct ModelBedloadB2D {
 ///    )
 ///
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
-/// Currently, p_nbr=1/2 and p_diag=1/2. 
+/// Currently, p_nbr=1/2 and p_diag=1/2.
 /// This reduces the 2d 3x3-site problem, hopefully, into a 1d 2-site problem.
 ///
 /// Part #2: Decide whether, at the next step i+1, the central grain will be moving or not,
@@ -50,6 +50,7 @@ pub struct ModelBedloadB2D {
 ///      Bern(p_2) AND {central grain is moving at step i} AND {upstream activity}
 ///    )
 ///
+/// DP behavior is observed for all 0<=p_2<1, so for a simple model, consider p_2=0.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
