@@ -27,44 +27,37 @@ export class VisualizeControls {
             .add_ele("tr")
             .add_ele("td")
             .add_ele("table", "", "playback");
-        const tr_zoom = zoom_table.add_ele("tr", "zoom_slice");
-        const td_zoom = tr_zoom.add_ele("td");
-        td_zoom.add_input_range("zoom", { min: 1, max: 5, step: 0.1 }, (_e, value) => {
+        const tr_zoom = zoom_table.add_ele("tr", "", "zoom_slice");
+        tr_zoom.add_ele("td").add_label("zoom").set_content("Zoom");
+        tr_zoom.add_ele("td").add_input_range("zoom", { min: 1, max: 5, step: 0.1 }, (_e, value) => {
             this.parent.set_zoom(value);
         }, { id: "zoom" });
-        td_zoom.add_label("zoom").set_content("Zoom");
-        this.td_slice = slice_table;
         this.td_playback = playback_table;
-        const tr_slice = slice_table.add_ele("tr", "zoom_slice");
-        const td_slice = tr_slice.add_ele("td", "slice_input");
-        td_slice.add_input_range("slice", { min: 0, max: 1, step: 1 }, (_e, value) => {
+        const tr_slice = zoom_table.add_ele("tr", "", "zoom_slice");
+        this.td_slice = tr_slice;
+        tr_slice.add_ele("td").add_label("slice").set_content("Time slice");
+        tr_slice.add_ele("td").add_input_range("slice", { min: 0, max: 1, step: 1 }, (_e, value) => {
             this.parent.set_slice(value);
         }, { id: "slice" });
-        td_slice.add_label("slice").set_content("Slice");
         const tr_playback = playback_table.add_ele("tr", "zoom_playback");
         const td_playback = tr_playback.add_ele("td", "playback_input");
         td_playback.add_label().set_content("Playback:");
-        td_playback.add_input_button("⏮", () => {
-            this.parent.playback_simulation(-30);
-        }, { classes: "controls playback_m10fps" });
+        // ⏮ ⏪⏩⏭
         td_playback.add_input_button("⏪", () => {
-            this.parent.playback_simulation(-10);
+            this.parent.playback_simulation(-60);
         }, { classes: "controls playback_m10fps" });
         td_playback.add_input_button("⏴", () => {
-            this.parent.playback_simulation(-5);
+            this.parent.playback_simulation(-10);
         }, { classes: "controls playback_m10fps" });
         td_playback.add_input_button("⏸", () => {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback_pause" });
         td_playback.add_input_button("⏵", () => {
-            this.parent.playback_simulation(5);
+            this.parent.playback_simulation(10);
         }, { classes: "controls playback_5fps" });
         td_playback.add_input_button("⏩", () => {
-            this.parent.playback_simulation(10);
-        }, { classes: "controls playback_10fps" });
-        td_playback.add_input_button("⏭", () => {
-            this.parent.playback_simulation(30);
-        }, { classes: "controls playback_30fps" });
+            this.parent.playback_simulation(60);
+        }, { classes: "controls playback_5fps" });
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {

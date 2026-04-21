@@ -10,6 +10,7 @@ import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
 class Main {
     constructor(logger, params) {
+        this.autoplay = true;
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");
@@ -112,11 +113,16 @@ class Main {
         this.visualize_controls.populate_values(this.simulation);
         if (this.simulation.dim > 1) {
             this.visualize.set_redraw(this.simulation_controls_2d);
+            this.visualize.redraw();
+            if (this.autoplay) {
+                this.visualize.playback_simulation(60);
+                this.autoplay = false;
+            }
         }
         else {
             this.visualize.set_redraw(this.simulation_controls_1d);
+            this.visualize.redraw();
         }
-        this.visualize.redraw();
     }
     tab_selected(id) {
         console.log("Selected tab", id);

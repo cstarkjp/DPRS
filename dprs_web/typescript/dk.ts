@@ -22,6 +22,8 @@ class Main {
   simulation_controls_2d: SimulationControls;
   tabs?: Tabs;
 
+  autoplay: boolean = true;
+
   constructor(logger: Log, params: string) {
     this.log = new Logger(logger, "dk_main");
     this.log.push_reason("init");
@@ -171,10 +173,15 @@ class Main {
     this.visualize_controls.populate_values(this.simulation);
     if (this.simulation.dim > 1) {
       this.visualize.set_redraw(this.simulation_controls_2d);
+      this.visualize.redraw();
+      if (this.autoplay) {
+        this.visualize.playback_simulation(60);
+        this.autoplay = false;
+      }
     } else {
       this.visualize.set_redraw(this.simulation_controls_1d);
+      this.visualize.redraw();
     }
-    this.visualize.redraw();
   }
 
   tab_selected(id: string) {
