@@ -32,8 +32,8 @@ class Parameters():
     n_z: int
     p_1: float
     p_2: float
-    p_3: float
-    p_bias: float
+    p_conj: float
+    p_nbr: float
     n_iterations: int
     sample_period: int
     random_seed: int
