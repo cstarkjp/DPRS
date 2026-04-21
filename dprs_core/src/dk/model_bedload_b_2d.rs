@@ -71,12 +71,10 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // Generate weighted coin-toss Bernoulli variates to control the growth process
         let bernoulli_p1 = rng.random_bool(self.p_1);
         let bernoulli_p2 = rng.random_bool(self.p_2);
-        // Generate a bunch of coin-toss Bernoulli variates (random Booleans)
-        // which we'll use to randomly select (or not) single cells
+        // Generate, for now, simple coin-toss (p=1/2) Bernoulli variates
+        // which we'll use to randomly select/deselect upstream cells
         let random_bits = rng.random::<u16>();
-        // Currently hard-wired to p_nbr=0.5 (user-supplied parameter is ignored)
         let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
-        // Currently hard-wired to p_diag=0.5 (user-supplied parameter is ignored)
         let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
 
         // In the 3x3 window, check if the central cell is occupied => moving
