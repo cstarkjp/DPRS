@@ -68,6 +68,9 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         rng: &mut R,
         nbrhood: &CellNbrhood2D,
     ) -> DualState {
+        // Generate weighted coin-toss Bernoulli variates to control the growth process
+        let bernoulli_p1 = rng.random_bool(self.p_1);
+        let bernoulli_p2 = rng.random_bool(self.p_2);
         // Generate a bunch of coin-toss Bernoulli variates (random Booleans)
         // which we'll use to randomly select (or not) single cells
         let random_bits = rng.random::<u16>();
@@ -75,9 +78,6 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
         // Currently hard-wired to p_diag=0.5 (user-supplied parameter is ignored)
         let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
-        // Generate weighted coin-toss Bernoulli variates to control the growth process
-        let bernoulli_p1 = rng.random_bool(self.p_1);
-        let bernoulli_p2 = rng.random_bool(self.p_2);
 
         // In the 3x3 window, check if the central cell is occupied => moving
         let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
