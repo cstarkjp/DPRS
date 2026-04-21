@@ -110,6 +110,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
         let do_survive = keep_moving_or_get_entrained | get_multientrained;
+            // | rng.random_bool(self.p_3);
         do_survive.into()
     }
 }
