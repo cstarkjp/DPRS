@@ -19,8 +19,9 @@ pub struct PyParameters {
     pub n_z: usize,
     pub p_1: f64,
     pub p_2: f64,
-    pub p_3: f64,
-    pub p_bias: f64,
+    pub p_conj: f64,
+    pub p_nbr: f64,
+    pub p_diag: f64,
     pub n_iterations: usize,
     pub sample_period: usize,
     pub initial_condition: InitialCondition,
@@ -47,8 +48,9 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Grid shape:    {:?}", (self.n_x, self.n_y, self.n_z))?;
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
-        writeln!(fmt, "Prob. p_3:     {}", self.p_3)?;
-        writeln!(fmt, "Prob. p_bias:  {}", self.p_bias)?;
+        writeln!(fmt, "Prob. p_conj:  {}", self.p_conj)?;
+        writeln!(fmt, "Prob. p_nbr:  {}", self.p_nbr)?;
+        writeln!(fmt, "Prob. p_diag:  {}", self.p_diag)?;
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
         writeln!(fmt, "Random seed:   {}", self.random_seed)?;
@@ -107,16 +109,22 @@ impl PyParameters {
                 py_p.p_2
             )));
         }
-        if py_p.p_3 < 0. || py_p.p_3 > 1. {
+        if py_p.p_conj < 0. || py_p.p_conj > 1. {
             return Err(DprsError::BadParameter(format!(
-                "Probability p_3={} must be [0,1]",
-                py_p.p_3
+                "Probability p_conj={} must be [0,1]",
+                py_p.p_conj
             )));
         }
-        if py_p.p_bias < 0. || py_p.p_bias > 1. {
+        if py_p.p_nbr < 0. || py_p.p_nbr > 1. {
             return Err(DprsError::BadParameter(format!(
-                "Probability p_bias={} must be [0,1]",
-                py_p.p_bias
+                "Probability p_nbr={} must be [0,1]",
+                py_p.p_nbr
+            )));
+        }
+        if py_p.p_diag < 0. || py_p.p_diag > 1. {
+            return Err(DprsError::BadParameter(format!(
+                "Probability p_diag={} must be [0,1]",
+                py_p.p_diag
             )));
         }
         if py_p.p_initial < 0. || py_p.p_initial > 1. {
@@ -155,8 +163,9 @@ impl PyParameters {
             n_z: py_p.n_z,
             p_1: py_p.p_1,
             p_2: py_p.p_2,
-            p_3: py_p.p_3,
-            p_bias: py_p.p_bias,
+            p_conj: py_p.p_conj,
+            p_nbr: py_p.p_nbr,
+            p_diag: py_p.p_diag,
             n_iterations: py_p.n_iterations,
             sample_period: py_p.sample_period,
             initial_condition: InitialCondition::from(py_p.initial_condition),

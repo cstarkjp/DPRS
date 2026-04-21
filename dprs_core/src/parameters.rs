@@ -3,28 +3,31 @@ use crate::{BoundaryCondition, DualState, InitialCondition, Processing, Topology
 /// The parameters for a simulation
 #[derive(Debug, Clone, Default)]
 pub struct Parameters {
-    /// The size in the X dimension, which must be valid for any simulation
+    /// The lattice size along the x axis, required in 1d/2d/3d.
     pub n_x: usize,
 
-    /// The size in the Y dimension, which must be valid for simulations of 2D or 3D
+    /// The lattice size along the y axis, required for 2d/3d, or 1 otherwise.
     pub n_y: usize,
 
-    /// The size in the Z dimension, which must be valid for simulations in 3D
+    /// The lattice size along the z axis, required for 3d, or 1 otherwise.
     pub n_z: usize,
 
-    /// A first probability, used by the specific GrowthModel
+    /// Growth rule probability #1.
     pub p_1: f64,
 
-    /// A second probability, used by some of the specific GrowthModels
+    /// Growth rule probability #2.
     pub p_2: f64,
 
-    /// A third probability, currently only used by ModelBedload*
-    pub p_3: f64,
+    /// External "conjugate" field probability.
+    pub p_conj: f64,
 
-    /// "Downstream" bias factor used in some ModelBedload*
-    pub p_bias: f64,
+    /// Probability used in deciding neighbor cell interaction.
+    pub p_nbr: f64,
 
-    /// The number of iterations to simulate for
+    /// Probability used to (try to) suppress grid anisotropy.
+    pub p_diag: f64,
+
+    /// Total number of iterations in the simulation.
     pub n_iterations: usize,
 
     /// The rate of sampling lattices to store in the lattice history

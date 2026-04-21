@@ -8,8 +8,8 @@ use rand::{Rng, RngExt};
 pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
-    // p_3: f64,
-    // p_bias: f64,
+    // p_conj: f64,
+    // p_nbr: f64,
 }
 
 /// Growth rules for ModelBedloadB2D.
@@ -22,10 +22,10 @@ pub struct ModelBedloadB2D {
 ///     1 0 0
 /// "Flow" is towards the right (E), "upstream" is to the left (W), and +x is to the right.
 ///
-/// 
-/// Part #1: Decide whether one of the upstream neighbors is "active", 
+///
+/// Part #1: Decide whether one of the upstream neighbors is "active",
 ///          i.e., that it may (or may not) trigger motion in the central cell.
-/// 
+///
 /// choose {an upstream neighbor is active} =
 ///    (
 ///          (a) the  W-upstream nbr is moving AND Bern(p_nbr)
@@ -34,11 +34,11 @@ pub struct ModelBedloadB2D {
 ///    )
 ///
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
-/// 
+///
 /// Part #2: Decide whether, at the next step i+1, the central grain will be moving or not,
 ///          i.e., grain may keep moving or be triggered into motion by an upstream neighbour.
-/// 
-/// choose {central grain will be moving at step i+1} = 
+///
+/// choose {central grain will be moving at step i+1} =
 ///   EITHER
 ///    (
 ///      Bern(p_1) AND ({central grain is moving at step i} OR {an upstream neighbor is active})
@@ -49,7 +49,7 @@ pub struct ModelBedloadB2D {
 ///    )
 ///
 /// Currently, p_nbr=1/2 and p_diag=1/2.
-/// We could use p_3 and p_bias to supply these numbers.
+/// We could use p_conj and p_nbr to supply these numbers.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
@@ -57,8 +57,8 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
-            // p_3: parameters.p_3,
-            // p_bias: parameters.p_bias,
+            // p_conj: parameters.p_conj,
+            // p_nbr: parameters.p_nbr,
         })
     }
 
@@ -114,7 +114,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
         let do_survive = keep_moving_or_get_entrained | get_multientrained;
-            // | rng.random_bool(self.p_3);
+        // | rng.random_bool(self.p_conj);
         do_survive.into()
     }
 }

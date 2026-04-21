@@ -20,7 +20,7 @@ use rand::{Rng, RngExt};
 /// We further deduce the following probabilities for an equivalent micro-scale model:
 ///   1+3) collective entrainment - detrainment = p_1 (needs 1 occupied)
 ///   2) collective detrainment = 1-p_2 (needs 2 occupied)
-///   4) entrainment rate = p_3 (needs 0 occupied)
+///   4) entrainment rate = p_conj (needs 0 occupied)
 ///
 /// So far we have assumed a frame of reference moving with the mean speed of grains downstream.
 /// We need to specify this mean speed.
@@ -32,8 +32,8 @@ use rand::{Rng, RngExt};
 pub struct ModelBedloadB1D {
     p_1: f64,
     p_2: f64,
-    p_3: f64,
-    p_bias: f64,
+    p_conj: f64,
+    p_nbr: f64,
 }
 
 // Implement GrowthModel<Cell1D> trait for ModelBedloadB1D.
@@ -43,8 +43,8 @@ impl GrowthModel<Cell1D> for ModelBedloadB1D {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
-            p_3: parameters.p_3,
-            p_bias: parameters.p_bias,
+            p_conj: parameters.p_conj,
+            p_nbr: parameters.p_nbr,
         })
     }
 
@@ -61,8 +61,8 @@ impl GrowthModel<Cell1D> for ModelBedloadB1D {
         let do_survive = ((is_here_occupied | is_upstream_occupied) & rng.random_bool(self.p_1))
             | ((is_here_occupied & is_upstream_occupied) & rng.random_bool(self.p_2))
             | ((is_here_occupied & is_downstream_occupied)
-                & rng.random_bool(self.p_2 * (1.0 - self.p_bias)))
-            | rng.random_bool(self.p_3);
+                & rng.random_bool(self.p_2 * (1.0 - self.p_nbr)))
+            | rng.random_bool(self.p_conj);
         do_survive.into()
     }
 }
