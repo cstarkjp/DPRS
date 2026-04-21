@@ -16,31 +16,36 @@ pub struct ModelBedloadB2D {
 ///
 /// Here, an occupied cell <=> a moving grain at that cell location.
 ///
-/// Consider the following stencil, which selects all the upstream nbrs and the central cell:
+/// Consider the following stencil, which selects all the upstream nbrs & the central cell:
 ///     1 0 0
 ///     1 1 0
 ///     1 0 0
+/// "Flow" is towards the right (E), "upstream" is to the left (W), and +x is to the right.
 ///
 /// The central cell in the next iteration i+1 is occupied <=> its grain is moving
 /// IF at iteration i:
+///  EITHER
 ///  (
-///         (1)    the central cell is moving AND Bern(p_1)
-///    or   (2) the  W-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr)
-///    or   (3) the NW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
-///    or   (4) the SW-upstream nbr is moving AND Bern(p_1) AND Bern(p_nbr) AND Bern(p_diag)
+///        Bern(p_1)
+///    AND (
+///         either (1) the central grain is moving
+///             or (2) the  W-upstream nbr is moving AND Bern(p_nbr)
+///             or (3) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///             or (4) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///        )
 ///  )
 ///  OR
 ///  (
-///        the central cell is moving AND Bern(p_1)
-///    AND
-///       (
-///              (5) the  W-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr)
-///         or   (6) the NW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-///         or   (7) the SW-upstream nbr is moving AND Bern(p_2) AND Bern(p_nbr) AND Bern(p_diag)
-///       )
+///        Bern(p_2) AND the central grain is moving
+///    AND (
+///         either (5) the  W-upstream nbr is moving AND Bern(p_nbr)
+///             or (6) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///             or (7) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///        )
 ///  )
 ///
-/// Currently, p_nbr=1/2 and p_diag=1/2. We could use p_3 and p_bias to supply these numbers.
+/// Currently, p_nbr=1/2 and p_diag=1/2.
+/// We could use p_3 and p_bias to supply these numbers.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
@@ -90,21 +95,22 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // If any of the above three upstream nbr cells are selected,
         //   consider collective entrainment to *perhaps* take place at the central cell
         //   i.e., perhaps get the central moving because of an upstream interaction
-        let do_entrain =
+        let has_active_upstream_nbrs =
             entrain_by_upstream_yplus | entrain_by_upstream_ycenter | entrain_by_upstream_yminus;
 
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /or/ it's forced into motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p1, succeeds
-        let keep_moving_or_get_entrained = (is_moving | do_entrain) & coin_toss_p1;
+        let keep_moving_or_get_entrained = (is_moving | has_active_upstream_nbrs) & coin_toss_p1;
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p2, succeeds
-        let get_multientrained = (is_moving & do_entrain) & coin_toss_p2;
+        let get_multientrained = (is_moving & has_active_upstream_nbrs) & coin_toss_p2;
 
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
         let do_survive = keep_moving_or_get_entrained | get_multientrained;
+            // | rng.random_bool(self.p_3);
         do_survive.into()
     }
 }
