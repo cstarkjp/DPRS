@@ -14,7 +14,8 @@ class Parameters:
     p_1: float = 0.538910
     p_2: float = 0
     p_conj: float = 0
-    p_nbr: float = 0
+    p_nbr: float = 0.5
+    p_diag: float = 0.5
     n_iterations: int = 100
     sample_period: int  = 100
     initial_condition = sim.InitialCondition.Randomized
