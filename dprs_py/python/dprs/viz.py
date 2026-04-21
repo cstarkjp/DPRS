@@ -51,6 +51,25 @@ class Viz:
         except:
             mpl.rc("font", size=font_size, family="")
 
+        self.markers = {
+            'o': 'circle', 'v': 'triangle_down', '^': 'triangle_up', '<': 'triangle_left', 
+            '>': 'triangle_right', 
+            #  '1': 'tri_down', '2': 'tri_up', '3': 'tri_left', '4': 'tri_right',
+            #  's': 'square', 
+            '8': 'octagon', 'p': 'pentagon', 
+            # '*': 'star', 
+            'h': 'hexagon1',
+            'H': 'hexagon2', 
+            #  '+': 'plus', 'x': 'x', 
+            'D': 'diamond', 
+            'd': 'thin_diamond', '|': 'vline', '_': 'hline', 
+            'P': 'plus_filled', 'X': 'x_filled', 
+            #  0: 'tickleft', 1: 'tickright', 
+            #  2: 'tickup', 3: 'tickdown', 
+            #  4: 'caretleft', 5: 'caretright', 6: 'caretup',
+            #    7: 'caretdown', 8: 'caretleftbase', 9: 'caretrightbase', 10: 'caretupbase', 11: 'caretdownbase'
+        }
+
     def create_figure(
         self,
         fig_name: str,
@@ -185,9 +204,9 @@ class Viz:
             title: str,
             tracking: dict,
             choices: tuple[str, str],
-            labels: Sequence[str],
             exponent: float, 
             scale: float,
+            labels: Sequence[str] | None=None,
             fig_size: tuple[float,float]=(6,4,),
             i_offset: int=3,
             do_ref_curve: bool=True,
@@ -200,24 +219,23 @@ class Viz:
         t: NDArray = tracking[choices[0]][i_offset:]
         statistic: NDArray = tracking[choices[1]][i_offset:]
         statistic_fn = lambda t: scale*t**exponent
-        plt.plot(
-            t, statistic, lw=0.4, color="k",
-        )
+        plt.plot(t, statistic, lw=0.4, color="k",)
         if do_ref_curve:
+            if labels is not None:
+                label = rf"{labels[1]}" + rf"$\quad$" + rf"{labels[2]}" + rf"$={exponent:0.4f}$"
+            else:
+                label = None
             plt.plot(
-                t, statistic_fn(t), color="blue", alpha=0.5, 
-                label = rf"{labels[1]}" 
-                        + rf"$\quad$" 
-                        + rf"{labels[2]}" 
-                        + rf"$={exponent:0.4f}$",
+                t, statistic_fn(t), color="blue", alpha=0.5, label=label,
             )
-        plt.legend()
+        if labels is not None:
+            plt.legend()
         axes = plt.gca()
         axes.autoscale(enable=True, axis="both", tight=True)
         plt.loglog()
         # plt.ylim(0,)
         # plt.xlim(0,)
-        plt.ylabel(rf"{labels[0]}")
+        plt.ylabel(rf"{labels[0] if labels is not None else ''}")
         plt.xlabel(r"Time  $t$")
         plt.grid(ls=":")
         # plt.close()

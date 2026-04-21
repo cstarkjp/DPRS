@@ -5,6 +5,8 @@ import numpy as np
 from scipy.stats import linregress
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from pprint import PrettyPrinter
+pp = PrettyPrinter(indent=4).pprint
 import dprs
 from dprs import sim
 from dprs.sim import (
