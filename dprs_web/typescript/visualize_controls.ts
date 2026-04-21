@@ -3,11 +3,22 @@ import { Visualize } from "./visualize.js";
 import { JsSimulation } from "./js_simulation.js";
 import { Log, Logger } from "./log.js";
 
+export interface VisualizationControlClient {
+  /** Play or pause/stop an animated simulation display
+   *
+   * @param {number} fps The frames-per-second to set replay to; if this is 0,
+   *                     then stop; if this is -ve then a backwards animation is desired
+   */
+  playback_simulation(fps: number): void;
+  set_zoom(zoom: number): void;
+  set_slice(slice: number): void;
+}
+
 export class VisualizeControls {
   /**
    * Parent of this widget
    */
-  parent: any;
+  parent: VisualizationControlClient;
 
   /**
    * Logger to report progress to (as a source of 'sim')
@@ -23,9 +34,16 @@ export class VisualizeControls {
    * The HtmlElement containing the HTMLDivElement that this populates
    */
   div: html.HtmlElement;
+  // Used in populate
   td_slice?: html.HtmlElement;
+  td_playback?: html.HtmlElement;
 
-  constructor(logger: Log, parent: any, visualize: Visualize, div_id: string) {
+  constructor(
+    logger: Log,
+    parent: VisualizationControlClient,
+    visualize: Visualize,
+    div_id: string,
+  ) {
     this.parent = parent;
     this.log = new Logger(logger, "vis_control");
     this.visualize = visualize;
@@ -45,45 +63,94 @@ export class VisualizeControls {
     this.div.clear();
 
     const table = this.div.add_ele("table");
-    const zoom_table = table.add_ele("tr").add_ele("td").add_ele("table");
+    const zoom_table = table
+      .add_ele("tr")
+      .add_ele("td")
+      .add_ele("table", "", "zoom");
+    const slice_table = table
+      .add_ele("tr")
+      .add_ele("td")
+      .add_ele("table", "", "slice");
+    const playback_table = table
+      .add_ele("tr")
+      .add_ele("td")
+      .add_ele("table", "", "playback");
 
-    {
-      const tr = zoom_table.add_ele("tr", "zoom_slice");
-      const td_zoom = tr.add_ele("td");
-      td_zoom.add_input_range(
-        "zoom",
-        "1.0",
-        "1.0",
-        "5",
-        () => {
-          this.parent.redraw();
-        },
-        "zoom",
-      );
-      td_zoom.add_label("zoom").set_content("Zoom");
-      const td_slice = tr.add_ele("td", "slice_input");
-      this.td_slice = td_slice;
-      td_slice.add_input_range(
-        "slice",
-        "1.0",
-        "1.0",
-        "10",
-        () => {
-          this.parent.redraw();
-        },
-        "slice",
-      );
-      td_slice.add_label("slice").set_content("Slice");
-    }
-    table.set_style("border", "none");
-    zoom_table.set_style("border", "none");
+    const tr_zoom = zoom_table.add_ele("tr", "", "zoom_slice");
+    tr_zoom.add_ele("td").add_label("zoom").set_content("Zoom");
+    tr_zoom.add_ele("td").add_input_range(
+      "zoom",
+      { min: 1, max: 5, step: 0.1 },
+      (_e: Event, value) => {
+        this.parent.set_zoom(value);
+      },
+      { id: "zoom" },
+    );
+
+    this.td_playback = playback_table;
+
+    const tr_slice = zoom_table.add_ele("tr", "", "zoom_slice");
+    this.td_slice = tr_slice;
+
+    tr_slice.add_ele("td").add_label("slice").set_content("Time slice");
+    tr_slice.add_ele("td").add_input_range(
+      "slice",
+      { min: 0, max: 1, step: 1 },
+      (_e: Event, value) => {
+        this.parent.set_slice(value);
+      },
+      { id: "slice" },
+    );
+
+    const tr_playback = playback_table.add_ele("tr", "zoom_playback");
+    const td_playback = tr_playback.add_ele("td", "playback_input");
+    td_playback.add_label().set_content("Playback:");
+
+    // ⏮ ⏪⏩⏭
+    td_playback.add_input_button(
+      "⏪",
+      () => {
+        this.parent.playback_simulation(-60);
+      },
+      { classes: "controls playback_m10fps" },
+    );
+    td_playback.add_input_button(
+      "⏴",
+      () => {
+        this.parent.playback_simulation(-10);
+      },
+      { classes: "controls playback_m10fps" },
+    );
+    td_playback.add_input_button(
+      "⏸",
+      () => {
+        this.parent.playback_simulation(0);
+      },
+      { classes: "controls playback_pause" },
+    );
+    td_playback.add_input_button(
+      "⏵",
+      () => {
+        this.parent.playback_simulation(10);
+      },
+      { classes: "controls playback_5fps" },
+    );
+    td_playback.add_input_button(
+      "⏩",
+      () => {
+        this.parent.playback_simulation(60);
+      },
+      { classes: "controls playback_5fps" },
+    );
   }
 
   populate_values(simulation: JsSimulation) {
     if (simulation.dim < 2) {
       this.td_slice!.set_style("display", "none");
+      this.td_playback!.set_style("display", "none");
     } else {
       this.td_slice!.set_style("display");
+      this.td_playback!.set_style("display");
     }
     html.set_input_range("slice", 0, simulation.n_results() - 1);
     this.visualize.scale = html.get_input_float("zoom", 1, 5);

@@ -22,7 +22,7 @@ class Main {
     this.visualize = new Visualize(logger, this.simulation, "Visualize");
     this.visualize_controls = new VisualizeControls(
       logger,
-      this,
+      this.visualize,
       this.visualize,
       "VisualizationControls",
     );
@@ -71,14 +71,12 @@ class Main {
     this.log.info(
       `Simulation complete with ${this.simulation.n_results()} results`,
     );
-    this.redraw();
-    this.log.pop_reason();
-  }
 
-  redraw() {
     this.visualize_controls.populate_values(this.simulation);
-    const dim = this.simulation.dim;
-    this.visualize.canvas_2d(this.simulation_controls_2d);
+    this.visualize.set_redraw(this.simulation_controls_2d);
+    this.visualize.redraw();
+
+    this.log.pop_reason();
   }
 }
 
