@@ -12,7 +12,7 @@
 
 DPRS implements solvers for a variety of directed-percolation (DP) class cellular automata models. 
 
-The [core code](https://github.com/cstarkjp/DPRS/tree/main/dprs_core/src) is written in Rust, as is a [Python wrapper](https://github.com/cstarkjp/DPRS/tree/main/dprs_py/src) that provides easy access to the solvers, and a [Typescript wrapper](https://github.com/cstarkjp/DPRS/tree/main/dprs_web/src) that allow them to be run directly in a web browser using WebAssembly. 
+The [core code](https://github.com/cstarkjp/DPRS/tree/main/dprs_core/src) is written in Rust, as is a [Python wrapper](https://github.com/cstarkjp/DPRS/tree/main/dprs_py/src/..) that provides easy access to the solvers, and a [Typescript wrapper](https://github.com/cstarkjp/DPRS/tree/main/dprs_web) that allow them to be run directly in a web browser. 
 Jupyter notebooks are used to implement the DP simulations. 
 
 
@@ -23,7 +23,7 @@ Access to the Python wrapper is provided by the `pip`-installable PyPI package [
 
 
 You can experiment with [interactive demos of the DP solver here.](live-demos/index.md)
-These demos run the same Rust code as the Python-wrapped solver, but instead are made available using WebAssembly and accessed via a [Typescript/Javascript wrapper](https://github.com/cstarkjp/DPRS/tree/main/dprs_web/src).
+These demos run the same Rust code as the Python-wrapped solver, but instead are made available using [WebAssembly](https://github.com/cstarkjp/DPRS/tree/main/dprs_web).
 
 
 
