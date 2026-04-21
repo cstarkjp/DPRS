@@ -71,11 +71,13 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // Generate a bunch of coin-toss Bernoulli variates (random Booleans)
         // which we'll use to randomly select (or not) single cells
         let random_bits = rng.random::<u16>();
-        let coin_toss_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
-        let coin_toss_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
+        // Currently hard-wired to p_nbr=0.5 (user-supplied parameter is ignored)
+        let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
+        // Currently hard-wired to p_diag=0.5 (user-supplied parameter is ignored)
+        let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
         // Generate weighted coin-toss Bernoulli variates to control the growth process
-        let coin_toss_p1 = rng.random_bool(self.p_1);
-        let coin_toss_p2 = rng.random_bool(self.p_2);
+        let bernoulli_p1 = rng.random_bool(self.p_1);
+        let bernoulli_p2 = rng.random_bool(self.p_2);
 
         // In the 3x3 window, check if the central cell is occupied => moving
         let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
@@ -85,7 +87,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yplus =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
-                && coin_toss_pnbr;
+                && bernoulli_pnbr;
         // Check if the W (upstream x=-1, y=0) nbr cell is occupied,
         //    and randomly select it with p_nbr=1/2 if so
         let entrain_by_upstream_ycenter =
@@ -95,7 +97,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yminus =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YMINUS & random_bits) != 0)
-                && coin_toss_pdiag;
+                && bernoulli_pdiag;
         // If any of the above three upstream nbr cells are selected,
         //   consider collective entrainment to *perhaps* take place at the central cell
         //   i.e., perhaps get the central moving because of an upstream interaction
@@ -105,11 +107,11 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /or/ it's forced into motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p1, succeeds
-        let keep_moving_or_get_entrained = (is_moving || has_active_upstream_nbrs) && coin_toss_p1;
+        let keep_moving_or_get_entrained = (is_moving || has_active_upstream_nbrs) && bernoulli_p1;
         // In the next time step, consider central cell to be moving
         //   - if it's already moving /AND/ it's kept in motion by an upstream interaction
         //   - AND if a biased coin toss, with probability p2, succeeds
-        let get_multientrained = (is_moving && has_active_upstream_nbrs) && coin_toss_p2;
+        let get_multientrained = (is_moving && has_active_upstream_nbrs) && bernoulli_p2;
 
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
