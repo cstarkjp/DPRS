@@ -49,7 +49,7 @@ impl std::fmt::Display for PyParameters {
         writeln!(fmt, "Prob. p_1:     {}", self.p_1)?;
         writeln!(fmt, "Prob. p_2:     {}", self.p_2)?;
         writeln!(fmt, "Prob. p_conj:  {}", self.p_conj)?;
-        writeln!(fmt, "Prob. p_nbr:  {}", self.p_nbr)?;
+        writeln!(fmt, "Prob. p_nbr:   {}", self.p_nbr)?;
         writeln!(fmt, "Prob. p_diag:  {}", self.p_diag)?;
         writeln!(fmt, "Iterations:    {}", self.n_iterations)?;
         writeln!(fmt, "Sample period: {}", self.sample_period)?;
