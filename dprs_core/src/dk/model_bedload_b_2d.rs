@@ -28,12 +28,14 @@ pub struct ModelBedloadB2D {
 ///
 /// choose {an upstream neighbor is active} =
 ///    (
-///          (a) the  W-upstream nbr is moving AND Bern(p_nbr)
-///       OR (b) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
-///       OR (c) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag))
+///          (a) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///       OR (b) the  W-upstream nbr is moving AND Bern(p_nbr)
+///       OR (c) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
 ///    )
 ///
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
+/// Currently, p_nbr=1/2 and p_diag=1/2. 
+/// This reduces the 2d 3x3-site problem, hopefully, into a 1d 2-site problem.
 ///
 /// Part #2: Decide whether, at the next step i+1, the central grain will be moving or not,
 ///          i.e., grain may keep moving or be triggered into motion by an upstream neighbour.
@@ -45,11 +47,9 @@ pub struct ModelBedloadB2D {
 ///    )
 ///   OR
 ///    (
-///      Bern(p_2) AND ({central grain is moving at step i} AND {an upstream neighbor is active})
+///      Bern(p_2) AND {central grain is moving at step i} AND {an upstream neighbor is active}
 ///    )
 ///
-/// Currently, p_nbr=1/2 and p_diag=1/2.
-/// We could use p_conj and p_nbr to supply these numbers.
 ///
 impl GrowthModel<Cell2D> for ModelBedloadB2D {
     fn create_from_parameters(parameters: &Parameters) -> Result<Self, ()> {
