@@ -80,8 +80,8 @@ table.control tr td {
 /* Hack for slider spacings */
 .md-typeset table:not([class]) td {
     padding-top: 10px;
-    padding-bottom: 5px;
-    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-left: 10px;
     padding-right: 5px;
     font-size: 0.8rem;
 }
@@ -107,4 +107,52 @@ table,
 th,
 td {
     border: none !important;
+}
+
+#\32 d_sc_run_simulation {
+    margin-top: 15px;
+}
+
+#\32 d_sc_save_simulation {
+    margin-top: 15px;
+}
+
+#VisualizationControls>table:nth-child(1)>tr:nth-child(3)>td:nth-child(1) {
+    padding-top: 0px;
+    padding-left: 0px;
+}
+
+
+#VisualizationControls>table:nth-child(1)>tr:nth-child(2)>td:nth-child(1) {
+    padding-top: 0px;
+    padding-left: 0px;
+}
+
+#playback_input {
+    padding-top: 0px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+input.controls:nth-child(6) {
+    margin-top: 15px;
+}
+
+input.controls:nth-child(5) {
+    margin-top: 15px;
+}
+
+input.controls:nth-child(4) {
+    margin-top: 15px;
+}
+
+input.controls:nth-child(3) {
+    margin-top: 15px;
+}
+
+input.controls:nth-child(2) {
+    margin-top: 15px;
 }
