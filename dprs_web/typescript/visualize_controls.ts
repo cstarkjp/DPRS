@@ -104,7 +104,8 @@ export class VisualizeControls {
 
     const tr_playback = playback_table.add_ele("tr", "zoom_playback");
     const td_playback = tr_playback.add_ele("td", "playback_input");
-    td_playback.add_label().set_content("Playback:");
+    td_playback.add_label().set_content("");
+    // td_playback.add_label().set_content("Playback:");
 
     // ⏮ ⏪⏩⏭
     td_playback.add_input_button(
