@@ -1,9 +1,8 @@
 import * as html from "./html.js";
 import * as log from "./log.js";
+import { Animate } from "./animate.js";
 /**
  * A visualization 'div' for simulations
- *
- * At present this can only display 1D simulations
  *
  */
 export class Visualize {
@@ -15,11 +14,32 @@ export class Visualize {
      *
      */
     constructor(logger, simulation, div_id) {
+        /** The simulation controls in use for this visualization
+         *
+         * This may be changed if a simulation of a different dimension is run
+         */
+        this.simulation_controls = null;
+        /** Width of the required canvs
+         *
+         */
+        this.width = 0;
+        /** Height of the required canvs
+         *
+         */
+        this.height = 0;
+        /** Zoom scale to use
+         *
+         */
+        this.scale = 1;
+        /** Which direction to animate 'time slice' when animating
+         *
+         */
+        this.slice_delta = 1;
+        /** Target frames per second of animation */
+        this.frames_per_second = 25;
         this.log = new log.Logger(logger, "viz");
         this.simulation = simulation;
-        this.width = 0;
-        this.height = 0;
-        this.scale = 1;
+        this.anim = new Animate((time) => this.animation_tick(time));
         this.slice = 0;
         const div = document.getElementById(div_id);
         if (!div) {
@@ -138,5 +158,76 @@ export class Visualize {
         this.log.info("Completed canvas");
         */
         this.log.pop_reason();
+    }
+    /** Set redraw */
+    set_redraw(simulation_controls) {
+        this.simulation_controls = simulation_controls;
+    }
+    /** Redraw */
+    redraw() {
+        const dim = this.simulation.dim;
+        if (dim > 1) {
+            this.canvas_2d(this.simulation_controls);
+        }
+        else {
+            this.canvas_1d(this.simulation_controls);
+        }
+    }
+    /** Stop any animation
+     *
+     */
+    stop_animation() {
+        this.anim.stop();
+    }
+    set_zoom(zoom) {
+        this.scale = zoom;
+        this.redraw();
+    }
+    set_slice(slice) {
+        this.stop_animation();
+        this.slice = slice;
+        this.redraw();
+    }
+    playback_simulation(fps) {
+        if (fps == 0) {
+            this.anim.stop();
+            return;
+        }
+        this.slice_delta = 1;
+        if (fps < 0) {
+            this.slice_delta = -1;
+            fps = -fps;
+        }
+        this.frames_per_second = fps;
+        console.log("Set fps to", this.frames_per_second);
+        this.anim.restart(0, (time) => this.animation_start(time));
+    }
+    animation_start(time) {
+        this.log.info("animation", "Start");
+        if (this.simulation.dim < 2) {
+            return;
+        }
+        this.anim.schedule();
+    }
+    animation_tick(time) {
+        if (this.simulation.dim < 2) {
+            this.log.error("animation", "Should not reach here with dim < 2");
+            return;
+        }
+        if (this.slice >= 0 && this.slice < this.simulation.n_results()) {
+            html.set_input_value("slice", this.slice);
+            this.redraw();
+        }
+        var next_slice = this.slice + this.slice_delta;
+        if (next_slice > 0 && next_slice < this.simulation.n_results()) {
+            this.slice = next_slice;
+            this.anim.schedule_at(time + 1000 / this.frames_per_second);
+        }
+        else {
+            const total_time = this.anim.duration();
+            const n_frames = this.simulation.n_results();
+            const fps = (n_frames / total_time) * 1000;
+            this.log.info("animation", `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`);
+        }
     }
 }
