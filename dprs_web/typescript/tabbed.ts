@@ -1,40 +1,54 @@
 /**
- * A 'tab' in a tabbed page
+ * History:
+ *
+ * 13th April:
+ *
+ *   Converted from JavaScript
+ *
+ *   Requires a top level Tabs() creation from init complete
+ *
+ *   Tabbed.hash_change => select_hash; Tab.id => Tab.get_hash; Tab.select_tab => private
+ */
+
+/**
+ * A 'tab' in a tabbed page; this is private to the library
  */
 class Tab {
   /**
+   * The tab number, unique for each Tab in the parent; publicly visible
+   */
+  num: number;
+
+  /**
    *  The parent that this Tab belongs to
    */
-  tabs: Tabs;
+  private tabs: Tabs;
 
   /**
    *  The 'li' HTML element (which contains at least one 'a' element) for this tab
    *
    *  The 'className' attribute of this element will be "" if the tab is not selected, and "active" if it is selected
    */
-  li: HTMLLIElement;
+  private li: HTMLLIElement;
 
   /**
    * The name of the 'div' that this tab corresponds to
    *
    * The div is hidden if this tab is not selected
    */
-  div_id: string;
+  private hash: string;
 
   /**
    * The actual 'div' element that this corresponds to
    */
-  div: HTMLDivElement;
-
-  /**
-   * The tab number, unique for each Tab in the parent
-   */
-  num: number;
+  private div: HTMLDivElement;
 
   /**
    * Create a new Tab given its parent, 'li' element and tab number
    *
-   * The 'li' has at least one 'a' element in it
+   * The 'li' has at least one 'a' element in it, with an 'href' of '#tab-<id>',
+   * where 'tab-<id>' is the *id* of the div that contains the contents of that
+   * tab
    */
   constructor(tabs: Tabs, li: HTMLLIElement, num: number) {
     this.tabs = tabs;
@@ -42,7 +56,7 @@ class Tab {
     this.num = num;
 
     var errored: string | undefined = undefined;
-    var div_id: string | null = null;
+    var hash: string | null = null;
     var div: HTMLDivElement | null = null;
     const a = li.getElementsByTagName("a")[0];
     if (a === undefined) {
@@ -50,13 +64,13 @@ class Tab {
     }
 
     if (!errored) {
-      div_id = a!.getAttribute("href");
-      if (div_id === null) {
+      hash = a!.getAttribute("href");
+      if (hash === null) {
         errored = `tab ${num} 'a' item did not have an 'href' attribute`;
       } else {
-        div = document.querySelector(div_id);
+        div = document.querySelector(hash);
         if (div === null || !(div instanceof HTMLDivElement)) {
-          errored = `tab ${num} has an href of '{$div_id}' but the relevant div could not be found in the document`;
+          errored = `tab ${num} has an href of "${hash}" but the relevant div could not be found in the document`;
         }
       }
     }
@@ -65,19 +79,19 @@ class Tab {
       throw new Error(`Failed to make Tab: ${errored}`);
     }
 
-    this.div_id = div_id!;
+    this.hash = hash!;
     this.div = div!;
     a!.onclick = (e) => {
-      this.tabs.hash_change(this.div_id);
+      this.tabs.select_hash(this.hash);
       e.preventDefault();
     };
   }
 
   /**
-   * Return the 'id' of this tab - currently this is the 'div_id' property
+   * Return the 'hash' of this tab - currently this is the 'div_id' property
    */
-  id() {
-    return this.div_id;
+  get_hash() {
+    return this.hash;
   }
 
   /**
@@ -87,7 +101,7 @@ class Tab {
    *
    */
   has_hash(hash: string) {
-    return this.div_id == hash;
+    return this.hash == hash;
   }
 
   /**
@@ -130,9 +144,12 @@ export class Tabs {
    * turn has 'li' for each tab, with each 'li' having an 'a' with an 'href'
    * identifying the tab it is associated with.
    */
-  constructor(container_select: string, callback: (id: string) => void) {
+  constructor(
+    container_select: string,
+    tab_select_callback: (id: string) => void,
+  ) {
     this.tabs = [];
-    this.callback = callback;
+    this.callback = tab_select_callback;
 
     var errored: string | undefined = undefined;
     const tab_list = document.querySelector(container_select);
@@ -178,38 +195,48 @@ export class Tabs {
    * turn has 'li' for each tab, with each 'li' having an 'a' with an 'href'
    * identifying the tab it is associated with.
    */
-  post_init() {
-    const me = this;
+  private post_init() {
     window.addEventListener("hashchange", () => {
-      me.hash_change(location.hash);
+      this.select_hash(location.hash);
     });
-    if (this.hash_change(location.hash) === undefined) {
-      this.select_tab(0);
+    if (this.select_hash(location.hash) === undefined) {
+      this.select_tab_number(0);
     }
   }
 
-  /// Invoked when an <a href='#...'> link is selected
-  hash_change(hash_name: string): number | undefined {
+  /** Select the tab given by 'hash_name' (which should be #<tab-name>)
+   *
+   * This will invoke the 'tab_select_callback' provided by the client with the
+   * selected tab's '#<tab-name>', if the tab number changes
+   *
+   *  Invoked when an <a href='#...'> link is selected
+   *
+   * @param {string} hash_name The '#' reference to follow
+   * @returns {number | undefined} The tab number selected, or null if the hash name was not known
+   */
+  select_hash(hash_name: string): number | null {
     for (const t of this.tabs) {
       if (t.has_hash(hash_name)) {
-        return this.select_tab(t.num);
+        return this.select_tab_number(t.num);
       }
     }
-    return undefined;
+    return null;
   }
 
-  select_tab(tab_number: number): number | undefined {
+  private select_tab_number(tab_number: number): number | null {
     if (tab_number >= this.tabs.length) {
-      tab_number = 0;
+      return null;
     }
-    if (tab_number == this.selected_tab_number) {
-      return;
+    if (
+      this.selected_tab_number === undefined ||
+      tab_number != this.selected_tab_number
+    ) {
+      for (const t of this.tabs) {
+        t.set_hidden(t.num != tab_number);
+      }
+      this.selected_tab_number = tab_number;
+      this.callback(this.tabs[tab_number]!.get_hash());
     }
-    for (const t of this.tabs) {
-      t.set_hidden(t.num != tab_number);
-    }
-    this.selected_tab_number = tab_number;
-    this.callback(this.tabs[this.selected_tab_number]!.id());
-    return this.selected_tab_number;
+    return tab_number;
   }
 }

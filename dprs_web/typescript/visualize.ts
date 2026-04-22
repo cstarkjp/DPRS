@@ -110,7 +110,9 @@ export class Visualize {
     );
 
     this.div.clear();
-    const canvas = this.div.add_ele("canvas", "", "visualize canvas_1d");
+    const canvas = this.div.add_ele("canvas", {
+      classes: "visualize canvas_1d",
+    });
     const canvas_ele = canvas.ele as HTMLCanvasElement;
     canvas_ele.width = this.width;
     canvas_ele.height = this.height;
@@ -165,7 +167,9 @@ export class Visualize {
     */
 
     this.div.clear();
-    const canvas = this.div.add_ele("canvas", "", "visualize canvas_2d");
+    const canvas = this.div.add_ele("canvas", {
+      classes: "visualize canvas_2d",
+    });
     const canvas_ele = canvas.ele as HTMLCanvasElement;
     canvas_ele.width = this.width;
     canvas_ele.height = this.height;

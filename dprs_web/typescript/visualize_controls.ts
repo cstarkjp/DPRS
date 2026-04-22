@@ -66,17 +66,17 @@ export class VisualizeControls {
     const zoom_table = table
       .add_ele("tr")
       .add_ele("td")
-      .add_ele("table", "", "zoom");
+      .add_ele("table", { classes: "zoom" });
     const slice_table = table
       .add_ele("tr")
       .add_ele("td")
-      .add_ele("table", "", "slice");
+      .add_ele("table", { classes: "slice" });
     const playback_table = table
       .add_ele("tr")
       .add_ele("td")
-      .add_ele("table", "", "playback");
+      .add_ele("table", { classes: "playback" });
 
-    const tr_zoom = zoom_table.add_ele("tr", "", "zoom_slice");
+    const tr_zoom = zoom_table.add_ele("tr", { classes: "zoom_slice" });
     tr_zoom.add_ele("td").add_label("zoom").set_content("Zoom");
     tr_zoom.add_ele("td").add_input_range(
       "zoom",
@@ -89,7 +89,7 @@ export class VisualizeControls {
 
     this.td_playback = playback_table;
 
-    const tr_slice = zoom_table.add_ele("tr", "", "zoom_slice");
+    const tr_slice = zoom_table.add_ele("tr", { classes: "zoom_slice" });
     this.td_slice = tr_slice;
 
     tr_slice.add_ele("td").add_label("slice").set_content("Time slice");
@@ -102,8 +102,12 @@ export class VisualizeControls {
       { id: "slice" },
     );
 
-    const tr_playback = playback_table.add_ele("tr", "zoom_playback");
-    const td_playback = tr_playback.add_ele("td", "playback_input");
+    const tr_playback = playback_table.add_ele("tr", {
+      classes: "zoom_playback",
+    });
+    const td_playback = tr_playback.add_ele("td", {
+      classes: "playback_input",
+    });
     td_playback.add_label().set_content("Playback:");
 
     // ⏮ ⏪⏩⏭
