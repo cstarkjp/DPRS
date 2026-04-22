@@ -116,14 +116,14 @@ class Main {
         this.simulation_controls_2d.parameters.dims.n_z = 1;
         this.simulation_controls_2d.populate_values();
         this.log.info(`Loaded 2d sim ${filename}`);
-        this.tabs!.hash_change("#tab-2D");
+        this.tabs!.select_hash("#tab-2D");
       } else {
         this.simulation_controls_1d.parameters = sim_parameters;
         this.simulation_controls_1d.parameters.dims.n_y = 1;
         this.simulation_controls_1d.parameters.dims.n_z = 1;
         this.simulation_controls_1d.populate_values();
         this.log.info(`Loaded 1d sim ${filename}`);
-        this.tabs!.hash_change("#tab-1D");
+        this.tabs!.select_hash("#tab-1D");
       }
     }
     this.log.pop_reason();
