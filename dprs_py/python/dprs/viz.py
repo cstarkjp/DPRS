@@ -275,9 +275,9 @@ class Viz:
         # plt.ylabel(r"Collective detrainment  $p_2$")
         axes = plt.gca()
         axes.set_aspect(1)
-        plt.text(x=0.15, y=0.47, s="static bed", color="DarkBlue", font={"size": 14},)
+        plt.text(x=0.15, y=0.47, s="stable bed", color="DarkBlue", font={"size": 14},)
         plt.text(
-            x=0.85, y=0.55, s="mobile\nbed", color="DarkRed", 
+            x=0.8, y=0.55, s="unstable\nbed", color="DarkRed", 
             horizontalalignment="center", font={"size": 14},
         )
         plt.grid(ls=":")
