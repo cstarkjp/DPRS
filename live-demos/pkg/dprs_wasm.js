@@ -87,6 +87,13 @@ export class Parameters {
     /**
      * @returns {number}
      */
+    get p_conj() {
+        const ret = wasm.parameters_p_conj(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {number}
+     */
     get p_initial() {
         const ret = wasm.parameters_p_initial(this.__wbg_ptr);
         return ret;
@@ -148,6 +155,12 @@ export class Parameters {
      */
     set p_2(value) {
         wasm.parameters_set_p_2(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
+    set p_conj(value) {
+        wasm.parameters_set_p_conj(this.__wbg_ptr, value);
     }
     /**
      * @param {number} value

@@ -36,10 +36,11 @@ class Main {
         params_1d.params.simulation_kind = "staggered_dk";
         // 0.62 is good
         const params_2d = new JsParameters();
+        params_2d.probabilities.p_1 = 0.59;
+        params_2d.probabilities.p_2 = 0.59;
         params_2d.probabilities.p_initial = 0.5;
-        params_2d.probabilities.p_1 = 0.5909;
-        params_2d.probabilities.p_2 = 0.5909;
-        params_2d.params.n_iterations = 600;
+        params_2d.probabilities.p_conj = 0.0;
+        params_2d.params.n_iterations = 500;
         params_2d.params.sample_period = 1;
         params_2d.params.random_seed = 6;
         params_2d.dims.n_x = 300;
@@ -67,7 +68,7 @@ class Main {
                 this.simulation_controls_2d.parameters.dims.n_z = 1;
                 this.simulation_controls_2d.populate_values();
                 this.log.info(`Loaded 2d sim ${filename}`);
-                this.tabs.hash_change("#tab-2D");
+                this.tabs.select_hash("#tab-2D");
             }
             else {
                 this.simulation_controls_1d.parameters = sim_parameters;
@@ -75,7 +76,7 @@ class Main {
                 this.simulation_controls_1d.parameters.dims.n_z = 1;
                 this.simulation_controls_1d.populate_values();
                 this.log.info(`Loaded 1d sim ${filename}`);
-                this.tabs.hash_change("#tab-1D");
+                this.tabs.select_hash("#tab-1D");
             }
         }
         this.log.pop_reason();
