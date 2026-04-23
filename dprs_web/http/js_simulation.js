@@ -22,7 +22,8 @@ export class JsSimulation {
         this.parameters = parameters;
         this.log.info(`Probabilities p_initial:${parameters.probabilities.p_initial} ` +
             `p_1: ${parameters.probabilities.p_1} ` +
-            `p_2: ${parameters.probabilities.p_2} `);
+            `p_2: ${parameters.probabilities.p_2} ` +
+            `p_conj: ${parameters.probabilities.p_conj} `);
         this.log.info(`Dims n_x:${parameters.dims.n_x} ` +
             `n_y:${parameters.dims.n_y} ` +
             `n_z:${parameters.dims.n_z}`);

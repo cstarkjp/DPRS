@@ -25,6 +25,7 @@ export class SimulationControls {
         this.populate_value("p_1", this.parameters.probabilities.p_1);
         this.populate_value("p_2", this.parameters.probabilities.p_2);
         this.populate_value("p_initial", this.parameters.probabilities.p_initial);
+        this.populate_value("p_conj", this.parameters.probabilities.p_conj);
         this.populate_value("n_iterations", this.parameters.params.n_iterations);
         this.populate_value("sample_period", this.parameters.params.sample_period);
         this.populate_value("random_seed", this.parameters.params.random_seed);
@@ -56,6 +57,7 @@ export class SimulationControls {
         this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
         this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
         this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
+        this.parameters.probabilities.p_conj = this.get_float("p_conj", 0, 1);
         if (simulation_choice !== null) {
             this.parameters.params.simulation_kind = simulation_choice;
         }

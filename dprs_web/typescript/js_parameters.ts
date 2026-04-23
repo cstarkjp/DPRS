@@ -5,6 +5,7 @@
 import * as DprsWasm from "../pkg/dprs_wasm.js";
 
 class Probabilities {
+  [x: string]: any;
   /**
    * This contains JsParameters
    */
