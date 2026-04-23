@@ -1,39 +1,109 @@
-export function get_input_float(id, min, max) {
+/**
+ * History
+ *
+ * 12 April:
+ *
+ *   Converted to TypeScript (temporarily removed DbStorage)
+ *
+ *   Added  input get/set methods
+ *
+ *   Removed global 'clear' function - use an HtmlElement and its clear method
+ *
+ *   Removed global add_ele and if_ele_id
+ *
+ * 31 March: Directory methods take files in root, suffix rather than the other ways round
+ *
+ */
+/**
+ * Get the value of a float fron an HTMLInputElement, bounded by min and max,
+ * with a default of the ID cannot be found
+ *
+ * @param {string} id The id of an HTMLInputElement whose value is to be read
+ * @param {number} min The minimum value that the ID must have
+ * @param {number} max The maximum value that the ID must have
+ * @param {number} deflt? Optional default value to return if the ID does not correspond to an HTMLInputElement
+ * @returns {number} the value in the HTMLInputElement bounded by min and max, or the default value. It updates the value in the HTMLInputElement.
+ **/
+export function get_input_float(id, min, max, deflt) {
     const e = document.getElementById(id);
     if (!(e instanceof HTMLInputElement)) {
-        return 0;
+        if (deflt !== undefined) {
+            return deflt;
+        }
+        else {
+            return min;
+        }
     }
     var p = Number.parseFloat(e.value);
-    if (!(p >= min && p <= max)) {
-        p = (min + max) / 2;
-    }
-    e.value = p.toString();
-    return p;
-}
-export function get_input_int(id, min, max) {
-    const e = document.getElementById(id);
-    if (!(e instanceof HTMLInputElement)) {
-        return min;
-    }
-    var p = Number.parseInt(e.value);
-    if (!(p >= min && p <= max)) {
+    if (!(p >= min)) {
         p = min;
     }
+    if (p > max) {
+        p = max;
+    }
     e.value = p.toString();
     return p;
 }
+/**
+ * Get the value of an int fron an HTMLInputElement, bounded by min and max,
+ * with a default of the ID cannot be found
+ *
+ * @param {string} id The id of an HTMLInputElement whose value is to be read
+ * @param {number} min The minimum value that the ID must have
+ * @param {number} max The maximum value that the ID must have
+ * @param {number} deflt? Optional default value to return if the ID does not correspond to an HTMLInputElement
+ * @returns {number} the value in the HTMLInputElement bounded by min and max, or the default value. It updates the value in the HTMLInputElement.
+ */
+export function get_input_int(id, min, max, deflt) {
+    const e = document.getElementById(id);
+    if (!(e instanceof HTMLInputElement)) {
+        if (deflt !== undefined) {
+            return deflt;
+        }
+        else {
+            return min;
+        }
+    }
+    var p = Number.parseInt(e.value);
+    if (!(p >= min)) {
+        p = min;
+    }
+    if (p > max) {
+        p = max;
+    }
+    e.value = p.toString();
+    return p;
+}
+/**
+ * Set the value of an HTMLInputElement given by an id
+ *
+ * @param {string} id The id of the HTMLInputElement whose value should be set
+ * @param {any} value The value to set; the 'toString' method is invoked on this to create the value
+ */
 export function set_input_value(id, value) {
     const e = document.getElementById(id);
     if (e instanceof HTMLInputElement) {
         e.value = value.toString();
     }
 }
+/**
+ * Set the 'checked' attribute of an HTMLInputElement to the provide true/false value
+ *
+ * @param {string} id The id of the HTMLInputElement whose checked should be set
+ * @param {boolean} checked The value to set the 'checked' attribute to
+ */
 export function set_input_checked(id, checked) {
     const e = document.getElementById(id);
     if (e instanceof HTMLInputElement) {
         e.checked = checked;
     }
 }
+/**
+ *
+ * @param id
+ * @param min
+ * @param max
+ */
 export function set_input_range(id, min, max) {
     const e = document.getElementById(id);
     if (e instanceof HTMLInputElement) {
@@ -41,6 +111,11 @@ export function set_input_range(id, min, max) {
         e.max = max.toString();
     }
 }
+/**
+ *
+ * @param id
+ * @returns
+ */
 export function get_input_checked(id) {
     const e = document.getElementById(id);
     if (e instanceof HTMLInputElement) {
@@ -50,6 +125,11 @@ export function get_input_checked(id) {
         return false;
     }
 }
+/**
+ *
+ * @param parent_id
+ * @returns
+ */
 export function get_input_radio_checked(parent_id) {
     const e = document.getElementById(parent_id);
     if (e === null) {
@@ -64,29 +144,35 @@ export function get_input_radio_checked(parent_id) {
     }
 }
 export class HtmlElement {
+    static set_id_classes(doc_ele, id_classes) {
+        if (id_classes.id !== undefined) {
+            doc_ele.id = id_classes.id;
+        }
+        if (id_classes.classes !== undefined) {
+            doc_ele.className = id_classes.classes;
+        }
+        if (id_classes.tag_values !== undefined) {
+            for (const [tag, value] of id_classes.tag_values) {
+                doc_ele.setAttribute(tag, value);
+            }
+        }
+    }
+    static new_ele(ele_type, id_classes = {}) {
+        const ele = document.createElement(ele_type);
+        HtmlElement.set_id_classes(ele, id_classes);
+        return new HtmlElement(ele);
+    }
     constructor(ele) {
         this.ele = ele;
-    }
-    static new_ele(ele_type, classes) {
-        const ele = document.createElement(ele_type);
-        if (classes) {
-            ele.className = classes;
-        }
-        return new HtmlElement(ele);
     }
     clear() {
         while (this.ele.firstChild) {
             this.ele.removeChild(this.ele.firstChild);
         }
     }
-    add_ele(ele_type, id = "", classes = "") {
+    add_ele(ele_type, id_classes = {}) {
         const ele = document.createElement(ele_type);
-        if (id) {
-            ele.setAttribute("id", id);
-        }
-        if (classes) {
-            ele.className = classes;
-        }
+        HtmlElement.set_id_classes(ele, id_classes);
         this.ele.appendChild(ele);
         return new HtmlElement(ele);
     }
@@ -95,14 +181,6 @@ export class HtmlElement {
             this.ele.setAttribute(tag, value);
         }
         return this;
-    }
-    static set_id_classes(doc_ele, id_classes) {
-        if (id_classes.id !== undefined) {
-            doc_ele.id = id_classes.id;
-        }
-        if (id_classes.classes !== undefined) {
-            doc_ele.className = id_classes.classes;
-        }
     }
     add_input_button(value, callback, id_classes = {}) {
         const input = document.createElement("input");
@@ -211,7 +289,7 @@ export class HtmlElement {
         }
     }
 }
-class Table {
+export class Table {
     constructor(classes) {
         this.classes = classes;
         this.headings = [];
@@ -227,12 +305,12 @@ class Table {
         this.body.push(body_elements);
     }
     as_html() {
-        const table = HtmlElement.new_ele("table", this.classes);
+        const table = HtmlElement.new_ele("table", { classes: this.classes });
         if (this.headings.length > 0) {
-            const tr = table.add_ele("tr", "", this.heading_classes);
+            const tr = table.add_ele("tr", { classes: this.heading_classes });
             let i = 0;
             for (const h of this.headings) {
-                const th = tr.add_ele("th", "th" + i);
+                const th = tr.add_ele("th", { id: "th" + i });
                 th.set_content(h);
                 i += 1;
             }
@@ -245,22 +323,5 @@ class Table {
             }
         }
         return table;
-    }
-}
-function clear(id) {
-    while (id.firstChild) {
-        id.removeChild(id.firstChild);
-    }
-}
-function add_ele(parent, type, classes) {
-    const ele = document.createElement(type);
-    ele.className = classes;
-    parent.appendChild(ele);
-    return ele;
-}
-function if_ele_id(ele_id, v, f) {
-    const e = document.getElementById(ele_id);
-    if (e != null) {
-        f(e, v);
     }
 }
