@@ -33,7 +33,7 @@ class Probabilities {
 }
 class Params {
     constructor() {
-        this.n_iterations = 600;
+        this.n_iterations = 500;
         this.sample_period = 1;
         this.random_seed = 1;
         this.seed_kind = "center";

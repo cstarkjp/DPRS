@@ -124,11 +124,27 @@ export class SimulationControls {
             for (const [label, thing] of [
                 ["p1", "p_1"],
                 ["p2", "p_2"],
-                ["p0", "p_initial"],
+                // ["p_initial", "p_initial"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
                 td.add_input_text(thing, "0.5", {
+                    id: this.ele_id + thing,
+                    classes: "sim_controls_text prob_text",
+                });
+            }
+        }
+        {
+            const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
+            for (const [label, thing] of [
+                // ["p1", "p_1"],
+                // ["p2", "p_2"],
+                ["p0", "p_initial"],
+                ["pconj", "p_conj"],
+            ]) {
+                const td = tr.add_ele("td");
+                td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
+                td.add_input_text(thing, "0", {
                     id: this.ele_id + thing,
                     classes: "sim_controls_text prob_text",
                 });
