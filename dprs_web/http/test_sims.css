@@ -1,0 +1,144 @@
+/* Some global stuff to mimic the mkdoc style
+*/
+html {
+    font-size: 125%;
+    font-family: "Roboto";
+}
+td {
+    font-weight: 400;
+}
+.md-typeset {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+}
+
+/* End of global stuff
+*/
+
+/* ---------------------------------------------------------------------------------- */
+/* From here goes in sim.css */
+/* ---------------------------------------------------------------------------------- */
+
+/* Please can we remove the hacks?
+
+These should move in to the big 'div.md-container div div.md-content article.md-content__inner'
+section
+
+*/
+
+/* Hack title spacing */
+.md-typeset h1 {
+    margin-top: 0px;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+/* Hack for very top spacing (above title) */
+.md-content__inner {
+    padding-top: 0rem;
+}
+
+/* Hack for slider spacings */
+.md-typeset table:not([class]) td {
+    padding-top: 10px;
+    padding-bottom: 0px;
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+/* Hack for slide label font size */
+.md-typeset table:not([class]) {
+    font-size: 0.8rem;
+}
+
+div.md-container div div.md-content article.md-content__inner {
+    table,
+    th,
+    td {
+        border: none !important;
+    }
+
+    /* nx/ny/probability/steps etc text input */
+    table.sim_ctrl {
+        table {
+            width: 100%;
+        }
+        /* For the Run sim/save sim buttons */
+        table.control {
+            text-align: center;
+        }
+
+        table tr td {
+            padding: 0px;
+            padding-top: 8px;
+        }
+
+        table.seed td {
+            input {
+                margin-top: 10px;
+                margin-right: 7px;
+            }
+        }
+
+        .sim_controls_text {
+            border: 1px solid rgb(142, 142, 207);
+            margin-left: 5px;
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        /* nx/ny/nz text input */
+        .dims_n_text {
+            width: 6ch;
+        }
+
+        /* probability text input */
+        .prob_text {
+            width: 8ch;
+        }
+
+        /* steps/sampling/seed text input */
+        .params_text {
+            width: 6ch;
+        }
+    }
+
+    /* For the 'Run Simulation', 'Save Simulation' and the media control buttons */
+    input.controls {
+        border-radius: 5px;
+        border: 1px solid rgb(83, 83, 83);
+    }
+
+    /* For the 'Run Simulation', 'Save Simulation' */
+    input.controls.simulation {
+        width: 80%;
+        margin-top: 10px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-size: 90%;
+    }
+
+    #VisualizationControls table:not([class]) {
+        width: 370px;
+
+        table {
+            width: 100%;
+        }
+
+        tr.zoom_slice td.label {
+            text-align: right;
+            padding-bottom: 5px;
+            label {
+                margin-right: 0px;
+            }
+        }
+
+        /* For the media control buttons */
+        input.controls.playback {
+            font-size: 130%;
+            width: 36px;
+            margin: 0px;
+        }
+    }
+}

@@ -119,8 +119,9 @@ input.controls.simulation {
 
     tr.zoom_slice td.label {
         text-align: right;
+        padding-bottom: 5px;
         label {
-            margin-right: 10px;
+            margin-right: 0px;
         }
     }
 
