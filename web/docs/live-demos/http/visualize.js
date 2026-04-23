@@ -66,7 +66,9 @@ export class Visualize {
         this.height = this.simulation.n_results() * y_scale;
         this.log.info(`Created canvas size ${this.width} x ${this.height} with stagger ${stagger} and scale ${x_scale}x${y_scale}`);
         this.div.clear();
-        const canvas = this.div.add_ele("canvas", "", "visualize canvas_1d");
+        const canvas = this.div.add_ele("canvas", {
+            classes: "visualize canvas_1d",
+        });
         const canvas_ele = canvas.ele;
         canvas_ele.width = this.width;
         canvas_ele.height = this.height;
@@ -114,7 +116,9 @@ export class Visualize {
         );
         */
         this.div.clear();
-        const canvas = this.div.add_ele("canvas", "", "visualize canvas_2d");
+        const canvas = this.div.add_ele("canvas", {
+            classes: "visualize canvas_2d",
+        });
         const canvas_ele = canvas.ele;
         canvas_ele.width = this.width;
         canvas_ele.height = this.height;

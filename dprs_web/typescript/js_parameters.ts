@@ -5,21 +5,25 @@
 import * as DprsWasm from "../pkg/dprs_wasm.js";
 
 class Probabilities {
+  [x: string]: any;
   /**
    * This contains JsParameters
    */
   p_initial: number = 0.5;
   p_1: number = 0.70548515;
   p_2: number = 0.70548515;
+  p_conj: number = 0.0;
   set_parameters(parameters: DprsWasm.Parameters) {
     parameters.p_initial = this.p_initial;
     parameters.p_1 = this.p_1;
     parameters.p_2 = this.p_2;
+    parameters.p_conj = this.p_conj;
   }
   from_json(probabilities: any) {
     const p_initial = probabilities["p_initial"];
     const p_1 = probabilities["p_1"];
-    const p_2 = probabilities["p_z"];
+    const p_2 = probabilities["p_2"];
+    const p_conj = probabilities["p_conj"];
     if (typeof p_initial == "number") {
       this.p_initial = p_initial;
     }
@@ -29,11 +33,14 @@ class Probabilities {
     if (typeof p_2 == "number") {
       this.p_2 = p_2;
     }
+    if (typeof p_conj == "number") {
+      this.p_conj = p_conj;
+    }
   }
 }
 
 class Params {
-  n_iterations: number = 600;
+  n_iterations: number = 500;
   sample_period: number = 1;
   random_seed: number = 1;
   seed_kind: string = "center";

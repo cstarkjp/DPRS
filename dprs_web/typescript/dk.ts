@@ -67,11 +67,12 @@ class Main {
 
     // 0.62 is good
     const params_2d = new JsParameters();
+    params_2d.probabilities.p_1 = 0.59;
+    params_2d.probabilities.p_2 = 0.59;
     params_2d.probabilities.p_initial = 0.5;
-    params_2d.probabilities.p_1 = 0.5909;
-    params_2d.probabilities.p_2 = 0.5909;
+    params_2d.probabilities.p_conj = 0.0;
 
-    params_2d.params.n_iterations = 600;
+    params_2d.params.n_iterations = 500;
     params_2d.params.sample_period = 1;
     params_2d.params.random_seed = 6;
 

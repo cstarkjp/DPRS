@@ -2,7 +2,7 @@ use dprs_core as dprs;
 use dprs_core::{BoundaryCondition, Topology};
 
 use wasm_bindgen::prelude::wasm_bindgen;
-use web_sys::console::dir;
+// use web_sys::console::dir;
 
 use crate::TopoBc;
 
@@ -117,6 +117,7 @@ field_getter_setter! {Parameters, u32, n_z, {|a| a as u32}, set_n_z, {|a| a as u
 field_getter_setter! {Parameters, f64, p_initial, {|a| a}, set_p_initial, {|a|a}}
 field_getter_setter! {Parameters, f64, p_1, {|a| a}, set_p_1, {|a| a}}
 field_getter_setter! {Parameters, f64, p_2, {|a| a}, set_p_2, {|a| a}}
+field_getter_setter! {Parameters, f64, p_conj, {|a| a}, set_p_conj, {|a|a}}
 
 field_getter_setter! {Parameters, u32, n_iterations, {|a| a as u32}, set_n_iterations, {|a| a as usize}}
 field_getter_setter! {Parameters, u32, sample_period, {|a| a as u32}, set_sample_period, {|a| a as usize}}

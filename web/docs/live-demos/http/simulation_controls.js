@@ -25,6 +25,7 @@ export class SimulationControls {
         this.populate_value("p_1", this.parameters.probabilities.p_1);
         this.populate_value("p_2", this.parameters.probabilities.p_2);
         this.populate_value("p_initial", this.parameters.probabilities.p_initial);
+        this.populate_value("p_conj", this.parameters.probabilities.p_conj);
         this.populate_value("n_iterations", this.parameters.params.n_iterations);
         this.populate_value("sample_period", this.parameters.params.sample_period);
         this.populate_value("random_seed", this.parameters.params.random_seed);
@@ -56,6 +57,7 @@ export class SimulationControls {
         this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
         this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
         this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
+        this.parameters.probabilities.p_conj = this.get_float("p_conj", 0, 1);
         if (simulation_choice !== null) {
             this.parameters.params.simulation_kind = simulation_choice;
         }
@@ -73,29 +75,29 @@ export class SimulationControls {
         const ele_id = this.ele_id;
         const dims = this.dims;
         this.div.clear();
-        const table = this.div.add_ele("table", "", "sim_ctrl");
+        const table = this.div.add_ele("table", { classes: "sim_ctrl" });
         const dims_table = table
             .add_ele("tr")
             .add_ele("td")
-            .add_ele("table", "", "dims");
+            .add_ele("table", { classes: "dims" });
         const probs_table = table
             .add_ele("tr")
             .add_ele("td")
-            .add_ele("table", "", "probability");
+            .add_ele("table", { classes: "probability" });
         const param_table = table
             .add_ele("tr")
             .add_ele("td")
-            .add_ele("table", "", "param");
+            .add_ele("table", { classes: "param" });
         const seed_table = table
             .add_ele("tr")
             .add_ele("td")
-            .add_ele("table", "", "seed");
+            .add_ele("table", { classes: "seed" });
         const control_table = table
             .add_ele("tr")
             .add_ele("td")
-            .add_ele("table", "", "control");
+            .add_ele("table", { classes: "control" });
         {
-            const tr = dims_table.add_ele("tr", ele_id + "dims");
+            const tr = dims_table.add_ele("tr", { id: ele_id + "dims" });
             const td = tr.add_ele("td");
             td.add_label("n_x", { classes: "sim_controls_label" }).set_content("nx:");
             td.add_input_text("n_x", "20", {
@@ -120,11 +122,11 @@ export class SimulationControls {
             }
         }
         {
-            const tr = probs_table.add_ele("tr", ele_id + "probability");
+            const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
             for (const [label, thing] of [
                 ["p1", "p_1"],
                 ["p2", "p_2"],
-                ["p0", "p_initial"],
+                // ["p_initial", "p_initial"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
@@ -135,7 +137,23 @@ export class SimulationControls {
             }
         }
         {
-            const tr = param_table.add_ele("tr", ele_id + "sim_controls");
+            const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
+            for (const [label, thing] of [
+                // ["p1", "p_1"],
+                // ["p2", "p_2"],
+                ["p0", "p_initial"],
+                ["pconj", "p_conj"],
+            ]) {
+                const td = tr.add_ele("td");
+                td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
+                td.add_input_text(thing, "0", {
+                    id: this.ele_id + thing,
+                    classes: "sim_controls_text prob_text",
+                });
+            }
+        }
+        {
+            const tr = param_table.add_ele("tr", { id: ele_id + "sim_controls" });
             for (const [label, name, value] of [
                 ["Steps", "n_iterations", "1000"],
                 ["Sampling", "sample_period", "20"],
@@ -150,7 +168,7 @@ export class SimulationControls {
             }
         }
         {
-            const tr = seed_table.add_ele("tr", ele_id + "_seed_kind");
+            const tr = seed_table.add_ele("tr", { id: ele_id + "_seed_kind" });
             for (const [name, value] of [
                 ["random", "Randomize"],
                 ["center", "Center cell"],
@@ -167,7 +185,7 @@ export class SimulationControls {
             }
         }
         {
-            const tr = seed_table.add_ele("tr", ele_id + "sim_kind");
+            const tr = seed_table.add_ele("tr", { id: ele_id + "sim_kind" });
             for (const [name, value] of [
                 ["staggered_dk", "Staggered DK"],
                 ["simple_dk", "Simple DK"],
@@ -184,20 +202,20 @@ export class SimulationControls {
             }
         }
         {
-            const tr = control_table.add_ele("tr", ele_id + "controls");
+            const tr = control_table.add_ele("tr", { id: ele_id + "controls" });
             const td_run = tr.add_ele("td");
             td_run.add_input_button("Run simulation", () => {
                 window.main.run_simulation(dims);
             }, {
                 id: ele_id + "run_simulation",
-                classes: "controls run_simulation",
+                classes: "controls simulation run_simulation",
             });
             const td_save = tr.add_ele("td");
             td_save.add_input_button("Save simulation", () => {
                 window.main.save_simulation(dims);
             }, {
                 id: ele_id + "save_simulation",
-                classes: "controls save_simulation",
+                classes: "controls simulation save_simulation",
             });
         }
     }

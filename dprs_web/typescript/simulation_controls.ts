@@ -38,6 +38,7 @@ export class SimulationControls {
     this.populate_value("p_1", this.parameters.probabilities.p_1);
     this.populate_value("p_2", this.parameters.probabilities.p_2);
     this.populate_value("p_initial", this.parameters.probabilities.p_initial);
+    this.populate_value("p_conj", this.parameters.probabilities.p_conj);
     this.populate_value("n_iterations", this.parameters.params.n_iterations);
     this.populate_value("sample_period", this.parameters.params.sample_period);
     this.populate_value("random_seed", this.parameters.params.random_seed);
@@ -70,6 +71,7 @@ export class SimulationControls {
     this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
     this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
     this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
+    this.parameters.probabilities.p_conj = this.get_float("p_conj", 0, 1);
 
     if (simulation_choice !== null) {
       this.parameters.params.simulation_kind = simulation_choice;
@@ -156,13 +158,32 @@ export class SimulationControls {
       for (const [label, thing] of [
         ["p1", "p_1"],
         ["p2", "p_2"],
-        ["p0", "p_initial"],
+        // ["p_initial", "p_initial"],
       ]) {
         const td = tr.add_ele("td");
         td.add_label(thing!, { classes: "sim_controls_label" }).set_content(
           label + ":",
         );
         td.add_input_text(thing!, "0.5", {
+          id: this.ele_id + thing,
+          classes: "sim_controls_text prob_text",
+        });
+      }
+    }
+
+    {
+      const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
+      for (const [label, thing] of [
+        // ["p1", "p_1"],
+        // ["p2", "p_2"],
+        ["p0", "p_initial"],
+        ["pconj", "p_conj"],
+      ]) {
+        const td = tr.add_ele("td");
+        td.add_label(thing!, { classes: "sim_controls_label" }).set_content(
+          label + ":",
+        );
+        td.add_input_text(thing!, "0", {
           id: this.ele_id + thing,
           classes: "sim_controls_text prob_text",
         });

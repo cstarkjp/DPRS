@@ -32,53 +32,11 @@
     background-color: #111;
 }
 
-.dims_n_text {
-    width: 6ch;
-}
-
-.prob_text {
-    width: 12ch;
-}
-
-.params_text {
-    padding: 5px;
-    width: 6ch;
-}
-
-.controls {
-    border: 1px solid rgb(83, 83, 83);
-    padding: 5px;
-    margin-left: 10px;
-    margin-right: 15px;
-}
-
-.sim_controls_text {
-    border: 1px solid rgb(142, 142, 207);
-    margin-left: 5px;
-    margin-right: 10px;
-}
-
-table.dims td {
-    padding: 0px;
-}
-table.probability td {
-    padding: 0px;
-}
-table.param td {
-    padding: 0px;
-}
-table.seed td {
-    padding: 3px;
-}
-table.control td {
-    padding: 0px;
-}
-
 #upper {
     overflow-y: scroll;
 
     /* This height SHOULD be fixed */
-    /* height: 260px; */
+    height: 280px;
 }
 
 /* Would do phone stuff like this */
@@ -90,4 +48,86 @@ table,
 th,
 td {
     border: none !important;
+}
+
+/* nx/ny/probability/steps etc text input */
+table.sim_ctrl {
+    table {
+        width: 100%;
+    }
+    /* For the Run sim/save sim buttons */
+    table.control {
+        text-align: center;
+    }
+
+    table tr td {
+        padding: 0px;
+        padding-top: 8px;
+    }
+
+    table.seed td {
+        input {
+            margin-top: 10px;
+            margin-right: 7px;
+        }
+    }
+
+    .sim_controls_text {
+        border: 1px solid rgb(142, 142, 207);
+        margin-left: 5px;
+        margin-right: 10px;
+        padding: 5px;
+    }
+
+    /* nx/ny/nz text input */
+    .dims_n_text {
+        width: 6ch;
+    }
+
+    /* probability text input */
+    .prob_text {
+        width: 8ch;
+    }
+
+    /* steps/sampling/seed text input */
+    .params_text {
+        width: 6ch;
+    }
+}
+
+/* For the 'Run Simulation', 'Save Simulation' and the media control buttons */
+input.controls {
+    border-radius: 5px;
+    border: 1px solid rgb(83, 83, 83);
+}
+
+/* For the 'Run Simulation', 'Save Simulation' */
+input.controls.simulation {
+    width: 80%;
+    margin-top: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 90%;
+}
+
+#VisualizationControls table:not([class]) {
+    width: 320px;
+
+    table {
+        width: 100%;
+    }
+
+    tr.zoom_slice td.label {
+        text-align: right;
+        label {
+            margin-right: 10px;
+        }
+    }
+
+    /* For the media control buttons */
+    input.controls.playback {
+        font-size: 130%;
+        width: 36px;
+        margin: 0px;
+    }
 }

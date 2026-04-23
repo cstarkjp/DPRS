@@ -8,7 +8,7 @@ use rand::{Rng, RngExt};
 pub struct ModelBedloadB2D {
     p_1: f64,
     p_2: f64,
-    // p_conj: f64,
+    p_conj: f64,
     // p_nbr: f64,
 }
 
@@ -58,7 +58,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
-            // p_conj: parameters.p_conj,
+            p_conj: parameters.p_conj,
             // p_nbr: parameters.p_nbr,
         })
     }
@@ -114,8 +114,8 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
 
         // In the next time step, consider central cell to be moving
         //   - if either of these two mechanisms are in action
-        let do_survive = keep_moving_or_get_entrained || get_multientrained;
-        // | rng.random_bool(self.p_conj);
+        let do_survive =
+            keep_moving_or_get_entrained || get_multientrained | rng.random_bool(self.p_conj);
         do_survive.into()
     }
 }
