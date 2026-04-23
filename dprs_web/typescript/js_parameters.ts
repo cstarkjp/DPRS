@@ -33,7 +33,7 @@ class Probabilities {
 }
 
 class Params {
-  n_iterations: number = 600;
+  n_iterations: number = 500;
   sample_period: number = 1;
   random_seed: number = 1;
   seed_kind: string = "center";

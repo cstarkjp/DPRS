@@ -32,7 +32,7 @@ class Main {
     params_2d.probabilities.p_1 = 0.5909;
     params_2d.probabilities.p_2 = 0.5909;
 
-    params_2d.params.n_iterations = 600;
+    params_2d.params.n_iterations = 500;
     params_2d.params.sample_period = 1;
     params_2d.params.random_seed = 6;
 
