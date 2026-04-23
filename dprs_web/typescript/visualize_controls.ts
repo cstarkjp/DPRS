@@ -67,17 +67,16 @@ export class VisualizeControls {
       .add_ele("tr")
       .add_ele("td")
       .add_ele("table", { classes: "zoom" });
-    const slice_table = table
-      .add_ele("tr")
-      .add_ele("td")
-      .add_ele("table", { classes: "slice" });
     const playback_table = table
       .add_ele("tr")
       .add_ele("td")
       .add_ele("table", { classes: "playback" });
 
     const tr_zoom = zoom_table.add_ele("tr", { classes: "zoom_slice" });
-    tr_zoom.add_ele("td").add_label("zoom").set_content("Zoom");
+    tr_zoom
+      .add_ele("td", { classes: "label" })
+      .add_label("zoom")
+      .set_content("Zoom");
     tr_zoom.add_ele("td").add_input_range(
       "zoom",
       { min: 1, max: 5, step: 0.1 },
@@ -92,7 +91,10 @@ export class VisualizeControls {
     const tr_slice = zoom_table.add_ele("tr", { classes: "zoom_slice" });
     this.td_slice = tr_slice;
 
-    tr_slice.add_ele("td").add_label("slice").set_content("Time slice");
+    tr_slice
+      .add_ele("td", { classes: "label" })
+      .add_label("slice")
+      .set_content("Time slice");
     tr_slice.add_ele("td").add_input_range(
       "slice",
       { min: 0, max: 1, step: 1 },
@@ -103,48 +105,43 @@ export class VisualizeControls {
     );
 
     const tr_playback = playback_table.add_ele("tr", {
-      classes: "zoom_playback",
+      classes: "playback",
     });
-    const td_playback = tr_playback.add_ele("td", {
-      classes: "playback_input",
-    });
-    td_playback.add_label().set_content("Playback:");
-
-    // ⏮ ⏪⏩⏭
-    td_playback.add_input_button(
-      "⏪",
+    // ⏮ ⏪⏩⏭ (Add #fe0e to make them plain)
+    tr_playback.add_ele("td").add_input_button(
+      "⏪︎",
       () => {
         this.parent.playback_simulation(-60);
       },
-      { classes: "controls playback_m10fps" },
+      { classes: "controls playback" },
     );
-    td_playback.add_input_button(
+    tr_playback.add_ele("td").add_input_button(
       "⏴",
       () => {
         this.parent.playback_simulation(-10);
       },
-      { classes: "controls playback_m10fps" },
+      { classes: "controls playback" },
     );
-    td_playback.add_input_button(
+    tr_playback.add_ele("td").add_input_button(
       "⏸",
       () => {
         this.parent.playback_simulation(0);
       },
-      { classes: "controls playback_pause" },
+      { classes: "controls playback" },
     );
-    td_playback.add_input_button(
+    tr_playback.add_ele("td").add_input_button(
       "⏵",
       () => {
         this.parent.playback_simulation(10);
       },
-      { classes: "controls playback_5fps" },
+      { classes: "controls playback" },
     );
-    td_playback.add_input_button(
-      "⏩",
+    tr_playback.add_ele("td").add_input_button(
+      "⏩︎",
       () => {
         this.parent.playback_simulation(60);
       },
-      { classes: "controls playback_5fps" },
+      { classes: "controls playback" },
     );
   }
 

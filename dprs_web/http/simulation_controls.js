@@ -190,14 +190,14 @@ export class SimulationControls {
                 window.main.run_simulation(dims);
             }, {
                 id: ele_id + "run_simulation",
-                classes: "controls run_simulation",
+                classes: "controls simulation run_simulation",
             });
             const td_save = tr.add_ele("td");
             td_save.add_input_button("Save simulation", () => {
                 window.main.save_simulation(dims);
             }, {
                 id: ele_id + "save_simulation",
-                classes: "controls save_simulation",
+                classes: "controls simulation save_simulation",
             });
         }
     }

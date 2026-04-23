@@ -2,6 +2,7 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Draw</title>
     </head>
     <body class="dn">
@@ -24,13 +25,12 @@
                 built in Rust, using a 'WASM' wrapper and so running in a
                 browser
                 <p></p>
-                This utilizes the 'dprs_core' Rust crate, which is
-                also used by the Python wrapper and the python notebooks;
-                however, 'WASM' provides only a single thread, and so the
-                simulations that are performed in the browser are all single
-                threaded, and much lower performance than native simulations -
-                so the scale of simulations within the browser is somewhat
-                limited.
+                This utilizes the 'dprs_core' Rust crate, which is also used by
+                the Python wrapper and the python notebooks; however, 'WASM'
+                provides only a single thread, and so the simulations that are
+                performed in the browser are all single threaded, and much lower
+                performance than native simulations - so the scale of
+                simulations within the browser is somewhat limited.
             </div>
             <div id="tab-1D">
                 <div id="1d_sim_controls"></div>
