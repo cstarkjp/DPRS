@@ -75,7 +75,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         // Generate, for now, simple coin-toss (p=1/2) Bernoulli variates
         // which we'll use to randomly select/deselect upstream cells
         let random_bits = rng.random::<u16>();
-        let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
+        // let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
         let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
 
         // In the 3x3 window, check if the central cell is occupied => moving
@@ -86,7 +86,7 @@ impl GrowthModel<Cell2D> for ModelBedloadB2D {
         //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yplus =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
-                && bernoulli_pnbr;
+                && bernoulli_pdiag;
         // Check if the W (upstream x=-1, y=0) nbr cell is occupied,
         //    and randomly select it with p_nbr=1/2 if so
         let entrain_by_upstream_ycenter =

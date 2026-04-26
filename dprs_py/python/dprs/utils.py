@@ -123,6 +123,7 @@ def make_title(parameters: Parameters, i_slice: int|None = None, z_slice: int|No
         case GrowthModel.StaggeredDomanyKinzel: model="Staggered D-K:"
         case GrowthModel.BedloadA: model="BedloadA:"
         case GrowthModel.BedloadB: model="BedloadB:"
+        case GrowthModel.BedloadC: model="BedloadC:"
         case _: model="Unspecified model"
     return (
         (

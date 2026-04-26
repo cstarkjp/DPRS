@@ -9,7 +9,7 @@ pub struct ModelBedloadC2D {
     p_1: f64,
     p_2: f64,
     p_conj: f64,
-    // p_nbr: f64,
+    p_diag: f64,
 }
 
 /// Growth rules for ModelBedloadC2D.
@@ -53,6 +53,7 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
             p_conj: parameters.p_conj,
+            p_diag: parameters.p_diag,
         })
     }
 
@@ -69,7 +70,8 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
         // which we'll use to randomly select/deselect upstream cells
         let random_bits = rng.random::<u16>();
         let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
-        let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
+        // let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
+        let bernoulli_pdiag = rng.random_bool(self.p_diag);
 
         // In the 3x3 window, check if the central cell is occupied => moving
         let is_moving = (nbrhood.bitmask() & CellNbrhood2D::BITMASK_CENTER) != 0;
@@ -79,7 +81,7 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
         //     - but then randomly deselect to debias this diagonal direction with p_diag=1/2
         let entrain_by_upstream_yplus =
             ((nbrhood.bitmask() & CellNbrhood2D::BITMASK_CORNER_XMINUS_YPLUS & random_bits) != 0)
-                && bernoulli_pnbr;
+                && bernoulli_pdiag;
         // Check if the W (upstream x=-1, y=0) nbr cell is occupied,
         //    and randomly select it with p_nbr=1/2 if so
         let entrain_by_upstream_ycenter =
@@ -97,11 +99,10 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
             entrain_by_upstream_yplus || entrain_by_upstream_ycenter || entrain_by_upstream_yminus;
 
         // In the next time step, consider central cell to be moving
-        //   - if it's already moving
-        //                     AND if a biased coin toss, with probability p1, succeeds
-        //     /or/
-        //   - if it's forced into motion by an upstream interaction
-        //                     AND if a biased coin toss, with probability p2, succeeds
+        //  if
+        //    - it's already moving AND a biased coin toss, with probability p1, succeeds
+        //  or
+        //    - it's forced into motion by an upstream interaction AND a biased coin toss, with probability p2, succeeds
         let keep_moving = is_moving && bernoulli_p1;
         let get_entrained = has_active_upstream_nbrs && bernoulli_p2;
 
