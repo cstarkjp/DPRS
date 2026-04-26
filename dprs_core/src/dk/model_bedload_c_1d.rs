@@ -32,8 +32,8 @@ impl GrowthModel<Cell1D> for ModelBedloadC1D {
         let has_active_upstream_nbr = nbrhood[0];
         let is_moving = nbrhood[1];
         let keep_moving = is_moving && bernoulli_p1;
-        let get_entrained = has_active_upstream_nbr && bernoulli_p2;
-        let do_survive = keep_moving | get_entrained | spontaneously_entrained;
+        let collectively_entrained = has_active_upstream_nbr && bernoulli_p2;
+        let do_survive = keep_moving | collectively_entrained | spontaneously_entrained;
         do_survive.into()
     }
 }
