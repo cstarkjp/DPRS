@@ -26,11 +26,10 @@ impl GrowthModel<Cell1D> for ModelBedloadC1D {
         rng: &mut R,
         nbrhood: &[bool; 3],
     ) -> DualState {
-        // Generate weighted coin-toss Bernoulli variates to control the growth process
         let bernoulli_p1 = rng.random_bool(self.p_1);
         let bernoulli_p2 = rng.random_bool(self.p_2);
-        let is_moving = nbrhood[0];
-        let has_active_upstream_nbr = nbrhood[1];
+        let has_active_upstream_nbr = nbrhood[0];
+        let is_moving = nbrhood[1];
         let keep_moving = is_moving && bernoulli_p1;
         let get_entrained = has_active_upstream_nbr && bernoulli_p2;
         let do_survive = keep_moving | get_entrained | rng.random_bool(self.p_conj);
