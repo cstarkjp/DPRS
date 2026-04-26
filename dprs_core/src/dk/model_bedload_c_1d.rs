@@ -26,14 +26,12 @@ impl GrowthModel<Cell1D> for ModelBedloadC1D {
         rng: &mut R,
         nbrhood: &[bool; 3],
     ) -> DualState {
-        let bernoulli_p1 = rng.random_bool(self.p_1);
-        let bernoulli_p2 = rng.random_bool(self.p_2);
-        let spontaneously_entrained = rng.random_bool(self.p_conj);
         let has_active_upstream_nbr = nbrhood[0];
         let is_moving = nbrhood[1];
-        let keep_moving = is_moving && bernoulli_p1;
-        let collectively_entrained = has_active_upstream_nbr && bernoulli_p2;
-        let do_survive = keep_moving | collectively_entrained | spontaneously_entrained;
-        do_survive.into()
+        let keeps_moving = is_moving && rng.random_bool(self.p_1);
+        let is_collectively_entrained = has_active_upstream_nbr && rng.random_bool(self.p_2);
+        let is_spontaneously_entrained = rng.random_bool(self.p_conj);
+        let does_survive = keeps_moving | is_collectively_entrained | is_spontaneously_entrained;
+        does_survive.into()
     }
 }
