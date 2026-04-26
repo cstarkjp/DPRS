@@ -13,7 +13,7 @@ from typing import Any, Callable
 from collections.abc import Sequence
 from numpy.typing import NDArray
 from dprs import sim
-from dprs.sim import InitialCondition
+from dprs.sim import InitialCondition, Dimension
 
 warnings.filterwarnings("ignore")
 
@@ -244,6 +244,7 @@ class Viz:
             self,
             name: str,
             title: str,
+            p: sim.Parameters,
             expts: dict,
             i_equal: int,
             fig_size: tuple[float,float]=(4,4,),
@@ -266,7 +267,7 @@ class Viz:
         plt.fill(p1c, p2c, color="DarkRed", alpha=0.1,)
         plt.plot((0,1), (0,1), ":", color="DarkBlue", alpha=0.3,)
         sym_expt = expts[i_equal]
-        plt.plot(sym_expt["p_1"], sym_expt["p_2"], "o", ms=5, color="DarkBlue",)
+        plt.plot(sym_expt["p_1"], sym_expt["p_2"], ".", ms=5, color="DarkBlue",)
         plt.xlim(0, 1,)
         plt.ylim(0, 1,)
         plt.xlabel(r"$p_1$")
@@ -275,9 +276,13 @@ class Viz:
         # plt.ylabel(r"Collective detrainment  $p_2$")
         axes = plt.gca()
         axes.set_aspect(1)
-        plt.text(x=0.15, y=0.47, s="stable bed", color="DarkBlue", font={"size": 14},)
+        plt.text(x=0.12, y=0.47, s="stable bed", color="DarkBlue", font={"size": 14},)
+        if p.dim==Dimension.D2:
+            x = 0.8
+        else:
+            x = 0.85
         plt.text(
-            x=0.8, y=0.55, s="unstable\nbed", color="DarkRed", 
+            x=x, y=0.45, s="unstable\nbed", color="DarkRed", 
             horizontalalignment="center", font={"size": 14},
         )
         plt.grid(ls=":")
