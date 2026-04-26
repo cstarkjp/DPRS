@@ -28,13 +28,14 @@ pub struct ModelBedloadC2D {
 ///
 /// decide whether there is {upstream activity} =
 ///    (
-///          (a) the NW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
-///       OR (b) the  W-upstream nbr is moving AND Bern(p_nbr)
-///       OR (c) the SW-upstream nbr is moving AND Bern(p_nbr) AND Bern(p_diag)
+///          (a) the NW-upstream nbr is moving AND Bern(0.5) AND Bern(p_diag)
+///       OR (b) the  W-upstream nbr is moving AND Bern(0.5)
+///       OR (c) the SW-upstream nbr is moving AND Bern(0.5) AND Bern(p_diag)
 ///    )
 ///
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
-/// Currently, p_nbr=1/2 and p_diag=1/2.
+/// The probability p_diag adjusts the effect of upstream-diagonal neighbors,
+/// which subsequently controls the ~elliptical "zone of influence" of a single seeded cell.
 /// This reduces the 2d 3x3-site problem, hopefully, into a 1d 2-site problem.
 ///
 /// Part #2: Decide whether, at the next step i+1, the central grain will be moving or not,
@@ -69,7 +70,7 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
         // Generate, for now, simple coin-toss (p=1/2) Bernoulli variates
         // which we'll use to randomly select/deselect upstream cells
         let random_bits = rng.random::<u16>();
-        let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
+        // let bernoulli_pnbr = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT1) != 0;
         // let bernoulli_pdiag = (random_bits & CellNbrhood2D::BITMASK_SPARE_BIT2) != 0;
         let bernoulli_pdiag = rng.random_bool(self.p_diag);
 
