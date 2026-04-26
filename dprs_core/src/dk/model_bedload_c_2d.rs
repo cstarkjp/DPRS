@@ -28,9 +28,9 @@ pub struct ModelBedloadC2D {
 ///
 /// decide whether there is {upstream activity} =
 ///    (
-///          (a) the NW-upstream nbr is moving AND Bern(0.5) AND Bern(p_diag)
-///       OR (b) the  W-upstream nbr is moving AND Bern(0.5)
-///       OR (c) the SW-upstream nbr is moving AND Bern(0.5) AND Bern(p_diag)
+///          (a) the NW-upstream nbr is moving AND Bern(1/2) AND Bern(p_diag)
+///       OR (b) the  W-upstream nbr is moving AND Bern(1/2)
+///       OR (c) the SW-upstream nbr is moving AND Bern(1/2) AND Bern(p_diag)
 ///    )
 ///
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
