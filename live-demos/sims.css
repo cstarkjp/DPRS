@@ -1,166 +1,119 @@
-.dims_n_text {
-    width: 6ch;
-}
+/* ---------------------------------------------------------------------------------- */
+/* From here goes in sim.css */
+/* ---------------------------------------------------------------------------------- */
 
-.prob_text {
-    width: 12ch;
-}
+/* Please can we remove the hacks?
 
-.params_text {
-    padding: 5px;
-    width: 6ch;
-}
+These should move in to the big 'div.md-container div div.md-content article.md-content__inner'
+section
 
-/* Spacing for BOTH run/save AND playback buttons (!) */
-.controls {
-    border: 1px solid rgb(83, 83, 83);
-    padding-top: 7px;
-    padding-bottom: 7px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: 20px;
-    margin-left: 15px;
-    margin-right: 15px;
-}
+*/
 
-.playback_table {
-    margin-top: 200px;
-}
-
-.sim_controls_text {
-    border: 1px solid rgb(142, 142, 207);
-    /* margin-top: 20px; */
-    margin-left: 5px;
-    margin-right: 10px;
-}
-
-table.probability td {
-    /*! padding: 10px; */
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 5px;
-}
-
-table.dims td {
-    /*! padding: 10px; */
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-table.param td {
-    /*! padding: 10px; */
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-table.seed td {
-    padding: 3px;
-}
-
-table.seed td input {
-    margin-top: 10px;
-    margin-right: 7px;
-}
-
-table.control tr td {
-    padding: 0px;
-}
-
-/* Hack title spacing */
-.md-typeset h1 {
-    margin-top: 0px;
-    margin-bottom: 20px;
-}
-
-/* Hack for very top spacing (above title) */
-.md-content__inner {
+div.md-container div div.md-content article.md-content__inner {
     padding-top: 0rem;
-}
 
-/* Hack for slider spacings */
-.md-typeset table:not([class]) td {
-    padding-top: 10px;
-    padding-bottom: 0px;
-    padding-left: 5px;
-    padding-right: 5px;
-    font-size: 0.8rem;
-}
+    table,
+    th,
+    td {
+        border: none;
+    }
 
+    h1 {
+        margin-top: 0px;
+        margin-bottom: 20px;
+        font-size: 2em;
+    }
 
-/* Hack for slide label font size */
-.md-typeset table:not([class]) {
-    font-size: 0.8rem;
-}
+    /* nx/ny/probability/steps etc text input */
+    table.sim_ctrl {
+        table {
+            width: 100%;
+        }
 
-#upper {
-    overflow-y: scroll;
+        /* For the Run sim/save sim buttons */
+        table.control {
+            text-align: center;
+        }
 
-    /* This height SHOULD be fixed */
-    /* height: 260px; */
-}
+        table tr td {
+            padding: 0px;
+            padding-top: 8px;
+        }
 
-/* Would do phone stuff like this */
-@media (min-width: 320px) {
-    /* smartphones, portrait */
-}
+        table.seed td {
+            input {
+                margin-top: 10px;
+                margin-right: 7px;
+            }
+        }
 
-table,
-th,
-td {
-    border: none !important;
-}
+        .sim_controls_text {
+            border: 1px solid rgb(142, 142, 207);
+            margin-left: 5px;
+            margin-right: 10px;
+            padding: 5px;
+        }
 
-#\32 d_sc_run_simulation {
-    margin-top: 15px;
-}
+        /* nx/ny/nz text input */
+        .dims_n_text {
+            width: 6ch;
+        }
 
-#\32 d_sc_save_simulation {
-    margin-top: 15px;
-}
+        /* probability text input */
+        .prob_text {
+            width: 8ch;
+        }
 
-/* What is the class name for this? I can't find it using Inspector. */
-tr.playback>td:nth-child(1) {
-    padding-top: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 10px;
-}
+        /* steps/sampling/seed text input */
+        .params_text {
+            width: 6ch;
+        }
+    }
 
+    /* For the 'Run Simulation', 'Save Simulation' and the media control buttons */
+    input.controls {
+        border-radius: 5px;
+        border: 1px solid rgb(83, 83, 83);
+    }
 
-/* What is the class name for this? I can't find it using Inspector. */
-/* The elements are built with { classes: "controls playback" } but I don't know how to use that.*/
-tr.playback>td:nth-child(2) {
-    padding-top: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 10px;
-}
+    /* For the 'Run Simulation', 'Save Simulation' */
+    input.controls.simulation {
+        width: 80%;
+        margin-top: 10px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-size: 90%;
+    }
 
-/* What is the class name for this? I can't find it using Inspector. */
-tr.playback>td:nth-child(3) {
-    padding-top: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 10px;
-}
+    #VisualizationControls table:not([class]) {
+        width: 370px;
 
-/* What is the class name for this? I can't find it using Inspector. */
-tr.playback>td:nth-child(4) {
-    padding-top: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 10px;
-}
+        table {
+            width: 100%;
+            font-size: 0.8rem;
+        }
 
-/* What is the class name for this? I can't find it using Inspector. */
-tr.playback>td:nth-child(5) {
-    padding-top: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 10px;
+        td {
+            padding-top: 10px;
+            padding-bottom: 0px;
+            padding-left: 10px;
+            padding-right: 5px;
+        }
+
+        tr.zoom_slice td.label {
+            text-align: right;
+            padding-bottom: 5px;
+
+            label {
+                margin-right: 0px;
+            }
+        }
+
+        /* For the media control buttons */
+        input.controls.playback {
+            font-size: 130%;
+            width: 36px;
+            margin: 0px;
+        }
+    }
 }
