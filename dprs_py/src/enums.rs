@@ -34,6 +34,7 @@ pub enum GrowthModel {
     StaggeredDomanyKinzel,
     BedloadA,
     BedloadB,
+    BedloadC,
     ContactProcess,
     PairContactProcess,
     TwoSpeciesContactProcess,

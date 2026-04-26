@@ -8,6 +8,8 @@ mod model_bedload_a_1d;
 mod model_bedload_a_2d;
 mod model_bedload_b_1d;
 mod model_bedload_b_2d;
+mod model_bedload_c_1d;
+mod model_bedload_c_2d;
 mod model_dk_simplified_1d;
 mod model_dk_simplified_2d;
 mod model_dk_simplified_3d;
@@ -38,6 +40,8 @@ pub use model_bedload_a_1d::ModelBedloadA1D;
 pub use model_bedload_a_2d::ModelBedloadA2D;
 pub use model_bedload_b_1d::ModelBedloadB1D;
 pub use model_bedload_b_2d::ModelBedloadB2D;
+pub use model_bedload_c_1d::ModelBedloadC1D;
+pub use model_bedload_c_2d::ModelBedloadC2D;
 
 pub use nbrhood_2d::CellNbrhood2D;
 pub use nbrhood_3d::CellNbrhood3D;
