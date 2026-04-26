@@ -8,8 +8,8 @@ use rand::{Rng, RngExt};
 pub struct ModelBedloadC2D {
     p_1: f64,
     p_2: f64,
-    p_conj: f64,
     p_diag: f64,
+    p_conj: f64,
 }
 
 /// Growth rules for ModelBedloadC2D.
@@ -36,7 +36,8 @@ pub struct ModelBedloadC2D {
 /// Here Bern(p) means a random Bernoulli variate or weighted coin-flip with weight p.
 /// The probability p_diag adjusts the effect of upstream-diagonal neighbors,
 /// which subsequently controls the ~elliptical "zone of influence" of a single seeded cell.
-/// This reduces the 2d 3x3-site problem, hopefully, into a 1d 2-site problem.
+/// This reduces the 2d 3x3-site problem, hopefully, into a 1d 2-site problem,
+/// while maintaining the underlying 2d DP-universal physics.
 ///
 /// Part #2: Decide whether, at the next step i+1, the central grain will be moving or not,
 ///          i.e., grain may keep moving or be triggered into motion by an upstream neighbour.
@@ -53,8 +54,8 @@ impl GrowthModel<Cell2D> for ModelBedloadC2D {
         Ok(Self {
             p_1: parameters.p_1,
             p_2: parameters.p_2,
-            p_conj: parameters.p_conj,
             p_diag: parameters.p_diag,
+            p_conj: parameters.p_conj,
         })
     }
 
