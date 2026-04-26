@@ -1,3 +1,21 @@
+/* Some global stuff to mimic the mkdoc style
+*/
+html {
+    font-size: 125%;
+    font-family: "Roboto";
+}
+td {
+    font-weight: 400;
+}
+.md-typeset {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+}
+
+/* End of global stuff
+*/
+
 /* ---------------------------------------------------------------------------------- */
 /* From here goes in sim.css */
 /* ---------------------------------------------------------------------------------- */

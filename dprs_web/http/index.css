@@ -36,7 +36,7 @@
     overflow-y: scroll;
 
     /* This height SHOULD be fixed */
-    height: 280px;
+    height: 320px;
 }
 
 /* Would do phone stuff like this */
@@ -119,8 +119,9 @@ input.controls.simulation {
 
     tr.zoom_slice td.label {
         text-align: right;
+        padding-bottom: 5px;
         label {
-            margin-right: 10px;
+            margin-right: 0px;
         }
     }
 
