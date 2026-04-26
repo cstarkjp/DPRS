@@ -20,43 +20,19 @@ td {
 /* From here goes in sim.css */
 /* ---------------------------------------------------------------------------------- */
 
-/* Please can we remove the hacks?
-
-These should move in to the big 'div.md-container div div.md-content article.md-content__inner'
-section
-
-*/
-
-/* Hack title spacing */
-.md-typeset h1 {
-    margin-top: 0px;
-    margin-bottom: 20px;
-    font-size: 2em;
-}
-
-/* Hack for very top spacing (above title) */
-.md-content__inner {
-    padding-top: 0rem;
-}
-
-/* Hack for slider spacings */
-.md-typeset table:not([class]) td {
-    padding-top: 10px;
-    padding-bottom: 0px;
-    padding-left: 10px;
-    padding-right: 5px;
-}
-
-/* Hack for slide label font size */
-.md-typeset table:not([class]) {
-    font-size: 0.8rem;
-}
-
 div.md-container div div.md-content article.md-content__inner {
+    padding-top: 0rem;
+
     table,
     th,
     td {
-        border: none !important;
+        border: none;
+    }
+
+    h1 {
+        margin-top: 0px;
+        margin-bottom: 20px;
+        font-size: 2em;
     }
 
     /* nx/ny/probability/steps etc text input */
@@ -64,6 +40,7 @@ div.md-container div div.md-content article.md-content__inner {
         table {
             width: 100%;
         }
+
         /* For the Run sim/save sim buttons */
         table.control {
             text-align: center;
@@ -124,11 +101,20 @@ div.md-container div div.md-content article.md-content__inner {
 
         table {
             width: 100%;
+            font-size: 0.8rem;
+        }
+
+        td {
+            padding-top: 10px;
+            padding-bottom: 0px;
+            padding-left: 10px;
+            padding-right: 5px;
         }
 
         tr.zoom_slice td.label {
             text-align: right;
             padding-bottom: 5px;
+
             label {
                 margin-right: 0px;
             }

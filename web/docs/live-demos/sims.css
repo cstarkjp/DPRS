@@ -2,13 +2,6 @@
 /* From here goes in sim.css */
 /* ---------------------------------------------------------------------------------- */
 
-/* Please can we remove the hacks?
-
-These should move in to the big 'div.md-container div div.md-content article.md-content__inner'
-section
-
-*/
-
 div.md-container div div.md-content article.md-content__inner {
     padding-top: 0rem;
 
