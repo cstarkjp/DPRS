@@ -101,6 +101,7 @@ div.md-container div div.md-content article.md-content__inner {
         tr.zoom_slice td.label {
             text-align: right;
             padding-bottom: 5px;
+
             label {
                 margin-right: 0px;
             }
@@ -109,7 +110,7 @@ div.md-container div div.md-content article.md-content__inner {
         /* For the media control buttons */
         input.controls.playback {
             font-size: 130%;
-            width: 36px;
+            width: 50px;
             margin: 0px;
         }
     }
