@@ -51,6 +51,24 @@ export class SimulationControls {
             html.set_input_checked(this.ele_id + "sk_bedload", true);
         }
     }
+    set_ic_randomize() {
+        html.set_input_checked(this.ele_id + "seed_random", true);
+    }
+    set_ic_centralcell() {
+        html.set_input_checked(this.ele_id + "seed_center", true);
+    }
+    set_ic_edgecell() {
+        html.set_input_checked(this.ele_id + "seed_edge", true);
+    }
+    set_simple_dk() {
+        html.set_input_checked(this.ele_id + "sk_simple_dk", true);
+    }
+    set_staggered_dk() {
+        html.set_input_checked(this.ele_id + "sk_staggered_dk", true);
+    }
+    set_bedload() {
+        html.set_input_checked(this.ele_id + "sk_bedload", true);
+    }
     populate_parameters() {
         const simulation_choice = html.get_input_radio_checked(this.ele_id + "sim_kind");
         const seed_kind = html.get_input_radio_checked(this.ele_id + "_seed_kind");

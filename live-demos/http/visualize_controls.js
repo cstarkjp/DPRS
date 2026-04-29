@@ -71,10 +71,8 @@ export class VisualizeControls {
             this.td_playback.set_style("display");
         }
         html.set_input_range("slice", 0, simulation.n_results() - 1);
-        // CPS mod: I want to start with zoom=1.2, but setting it in visualize.ts
-        //          doesn't suffice, so I'm using this hack for now.
-        this.visualize.scale = html.get_input_float("zoom", 1.2, 5);
-        // CPS mod: I also want to, perhaps, start with a non-zero time slice
+        this.visualize.scale = html.get_input_float("zoom", 1, 5);
+        // CPS mod: I want to, perhaps, start with a non-zero time slice
         //          so the user can actually see the demo is *doing* something.
         //          Again, not ideal, but ^shrug^.
         this.visualize.slice = html.get_input_int("slice", simulation.n_results() / 2, simulation.n_results() - 1);

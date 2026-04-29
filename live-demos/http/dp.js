@@ -29,7 +29,7 @@ class Main {
         params_1d.params.n_iterations = 500;
         params_1d.params.sample_period = 1;
         params_1d.params.random_seed = 1;
-        params_1d.dims.n_x = 300;
+        params_1d.dims.n_x = 350;
         params_1d.dims.n_y = 1;
         params_1d.dims.n_z = 1;
         params_1d.params.seed_kind = "random";
@@ -43,7 +43,7 @@ class Main {
         params_2d.params.n_iterations = 500;
         params_2d.params.sample_period = 1;
         params_2d.params.random_seed = 6;
-        params_2d.dims.n_x = 300;
+        params_2d.dims.n_x = 350;
         params_2d.dims.n_y = 150;
         params_2d.dims.n_z = 1;
         params_2d.params.seed_kind = "edge";

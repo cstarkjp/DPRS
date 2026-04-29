@@ -21,7 +21,7 @@ class Main {
         params_2d.params.n_iterations = 500;
         params_2d.params.sample_period = 1;
         params_2d.params.random_seed = 6;
-        params_2d.dims.n_x = 300;
+        params_2d.dims.n_x = 350;
         params_2d.dims.n_y = 150;
         params_2d.dims.n_z = 1;
         params_2d.params.seed_kind = "edge";
@@ -29,6 +29,7 @@ class Main {
         this.simulation_controls_2d = new SimulationControls("2d_sc_", "2d_sim_controls", 2);
         this.simulation_controls_2d.parameters = params_2d;
         this.simulation_controls_2d.populate_values();
+        this.simulation_controls_2d.set_bedload();
         this.log.info("HTML built, running initial simulation");
         this.run_simulation(2);
         this.log.info("Initialization complete");
@@ -39,6 +40,7 @@ class Main {
         this.log.info(`Running simulation of dimension ${dim}`);
         this.simulation_controls_2d.populate_parameters();
         this.simulation_controls_2d.parameters.dims.n_z = 1;
+        // this.simulation_controls_2d.set_ic_centralcell()
         const sim_parameters = this.simulation_controls_2d.parameters;
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
