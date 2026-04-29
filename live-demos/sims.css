@@ -94,8 +94,8 @@ div.md-container div div.md-content article.md-content__inner {
         td {
             padding-top: 10px;
             padding-bottom: 0px;
-            padding-left: 10px;
-            padding-right: 10px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
 
         tr.zoom_slice td.label {
