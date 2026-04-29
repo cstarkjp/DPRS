@@ -115,7 +115,7 @@ export class SimulationControls {
             if (dims >= 3) {
                 const td = tr.add_ele("td");
                 td.add_label("n_z", { classes: "sim_controls_label" }).set_content("z:");
-                td.add_input_text("n_z", "20", {
+                const x = td.add_input_text("n_z", "20", {
                     id: this.ele_id + "n_z",
                     classes: "sim_controls_text dims_n_text",
                 });

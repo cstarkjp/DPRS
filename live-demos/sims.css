@@ -72,7 +72,7 @@ div.md-container div div.md-content article.md-content__inner {
 
     /* For the 'Run Simulation', 'Save Simulation' */
     input.controls.simulation {
-        width: 80%;
+        width: 50%;
         margin-top: 10px;
         padding-top: 8px;
         padding-bottom: 8px;
