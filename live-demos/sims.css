@@ -79,7 +79,7 @@ div.md-container div div.md-content article.md-content__inner {
         font-size: 105%;
     }
 
-    input.controls.save_simulation {
+    input.controls.simulation.save_simulation {
         display: none;
     }
 

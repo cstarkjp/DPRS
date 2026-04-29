@@ -197,7 +197,7 @@ export class SimulationControls {
                     classes: "sim_controls_radio " + name,
                 });
                 td.add_label(ele_id + "sk_" + name, {
-                    classes: "sim_controls_label",
+                    classes: "sim_controls_label " + name,
                 }).set_content(value);
             }
         }

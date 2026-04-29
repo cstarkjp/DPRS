@@ -1,0 +1,26 @@
+div.md-container div div.md-content article.md-content__inner {
+
+    .sim_controls_label.staggered_dk {
+        display: none;
+    }
+
+    .sim_controls_radio.staggered_dk {
+        display: none;
+    }
+
+    .sim_controls_label.simple_dk {
+        display: none;
+    }
+
+    .sim_controls_radio.simple_dk {
+        display: none;
+    }
+
+    .sim_controls_label.bedload {
+        display: none;
+    }
+
+    .sim_controls_radio.bedload {
+        display: none;
+    }
+}
