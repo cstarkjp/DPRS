@@ -43,7 +43,7 @@ div.md-container div div.md-content article.md-content__inner {
         .sim_controls_text {
             border: 1px solid rgb(142, 142, 207);
             margin-left: 5px;
-            margin-right: 10px;
+            margin-right: 20px;
             padding: 5px;
         }
 
@@ -66,6 +66,7 @@ div.md-container div div.md-content article.md-content__inner {
     /* For the 'Run Simulation', 'Save Simulation' and the media control buttons */
     input.controls {
         border-radius: 5px;
+        padding-left: 0px;
         border: 1px solid rgb(83, 83, 83);
     }
 
@@ -75,7 +76,11 @@ div.md-container div div.md-content article.md-content__inner {
         margin-top: 10px;
         padding-top: 8px;
         padding-bottom: 8px;
-        font-size: 90%;
+        font-size: 105%;
+    }
+
+    input.controls.save_simulation {
+        display: none;
     }
 
     #VisualizationControls table:not([class]) {
@@ -96,7 +101,6 @@ div.md-container div div.md-content article.md-content__inner {
         tr.zoom_slice td.label {
             text-align: right;
             padding-bottom: 5px;
-
             label {
                 margin-right: 0px;
             }

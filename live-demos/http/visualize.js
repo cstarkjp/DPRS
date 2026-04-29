@@ -30,7 +30,7 @@ export class Visualize {
         /** Zoom scale to use
          *
          */
-        this.scale = 1;
+        this.scale = 1.2;
         /** Which direction to animate 'time slice' when animating
          *
          */

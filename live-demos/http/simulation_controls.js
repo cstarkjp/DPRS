@@ -99,14 +99,14 @@ export class SimulationControls {
         {
             const tr = dims_table.add_ele("tr", { id: ele_id + "dims" });
             const td = tr.add_ele("td");
-            td.add_label("n_x", { classes: "sim_controls_label" }).set_content("nx:");
+            td.add_label("n_x", { classes: "sim_controls_label" }).set_content("x:");
             td.add_input_text("n_x", "20", {
                 id: this.ele_id + "n_x",
                 classes: "sim_controls_text dims_n_text",
             });
             if (dims >= 2) {
                 const td = tr.add_ele("td");
-                td.add_label("n_y", { classes: "sim_controls_label" }).set_content("ny:");
+                td.add_label("n_y", { classes: "sim_controls_label" }).set_content("y:");
                 td.add_input_text("n_y", "20", {
                     id: this.ele_id + "n_y",
                     classes: "sim_controls_text dims_n_text",
@@ -114,7 +114,7 @@ export class SimulationControls {
             }
             if (dims >= 3) {
                 const td = tr.add_ele("td");
-                td.add_label("n_z", { classes: "sim_controls_label" }).set_content("nz:");
+                td.add_label("n_z", { classes: "sim_controls_label" }).set_content("z:");
                 td.add_input_text("n_z", "20", {
                     id: this.ele_id + "n_z",
                     classes: "sim_controls_text dims_n_text",
@@ -156,7 +156,7 @@ export class SimulationControls {
             const tr = param_table.add_ele("tr", { id: ele_id + "sim_controls" });
             for (const [label, name, value] of [
                 ["Steps", "n_iterations", "1000"],
-                ["Sampling", "sample_period", "20"],
+                ["Slicing", "sample_period", "20"],
                 ["Seed", "random_seed", "1"],
             ]) {
                 const td = tr.add_ele("td");
