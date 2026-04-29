@@ -120,7 +120,7 @@ class Topo {
 }
 class Dims {
     constructor() {
-        this.n_x = 350;
+        this.n_x = 300;
         this.n_y = 0;
         this.n_z = 0;
     }
@@ -157,7 +157,7 @@ export class JsParameters {
         this.topo[0].periodic = true;
         this.topo[1].periodic = true;
         this.topo[2].periodic = true;
-        this.dims.n_x = 350;
+        this.dims.n_x = 300;
         this.dims.n_y = 0;
         this.dims.n_z = 0;
     }
