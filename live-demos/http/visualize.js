@@ -36,7 +36,9 @@ export class Visualize {
          */
         this.slice_delta = 1;
         /** Target frames per second of animation */
-        this.frames_per_second = 25;
+        this.frames_per_second = 60;
+        /** Animation state (why can't we track this?) */
+        this.is_playing = 0;
         this.log = new log.Logger(logger, "viz");
         this.simulation = simulation;
         this.anim = new Animate((time) => this.animation_tick(time));
@@ -181,6 +183,7 @@ export class Visualize {
      *
      */
     stop_animation() {
+        this.is_playing = 0;
         this.anim.stop();
     }
     set_zoom(zoom) {
@@ -212,6 +215,17 @@ export class Visualize {
         this.redraw();
         html.set_input_value("slice", this.slice);
     }
+    get_fps() {
+        console.log("Current fps:", this.frames_per_second);
+        return this.frames_per_second;
+    }
+    set_fps(fps) {
+        console.log("Setting fps:", this.frames_per_second);
+        this.frames_per_second = fps;
+    }
+    get_animation_state() {
+        return this.is_playing;
+    }
     playback_simulation(fps) {
         if (fps == 0) {
             this.anim.stop();
@@ -222,8 +236,8 @@ export class Visualize {
             this.slice_delta = -1;
             fps = -fps;
         }
-        this.frames_per_second = fps;
-        console.log("Set fps to", this.frames_per_second);
+        this.set_fps(fps);
+        this.is_playing = 1;
         this.anim.restart(0, (time) => this.animation_start(time));
     }
     animation_start(time) {
@@ -231,6 +245,7 @@ export class Visualize {
         if (this.simulation.dim < 2) {
             return;
         }
+        this.is_playing = 1;
         this.anim.schedule();
     }
     animation_tick(time) {

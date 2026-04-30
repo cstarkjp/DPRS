@@ -124,5 +124,15 @@ div.md-container div div.md-content article.md-content__inner {
         input.controls.playback.reverse {
             display: none;
         }
+
+        /* Don't want this any more */
+        input.controls.playback.pause {
+            display: none;
+        }
+
+        /* Don't want this any more */
+        input.controls.playback.play {
+            display: none;
+        }
     }
 }

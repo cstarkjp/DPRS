@@ -54,12 +54,24 @@ export class VisualizeControls {
         "⏸", // emoji version, &#9208, possibly
         () => {
             this.parent.playback_simulation(0);
-        }, { classes: "controls playback stop" });
+        }, { classes: "controls playback pause" });
         tr_playback.add_ele("td").add_input_button(
         // "⏩︎",
         "⏵", () => {
             this.parent.playback_simulation(60);
         }, { classes: "controls playback play" });
+        tr_playback.add_ele("td").add_input_button(
+        // "⏩︎",
+        "⏯", () => {
+            if (this.parent.get_animation_state() == 1) {
+                // this.parent.playback_simulation(0);
+                this.parent.stop_animation();
+            }
+            else {
+                // this.parent.playback_simulation(60);
+                this.parent.animation_start(0);
+            }
+        }, { classes: "controls playback pauseplay" });
         tr_playback.add_ele("td").add_input_button(
         // "⏴",
         "➖", () => {
