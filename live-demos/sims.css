@@ -126,9 +126,9 @@ div.md-container div div.md-content article.md-content__inner {
         } */
 
         /* Don't want this any more */
-        input.controls.playback.reverse {
+        /* input.controls.playback.reverse {
             display: none;
-        }
+        } */
 
         /* Don't want this any more */
         /* input.controls.playback.pause {

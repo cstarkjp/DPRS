@@ -51,23 +51,15 @@ export class VisualizeControls {
             this.parent.playback_simulation(-fps);
         }, { classes: "controls playback reverse" });
         tr_playback.add_ele("td").add_input_button(
-        // "⏸", // unicode version U+23F8
-        "⏸︎", // emoji version, &#9208, possibly
-        () => {
+        // "⏸︎",
+        "⏸︎", () => {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback pause" });
-        tr_playback.add_ele("td").add_input_button(
-        // "⏩︎", ⏵  ⏹ ⏩︎ 
-        // "⏵",  
-        "⏹", () => {
+        tr_playback.add_ele("td").add_input_button("⏹︎", () => {
             this.parent.playback_simulation(fps);
         }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button(
-        // This does not render correctly on the iPhone.
-        // Nor does "⏸"
-        // There must be a choice of font-family that does, but I don't know what.
-        // "⏯",
-        // "⏵",
+        // "⏵︎",
         "⏯︎", () => {
             if (this.parent.get_animation_state()) {
                 // this.parent.playback_simulation(0);
@@ -79,7 +71,7 @@ export class VisualizeControls {
             }
         }, { classes: "controls playback pauseplay" });
         tr_playback.add_ele("td").add_input_button(
-        // "⏴",
+        // "⏴︎",
         "➖", () => {
             // Step backward by one iteration: replaces slow reverse playback
             // this.parent.playback_simulation(-10);
