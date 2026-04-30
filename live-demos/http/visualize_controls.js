@@ -49,6 +49,12 @@ export class VisualizeControls {
         tr_playback.add_ele("td").add_input_button("⏪︎", () => {
             this.parent.playback_simulation(-60);
         }, { classes: "controls playback reverse" });
+        tr_playback.add_ele("td").add_input_button("⏸", () => {
+            this.parent.playback_simulation(0);
+        }, { classes: "controls playback stop" });
+        tr_playback.add_ele("td").add_input_button("⏩︎", () => {
+            this.parent.playback_simulation(60);
+        }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button("⏴", () => {
             // Step backward by one iteration: replaces slow reverse playback
             // this.parent.playback_simulation(-10);
@@ -59,12 +65,6 @@ export class VisualizeControls {
             // this.parent.playback_simulation(10);
             this.parent.increment_slice();
         }, { classes: "controls playback increment" });
-        tr_playback.add_ele("td").add_input_button("⏸", () => {
-            this.parent.playback_simulation(0);
-        }, { classes: "controls playback stop" });
-        tr_playback.add_ele("td").add_input_button("⏩︎", () => {
-            this.parent.playback_simulation(60);
-        }, { classes: "controls playback play" });
     }
     populate_values(simulation) {
         if (simulation.dim < 2) {
