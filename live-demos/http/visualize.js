@@ -73,7 +73,7 @@ export class Visualize {
         }
         this.width = this.simulation.parameters.dims.n_x * x_scale;
         this.height = this.simulation.n_results() * y_scale;
-        this.log.info(`Created canvas size ${this.width} x ${this.height} with stagger ${stagger} and scale ${x_scale}x${y_scale}`);
+        this.log.info(`Created canvas size ${this.width} x ${this.height} with stagger ${is_staggered} and scale ${x_scale}x${y_scale}`);
         this.div.clear();
         const canvas = this.div.add_ele("canvas", {
             classes: "visualize canvas_1d",
@@ -101,7 +101,7 @@ export class Visualize {
                 }
                 ctx.fillRect((x + x_ofs) * x_scale, y * y_scale, x_scale, y_scale);
             }
-            if (stagger) {
+            if (is_staggered) {
                 x_ofs = 0.5 - x_ofs;
             }
         }
