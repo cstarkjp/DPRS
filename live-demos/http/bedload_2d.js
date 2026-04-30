@@ -27,7 +27,7 @@ class Main {
         // params_2d.probabilities.p_2 = 0.1;
         // params_2d.probabilities.p_1 = 0.99677;  // random_seed: ?
         // params_2d.probabilities.p_2 = 0.01; 
-        params_2d.probabilities.p_conj = 0.000001;
+        params_2d.probabilities.p_conj = 1e-6;
         params_2d.probabilities.p_initial = 0.001;
         params_2d.probabilities.p_diag = 0.1;
         params_2d.params.n_iterations = 500;

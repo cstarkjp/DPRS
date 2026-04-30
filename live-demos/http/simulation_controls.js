@@ -196,9 +196,9 @@ export class SimulationControls {
         {
             const tr = seed_table.add_ele("tr", { id: ele_id + "_seed_kind" });
             for (const [name, value] of [
-                ["random", "Randomize"],
-                ["center", "Center cell"],
                 ["edge", "Edge cell"],
+                ["center", "Center cell"],
+                ["random", "Randomized"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_input_radio(ele_id + "_seed_kind", name, true, {
@@ -213,8 +213,8 @@ export class SimulationControls {
         {
             const tr = seed_table.add_ele("tr", { id: ele_id + "sim_kind" });
             for (const [name, value] of [
-                ["staggered_dk", "Staggered DK"],
-                ["simple_dk", "Simple DK"],
+                ["simple_dk", "Simple"],
+                ["staggered_dk", "Staggered"],
                 ["bedload", "Bedload"],
             ]) {
                 const td = tr.add_ele("td");
