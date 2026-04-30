@@ -49,6 +49,7 @@ export class VisualizeControls {
             this.parent.playback_simulation(-60);
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏴", () => {
+            // Step backward by one iteration: replaces slow reverse playback
             // this.parent.playback_simulation(-10);
             this.parent.decrement_slice();
         }, { classes: "controls playback" });
@@ -56,6 +57,7 @@ export class VisualizeControls {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏵", () => {
+            // Step forward by one iteration: replaces slow forward playback
             // this.parent.playback_simulation(10);
             this.parent.increment_slice();
         }, { classes: "controls playback" });

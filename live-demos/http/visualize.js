@@ -56,7 +56,7 @@ export class Visualize {
         this.log.push_reason("canvas_1d");
         const stagger = this.simulation.results_are_staggered();
         var x_ofs = 0;
-        var x_scale = this.scale;
+        const x_scale = this.scale;
         var y_scale = this.scale;
         if (stagger) {
             y_scale = 0.5 * y_scale;
@@ -106,8 +106,8 @@ export class Visualize {
      */
     canvas_2d(sim_control) {
         this.log.push_reason("canvas_2d");
-        var x_scale = this.scale;
-        var y_scale = this.scale;
+        const x_scale = this.scale;
+        const y_scale = this.scale;
         this.width = this.simulation.parameters.dims.n_x * x_scale;
         this.height = this.simulation.parameters.dims.n_y * y_scale;
         /*
@@ -192,21 +192,25 @@ export class Visualize {
         this.slice = slice;
         this.redraw();
     }
+    // Step backward by one iteration, freezing the playback if need bed
     decrement_slice() {
         this.stop_animation();
         const next_slice = this.slice - 1;
-        if (next_slice > 0 && next_slice < this.simulation.n_results()) {
+        if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
             this.slice = next_slice;
         }
         this.redraw();
+        html.set_input_value("slice", this.slice);
     }
+    // Step forward by one iteration, freezing the playback if need bed
     increment_slice() {
         this.stop_animation();
         const next_slice = this.slice + 1;
-        if (next_slice > 0 && next_slice < this.simulation.n_results()) {
+        if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
             this.slice = next_slice;
         }
         this.redraw();
+        html.set_input_value("slice", this.slice);
     }
     playback_simulation(fps) {
         if (fps == 0) {
@@ -238,7 +242,7 @@ export class Visualize {
             html.set_input_value("slice", this.slice);
             this.redraw();
         }
-        var next_slice = this.slice + this.slice_delta;
+        const next_slice = this.slice + this.slice_delta;
         if (next_slice > 0 && next_slice < this.simulation.n_results()) {
             this.slice = next_slice;
             this.anim.schedule_at(time + 1000 / this.frames_per_second);
