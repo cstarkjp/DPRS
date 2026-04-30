@@ -45,20 +45,21 @@ export class VisualizeControls {
         const tr_playback = playback_table.add_ele("tr", {
             classes: "playback",
         });
-        // ⏮ ⏪⏩⏭ (Add #fe0e to make them plain)
+        // ⏮ ⏪⏸⏩⏭ (Add #fe0e to make them plain)⏸️#fe0e #fe0e  ⏯#fe0e
         // Turning off by hand because I can't turn it off in CSS
         tr_playback.add_ele("td").add_input_button("⏪︎", () => {
             this.parent.playback_simulation(-fps);
         }, { classes: "controls playback reverse" });
         tr_playback.add_ele("td").add_input_button(
         // "⏸", // unicode version U+23F8
-        "⏸", // emoji version, &#9208, possibly
+        "⏸︎", // emoji version, &#9208, possibly
         () => {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback pause" });
         tr_playback.add_ele("td").add_input_button(
-        // "⏩︎",
-        "⏵", () => {
+        // "⏩︎", ⏵  ⏹ ⏩︎ 
+        // "⏵",  
+        "⏹", () => {
             this.parent.playback_simulation(fps);
         }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button(
@@ -66,7 +67,8 @@ export class VisualizeControls {
         // Nor does "⏸"
         // There must be a choice of font-family that does, but I don't know what.
         // "⏯",
-        "⏵", () => {
+        // "⏵",
+        "⏯︎", () => {
             if (this.parent.get_animation_state()) {
                 // this.parent.playback_simulation(0);
                 this.parent.animation_stop();

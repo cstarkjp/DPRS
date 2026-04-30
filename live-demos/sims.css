@@ -131,14 +131,14 @@ div.md-container div div.md-content article.md-content__inner {
         }
 
         /* Don't want this any more */
-        input.controls.playback.pause {
+        /* input.controls.playback.pause {
             display: none;
-        }
+        } */
 
         /* Don't want this any more */
-        input.controls.playback.play {
+        /* input.controls.playback.play {
             display: none;
-        }
+        } */
 
         /* Don't want this any more */
         input.controls.playback.decrement {
