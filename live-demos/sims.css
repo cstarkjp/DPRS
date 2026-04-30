@@ -94,13 +94,15 @@ div.md-container div div.md-content article.md-content__inner {
         td {
             padding-top: 10px;
             padding-bottom: 0px;
-            padding-left: 8px;
-            padding-right: 8px;
+            padding-left: 4px;
+            padding-right: 4px;
         }
 
         tr.zoom_slice td.label {
             text-align: right;
             padding-bottom: 5px;
+            padding-left: 8px;
+            padding-right: 8px;
 
             label {
                 margin-right: 0px;
@@ -112,6 +114,13 @@ div.md-container div div.md-content article.md-content__inner {
             font-size: 130%;
             width: 45px;
             margin: 0px;
+            /* padding-left: 0px;
+            padding-right: 0px; */
+        }
+
+        /* Don't want this any more */
+        input.controls.playback.reverse {
+            display: none;
         }
     }
 }
