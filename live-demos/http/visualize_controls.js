@@ -62,10 +62,11 @@ export class VisualizeControls {
         }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button(
         // "⏩︎",
-        "⏯", () => {
+        // "⏯",
+        "⏵", () => {
             if (this.parent.get_animation_state() == 1) {
                 // this.parent.playback_simulation(0);
-                this.parent.stop_animation();
+                this.parent.animation_stop();
             }
             else {
                 // this.parent.playback_simulation(60);

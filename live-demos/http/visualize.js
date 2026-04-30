@@ -182,8 +182,8 @@ export class Visualize {
     /** Stop any animation
      *
      */
-    stop_animation() {
-        this.is_playing = 0;
+    animation_stop() {
+        this.set_animation_state(0);
         this.anim.stop();
     }
     set_zoom(zoom) {
@@ -191,13 +191,13 @@ export class Visualize {
         this.redraw();
     }
     set_slice(slice) {
-        this.stop_animation();
+        this.animation_stop();
         this.slice = slice;
         this.redraw();
     }
     // Step backward by one iteration, freezing the playback if need bed
     decrement_slice() {
-        this.stop_animation();
+        this.animation_stop();
         const next_slice = this.slice - 1;
         if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
             this.slice = next_slice;
@@ -207,7 +207,7 @@ export class Visualize {
     }
     // Step forward by one iteration, freezing the playback if need bed
     increment_slice() {
-        this.stop_animation();
+        this.animation_stop();
         const next_slice = this.slice + 1;
         if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
             this.slice = next_slice;
@@ -223,11 +223,16 @@ export class Visualize {
         console.log("Setting fps:", this.frames_per_second);
         this.frames_per_second = fps;
     }
+    // Need this to have a dual-function pause/or/play button
     get_animation_state() {
         return this.is_playing;
     }
+    set_animation_state(is_playing) {
+        this.is_playing = is_playing;
+    }
     playback_simulation(fps) {
         if (fps == 0) {
+            this.set_animation_state(0);
             this.anim.stop();
             return;
         }
@@ -237,7 +242,7 @@ export class Visualize {
             fps = -fps;
         }
         this.set_fps(fps);
-        this.is_playing = 1;
+        this.set_animation_state(1);
         this.anim.restart(0, (time) => this.animation_start(time));
     }
     animation_start(time) {
@@ -245,7 +250,7 @@ export class Visualize {
         if (this.simulation.dim < 2) {
             return;
         }
-        this.is_playing = 1;
+        this.set_animation_state(1);
         this.anim.schedule();
     }
     animation_tick(time) {
