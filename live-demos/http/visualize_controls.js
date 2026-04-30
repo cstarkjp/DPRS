@@ -49,13 +49,15 @@ export class VisualizeControls {
             this.parent.playback_simulation(-60);
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏴", () => {
-            this.parent.playback_simulation(-10);
+            // this.parent.playback_simulation(-10);
+            this.parent.decrement_slice();
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏸", () => {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏵", () => {
-            this.parent.playback_simulation(10);
+            // this.parent.playback_simulation(10);
+            this.parent.increment_slice();
         }, { classes: "controls playback" });
         tr_playback.add_ele("td").add_input_button("⏩︎", () => {
             this.parent.playback_simulation(60);
