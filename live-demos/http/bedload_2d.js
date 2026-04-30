@@ -55,7 +55,7 @@ class Main {
         const sim_parameters = this.simulation_controls_2d.parameters;
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
-        const initial_zoom = 2;
+        const initial_zoom = 2.2;
         this.visualize_controls.populate_values(this.simulation, initial_zoom);
         this.visualize.set_redraw(this.simulation_controls_2d);
         this.visualize.redraw();
