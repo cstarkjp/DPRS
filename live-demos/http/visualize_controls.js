@@ -61,9 +61,12 @@ export class VisualizeControls {
             this.parent.playback_simulation(60);
         }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button(
-        // "⏩︎",
-        // "⏯",
-        "⏵", () => {
+        // This does not render correctly on the iPhone.
+        // Nor does "⏸"
+        // There must be a choice of font-family that does, but I don't know what.
+        "⏯", 
+        // "⏵",
+        () => {
             if (this.parent.get_animation_state() == 1) {
                 // this.parent.playback_simulation(0);
                 this.parent.animation_stop();

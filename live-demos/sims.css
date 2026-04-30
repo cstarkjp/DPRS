@@ -120,15 +120,19 @@ div.md-container div div.md-content article.md-content__inner {
             padding-right: 0px; */
         }
 
+        input.controls.playback.pauseplay {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
         /* Don't want this any more */
         input.controls.playback.reverse {
             display: none;
         }
 
         /* Don't want this any more */
-        input.controls.playback.pause {
+        /* input.controls.playback.pause {
             display: none;
-        }
+        } */
 
         /* Don't want this any more */
         input.controls.playback.play {
