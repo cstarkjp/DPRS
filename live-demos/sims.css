@@ -113,7 +113,7 @@ div.md-container div div.md-content article.md-content__inner {
         input.controls.playback {
             font-size: 130%;
             width: 45px;
-            margin: 0px;
+            margin: 10px;
             /* padding-left: 0px;
             padding-right: 0px; */
         }
