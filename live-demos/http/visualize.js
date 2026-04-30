@@ -154,7 +154,7 @@ export class Visualize {
         const n_x = this.simulation.parameters.dims.n_x;
         const n_y = this.simulation.parameters.dims.n_y;
         ctx.font = "12px Arial";
-        ctx.fillStyle = "DimGray";
+        ctx.fillStyle = "#505050";
         ctx.fillText(t_slice.toString(), 10, n_y * y_scale - 10);
         // ctx.fillText(t_slice_str, n_x * x_scale, n_y * y_scale);
         ctx.fillStyle = "purple";
