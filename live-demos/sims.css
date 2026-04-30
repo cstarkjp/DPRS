@@ -121,35 +121,24 @@ div.md-container div div.md-content article.md-content__inner {
             margin-bottom: 10px;
         }
 
-        /* input.controls.playback.pauseplay {
-            font-family: Arial, Helvetica, sans-serif;
-        } */
-
-        /* Don't want this any more */
-        /* input.controls.playback.reverse {
-            display: none;
-        } */
-
-        /* Don't want this any more */
-        /* input.controls.playback.pause {
-            display: none;
-        } */
-
-        /* Don't want this any more */
-        /* input.controls.playback.play {
-            display: none;
-        } */
-
-        /* Don't want this any more */
         input.controls.playback.decrement {
             margin-left: 0px;
             margin-right: 0px;
         }
-
-        /* Don't want this any more */
         input.controls.playback.increment {
             margin-left: 0px;
             margin-right: 0px;
+        }
+
+        /* Don't want these any more */
+        input.controls.playback.reverse {
+            display: none;
+        }
+        input.controls.playback.pause {
+            display: none;
+        }
+        input.controls.playback.play {
+            display: none;
         }
     }
 }
