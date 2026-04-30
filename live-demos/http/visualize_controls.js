@@ -41,13 +41,14 @@ export class VisualizeControls {
         tr_slice.add_ele("td").add_input_range("slice", { min: 0, max: 1, step: 1 }, (_e, value) => {
             this.parent.set_slice(value);
         }, { id: "slice" });
+        const fps = 100;
         const tr_playback = playback_table.add_ele("tr", {
             classes: "playback",
         });
         // ⏮ ⏪⏩⏭ (Add #fe0e to make them plain)
         // Turning off by hand because I can't turn it off in CSS
         tr_playback.add_ele("td").add_input_button("⏪︎", () => {
-            this.parent.playback_simulation(-60);
+            this.parent.playback_simulation(-fps);
         }, { classes: "controls playback reverse" });
         tr_playback.add_ele("td").add_input_button(
         // "⏸", // unicode version U+23F8
@@ -58,7 +59,7 @@ export class VisualizeControls {
         tr_playback.add_ele("td").add_input_button(
         // "⏩︎",
         "⏵", () => {
-            this.parent.playback_simulation(60);
+            this.parent.playback_simulation(fps);
         }, { classes: "controls playback play" });
         tr_playback.add_ele("td").add_input_button(
         // This does not render correctly on the iPhone.
@@ -66,12 +67,12 @@ export class VisualizeControls {
         // There must be a choice of font-family that does, but I don't know what.
         // "⏯",
         "⏵", () => {
-            if (this.parent.get_animation_state() == 1) {
+            if (this.parent.get_animation_state()) {
                 // this.parent.playback_simulation(0);
                 this.parent.animation_stop();
             }
             else {
-                // this.parent.playback_simulation(60);
+                // this.parent.playback_simulation(fps);
                 this.parent.animation_start(0);
             }
         }, { classes: "controls playback pauseplay" });
@@ -99,11 +100,14 @@ export class VisualizeControls {
             this.td_slice.set_style("display");
             this.td_playback.set_style("display");
         }
-        html.set_input_range("slice", 0, simulation.n_results() - 1);
         this.visualize.scale = html.get_input_float("zoom", 1, 5);
+        html.set_input_range("slice", 0, simulation.n_results() - 1);
+        this.visualize.slice = html.get_input_int("slice", simulation.n_results() * 0, simulation.n_results() - 1);
         // CPS mod: I want to, perhaps, start with a non-zero time slice
         //          so the user can actually see the demo is *doing* something.
         //          Again, not ideal, but ^shrug^.
-        this.visualize.slice = html.get_input_int("slice", simulation.n_results() / 2, simulation.n_results() - 1);
+        // html.set_input_value("zoom", 2);
+        // html.set_input_value("slice", simulation.n_results() / 2);
+        // this.visualize.redraw();
     }
 }

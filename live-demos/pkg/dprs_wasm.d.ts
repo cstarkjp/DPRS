@@ -17,6 +17,7 @@ export class Parameters {
     p_1: number;
     p_2: number;
     p_conj: number;
+    p_diag: number;
     p_initial: number;
     random_seed: number;
     sample_period: number;
@@ -51,16 +52,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly __wbg_get_topobc_fix_max: (a: number) => number;
-    readonly __wbg_get_topobc_fix_min: (a: number) => number;
-    readonly __wbg_get_topobc_fix_value: (a: number) => number;
-    readonly __wbg_get_topobc_periodic: (a: number) => number;
-    readonly __wbg_set_topobc_fix_max: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_min: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_value: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_periodic: (a: number, b: number) => void;
-    readonly __wbg_topobc_free: (a: number, b: number) => void;
-    readonly topobc_new: () => number;
     readonly __wbg_parameters_free: (a: number, b: number) => void;
     readonly parameters_initial_condition: (a: number) => [number, number];
     readonly parameters_n_iterations: (a: number) => number;
@@ -71,6 +62,7 @@ export interface InitOutput {
     readonly parameters_p_1: (a: number) => number;
     readonly parameters_p_2: (a: number) => number;
     readonly parameters_p_conj: (a: number) => number;
+    readonly parameters_p_diag: (a: number) => number;
     readonly parameters_p_initial: (a: number) => number;
     readonly parameters_random_seed: (a: number) => number;
     readonly parameters_sample_period: (a: number) => number;
@@ -82,6 +74,7 @@ export interface InitOutput {
     readonly parameters_set_p_1: (a: number, b: number) => void;
     readonly parameters_set_p_2: (a: number, b: number) => void;
     readonly parameters_set_p_conj: (a: number, b: number) => void;
+    readonly parameters_set_p_diag: (a: number, b: number) => void;
     readonly parameters_set_p_initial: (a: number, b: number) => void;
     readonly parameters_set_random_seed: (a: number, b: number) => void;
     readonly parameters_set_sample_period: (a: number, b: number) => void;
@@ -90,6 +83,16 @@ export interface InitOutput {
     readonly parameters_set_topo_bc_z: (a: number, b: number) => void;
     readonly parameters_sim_dimension: (a: number) => number;
     readonly parameters_topo_bc_x: (a: number) => number;
+    readonly __wbg_get_topobc_fix_max: (a: number) => number;
+    readonly __wbg_get_topobc_fix_min: (a: number) => number;
+    readonly __wbg_get_topobc_fix_value: (a: number) => number;
+    readonly __wbg_get_topobc_periodic: (a: number) => number;
+    readonly __wbg_set_topobc_fix_max: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_fix_min: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_fix_value: (a: number, b: number) => void;
+    readonly __wbg_set_topobc_periodic: (a: number, b: number) => void;
+    readonly __wbg_topobc_free: (a: number, b: number) => void;
+    readonly topobc_new: () => number;
     readonly __wbg_simulation_free: (a: number, b: number) => void;
     readonly simulation_new: (a: number) => number;
     readonly simulation_parameters: (a: number) => number;

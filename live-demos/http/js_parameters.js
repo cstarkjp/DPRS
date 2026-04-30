@@ -7,33 +7,39 @@ class Probabilities {
         /**
          * This contains JsParameters
          */
-        this.p_initial = 0.5;
         this.p_1 = 0.70548515;
         this.p_2 = 0.70548515;
+        this.p_diag = 0.1;
         this.p_conj = 0.0;
+        this.p_initial = 0.5;
     }
     set_parameters(parameters) {
-        parameters.p_initial = this.p_initial;
         parameters.p_1 = this.p_1;
         parameters.p_2 = this.p_2;
+        parameters.p_diag = this.p_diag;
         parameters.p_conj = this.p_conj;
+        parameters.p_initial = this.p_initial;
     }
     from_json(probabilities) {
-        const p_initial = probabilities["p_initial"];
         const p_1 = probabilities["p_1"];
         const p_2 = probabilities["p_2"];
+        const p_diag = probabilities["p_diag"];
         const p_conj = probabilities["p_conj"];
-        if (typeof p_initial == "number") {
-            this.p_initial = p_initial;
-        }
+        const p_initial = probabilities["p_initial"];
         if (typeof p_1 == "number") {
             this.p_1 = p_1;
         }
         if (typeof p_2 == "number") {
             this.p_2 = p_2;
         }
+        if (typeof p_diag == "number") {
+            this.p_diag = p_diag;
+        }
         if (typeof p_conj == "number") {
             this.p_conj = p_conj;
+        }
+        if (typeof p_initial == "number") {
+            this.p_initial = p_initial;
         }
     }
 }

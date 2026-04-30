@@ -24,8 +24,9 @@ export class SimulationControls {
     populate_values() {
         this.populate_value("p_1", this.parameters.probabilities.p_1);
         this.populate_value("p_2", this.parameters.probabilities.p_2);
-        this.populate_value("p_initial", this.parameters.probabilities.p_initial);
+        this.populate_value("p_diag", this.parameters.probabilities.p_diag);
         this.populate_value("p_conj", this.parameters.probabilities.p_conj);
+        this.populate_value("p_initial", this.parameters.probabilities.p_initial);
         this.populate_value("n_iterations", this.parameters.params.n_iterations);
         this.populate_value("sample_period", this.parameters.params.sample_period);
         this.populate_value("random_seed", this.parameters.params.random_seed);
@@ -74,8 +75,9 @@ export class SimulationControls {
         const seed_kind = html.get_input_radio_checked(this.ele_id + "_seed_kind");
         this.parameters.probabilities.p_1 = this.get_float("p_1", 0, 1);
         this.parameters.probabilities.p_2 = this.get_float("p_2", 0, 1);
-        this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
+        this.parameters.probabilities.p_diag = this.get_float("p_diag", 0, 1);
         this.parameters.probabilities.p_conj = this.get_float("p_conj", 0, 1);
+        this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
         if (simulation_choice !== null) {
             this.parameters.params.simulation_kind = simulation_choice;
         }
@@ -138,13 +140,13 @@ export class SimulationControls {
                     classes: "sim_controls_text dims_n_text",
                 });
             }
+            // const td_dummy1 = tr.add_ele("td");
+            // td_dummy1.add_label("dummy1", { classes: "dummy" }).set_content("   ");
         }
         {
             const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
             for (const [label, thing] of [
-                ["p1", "p_1"],
-                ["p2", "p_2"],
-                // ["p_initial", "p_initial"],
+                ["p_1", "p_1"], ["p_2", "p_2"], ["p_d", "p_diag"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
@@ -157,10 +159,7 @@ export class SimulationControls {
         {
             const tr = probs_table.add_ele("tr", { id: ele_id + "probability" });
             for (const [label, thing] of [
-                // ["p1", "p_1"],
-                // ["p2", "p_2"],
-                ["p0", "p_initial"],
-                ["pconj", "p_conj"],
+                ["p_0", "p_initial"], ["p_x", "p_conj"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
