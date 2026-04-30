@@ -144,33 +144,55 @@ export class Visualize {
             this.log.pop_reason();
             return;
         }
+        // Make a blank canvas
         ctx.fillStyle = "lightgrey";
         ctx.fillRect(0, 0, this.width, this.height);
+        // Get this lattice slice (flattened into a 1d array) maybe
+        const t_slice = this.slice;
+        let lattice_slice = this.simulation.result(t_slice);
+        console.log("Time slice:", t_slice);
+        const n_x = this.simulation.parameters.dims.n_x;
+        const n_y = this.simulation.parameters.dims.n_y;
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "DimGray";
+        ctx.fillText(t_slice.toString(), 10, n_y * y_scale - 10);
+        // ctx.fillText(t_slice_str, n_x * x_scale, n_y * y_scale);
         ctx.fillStyle = "purple";
-        let data = this.simulation.result(this.slice);
-        if (!data) {
+        if (!lattice_slice) {
             this.log.info(`No data in slice ${this.slice}`);
         }
         else {
-            var n = 0;
-            for (let y = 0; y < this.simulation.parameters.dims.n_y; y++) {
-                var last = null;
+            // Plot this lattice slice
+            var i_cell = 0;
+            // Loop over the lattice in (x,y) - once scaled we have canvas pixel coordinates
+            for (let y = 0; y < n_y; y++) {
+                var previous_cell_value = null;
                 var x_start = null;
-                for (let x = 0; x < this.simulation.parameters.dims.n_x; x += 1) {
-                    const d = data[n];
-                    if (last !== null && d != last) {
-                        if (last != 0) {
+                for (let x = 0; x < n_x; x++) {
+                    // This is where a velocity v_x shift can be implemented for time slice t
+                    // with a shift ~ (v_x * t * (n_x/L)) modulo n_x
+                    const cell_value = lattice_slice[i_cell];
+                    // At the start of the row, when x=0, previous_cell_value=null, 
+                    // so this is skipped
+                    if (previous_cell_value !== null && cell_value != previous_cell_value) {
+                        // Plot a rectangle that's the RLE width of occupied cells,
+                        // and height of one cell, with both sizes scaled to canvas pixels
+                        if (previous_cell_value != 0) {
                             ctx.fillRect(x_start * x_scale, y * y_scale, (x - x_start) * x_scale, y_scale);
                         }
                     }
-                    if (d != last) {
+                    if (cell_value != previous_cell_value) {
                         x_start = x;
-                        last = d;
+                        previous_cell_value = cell_value;
                     }
-                    n = n + 1;
+                    // Move to next cell in the flattened lattice slice
+                    i_cell = i_cell + 1;
                 }
-                if (last != 0) {
-                    ctx.fillRect(x_start * x_scale, y * y_scale, (this.simulation.parameters.dims.n_x - x_start) * x_scale, y_scale);
+                if (previous_cell_value != 0) {
+                    // At end of each lattice row:
+                    // plot a rectangle that's the RLE width of occupied cells,
+                    // and height of one cell, with both sizes scaled to canvas pixels
+                    ctx.fillRect(x_start * x_scale, y * y_scale, (n_x - x_start) * x_scale, y_scale);
                 }
             }
         }
@@ -220,28 +242,28 @@ export class Visualize {
         this.set_animation_state(true);
     }
     get_fps() {
-        console.log("Current fps:", this.frames_per_second);
+        // console.log("Current fps:", this.frames_per_second);
         return this.frames_per_second;
     }
     set_fps(fps) {
-        console.log("Setting fps:", this.frames_per_second);
+        // console.log("Setting fps:", this.frames_per_second);
         this.frames_per_second = fps;
     }
-    // Step backward by one iteration, freezing the playback if need bed
+    // Step backward by one iteration, freezing the playback if need be
     decrement_slice() {
         this.animation_stop();
         const next_slice = this.slice - 1;
-        if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
+        if (next_slice >= 0 && next_slice <= this.simulation.n_results()) {
             this.slice = next_slice;
         }
         this.redraw();
         html.set_input_value("slice", this.slice);
     }
-    // Step forward by one iteration, freezing the playback if need bed
+    // Step forward by one iteration, freezing the playback if need be
     increment_slice() {
         this.animation_stop();
         const next_slice = this.slice + this.t_increment;
-        if (next_slice >= 0 && next_slice < this.simulation.n_results()) {
+        if (next_slice >= 0 && next_slice <= this.simulation.n_results()) {
             this.slice = next_slice;
         }
         this.redraw();
@@ -266,12 +288,12 @@ export class Visualize {
             this.log.error("animation", "Should not reach here with dim < 2");
             return;
         }
-        if (this.slice >= 0 && this.slice < this.simulation.n_results()) {
+        if (this.slice >= 0 && this.slice <= this.simulation.n_results()) {
             html.set_input_value("slice", this.slice);
             this.redraw();
         }
         const next_slice = this.slice + this.slice_delta;
-        if (next_slice > 0 && next_slice < this.simulation.n_results()) {
+        if (next_slice > 0 && next_slice <= this.simulation.n_results()) {
             this.slice = next_slice;
             this.anim.schedule_at(time + 1000 / this.get_fps());
         }

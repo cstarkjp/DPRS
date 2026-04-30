@@ -96,9 +96,9 @@ export class VisualizeControls {
         }
         html.set_input_value("zoom", initial_zoom);
         this.visualize.scale = html.get_input_float("zoom", 1, 5);
-        html.set_input_range("slice", 0, simulation.n_results() - 1);
+        html.set_input_range("slice", 0, simulation.n_results());
         html.set_input_value("slice", simulation.n_results() / 2);
-        this.visualize.slice = html.get_input_int("slice", simulation.n_results() * 0, simulation.n_results() - 1);
+        this.visualize.slice = html.get_input_int("slice", simulation.n_results() * 0, simulation.n_results());
         // CPS mod: I want to, perhaps, start with a non-zero time slice
         //          so the user can actually see the demo is *doing* something.
         //          Again, not ideal, but ^shrug^.
