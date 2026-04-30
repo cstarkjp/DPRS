@@ -49,18 +49,27 @@ export class VisualizeControls {
         tr_playback.add_ele("td").add_input_button("⏪︎", () => {
             this.parent.playback_simulation(-60);
         }, { classes: "controls playback reverse" });
-        tr_playback.add_ele("td").add_input_button("⏸", () => {
+        tr_playback.add_ele("td").add_input_button(
+        // "⏸", // unicode version U+23F8
+        "⏸", // emoji version, &#9208, possibly
+        () => {
             this.parent.playback_simulation(0);
         }, { classes: "controls playback stop" });
-        tr_playback.add_ele("td").add_input_button("⏩︎", () => {
+        tr_playback.add_ele("td").add_input_button(
+        // "⏩︎",
+        "⏵", () => {
             this.parent.playback_simulation(60);
         }, { classes: "controls playback play" });
-        tr_playback.add_ele("td").add_input_button("⏴", () => {
+        tr_playback.add_ele("td").add_input_button(
+        // "⏴",
+        "➖", () => {
             // Step backward by one iteration: replaces slow reverse playback
             // this.parent.playback_simulation(-10);
             this.parent.decrement_slice();
         }, { classes: "controls playback decrement" });
-        tr_playback.add_ele("td").add_input_button("⏵", () => {
+        tr_playback.add_ele("td").add_input_button(
+        // "⏵",
+        "➕", () => {
             // Step forward by one iteration: replaces slow forward playback
             // this.parent.playback_simulation(10);
             this.parent.increment_slice();
