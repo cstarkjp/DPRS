@@ -36,7 +36,7 @@ export class Visualize {
          */
         this.slice_delta = 1;
         /** Target frames per second of animation */
-        this.frames_per_second = 100;
+        this.frames_per_second = 120;
         /** Animation state (I see no reason why we can't track this...) */
         this.is_playing = false;
         this.log = new log.Logger(logger, "viz");

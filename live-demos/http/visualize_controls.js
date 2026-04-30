@@ -41,7 +41,7 @@ export class VisualizeControls {
         tr_slice.add_ele("td").add_input_range("slice", { min: 0, max: 1, step: 1 }, (_e, value) => {
             this.parent.set_slice(value);
         }, { id: "slice" });
-        const fps = 100;
+        const fps = 120;
         const tr_playback = playback_table.add_ele("tr", {
             classes: "playback",
         });
