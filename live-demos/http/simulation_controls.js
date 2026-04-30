@@ -1,10 +1,12 @@
 import * as html from "./html.js";
 import { JsParameters } from "./js_parameters.js";
 export class SimulationControls {
+    // t_increment: number;
     constructor(ele_id, div_id, dims) {
         this.parameters = new JsParameters();
         this.ele_id = ele_id;
         this.dims = dims;
+        // this.t_increment = 1;
         const div = document.getElementById(div_id);
         if (!div) {
             throw new Error(`Failed to find ${div_id} to build SimulationControls`);
@@ -44,12 +46,15 @@ export class SimulationControls {
         }
         if (this.parameters.params.simulation_kind == "simple_dk") {
             html.set_input_checked(this.ele_id + "sk_simple_dk", true);
+            // this.t_increment = 1;
         }
         else if (this.parameters.params.simulation_kind == "staggered_dk") {
             html.set_input_checked(this.ele_id + "sk_staggered_dk", true);
+            // this.t_increment = 2;
         }
         else if (this.parameters.params.simulation_kind == "bedload") {
             html.set_input_checked(this.ele_id + "sk_bedload", true);
+            // this.t_increment = 1;
         }
     }
     set_ic_randomize() {
@@ -63,12 +68,15 @@ export class SimulationControls {
     }
     set_simple_dk() {
         html.set_input_checked(this.ele_id + "sk_simple_dk", true);
+        // this.t_increment = 1;
     }
     set_staggered_dk() {
         html.set_input_checked(this.ele_id + "sk_staggered_dk", true);
+        // this.t_increment = 2;
     }
     set_bedload() {
         html.set_input_checked(this.ele_id + "sk_bedload", true);
+        // this.t_increment = 1;
     }
     populate_parameters() {
         const simulation_choice = html.get_input_radio_checked(this.ele_id + "sim_kind");
