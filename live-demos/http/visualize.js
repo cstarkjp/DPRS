@@ -6,10 +6,6 @@ import { Animate } from "./animate.js";
  *
  */
 export class Visualize {
-    /** Drift speed */
-    // Move this to JsParameters
-    // u_x: number = 0;
-    // do_drift: boolean = false;
     /**
      *
      * Create a new Visualize for a simulation
@@ -193,7 +189,6 @@ export class Visualize {
         // Get this lattice slice (flattened into a 1d array) maybe
         const t_slice = this.slice;
         const lattice_slice = this.simulation.result(t_slice);
-        // console.log("Time slice:", t_slice);
         // Print the time slice in the lower-left corner of the canvas
         const offset = 10;
         ctx.font = "12px Arial";
@@ -246,9 +241,6 @@ export class Visualize {
                 }
             }
         }
-        /*
-        this.log.info("Completed canvas");
-        */
         this.log.pop_reason();
     }
     /** If we're zooming etc, need to reset rough canvas to force redraw */
