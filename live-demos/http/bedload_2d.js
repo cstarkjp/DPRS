@@ -13,6 +13,8 @@ class Main {
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
+        // this.visualize.u_x = -0.2;
+        this.visualize.do_rough_background = true;
         const params_2d = new JsParameters();
         // These values are chosen to lie on the p1-p2 phase diagram boundary
         // params_2d.probabilities.p_1 = 0.61487;  // random_seed: 5
@@ -28,8 +30,10 @@ class Main {
         // params_2d.probabilities.p_1 = 0.99677;  // random_seed: ?
         // params_2d.probabilities.p_2 = 0.01; 
         params_2d.probabilities.p_conj = 1e-6;
-        params_2d.probabilities.p_initial = 0.001;
+        params_2d.probabilities.p_nbr = 0.5;
         params_2d.probabilities.p_diag = 0.1;
+        params_2d.probabilities.u_x = 1;
+        params_2d.probabilities.p_initial = 0.001;
         params_2d.params.n_iterations = 500;
         params_2d.params.sample_period = 1;
         params_2d.params.random_seed = 31;

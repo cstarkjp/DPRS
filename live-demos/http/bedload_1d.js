@@ -13,13 +13,18 @@ class Main {
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
+        this.visualize.do_rough_background = false;
         const params_1d = new JsParameters();
         // For staggered p_c = 0.70548515
         //
         // For simplified p_c = 0.538910
-        params_1d.probabilities.p_initial = 0.5;
-        params_1d.probabilities.p_1 = 0.64; //
+        params_1d.probabilities.p_1 = 0.64;
         params_1d.probabilities.p_2 = 0.64;
+        params_1d.probabilities.p_conj = 0.0;
+        params_1d.probabilities.p_nbr = 0.0;
+        params_1d.probabilities.p_diag = 0.0;
+        params_1d.probabilities.u_x = 0.0;
+        params_1d.probabilities.p_initial = 0.5;
         params_1d.params.n_iterations = 300;
         params_1d.params.sample_period = 1;
         params_1d.params.random_seed = 1;

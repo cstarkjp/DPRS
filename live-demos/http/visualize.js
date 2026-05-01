@@ -6,6 +6,10 @@ import { Animate } from "./animate.js";
  *
  */
 export class Visualize {
+    /** Drift speed */
+    // Move this to JsParameters
+    // u_x: number = 0;
+    // do_drift: boolean = false;
     /**
      *
      * Create a new Visualize for a simulation
@@ -19,11 +23,11 @@ export class Visualize {
          * This may be changed if a simulation of a different dimension is run
          */
         this.simulation_controls = null;
-        /** Width of the required canvs
+        /** Width of the required canvas
          *
          */
         this.width = 0;
-        /** Height of the required canvs
+        /** Height of the required canvas
          *
          */
         this.height = 0;
@@ -31,6 +35,7 @@ export class Visualize {
          *
          */
         this.scale = 1;
+        this.max_zoom = 5;
         /** Which direction to animate 'time slice' when animating
          *
          */
@@ -41,6 +46,9 @@ export class Visualize {
         this.is_playing = false;
         /** Slice increment for simple vs staggered */
         this.t_increment = 1;
+        /** Random canvas for "rough" background */
+        this.rough_background = null;
+        this.do_rough_background = true;
         this.log = new log.Logger(logger, "viz");
         this.simulation = simulation;
         this.anim = new Animate((time) => this.animation_tick(time));
@@ -144,51 +152,93 @@ export class Visualize {
             this.log.pop_reason();
             return;
         }
-        // Make a blank canvas
-        ctx.fillStyle = "lightgrey";
-        ctx.fillRect(0, 0, this.width, this.height);
-        // Get this lattice slice (flattened into a 1d array) maybe
-        const t_slice = this.slice;
-        let lattice_slice = this.simulation.result(t_slice);
-        console.log("Time slice:", t_slice);
+        // Get the lattice size
         const n_x = this.simulation.parameters.dims.n_x;
         const n_y = this.simulation.parameters.dims.n_y;
+        if (this.do_rough_background) {
+            // Make a "rough" looking canvas
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, this.width, this.height);
+            var redo;
+            if (this.rough_background == null) {
+                redo = true;
+            }
+            else {
+                // Make sure to rebuild the rough bgrd if we've made the lattice bigger
+                // and run a new sim
+                if (this.rough_background.width < n_x * this.max_zoom
+                    || this.rough_background.height < n_y * this.max_zoom) {
+                    redo = true;
+                }
+                else {
+                    redo = false;
+                }
+            }
+            if (redo) {
+                this.rough_background = ctx.createImageData(n_x * this.max_zoom, n_y * this.max_zoom);
+                let rough_canvas_data = this.rough_background.data;
+                for (let i = 0; i < rough_canvas_data.length; i += 4) {
+                    let alpha = Math.random() * 30 + 30;
+                    rough_canvas_data[i + 3] = alpha;
+                }
+            }
+            ctx.putImageData(this.rough_background, 0, 0);
+        }
+        else {
+            // Make a blank canvas
+            // Unoccupied cells are colored grey
+            ctx.fillStyle = "lightgrey";
+            ctx.fillRect(0, 0, this.width, this.height);
+        }
+        // Get this lattice slice (flattened into a 1d array) maybe
+        const t_slice = this.slice;
+        const lattice_slice = this.simulation.result(t_slice);
+        // console.log("Time slice:", t_slice);
+        // Print the time slice in the lower-left corner of the canvas
+        const offset = 10;
         ctx.font = "12px Arial";
         ctx.fillStyle = "#505050";
-        ctx.fillText(t_slice.toString(), 10, n_y * y_scale - 10);
-        // ctx.fillText(t_slice_str, n_x * x_scale, n_y * y_scale);
+        ctx.fillText(t_slice.toString(), offset, n_y * y_scale - offset);
+        // Occupied cells are colored purple
         ctx.fillStyle = "purple";
+        // Color in the occupied cells with appropriately size pixel rectangles
+        const empty = 0;
         if (!lattice_slice) {
             this.log.info(`No data in slice ${this.slice}`);
         }
         else {
-            // Plot this lattice slice
-            var i_cell = 0;
             // Loop over the lattice in (x,y) - once scaled we have canvas pixel coordinates
             for (let y = 0; y < n_y; y++) {
-                var previous_cell_value = null;
-                var x_start = null;
+                let previous_cell_state = null;
+                let x_start = null;
+                // This isn't the correct way to get ux, but...
+                const u_x = this.simulation_controls.get_float("u_x", -100, 100);
+                // const u_x = this.simulation_controls!.parameters.probabilities.u_x;
+                // const u_x = this.simulation.parameters.probabilities.u_x;
+                const x_sense = Math.sign(u_x);
+                const x_drift = Math.abs(u_x) * t_slice;
+                const x_shift = Math.trunc(x_drift) % n_x;
+                // const x_error = x_drift - x_shift;
                 for (let x = 0; x < n_x; x++) {
-                    // This is where a velocity v_x shift can be implemented for time slice t
-                    // with a shift ~ (v_x * t * (n_x/L)) modulo n_x
-                    const cell_value = lattice_slice[i_cell];
-                    // At the start of the row, when x=0, previous_cell_value=null, 
+                    // This is where a velocity shift can be implemented for time slice t
+                    // with a shift ~ (u_x * t * (n_x/L)) modulo n_x
+                    let i_cell = y * n_x + (x - x_sense * x_shift + n_x) % n_x;
+                    const cell_state = lattice_slice[i_cell];
+                    // At the start of the row, when x=0, previous_cell_state=null, 
                     // so this is skipped
-                    if (previous_cell_value !== null && cell_value != previous_cell_value) {
+                    if (previous_cell_state !== null && cell_state != previous_cell_state) {
                         // Plot a rectangle that's the RLE width of occupied cells,
                         // and height of one cell, with both sizes scaled to canvas pixels
-                        if (previous_cell_value != 0) {
+                        if (previous_cell_state != empty) {
                             ctx.fillRect(x_start * x_scale, y * y_scale, (x - x_start) * x_scale, y_scale);
                         }
                     }
-                    if (cell_value != previous_cell_value) {
+                    if (cell_state != previous_cell_state) {
                         x_start = x;
-                        previous_cell_value = cell_value;
+                        previous_cell_state = cell_state;
                     }
-                    // Move to next cell in the flattened lattice slice
-                    i_cell = i_cell + 1;
                 }
-                if (previous_cell_value != 0) {
+                if (previous_cell_state != empty) {
                     // At end of each lattice row:
                     // plot a rectangle that's the RLE width of occupied cells,
                     // and height of one cell, with both sizes scaled to canvas pixels
@@ -200,6 +250,10 @@ export class Visualize {
         this.log.info("Completed canvas");
         */
         this.log.pop_reason();
+    }
+    /** If we're zooming etc, need to reset rough canvas to force redraw */
+    reset_rough_background() {
+        this.rough_background = null;
     }
     /** Set redraw */
     set_redraw(simulation_controls) {
@@ -252,7 +306,7 @@ export class Visualize {
     // Step backward by one iteration, freezing the playback if need be
     decrement_slice() {
         this.animation_stop();
-        const next_slice = this.slice - 1;
+        const next_slice = this.slice - this.t_increment;
         if (next_slice >= 0 && next_slice <= this.simulation.n_results()) {
             this.slice = next_slice;
         }

@@ -23,13 +23,17 @@ export class JsSimulation {
         this.log.info(`Probabilities  ` +
             `p_1: ${parameters.probabilities.p_1} ` +
             `p_2: ${parameters.probabilities.p_2} ` +
-            `p_diag: ${parameters.probabilities.p_diag} ` +
             `p_conj: ${parameters.probabilities.p_conj} ` +
+            `p_nbr: ${parameters.probabilities.p_nbr} ` +
+            `p_diag: ${parameters.probabilities.p_diag} ` +
+            `u_x: ${parameters.probabilities.u_x} ` +
             `p_initial:${parameters.probabilities.p_initial} `);
-        this.log.info(`Dims n_x:${parameters.dims.n_x} ` +
+        this.log.info(`Dims ` +
+            `n_x:${parameters.dims.n_x} ` +
             `n_y:${parameters.dims.n_y} ` +
             `n_z:${parameters.dims.n_z}`);
-        this.log.info(`Params n_iterations:${parameters.params.n_iterations} ` +
+        this.log.info(`Params ` +
+            `n_iterations:${parameters.params.n_iterations} ` +
             `sample_period:${parameters.params.sample_period} ` +
             `random_seed:${parameters.params.random_seed} ` +
             `seed_kind:${parameters.params.seed_kind} ` +

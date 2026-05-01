@@ -108,6 +108,13 @@ export class Parameters {
     /**
      * @returns {number}
      */
+    get p_nbr() {
+        const ret = wasm.parameters_p_nbr(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @returns {number}
+     */
     get random_seed() {
         const ret = wasm.parameters_random_seed(this.__wbg_ptr);
         return ret >>> 0;
@@ -184,6 +191,12 @@ export class Parameters {
     /**
      * @param {number} value
      */
+    set p_nbr(value) {
+        wasm.parameters_set_p_nbr(this.__wbg_ptr, value);
+    }
+    /**
+     * @param {number} value
+     */
     set random_seed(value) {
         wasm.parameters_set_random_seed(this.__wbg_ptr, value);
     }
@@ -215,6 +228,12 @@ export class Parameters {
         wasm.parameters_set_topo_bc_z(this.__wbg_ptr, value.__wbg_ptr);
     }
     /**
+     * @param {number} value
+     */
+    set u_x(value) {
+        wasm.parameters_set_u_x(this.__wbg_ptr, value);
+    }
+    /**
      * @returns {number}
      */
     sim_dimension() {
@@ -227,6 +246,13 @@ export class Parameters {
     get topo_bc_x() {
         const ret = wasm.parameters_topo_bc_x(this.__wbg_ptr);
         return TopoBc.__wrap(ret);
+    }
+    /**
+     * @returns {number}
+     */
+    get u_x() {
+        const ret = wasm.parameters_u_x(this.__wbg_ptr);
+        return ret;
     }
 }
 if (Symbol.dispose) Parameters.prototype[Symbol.dispose] = Parameters.prototype.free;
