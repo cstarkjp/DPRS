@@ -85,7 +85,7 @@ class Main {
         switch (preset) {
             case 0:
                 p.preset = 0;
-                break;
+                return;
             case 1:
                 p.preset = 1;
                 p.probabilities.p_1 = 0.61487;
