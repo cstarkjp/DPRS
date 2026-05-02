@@ -7,50 +7,58 @@ import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 class Main {
     constructor(logger, params) {
-        this.log = new Logger(logger, "dk_main");
+        const dim = 2;
+        this.log = new Logger(logger, `dk_${dim}d`);
         this.log.push_reason("init");
-        this.log.info("Starting dk");
+        this.log.info("Starting");
         this.simulation = new JsSimulation(logger);
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
         this.visualize.do_rough_background = false;
-        const params_2d = new JsParameters();
-        params_2d.probabilities.p_1 = 0.38; //0.70548515
-        params_2d.probabilities.p_2 = 0.38;
-        params_2d.probabilities.p_conj = 0.0;
-        params_2d.probabilities.p_nbr = 0.0;
-        params_2d.probabilities.p_diag = 0.0;
-        params_2d.probabilities.u_x = 0.0;
-        params_2d.probabilities.p_initial = 0.5;
-        params_2d.params.n_iterations = 500;
-        params_2d.params.sample_period = 1;
-        params_2d.params.random_seed = 6;
-        params_2d.dims.n_x = 350;
-        params_2d.dims.n_y = 200;
-        params_2d.dims.n_z = 1;
-        params_2d.params.seed_kind = "center";
-        params_2d.params.simulation_kind = "staggered_dk";
-        this.simulation_controls_2d = new SimulationControls("2d_sc_", "2d_sim_controls", 2);
-        this.simulation_controls_2d.parameters = params_2d;
-        this.simulation_controls_2d.populate_values();
+        this.simulation_controls = new SimulationControls(`${dim}d_sc_`, `${dim}d_sim_controls`, dim, this.get_presets());
+        this.simulation_controls.parameters = this.get_default_parameters();
+        this.simulation_controls.populate_values();
         this.log.info("HTML built, running initial simulation");
-        this.run_simulation(2);
+        this.run_simulation(dim);
         this.log.info("Initialization complete");
         this.log.pop_reason();
     }
     run_simulation(dim) {
         this.log.push_reason("sim");
         this.log.info(`Running simulation of dimension ${dim}`);
-        this.simulation_controls_2d.populate_parameters();
-        this.simulation_controls_2d.parameters.dims.n_z = 1;
-        // this.simulation_controls_2d.set_staggered_dk()
-        const sim_parameters = this.simulation_controls_2d.parameters;
+        this.simulation_controls.populate_parameters();
+        this.simulation_controls.parameters.dims.n_z = 1;
+        const sim_parameters = this.simulation_controls.parameters;
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
         this.visualize_controls.populate_values(this.simulation);
-        this.visualize.set_redraw(this.simulation_controls_2d);
+        this.visualize.set_redraw(this.simulation_controls);
         this.visualize.redraw();
         this.log.pop_reason();
+    }
+    get_default_parameters() {
+        const p = new JsParameters();
+        p.probabilities.p_1 = 0.38; //0.70548515
+        p.probabilities.p_2 = 0.38;
+        p.probabilities.p_conj = 0.0;
+        p.probabilities.p_nbr = 0.0;
+        p.probabilities.p_diag = 0.0;
+        p.probabilities.u_x = 0.0;
+        p.probabilities.p_initial = 0.5;
+        p.params.n_iterations = 500;
+        p.params.sample_period = 1;
+        p.params.random_seed = 6;
+        p.dims.n_x = 350;
+        p.dims.n_y = 200;
+        p.dims.n_z = 1;
+        p.params.seed_kind = "center";
+        p.params.simulation_kind = "staggered_dk";
+        return p;
+    }
+    get_presets() {
+        return null;
+    }
+    enact_preset(preset) {
     }
 }
 window.main = null;
