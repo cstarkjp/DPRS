@@ -2,7 +2,6 @@
 
 export class Parameters {
     static __wrap(ptr) {
-        ptr = ptr >>> 0;
         const obj = Object.create(Parameters.prototype);
         obj.__wbg_ptr = ptr;
         ParametersFinalization.register(obj, obj.__wbg_ptr, obj);
@@ -66,7 +65,7 @@ export class Parameters {
      */
     constructor() {
         const ret = wasm.parameters_new();
-        this.__wbg_ptr = ret >>> 0;
+        this.__wbg_ptr = ret;
         ParametersFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
@@ -275,7 +274,7 @@ export class Simulation {
     constructor(parameters) {
         _assertClass(parameters, Parameters);
         const ret = wasm.simulation_new(parameters.__wbg_ptr);
-        this.__wbg_ptr = ret >>> 0;
+        this.__wbg_ptr = ret;
         SimulationFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
@@ -325,7 +324,6 @@ if (Symbol.dispose) Simulation.prototype[Symbol.dispose] = Simulation.prototype.
 
 export class TopologyBc {
     static __wrap(ptr) {
-        ptr = ptr >>> 0;
         const obj = Object.create(TopologyBc.prototype);
         obj.__wbg_ptr = ptr;
         TopologyBcFinalization.register(obj, obj.__wbg_ptr, obj);
@@ -395,7 +393,7 @@ export class TopologyBc {
     }
     constructor() {
         const ret = wasm.topologybc_new();
-        this.__wbg_ptr = ret >>> 0;
+        this.__wbg_ptr = ret;
         TopologyBcFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
@@ -404,7 +402,7 @@ if (Symbol.dispose) TopologyBc.prototype[Symbol.dispose] = TopologyBc.prototype.
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
-        __wbg___wbindgen_throw_6b64449b9b9ed33c: function(arg0, arg1) {
+        __wbg___wbindgen_throw_9c75d47bf9e7731e: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
         __wbindgen_cast_0000000000000001: function(arg0, arg1) {
@@ -430,13 +428,13 @@ function __wbg_get_imports() {
 
 const ParametersFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_parameters_free(ptr >>> 0, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_parameters_free(ptr, 1));
 const SimulationFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_simulation_free(ptr >>> 0, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_simulation_free(ptr, 1));
 const TopologyBcFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_topologybc_free(ptr >>> 0, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_topologybc_free(ptr, 1));
 
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
@@ -450,8 +448,7 @@ function getArrayU8FromWasm0(ptr, len) {
 }
 
 function getStringFromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return decodeText(ptr, len);
+    return decodeText(ptr >>> 0, len);
 }
 
 let cachedUint8ArrayMemory0 = null;
@@ -534,8 +531,9 @@ if (!('encodeInto' in cachedTextEncoder)) {
 
 let WASM_VECTOR_LEN = 0;
 
-let wasmModule, wasm;
+let wasmModule, wasmInstance, wasm;
 function __wbg_finalize_init(instance, module) {
+    wasmInstance = instance;
     wasm = instance.exports;
     wasmModule = module;
     cachedUint8ArrayMemory0 = null;

@@ -64,12 +64,6 @@ export interface InitOutput {
     readonly __wbg_set_topologybc_periodic: (a: number, b: number) => void;
     readonly __wbg_topologybc_free: (a: number, b: number) => void;
     readonly topologybc_new: () => number;
-    readonly __wbg_simulation_free: (a: number, b: number) => void;
-    readonly simulation_new: (a: number) => number;
-    readonly simulation_parameters: (a: number) => number;
-    readonly simulation_result: (a: number, b: number) => [number, number];
-    readonly simulation_set_parameters: (a: number, b: number) => void;
-    readonly simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly __wbg_parameters_free: (a: number, b: number) => void;
     readonly parameters_initial_condition: (a: number) => [number, number];
     readonly parameters_n_iterations: (a: number) => number;
@@ -105,6 +99,12 @@ export interface InitOutput {
     readonly parameters_sim_dimension: (a: number) => number;
     readonly parameters_topology_bc_x: (a: number) => number;
     readonly parameters_u_x: (a: number) => number;
+    readonly __wbg_simulation_free: (a: number, b: number) => void;
+    readonly simulation_new: (a: number) => number;
+    readonly simulation_parameters: (a: number) => number;
+    readonly simulation_result: (a: number, b: number) => [number, number];
+    readonly simulation_set_parameters: (a: number, b: number) => void;
+    readonly simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
