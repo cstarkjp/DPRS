@@ -29,15 +29,15 @@ export class JsSimulation {
             `u_x: ${parameters.probabilities.u_x} ` +
             `p_initial:${parameters.probabilities.p_initial} `);
         this.log.info(`Dims ` +
-            `n_x:${parameters.dims.n_x} ` +
-            `n_y:${parameters.dims.n_y} ` +
-            `n_z:${parameters.dims.n_z}`);
+            `n_x:${parameters.dimensions.n_x} ` +
+            `n_y:${parameters.dimensions.n_y} ` +
+            `n_z:${parameters.dimensions.n_z}`);
         this.log.info(`Params ` +
-            `n_iterations:${parameters.params.n_iterations} ` +
-            `sample_period:${parameters.params.sample_period} ` +
-            `random_seed:${parameters.params.random_seed} ` +
-            `seed_kind:${parameters.params.seed_kind} ` +
-            `simulation_kind:${parameters.params.simulation_kind}`);
+            `n_iterations:${parameters.settings.n_iterations} ` +
+            `sample_period:${parameters.settings.sample_period} ` +
+            `random_seed:${parameters.settings.random_seed} ` +
+            `seed_kind:${parameters.settings.seed_kind} ` +
+            `simulation_kind:${parameters.settings.simulation_kind}`);
         this.simulation = new Simulation(this.parameters.as_parameters());
         this.simulation.simulate(this.parameters.wasm_simulation_kind());
         this.dim = this.parameters.dim();
@@ -48,7 +48,7 @@ export class JsSimulation {
      * Return the number of result lattices
      */
     n_results() {
-        return (this.parameters.params.n_iterations / this.parameters.params.sample_period);
+        return (this.parameters.settings.n_iterations / this.parameters.settings.sample_period);
     }
     /**
      * Return the n'th result lattice
@@ -61,7 +61,7 @@ export class JsSimulation {
      */
     results_are_staggered() {
         if (this.parameters.wasm_simulation_kind() == "staggered_dk") {
-            return this.parameters.params.sample_period == 1;
+            return this.parameters.settings.sample_period == 1;
         }
         return false;
     }

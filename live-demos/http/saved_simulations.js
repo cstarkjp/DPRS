@@ -42,7 +42,7 @@ export class SavedSimulations {
             const sim_json = this.storage.load_file(f, "json");
             const params = new js_parameters.JsParameters();
             params.from_json(sim_json);
-            this.descriptions.set(f, `${params.dims.n_x}x${params.dims.n_y}x${params.dims.n_z}` +
+            this.descriptions.set(f, `${params.dimensions.n_x}x${params.dimensions.n_y}x${params.dimensions.n_z}` +
                 `:${params.probabilities.p_1}/${params.probabilities.p_2}`);
         }
     }

@@ -1,10 +1,10 @@
 import * as html from "./html.js";
 import { JsParameters } from "./js_parameters.js";
 export class SimulationControls {
-    constructor(ele_id, div_id, dims, presets = null) {
+    constructor(ele_id, div_id, dim, presets = null) {
         this.parameters = new JsParameters();
         this.ele_id = ele_id;
-        this.dims = dims;
+        this.dim = dim;
         this.presets = presets;
         const div = document.getElementById(div_id);
         if (!div) {
@@ -31,16 +31,16 @@ export class SimulationControls {
         this.populate_value("p_diag", this.parameters.probabilities.p_diag);
         this.populate_value("u_x", this.parameters.probabilities.u_x);
         this.populate_value("p_initial", this.parameters.probabilities.p_initial);
-        this.populate_value("n_iterations", this.parameters.params.n_iterations);
-        this.populate_value("sample_period", this.parameters.params.sample_period);
-        this.populate_value("random_seed", this.parameters.params.random_seed);
-        this.populate_value("n_x", this.parameters.dims.n_x);
-        this.populate_value("n_y", this.parameters.dims.n_y);
-        this.populate_value("n_z", this.parameters.dims.n_z);
-        if (this.parameters.params.seed_kind == "center") {
+        this.populate_value("n_iterations", this.parameters.settings.n_iterations);
+        this.populate_value("sample_period", this.parameters.settings.sample_period);
+        this.populate_value("random_seed", this.parameters.settings.random_seed);
+        this.populate_value("n_x", this.parameters.dimensions.n_x);
+        this.populate_value("n_y", this.parameters.dimensions.n_y);
+        this.populate_value("n_z", this.parameters.dimensions.n_z);
+        if (this.parameters.settings.seed_kind == "center") {
             html.set_input_checked(this.ele_id + "seed_center", true);
         }
-        else if (this.parameters.params.seed_kind == "edge") {
+        else if (this.parameters.settings.seed_kind == "edge") {
             html.set_input_checked(this.ele_id + "seed_edge", true);
         }
         else {
@@ -48,15 +48,15 @@ export class SimulationControls {
         }
         if (this.presets != null) {
             console.log(`Setting preset in web page`);
-            html.set_input_checked(this.ele_id + "sk_preset" + this.parameters.preset.toString(), true);
+            html.set_input_checked(this.ele_id + "sim_preset" + this.parameters.preset.toString(), true);
         }
-        if (this.parameters.params.simulation_kind == "simple_dk") {
+        if (this.parameters.settings.simulation_kind == "simple_dk") {
             html.set_input_checked(this.ele_id + "sk_simple_dk", true);
         }
-        else if (this.parameters.params.simulation_kind == "staggered_dk") {
+        else if (this.parameters.settings.simulation_kind == "staggered_dk") {
             html.set_input_checked(this.ele_id + "sk_staggered_dk", true);
         }
-        else if (this.parameters.params.simulation_kind == "bedload") {
+        else if (this.parameters.settings.simulation_kind == "bedload") {
             html.set_input_checked(this.ele_id + "sk_bedload", true);
         }
     }
@@ -79,7 +79,7 @@ export class SimulationControls {
         html.set_input_checked(this.ele_id + "sk_bedload", true);
     }
     // set_preset() {
-    //   html.set_input_checked(this.ele_id + "sk_preset1", true);
+    //   html.set_input_checked(this.ele_id + "sim_preset1", true);
     // }
     // Get parameter values from web page
     populate_parameters() {
@@ -87,10 +87,10 @@ export class SimulationControls {
         const seed_kind = html.get_input_radio_checked(this.ele_id + "_seed_kind");
         const preset = html.get_input_radio_checked(this.ele_id + "_preset");
         if (simulation_choice !== null) {
-            this.parameters.params.simulation_kind = simulation_choice;
+            this.parameters.settings.simulation_kind = simulation_choice;
         }
         if (seed_kind !== null) {
-            this.parameters.params.seed_kind = seed_kind;
+            this.parameters.settings.seed_kind = seed_kind;
         }
         if (preset !== null) {
             this.parameters.preset = Number(preset);
@@ -102,16 +102,16 @@ export class SimulationControls {
         this.parameters.probabilities.p_diag = this.get_float("p_diag", 0, 1);
         this.parameters.probabilities.u_x = this.get_float("u_x", -1e9, +1e9);
         this.parameters.probabilities.p_initial = this.get_float("p_initial", 0, 1);
-        this.parameters.params.n_iterations = this.get_int("n_iterations", 0, 1000000);
-        this.parameters.params.sample_period = this.get_int("sample_period", 1, 100000);
-        this.parameters.params.random_seed = this.get_int("random_seed", 1, 100000);
-        this.parameters.dims.n_x = this.get_int("n_x", 10, 10000);
-        this.parameters.dims.n_y = this.get_int("n_y", 10, 10000);
-        this.parameters.dims.n_z = this.get_int("n_z", 10, 10000);
+        this.parameters.settings.n_iterations = this.get_int("n_iterations", 0, 1000000);
+        this.parameters.settings.sample_period = this.get_int("sample_period", 1, 100000);
+        this.parameters.settings.random_seed = this.get_int("random_seed", 1, 100000);
+        this.parameters.dimensions.n_x = this.get_int("n_x", 10, 10000);
+        this.parameters.dimensions.n_y = this.get_int("n_y", 10, 10000);
+        this.parameters.dimensions.n_z = this.get_int("n_z", 10, 10000);
     }
     build_html() {
         const ele_id = this.ele_id;
-        const dims = this.dims;
+        const dims = this.dim;
         this.div.clear();
         const table = this.div.add_ele("table", { classes: "sim_ctrl" });
         const dims_probabilities_table = table
@@ -233,21 +233,21 @@ export class SimulationControls {
         }
         // Presets
         {
-            let id = ele_id + "sk_preset";
+            let id = ele_id + "sim_preset";
             const tr = presets_table.add_ele("tr", { id: id });
             // Presets row label
             // const td = tr.add_ele("td");
             // const name = "label";
             // const value = "Presets:"
-            // td.add_label(ele_id + "sk_" + name, { classes: "sk_preset_label " + name, }).set_content(value);
-            console.log(`Creating radio button for bedload_2d preset ${this.presets}`);
+            // td.add_label(ele_id + "sim_" + name, { classes: "sim_preset_label " + name, }).set_content(value);
+            // console.log(`Creating radio button for bedload_2d preset ${this.presets}`,)
             if (this.presets != null) {
                 for (const [name, value] of this.presets) {
                     const td = tr.add_ele("td");
-                    td.add_label(ele_id + "sk_" + name, { classes: "sk_preset_label " + name, }).set_content(value);
+                    td.add_label(ele_id + "sim_" + name, { classes: "sim_preset_label " + name, }).set_content(value);
                     td.add_input_radio_with_callback(id, name, true, preset_select, {
-                        id: ele_id + "sk_preset" + name,
-                        classes: "sk_preset_radio " + name,
+                        id: ele_id + "sim_preset" + name,
+                        classes: "sim_preset_radio " + name,
                     });
                 }
             }

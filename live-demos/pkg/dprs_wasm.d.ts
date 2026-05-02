@@ -22,9 +22,9 @@ export class Parameters {
     p_nbr: number;
     random_seed: number;
     sample_period: number;
-    topo_bc_x: TopoBc;
-    set topo_bc_y(value: TopoBc);
-    set topo_bc_z(value: TopoBc);
+    topology_bc_x: TopologyBc;
+    set topology_bc_y(value: TopologyBc);
+    set topology_bc_z(value: TopologyBc);
     u_x: number;
 }
 
@@ -40,7 +40,7 @@ export class Simulation {
     parameters: Parameters;
 }
 
-export class TopoBc {
+export class TopologyBc {
     free(): void;
     [Symbol.dispose](): void;
     constructor();
@@ -54,22 +54,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly __wbg_get_topobc_fix_max: (a: number) => number;
-    readonly __wbg_get_topobc_fix_min: (a: number) => number;
-    readonly __wbg_get_topobc_fix_value: (a: number) => number;
-    readonly __wbg_get_topobc_periodic: (a: number) => number;
-    readonly __wbg_set_topobc_fix_max: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_min: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_fix_value: (a: number, b: number) => void;
-    readonly __wbg_set_topobc_periodic: (a: number, b: number) => void;
-    readonly __wbg_topobc_free: (a: number, b: number) => void;
-    readonly topobc_new: () => number;
-    readonly __wbg_simulation_free: (a: number, b: number) => void;
-    readonly simulation_new: (a: number) => number;
-    readonly simulation_parameters: (a: number) => number;
-    readonly simulation_result: (a: number, b: number) => [number, number];
-    readonly simulation_set_parameters: (a: number, b: number) => void;
-    readonly simulation_simulate: (a: number, b: number, c: number) => [number, number];
     readonly __wbg_parameters_free: (a: number, b: number) => void;
     readonly parameters_initial_condition: (a: number) => [number, number];
     readonly parameters_n_iterations: (a: number) => number;
@@ -98,13 +82,29 @@ export interface InitOutput {
     readonly parameters_set_p_nbr: (a: number, b: number) => void;
     readonly parameters_set_random_seed: (a: number, b: number) => void;
     readonly parameters_set_sample_period: (a: number, b: number) => void;
-    readonly parameters_set_topo_bc_x: (a: number, b: number) => void;
-    readonly parameters_set_topo_bc_y: (a: number, b: number) => void;
-    readonly parameters_set_topo_bc_z: (a: number, b: number) => void;
+    readonly parameters_set_topology_bc_x: (a: number, b: number) => void;
+    readonly parameters_set_topology_bc_y: (a: number, b: number) => void;
+    readonly parameters_set_topology_bc_z: (a: number, b: number) => void;
     readonly parameters_set_u_x: (a: number, b: number) => void;
     readonly parameters_sim_dimension: (a: number) => number;
-    readonly parameters_topo_bc_x: (a: number) => number;
+    readonly parameters_topology_bc_x: (a: number) => number;
     readonly parameters_u_x: (a: number) => number;
+    readonly __wbg_simulation_free: (a: number, b: number) => void;
+    readonly simulation_new: (a: number) => number;
+    readonly simulation_parameters: (a: number) => number;
+    readonly simulation_result: (a: number, b: number) => [number, number];
+    readonly simulation_set_parameters: (a: number, b: number) => void;
+    readonly simulation_simulate: (a: number, b: number, c: number) => [number, number];
+    readonly __wbg_get_topologybc_fix_max: (a: number) => number;
+    readonly __wbg_get_topologybc_fix_min: (a: number) => number;
+    readonly __wbg_get_topologybc_fix_value: (a: number) => number;
+    readonly __wbg_get_topologybc_periodic: (a: number) => number;
+    readonly __wbg_set_topologybc_fix_max: (a: number, b: number) => void;
+    readonly __wbg_set_topologybc_fix_min: (a: number, b: number) => void;
+    readonly __wbg_set_topologybc_fix_value: (a: number, b: number) => void;
+    readonly __wbg_set_topologybc_periodic: (a: number, b: number) => void;
+    readonly __wbg_topologybc_free: (a: number, b: number) => void;
+    readonly topologybc_new: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;

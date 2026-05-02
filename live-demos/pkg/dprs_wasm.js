@@ -207,25 +207,25 @@ export class Parameters {
         wasm.parameters_set_sample_period(this.__wbg_ptr, value);
     }
     /**
-     * @param {TopoBc} value
+     * @param {TopologyBc} value
      */
-    set topo_bc_x(value) {
-        _assertClass(value, TopoBc);
-        wasm.parameters_set_topo_bc_x(this.__wbg_ptr, value.__wbg_ptr);
+    set topology_bc_x(value) {
+        _assertClass(value, TopologyBc);
+        wasm.parameters_set_topology_bc_x(this.__wbg_ptr, value.__wbg_ptr);
     }
     /**
-     * @param {TopoBc} value
+     * @param {TopologyBc} value
      */
-    set topo_bc_y(value) {
-        _assertClass(value, TopoBc);
-        wasm.parameters_set_topo_bc_y(this.__wbg_ptr, value.__wbg_ptr);
+    set topology_bc_y(value) {
+        _assertClass(value, TopologyBc);
+        wasm.parameters_set_topology_bc_y(this.__wbg_ptr, value.__wbg_ptr);
     }
     /**
-     * @param {TopoBc} value
+     * @param {TopologyBc} value
      */
-    set topo_bc_z(value) {
-        _assertClass(value, TopoBc);
-        wasm.parameters_set_topo_bc_z(this.__wbg_ptr, value.__wbg_ptr);
+    set topology_bc_z(value) {
+        _assertClass(value, TopologyBc);
+        wasm.parameters_set_topology_bc_z(this.__wbg_ptr, value.__wbg_ptr);
     }
     /**
      * @param {number} value
@@ -241,11 +241,11 @@ export class Parameters {
         return ret >>> 0;
     }
     /**
-     * @returns {TopoBc}
+     * @returns {TopologyBc}
      */
-    get topo_bc_x() {
-        const ret = wasm.parameters_topo_bc_x(this.__wbg_ptr);
-        return TopoBc.__wrap(ret);
+    get topology_bc_x() {
+        const ret = wasm.parameters_topology_bc_x(this.__wbg_ptr);
+        return TopologyBc.__wrap(ret);
     }
     /**
      * @returns {number}
@@ -320,84 +320,84 @@ export class Simulation {
 }
 if (Symbol.dispose) Simulation.prototype[Symbol.dispose] = Simulation.prototype.free;
 
-export class TopoBc {
+export class TopologyBc {
     static __wrap(ptr) {
         ptr = ptr >>> 0;
-        const obj = Object.create(TopoBc.prototype);
+        const obj = Object.create(TopologyBc.prototype);
         obj.__wbg_ptr = ptr;
-        TopoBcFinalization.register(obj, obj.__wbg_ptr, obj);
+        TopologyBcFinalization.register(obj, obj.__wbg_ptr, obj);
         return obj;
     }
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-        TopoBcFinalization.unregister(this);
+        TopologyBcFinalization.unregister(this);
         return ptr;
     }
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_topobc_free(ptr, 0);
+        wasm.__wbg_topologybc_free(ptr, 0);
     }
     /**
      * @returns {boolean}
      */
     get fix_max() {
-        const ret = wasm.__wbg_get_topobc_fix_max(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_topologybc_fix_max(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
      * @returns {boolean}
      */
     get fix_min() {
-        const ret = wasm.__wbg_get_topobc_fix_min(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_topologybc_fix_min(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
      * @returns {boolean}
      */
     get fix_value() {
-        const ret = wasm.__wbg_get_topobc_fix_value(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_topologybc_fix_value(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
      * @returns {boolean}
      */
     get periodic() {
-        const ret = wasm.__wbg_get_topobc_periodic(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_topologybc_periodic(this.__wbg_ptr);
         return ret !== 0;
     }
     /**
      * @param {boolean} arg0
      */
     set fix_max(arg0) {
-        wasm.__wbg_set_topobc_fix_max(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_topologybc_fix_max(this.__wbg_ptr, arg0);
     }
     /**
      * @param {boolean} arg0
      */
     set fix_min(arg0) {
-        wasm.__wbg_set_topobc_fix_min(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_topologybc_fix_min(this.__wbg_ptr, arg0);
     }
     /**
      * @param {boolean} arg0
      */
     set fix_value(arg0) {
-        wasm.__wbg_set_topobc_fix_value(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_topologybc_fix_value(this.__wbg_ptr, arg0);
     }
     /**
      * @param {boolean} arg0
      */
     set periodic(arg0) {
-        wasm.__wbg_set_topobc_periodic(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_topologybc_periodic(this.__wbg_ptr, arg0);
     }
     constructor() {
-        const ret = wasm.topobc_new();
+        const ret = wasm.topologybc_new();
         this.__wbg_ptr = ret >>> 0;
-        TopoBcFinalization.register(this, this.__wbg_ptr, this);
+        TopologyBcFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
 }
-if (Symbol.dispose) TopoBc.prototype[Symbol.dispose] = TopoBc.prototype.free;
+if (Symbol.dispose) TopologyBc.prototype[Symbol.dispose] = TopologyBc.prototype.free;
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
@@ -431,9 +431,9 @@ const ParametersFinalization = (typeof FinalizationRegistry === 'undefined')
 const SimulationFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_simulation_free(ptr >>> 0, 1));
-const TopoBcFinalization = (typeof FinalizationRegistry === 'undefined')
+const TopologyBcFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_topobc_free(ptr >>> 0, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_topologybc_free(ptr >>> 0, 1));
 
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
