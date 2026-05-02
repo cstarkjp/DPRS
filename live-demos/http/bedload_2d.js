@@ -19,7 +19,7 @@ class Main extends MainBase {
         p.settings.random_seed = 31;
         p.settings.initial_seeding = "edge";
         p.settings.growth_model = "DKBedload";
-        p.settings.growth_scheme = "SchemeC";
+        p.settings.growth_scheme = "BedloadC";
         // These values are chosen to lie on the p1-p2 phase diagram boundary
         // p.probabilities.p_1 = 0.61487;  // random_seed: 5
         // p.probabilities.p_2 = 0.9;

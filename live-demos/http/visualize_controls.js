@@ -103,7 +103,7 @@ export class VisualizeControls {
         }
         this.visualize.scale = html.get_input_float("zoom", 1, 5);
         html.set_input_range("slice", 0, simulation.n_results());
-        html.set_input_value("slice", simulation.n_results() / 2);
+        // html.set_input_value("slice", simulation.n_results() / 2);
         this.visualize.slice = html.get_input_int("slice", simulation.n_results() * 0, simulation.n_results());
     }
 }
