@@ -4,10 +4,10 @@ import { JsParameters } from "./js_parameters.js";
 import { MainBase } from "./base.js";
 class Main extends MainBase {
     constructor(logger) {
-        const model = "bedload";
+        const model = "DKBedload";
         const dim = 2;
         super(logger, model, dim);
-        console.log(`${model} ${dim}d child class`);
+        // console.log(`${model} ${dim}d child class`);
     }
     get_default_parameters() {
         const p = new JsParameters();
@@ -17,8 +17,9 @@ class Main extends MainBase {
         p.settings.n_iterations = 500;
         p.settings.sample_period = 1;
         p.settings.random_seed = 31;
-        p.settings.seed_kind = "edge";
-        p.settings.simulation_kind = "bedload";
+        p.settings.initial_seeding = "edge";
+        p.settings.growth_model = "DKBedload";
+        p.settings.growth_scheme = "SchemeC";
         // These values are chosen to lie on the p1-p2 phase diagram boundary
         // p.probabilities.p_1 = 0.61487;  // random_seed: 5
         // p.probabilities.p_2 = 0.9;
@@ -37,6 +38,7 @@ class Main extends MainBase {
         p.probabilities.p_diag = 0.1;
         p.probabilities.u_x = 1;
         p.probabilities.p_initial = 0.001;
+        p.preset = 2;
         return p;
     }
     run_simulation(dim, _ = 1) {
@@ -45,7 +47,7 @@ class Main extends MainBase {
     }
     get_presets() {
         return [
-            ["0", "User"],
+            // ["0", "User"],
             ["1", "A"],
             ["2", "B"],
             ["3", "C"],
@@ -65,7 +67,7 @@ class Main extends MainBase {
                 p.probabilities.p_2 = 0.9;
                 p.probabilities.p_conj = 1e-5;
                 p.settings.random_seed = 5;
-                p.settings.n_iterations = 2000;
+                p.settings.n_iterations = 1000;
                 break;
             case 2:
                 p.preset = 2;
@@ -73,7 +75,7 @@ class Main extends MainBase {
                 p.probabilities.p_2 = 0.5;
                 p.probabilities.p_conj = 1e-5;
                 p.settings.random_seed = 31;
-                p.settings.n_iterations = 2000;
+                p.settings.n_iterations = 1000;
                 break;
             case 3:
                 p.preset = 3;
@@ -81,7 +83,7 @@ class Main extends MainBase {
                 p.probabilities.p_2 = 0.3;
                 p.probabilities.p_conj = 1e-5;
                 p.settings.random_seed = 6;
-                p.settings.n_iterations = 2000;
+                p.settings.n_iterations = 1000;
                 break;
             case 4:
                 p.preset = 4;
@@ -89,7 +91,7 @@ class Main extends MainBase {
                 p.probabilities.p_2 = 0.1;
                 p.probabilities.p_conj = 1e-5;
                 p.settings.random_seed = 4;
-                p.settings.n_iterations = 2000;
+                p.settings.n_iterations = 1000;
                 break;
             case 5:
                 p.preset = 5;
@@ -97,13 +99,13 @@ class Main extends MainBase {
                 p.probabilities.p_2 = 0.01;
                 p.probabilities.p_conj = 1e-5;
                 p.settings.random_seed = 1;
-                p.settings.n_iterations = 2000;
+                p.settings.n_iterations = 1000;
                 break;
             default:
                 break;
         }
         this.simulation_controls.parameters = p;
-        this.simulation_controls.populate_values();
+        this.simulation_controls.populate_webpage_entries();
     }
 }
 window.main = null;
@@ -114,7 +116,5 @@ function complete_init() {
     window.main = main;
 }
 window.addEventListener("load", (e) => {
-    init().then(() => {
-        complete_init();
-    });
+    init().then(() => { complete_init(); });
 });

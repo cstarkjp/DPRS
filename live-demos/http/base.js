@@ -10,19 +10,16 @@ export class MainBase {
         this.log.push_reason("init");
         this.log.info("Starting");
         this.simulation = new JsSimulation(logger);
+        this.simulation_controls = new SimulationControls(`${dim}d_sc_`, `${dim}d_sim_controls`, dim, this.get_presets());
+        this.simulation_controls.parameters = this.get_default_parameters();
+        this.simulation_controls.populate_webpage_entries();
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
-        if (model == "bedload" && dim == 2) {
+        if (model == "DKBedload" && dim == 2) {
             this.visualize.do_rough_background = true;
         }
         else {
             this.visualize.do_rough_background = false;
-        }
-        this.simulation_controls = new SimulationControls(`${dim}d_sc_`, `${dim}d_sim_controls`, dim, this.get_presets());
-        this.simulation_controls.parameters = this.get_default_parameters();
-        this.simulation_controls.populate_values();
-        if (model == "bedload") {
-            this.simulation_controls.set_bedload();
         }
         this.log.info("HTML built, running initial simulation");
         this.run_simulation(dim);
@@ -32,7 +29,7 @@ export class MainBase {
     run_simulation(dim, zoom = 1) {
         this.log.push_reason("sim");
         this.log.info(`Running simulation of dimension ${dim}`);
-        this.simulation_controls.populate_parameters();
+        this.simulation_controls.get_parameters_from_webpage_entries();
         if (dim <= 1) {
             this.simulation_controls.parameters.dimensions.n_y = 1;
         }
@@ -57,18 +54,6 @@ export class MainBase {
     enact_preset(preset) {
         var p = this.get_default_parameters();
         this.simulation_controls.parameters = p;
-        this.simulation_controls.populate_values();
+        this.simulation_controls.populate_webpage_entries();
     }
 }
-// (window as any).main = null;
-// function complete_init() {
-//   const window_log = new Log("Log");
-//   const main = new MainBase(window_log, window.location.search);
-//   (window as any).log = window_log;
-//   (window as any).main = main;
-// }
-// window.addEventListener("load", (e) => {
-//   init().then(() => {
-//     complete_init();
-//   });
-// });

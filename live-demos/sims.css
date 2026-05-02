@@ -18,7 +18,7 @@ div.md-container div div.md-content article.md-content__inner {
     }
 
     /* nx/ny/probability/steps etc text input */
-    table.sim_ctrl {
+    table.sim_controls {
         table {
             width: 100%;
         }
@@ -125,6 +125,7 @@ div.md-container div div.md-content article.md-content__inner {
             margin-left: 0px;
             margin-right: 0px;
         }
+
         input.controls.playback.increment {
             margin-left: 0px;
             margin-right: 0px;
@@ -134,9 +135,11 @@ div.md-container div div.md-content article.md-content__inner {
         input.controls.playback.reverse {
             display: none;
         }
+
         input.controls.playback.pause {
             display: none;
         }
+
         input.controls.playback.play {
             display: none;
         }

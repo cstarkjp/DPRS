@@ -307,12 +307,15 @@ export class Simulation {
         wasm.simulation_set_parameters(this.__wbg_ptr, parameters.__wbg_ptr);
     }
     /**
-     * @param {string} kind
+     * @param {string} model
+     * @param {string} scheme
      */
-    simulate(kind) {
-        const ptr0 = passStringToWasm0(kind, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    simulate(model, scheme) {
+        const ptr0 = passStringToWasm0(model, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.simulation_simulate(this.__wbg_ptr, ptr0, len0);
+        const ptr1 = passStringToWasm0(scheme, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.simulation_simulate(this.__wbg_ptr, ptr0, len0, ptr1, len1);
         if (ret[1]) {
             throw takeFromExternrefTable0(ret[0]);
         }

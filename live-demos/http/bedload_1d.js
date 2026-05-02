@@ -4,10 +4,10 @@ import { JsParameters } from "./js_parameters.js";
 import { MainBase } from "./base.js";
 class Main extends MainBase {
     constructor(logger) {
-        const model = "bedload";
+        const model = "DKBedload";
         const dim = 1;
         super(logger, model, dim);
-        console.log(`${model} ${dim}d child class`);
+        // console.log(`${model} ${dim}d child class`);
     }
     get_default_parameters() {
         const p = new JsParameters();
@@ -17,8 +17,9 @@ class Main extends MainBase {
         p.settings.n_iterations = 300;
         p.settings.sample_period = 1;
         p.settings.random_seed = 1;
-        p.settings.seed_kind = "random";
-        p.settings.simulation_kind = "bedload";
+        p.settings.initial_seeding = "random";
+        p.settings.growth_model = "DKBedload";
+        p.settings.growth_scheme = "SchemeC";
         p.probabilities.p_1 = 0.64;
         p.probabilities.p_2 = 0.64;
         p.probabilities.p_conj = 0.0;
@@ -26,6 +27,7 @@ class Main extends MainBase {
         p.probabilities.p_diag = 0.0;
         p.probabilities.u_x = 0.0;
         p.probabilities.p_initial = 0.5;
+        p.preset = 0;
         return p;
     }
 }
@@ -37,7 +39,5 @@ function complete_init() {
     window.main = main;
 }
 window.addEventListener("load", (e) => {
-    init().then(() => {
-        complete_init();
-    });
+    init().then(() => { complete_init(); });
 });
