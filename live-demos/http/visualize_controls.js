@@ -89,7 +89,7 @@ export class VisualizeControls {
             this.parent.increment_slice();
         }, { classes: "controls playback increment" });
     }
-    populate_values(simulation, initial_zoom = null) {
+    get_parameters_from_webpage_entries(simulation, initial_zoom = null) {
         if (simulation.dim < 2) {
             this.td_slice.set_style("display", "none");
             this.td_playback.set_style("display", "none");

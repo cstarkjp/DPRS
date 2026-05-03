@@ -2,28 +2,6 @@ import init from "../pkg/dprs_wasm.js";
 import { Log } from "./log.js";
 import { JsParameters } from "./js_parameters.js";
 import { MainBase } from "./base.js";
-// import { mathjax } from '../node_modules/mathjax-full/js/mathjax.js';
-// import { TeX } from '../node_modules/mathjax-full/js/input/tex.js';
-// import { SVG } from '../node_modules/mathjax-full/js/output/svg.js';
-// // import { CHTML } from 'mathjax-full/js/output/chtml.js';
-// import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
-// import { browserAdaptor } from '../node_modules/mathjax-full/js/adaptors/browserAdaptor.js';
-// import { RegisterHTMLHandler } from '../node_modules/mathjax-full/js/handlers/html.js';
-// declare var MathJax: any;
-// function typesetMath() {
-//   if (typeof MathJax !== 'undefined') {
-//     MathJax.typesetPromise();
-//   }
-// }
-// const adaptor = browserAdaptor();
-// RegisterHTMLHandler(adaptor);
-// const tex = new TeX({ packages: ['base', 'ams'] });
-// const svg = new SVG();
-// const html = mathjax.document('', { InputJax: tex, OutputJax: svg });
-// export function convertToSVG(latex: string) {
-//   const node = html.convert(latex, { display: true });
-//   return adaptor.innerHTML(node);
-// }
 class Main extends MainBase {
     constructor(logger) {
         const model = "DKBedload";
