@@ -67,7 +67,7 @@ class Main extends MainBase {
                 p.probabilities.p_1 = 0.61487;
                 p.probabilities.p_2 = 0.9;
                 p.probabilities.p_conj = 1e-5;
-                p.settings.random_seed = 5;
+                p.settings.random_seed = 61;
                 p.settings.n_iterations = 1000;
                 break;
             case 2:
@@ -75,7 +75,7 @@ class Main extends MainBase {
                 p.probabilities.p_1 = 0.8135;
                 p.probabilities.p_2 = 0.5;
                 p.probabilities.p_conj = 1e-5;
-                p.settings.random_seed = 31;
+                p.settings.random_seed = 53;
                 p.settings.n_iterations = 1000;
                 break;
             case 3:
@@ -83,7 +83,7 @@ class Main extends MainBase {
                 p.probabilities.p_1 = 0.8945;
                 p.probabilities.p_2 = 0.3;
                 p.probabilities.p_conj = 1e-5;
-                p.settings.random_seed = 6;
+                p.settings.random_seed = 9;
                 p.settings.n_iterations = 1000;
                 break;
             case 4:
