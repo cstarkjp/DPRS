@@ -48,11 +48,11 @@ class Main extends MainBase {
     }
     get_presets() {
         return [
-            ["1", "Critical p1~0.62"],
-            ["2", "Critical p1~0.81"],
-            ["3", "Critical p1~0.89"],
-            ["4", "Critical p1~0.97"],
-            ["5", "Critical p1~0.99"],
+            ["1", "Critical  p1~0.62  p2~0.90"],
+            ["2", "Critical  p1~0.81  p2~0.50"],
+            ["3", "Critical  p1~0.89  p2~0.30"],
+            ["4", "Critical  p1~0.97  p2~0.10"],
+            ["5", "Critical  p1~0.97  p2~0.01"],
         ];
     }
     enact_preset(preset) {

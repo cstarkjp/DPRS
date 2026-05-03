@@ -206,35 +206,6 @@ export class SimulationControls {
         {
             let id = ele_id + "sim_preset";
             const tr = presets_table.add_ele("tr", { id: id });
-            // // Presets row label
-            // const td = tr.add_ele("td");
-            // const name = "label";
-            // const value = "Presets:"
-            // td.add_label(
-            //   ele_id + "sim_" + name, { classes: "sim_preset_label " + name, }
-            // ).set_content(value);
-            // // console.log(`Creating radio button for bedload_2d preset ${this.presets}`,)
-            // function preset_select_radio(event: Event) {
-            //   const target = event.target as HTMLInputElement;
-            //   const preset = Number(target.value);
-            //   (window as any).main.enact_preset(preset);
-            // }
-            // if (this.presets != null) {
-            //   for (const [name, value] of this.presets) {
-            //     const td = tr.add_ele("td");
-            //     td.add_label(
-            //       ele_id + "sim_" + name, { classes: "sim_preset_label " + name, }
-            //     ).set_content(value);
-            //     td.add_input_radio_with_callback(
-            //       id, name!, true,
-            //       preset_select_radio,
-            //       {
-            //         id: ele_id + "sim_preset" + name,
-            //         classes: "sim_preset_radio " + name,
-            //       }
-            //     );
-            //   }
-            // }
             console.log(`Creating dropdown menu for bedload_2d preset ${this.presets}`);
             function preset_select_dropdown(event) {
                 const target = event.target;
@@ -243,9 +214,9 @@ export class SimulationControls {
             }
             if (this.presets != null) {
                 const td = tr.add_ele("td");
-                const value = "Example parameter choices:          ";
+                const value = "Example choices: ";
                 const name = "label";
-                td.add_label(ele_id + "sim_" + name, { classes: "sim_preset_label " + name, }).set_content(value);
+                td.add_label(ele_id + "sim_preset_dropdown", { classes: "sim_preset_label " + "sim_preset_dropdown" }).set_content(value);
                 td.add_input_dropdown_with_callback(this.presets, preset_select_dropdown);
             }
         }
