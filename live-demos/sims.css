@@ -62,20 +62,20 @@ div.md-container div div.md-content article.md-content__inner {
             width: 6ch;
         }
 
-        .sim_controls_ic_radio_labels {
+        .ic_radio_labels {
             padding-right: 1px;
         }
 
-        .sim_controls_ic_radio_buttons {
+        .ic_radio_buttons {
             padding-left: 0px;
             padding-right: 10px;
         }
 
-        .sim_controls_presets_menu_label {
+        .presets_menu_label {
             padding-right: 6px;
         }
 
-        .sim_controls_presets_menu {
+        .presets_menu {
             padding: 6px;
             border: 1px solid rgb(83, 83, 83);
             font-size: 0.75rem;

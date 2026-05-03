@@ -41,6 +41,9 @@ export class SimulationControls {
         //   console.log(`Setting preset in web page`,)
         //   this.set_webpage_radio_button("sim_preset" + this.parameters.preset.toString(), true);
         // }
+        // if (this.presets != null) {
+        //   console.log(`Setting preset in web page ${this.ele_id + "sim_presets"}`)
+        // }
         if (this.parameters.settings.growth_scheme == "Simple") {
             this.set_webpage_radio_button("simple", true);
         }
@@ -194,17 +197,17 @@ export class SimulationControls {
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(ele_id + "seed_" + name, {
-                    classes: "sim_controls_ic_radio_labels sim_controls_ic_radio_label_" + name,
+                    classes: "ic_radio_labels ic_radio_label_" + name,
                 }).set_content(value);
                 td.add_input_radio(id, name, true, {
                     id: ele_id + "seed_" + name,
-                    classes: "sim_controls_ic_radio_buttons sim_controls_ic_radio_button_" + name,
+                    classes: "ic_radio_buttons ic_radio_button_" + name,
                 });
             }
         }
         // Presets
         {
-            let id = ele_id + "sim_presets";
+            let id = ele_id + "presets";
             const tr = presets_table.add_ele("tr", { id: id });
             console.log(`Creating dropdown menu for bedload_2d preset ${this.presets}`);
             function preset_select_dropdown(event) {
@@ -216,8 +219,8 @@ export class SimulationControls {
                 const td = tr.add_ele("td");
                 // const value = "Example choices: "
                 const value = "Parameter sets: ";
-                td.add_label(ele_id + "sim_presets_dropdown", { classes: "sim_controls_presets_menu_label" }).set_content(value);
-                td.add_input_dropdown_with_callback(this.presets, preset_select_dropdown, { classes: "sim_controls_presets_menu" });
+                td.add_label(ele_id + "presets_dropdown", { classes: "presets_menu_label" }).set_content(value);
+                td.add_input_dropdown_with_callback(this.presets, preset_select_dropdown, { classes: "presets_menu" });
             }
         }
         // Simple / staggered

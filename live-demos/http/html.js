@@ -224,7 +224,7 @@ export class HtmlElement {
         this.ele.appendChild(input);
         return new HtmlElement(input);
     }
-    add_input_dropdown_with_callback(values_labels, callback, id_classes = {}) {
+    add_input_dropdown_with_callback(values_labels, callback, id_classes = {}, default_value = "0") {
         const select = document.createElement("select");
         for (const [value, label] of values_labels) {
             const option = document.createElement("option");
@@ -235,7 +235,16 @@ export class HtmlElement {
         select.addEventListener("change", callback);
         this.ele.appendChild(select);
         HtmlElement.set_id_classes(select, id_classes);
+        select.value = default_value;
         return new HtmlElement(select);
+        // this.ele.appendChild(select);
+        // select.addEventListener("change", (event: Event) => {
+        //   const target = event.target as HTMLSelectElement;
+        //   const preset = Number(target.value);
+        //   (window as any).main.enact_preset(preset);
+        // });
+        // HtmlElement.set_id_classes(select, id_classes);
+        // return new HtmlElement(select);
     }
     // add_input_dropdown_with_callback(
     //   values_labels: any, callback: (event: Event) => void,

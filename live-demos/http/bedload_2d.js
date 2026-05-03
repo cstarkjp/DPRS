@@ -40,7 +40,7 @@ class Main extends MainBase {
         p.probabilities.p_diag = 0.1;
         p.probabilities.u_x = 1;
         p.probabilities.p_initial = 0.001;
-        p.preset = 0;
+        p.preset = 1;
         return p;
     }
     run_simulation(dim) {
@@ -48,6 +48,7 @@ class Main extends MainBase {
     }
     get_presets() {
         return [
+            // ["0", ""],
             ["1", "Critical  p1~0.62  p2~0.90"],
             ["2", "Critical  p1~0.81  p2~0.50"],
             ["3", "Critical  p1~0.89  p2~0.30"],
