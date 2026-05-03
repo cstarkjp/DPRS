@@ -73,6 +73,7 @@ div.md-container div div.md-content article.md-content__inner {
 
         .sim_controls_presets_menu {
             padding: 5px;
+            border: 1px solid rgb(83, 83, 83);
             font-size: 0.8rem;
         }
     }
