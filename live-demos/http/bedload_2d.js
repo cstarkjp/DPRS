@@ -40,7 +40,7 @@ class Main extends MainBase {
         p.probabilities.p_diag = 0.1;
         p.probabilities.u_x = 1;
         p.probabilities.p_initial = 0.001;
-        p.preset = 2;
+        p.preset = 0;
         return p;
     }
     run_simulation(dim) {
