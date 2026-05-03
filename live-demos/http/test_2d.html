@@ -90,32 +90,588 @@
                 <div class="md-main__inner md-grid">
                     <div class="md-content" data-md-component="content">
                         <article class="md-content__inner md-typeset">
-                            <h1 id="2d-dp-simulations">
-                                2d DP simulations<a
+                            <h1 id="bedload-model-in-2d">
+                                Bedload model in 2d<a
                                     class="headerlink"
-                                    href="#2d-dp-simulations"
+                                    href="#bedload-model-in-2d"
                                     title="Permanent link"
                                     >¶</a
                                 >
                             </h1>
+                            <!-- <div>
+                            \(\varphi^* \sim |\tau^* - \tau_c^*|^{1.5}\)
+                        </div> -->
+
+                            <!-- <div>
+                            \(n_x\)
+                        </div>
+                        <div>
+                            \(p_1\)
+                        </div>
+                        <div>
+                            \(p_\mathsf{conj}\)
+                        </div>
+
+                        <div>
+                        <mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub>
+                        </div> -->
+
                             <div>
                                 <link
-                                    href="test_sims.css"
+                                    href="../sims.css"
+                                    rel="stylesheet"
+                                    type="text/css"
+                                />
+                                <link
+                                    href="../bedload.css"
                                     rel="stylesheet"
                                     type="text/css"
                                 />
                                 <script
                                     type="module"
-                                    src="../http/2d.js"
+                                    src="../http/bedload_2d.js"
                                 ></script>
                                 <div id="tab-2D">
-                                    <div id="2d_sim_controls"></div>
+                                    <div id="2d_sim_controls">
+                                        <table class="sim_controls">
+                                            <tr>
+                                                <td>
+                                                    <table
+                                                        class="dims_probabilities"
+                                                    >
+                                                        <tr id="2d_sc_dims">
+                                                            <td>
+                                                                <label
+                                                                    for="n_x"
+                                                                    class="sim_controls_label"
+                                                                    >x:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="n_x"
+                                                                    value="20"
+                                                                    id="2d_sc_n_x"
+                                                                    class="sim_controls_text dims_n_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="n_y"
+                                                                    class="sim_controls_label"
+                                                                    >y:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="n_y"
+                                                                    value="20"
+                                                                    id="2d_sc_n_y"
+                                                                    class="sim_controls_text dims_n_text"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr
+                                                            id="2d_sc_probability"
+                                                        >
+                                                            <td>
+                                                                <label
+                                                                    for="p_1"
+                                                                    class="sim_controls_label"
+                                                                    >p_1:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="p_1"
+                                                                    value="0.5"
+                                                                    id="2d_sc_p_1"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="p_2"
+                                                                    class="sim_controls_label"
+                                                                    >p_2:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="p_2"
+                                                                    value="0.5"
+                                                                    id="2d_sc_p_2"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="p_diag"
+                                                                    class="sim_controls_label"
+                                                                    >p_d:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="p_diag"
+                                                                    value="0.5"
+                                                                    id="2d_sc_p_diag"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr
+                                                            id="2d_sc_probability"
+                                                        >
+                                                            <td>
+                                                                <label
+                                                                    for="p_initial"
+                                                                    class="sim_controls_label"
+                                                                    >p_0:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="p_initial"
+                                                                    value="0"
+                                                                    id="2d_sc_p_initial"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="u_x"
+                                                                    class="sim_controls_label"
+                                                                    >u_x:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="u_x"
+                                                                    value="0"
+                                                                    id="2d_sc_u_x"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="p_conj"
+                                                                    class="sim_controls_label"
+                                                                    >p_ext:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="p_conj"
+                                                                    value="0"
+                                                                    id="2d_sc_p_conj"
+                                                                    class="sim_controls_text prob_text"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table
+                                                        class="steps_slicing_seed"
+                                                    >
+                                                        <tr
+                                                            id="2d_sc_sim_controls"
+                                                        >
+                                                            <td>
+                                                                <label
+                                                                    for="n_iterations"
+                                                                    class="sim_controls_label"
+                                                                    >Steps:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="n_iterations"
+                                                                    value="1000"
+                                                                    id="2d_sc_n_iterations"
+                                                                    class="sim_controls_text params_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="sample_period"
+                                                                    class="sim_controls_label"
+                                                                    >Slicing:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="sample_period"
+                                                                    value="20"
+                                                                    id="2d_sc_sample_period"
+                                                                    class="sim_controls_text params_text"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="random_seed"
+                                                                    class="sim_controls_label"
+                                                                    >Seed:</label
+                                                                ><input
+                                                                    type="text"
+                                                                    name="random_seed"
+                                                                    value="1"
+                                                                    id="2d_sc_random_seed"
+                                                                    class="sim_controls_text params_text"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table
+                                                        class="edge_center_randomized"
+                                                    >
+                                                        <tr
+                                                            id="2d_sc__seed_kind"
+                                                        >
+                                                            <td>
+                                                                <label
+                                                                    for="2d_sc_seed_edge"
+                                                                    class="ic_radio_labels ic_radio_label_edge"
+                                                                    >Edge
+                                                                    cell:</label
+                                                                ><input
+                                                                    type="radio"
+                                                                    name="2d_sc__seed_kind"
+                                                                    value="edge"
+                                                                    required="true"
+                                                                    id="2d_sc_seed_edge"
+                                                                    class="ic_radio_buttons ic_radio_button_edge"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="2d_sc_seed_center"
+                                                                    class="ic_radio_labels ic_radio_label_center"
+                                                                    >Center
+                                                                    cell:</label
+                                                                ><input
+                                                                    type="radio"
+                                                                    name="2d_sc__seed_kind"
+                                                                    value="center"
+                                                                    required="true"
+                                                                    id="2d_sc_seed_center"
+                                                                    class="ic_radio_buttons ic_radio_button_center"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <label
+                                                                    for="2d_sc_seed_random"
+                                                                    class="ic_radio_labels ic_radio_label_random"
+                                                                    >Randomized:</label
+                                                                ><input
+                                                                    type="radio"
+                                                                    name="2d_sc__seed_kind"
+                                                                    value="random"
+                                                                    required="true"
+                                                                    id="2d_sc_seed_random"
+                                                                    class="ic_radio_buttons ic_radio_button_random"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table
+                                                        class="simple_staggered"
+                                                    >
+                                                        <tr
+                                                            id="2d_sc_growth_scheme"
+                                                        >
+                                                            <td>
+                                                                <input
+                                                                    type="radio"
+                                                                    name="2d_sc_growth_scheme"
+                                                                    value="Simple"
+                                                                    required="true"
+                                                                    id="2d_sc_simple"
+                                                                    class="sim_controls_radio simple"
+                                                                /><label
+                                                                    for="2d_sc_simple"
+                                                                    class="sim_controls_label simple"
+                                                                    >Simple</label
+                                                                >
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    type="radio"
+                                                                    name="2d_sc_growth_scheme"
+                                                                    value="Staggered"
+                                                                    required="true"
+                                                                    id="2d_sc_staggered"
+                                                                    class="sim_controls_radio staggered"
+                                                                /><label
+                                                                    for="2d_sc_staggered"
+                                                                    class="sim_controls_label staggered"
+                                                                    >Staggered</label
+                                                                >
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table class="presets">
+                                                        <tr id="2d_sc_presets">
+                                                            <td>
+                                                                <label
+                                                                    for="2d_sc_presets_dropdown"
+                                                                    class="presets_menu_label"
+                                                                    >Parameter
+                                                                    sets: </label
+                                                                ><select
+                                                                    class="presets_menu"
+                                                                >
+                                                                    <option
+                                                                        value="1"
+                                                                    >
+                                                                        Critical
+                                                                        p1~0.62
+                                                                        p2~0.90
+                                                                    </option>
+                                                                    <option
+                                                                        value="2"
+                                                                    >
+                                                                        Critical
+                                                                        p1~0.81
+                                                                        p2~0.50
+                                                                    </option>
+                                                                    <option
+                                                                        value="3"
+                                                                    >
+                                                                        Critical
+                                                                        p1~0.89
+                                                                        p2~0.30
+                                                                    </option>
+                                                                    <option
+                                                                        value="4"
+                                                                    >
+                                                                        Critical
+                                                                        p1~0.97
+                                                                        p2~0.10
+                                                                    </option>
+                                                                    <option
+                                                                        value="5"
+                                                                    >
+                                                                        Critical
+                                                                        p1~0.997
+                                                                        p2~0.01
+                                                                    </option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table class="run_save">
+                                                        <tr id="2d_sc_controls">
+                                                            <td>
+                                                                <input
+                                                                    type="button"
+                                                                    value="Run simulation"
+                                                                    id="2d_sc_run_simulation"
+                                                                    class="controls simulation run_simulation"
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    type="button"
+                                                                    value="Save simulation"
+                                                                    id="2d_sc_save_simulation"
+                                                                    class="controls simulation save_simulation"
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div id="tab-log" style="display: none">
-                                    <div id="Log"></div>
+                                    <div id="Log">
+                                        <table id="log_table">
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>DKBedload_2d</td>
+                                                <td>init</td>
+                                                <td>Starting</td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>viz</td>
+                                                <td>canvas_1d</td>
+                                                <td>
+                                                    Created canvas size
+                                                    770.0000000000001 x 550 with
+                                                    stagger true and scale
+                                                    2.2x1.1
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>viz</td>
+                                                <td>canvas_1d</td>
+                                                <td>Completed canvas</td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>DKBedload_2d</td>
+                                                <td>init</td>
+                                                <td>
+                                                    HTML built, running initial
+                                                    simulation
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>DKBedload_2d</td>
+                                                <td>sim</td>
+                                                <td>
+                                                    Running simulation of
+                                                    dimension 2
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>sim</td>
+                                                <td>run</td>
+                                                <td>
+                                                    Dims n_x:150 n_y:100 n_z:1
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>sim</td>
+                                                <td>run</td>
+                                                <td>
+                                                    Probabilities p_1: 0.8135
+                                                    p_2: 0.5 p_conj: 0.000001
+                                                    p_nbr: 0 p_diag: 0.1 u_x: 1
+                                                    p_initial:0.001
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>sim</td>
+                                                <td>run</td>
+                                                <td>
+                                                    Params
+                                                    growth_model:DKBedloadgrowth_scheme:BedloadCn_iterations:500
+                                                    sample_period:1
+                                                    random_seed:31
+                                                    initial_seeding:edge
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>sim</td>
+                                                <td>run</td>
+                                                <td>Completed simulation</td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>DKBedload_2d</td>
+                                                <td>sim</td>
+                                                <td>
+                                                    Simulation complete with 500
+                                                    results
+                                                </td>
+                                            </tr>
+                                            <tr class="log_entry_2">
+                                                <th>2</th>
+                                                <td>DKBedload_2d</td>
+                                                <td>init</td>
+                                                <td>Initialization complete</td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div id="VisualizationControls"></div>
-                                <div id="Visualize"></div>
+                                <div id="VisualizationControls">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <table class="zoom">
+                                                    <tr class="zoom_slice">
+                                                        <td class="label">
+                                                            <label for="zoom"
+                                                                >Zoom</label
+                                                            >
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="range"
+                                                                name="zoom"
+                                                                value="1"
+                                                                min="1"
+                                                                max="5"
+                                                                step="0.1"
+                                                                id="zoom"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                    <tr
+                                                        class="zoom_slice"
+                                                        style=""
+                                                    >
+                                                        <td class="label">
+                                                            <label for="slice"
+                                                                >Time
+                                                                slice</label
+                                                            >
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="range"
+                                                                name="slice"
+                                                                value="0"
+                                                                min="0"
+                                                                max="500"
+                                                                step="1"
+                                                                id="slice"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table
+                                                    class="playback"
+                                                    style=""
+                                                >
+                                                    <tr class="playback">
+                                                        <td>
+                                                            <input
+                                                                type="button"
+                                                                value="⏯︎"
+                                                                class="controls playback pauseplay"
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="button"
+                                                                value="➖"
+                                                                class="controls playback decrement"
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="button"
+                                                                value="➕"
+                                                                class="controls playback increment"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div id="Visualize">
+                                    <canvas
+                                        class="visualize canvas_2d"
+                                        width="330"
+                                        height="220"
+                                    ></canvas>
+                                </div>
                             </div>
                         </article>
                     </div>

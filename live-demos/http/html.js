@@ -157,10 +157,22 @@ export class HtmlElement {
             }
         }
     }
-    static new_ele(ele_type, id_classes = {}) {
+    static new_ele(ele_type, id_classes = {}, map = null) {
         const ele = document.createElement(ele_type);
         HtmlElement.set_id_classes(ele, id_classes);
+        if (map !== null) {
+            map(ele);
+        }
         return new HtmlElement(ele);
+    }
+    static all_of(selector) {
+        const result = [];
+        for (const e of document.querySelectorAll(selector)) {
+            if (e instanceof HTMLElement) {
+                result.push(new HtmlElement(e));
+            }
+        }
+        return result;
     }
     constructor(ele) {
         this.ele = ele;
@@ -169,6 +181,7 @@ export class HtmlElement {
         while (this.ele.firstChild) {
             this.ele.removeChild(this.ele.firstChild);
         }
+        return this;
     }
     add_ele(ele_type, id_classes = {}) {
         const ele = document.createElement(ele_type);
@@ -199,7 +212,7 @@ export class HtmlElement {
         this.ele.appendChild(input);
         return new HtmlElement(input);
     }
-    add_input_radio(name, value, required, id_classes = {}) {
+    add_input_radio(name, value, required, callback = null, id_classes = {}) {
         const input = document.createElement("input");
         input.setAttribute("type", "radio");
         input.setAttribute("name", name);
@@ -208,64 +221,13 @@ export class HtmlElement {
             input.setAttribute("required", "true");
         }
         HtmlElement.set_id_classes(input, id_classes);
+        if (callback !== null) {
+            input.addEventListener("change", callback);
+        }
         this.ele.appendChild(input);
         return new HtmlElement(input);
     }
-    add_input_radio_with_callback(name, value, required, callback, id_classes = {}) {
-        const input = document.createElement("input");
-        input.setAttribute("type", "radio");
-        input.setAttribute("name", name);
-        input.setAttribute("value", value);
-        if (required) {
-            input.setAttribute("required", "true");
-        }
-        HtmlElement.set_id_classes(input, id_classes);
-        input.addEventListener("change", callback);
-        this.ele.appendChild(input);
-        return new HtmlElement(input);
-    }
-    add_input_dropdown_with_callback(values_labels, callback, id_classes = {}, default_value = "0") {
-        const select = document.createElement("select");
-        for (const [value, label] of values_labels) {
-            const option = document.createElement("option");
-            option.text = label;
-            option.value = value;
-            select.appendChild(option);
-        }
-        select.addEventListener("change", callback);
-        this.ele.appendChild(select);
-        HtmlElement.set_id_classes(select, id_classes);
-        select.value = default_value;
-        return new HtmlElement(select);
-        // this.ele.appendChild(select);
-        // select.addEventListener("change", (event: Event) => {
-        //   const target = event.target as HTMLSelectElement;
-        //   const preset = Number(target.value);
-        //   (window as any).main.enact_preset(preset);
-        // });
-        // HtmlElement.set_id_classes(select, id_classes);
-        // return new HtmlElement(select);
-    }
-    // add_input_dropdown_with_callback(
-    //   values_labels: any, callback: (event: Event) => void,
-    // ) {
-    //   const select = document.createElement("select");
-    //   select.addEventListener("change", callback);
-    //   for (const [value, label] of values_labels) {
-    //     const option = document.createElement("option") as HTMLOptionElement;
-    //     option.text = label;
-    //     option.value = value;
-    //     select.appendChild(option);
-    //   }
-    //   this.ele.appendChild(select);
-    //   select.addEventListener("change", (event: Event) => {
-    //     const target = event.target as HTMLSelectElement;
-    //     const preset = Number(target.value);
-    //     (window as any).main.enact_preset(preset);
-    //   });
-    //   return new HtmlElement(select);
-    // }
-    add_input_range(name, range, callback, id_classes = {}) {
+    add_input_range(name, range, callback = null, id_classes = {}) {
         var value = range.min;
         var step = 1;
         if (range.value !== undefined) {
@@ -281,21 +243,41 @@ export class HtmlElement {
         input.setAttribute("min", range.min.toString());
         input.setAttribute("max", range.max.toString());
         input.setAttribute("step", step.toString());
-        // const x: HTMLInputElement = new HTMLInputElement();
-        // x.on
-        input.oninput = (e) => {
-            var value;
-            if (step == 1) {
-                value = Number.parseFloat(input.value);
-            }
-            else {
-                value = Number.parseFloat(input.value);
-            }
-            callback(e, value);
-        };
+        if (callback !== null) {
+            input.oninput = (e) => {
+                var value;
+                if (step == 1) {
+                    value = Number.parseFloat(input.value);
+                }
+                else {
+                    value = Number.parseFloat(input.value);
+                }
+                callback(e, value);
+            };
+        }
         HtmlElement.set_id_classes(input, id_classes);
         this.ele.appendChild(input);
         return new HtmlElement(input);
+    }
+    add_input_dropdown(values_labels, default_value = null, callback = null, id_classes = {}) {
+        const select = document.createElement("select");
+        for (const [value, label] of values_labels) {
+            const option = document.createElement("option");
+            option.text = label;
+            option.value = value;
+            select.appendChild(option);
+        }
+        if (callback !== null) {
+            select.addEventListener("change", (e) => {
+                callback(e, select.value);
+            });
+        }
+        this.ele.appendChild(select);
+        HtmlElement.set_id_classes(select, id_classes);
+        if (default_value !== null) {
+            select.value = default_value;
+        }
+        return new HtmlElement(select);
     }
     add_input_text(name, value, id_classes = {}) {
         const input = document.createElement("input");
@@ -315,6 +297,14 @@ export class HtmlElement {
         this.ele.appendChild(label);
         return new HtmlElement(label);
     }
+    input_checked() {
+        if (this.ele instanceof HTMLInputElement) {
+            return this.ele.checked;
+        }
+        else {
+            return false;
+        }
+    }
     set_content(content) {
         //console.log(this.ele);
         if (content instanceof Node) {
@@ -326,6 +316,7 @@ export class HtmlElement {
         else {
             this.ele.insertAdjacentText("afterbegin", content);
         }
+        return this;
     }
     set_style(style, value) {
         /* This is not supported by FireFox
@@ -364,7 +355,7 @@ export class Table {
             const tr = table.add_ele("tr", { classes: this.heading_classes });
             let i = 0;
             for (const h of this.headings) {
-                const th = tr.add_ele("th", { id: "th" + i });
+                const th = tr.add_ele("th");
                 th.set_content(h);
                 i += 1;
             }
@@ -374,6 +365,21 @@ export class Table {
             for (const d of c) {
                 const td = tr.add_ele("td");
                 td.set_content(d);
+            }
+        }
+        return table;
+    }
+    as_vertical_html() {
+        const table = HtmlElement.new_ele("table", { classes: this.classes });
+        for (let i = 0; i < this.body.length; i++) {
+            const tr = table.add_ele("tr");
+            const th = tr.add_ele("th", { classes: this.heading_classes });
+            if (i < this.headings.length) {
+                th.set_content(this.headings[i]);
+            }
+            const c = this.body[i];
+            for (const d of c) {
+                tr.add_ele("td").set_content(d);
             }
         }
         return table;

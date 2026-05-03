@@ -1,11 +1,11 @@
 import * as html from "./html.js";
 import { JsParameters } from "./js_parameters.js";
 export class SimulationControls {
-    constructor(ele_id, div_id, dim, presets = null) {
+    constructor(ele_id, div_id, dim, controllable) {
         this.parameters = new JsParameters();
         this.ele_id = ele_id;
         this.dim = dim;
-        this.presets = presets;
+        this.controllable = controllable;
         const div = document.getElementById(div_id);
         if (!div) {
             throw new Error(`Failed to find ${div_id} to build SimulationControls`);
@@ -145,7 +145,9 @@ export class SimulationControls {
             let id = ele_id + "probability";
             const tr = dims_probabilities_table.add_ele("tr", { id: id });
             for (const [label, thing] of [
-                ["p_1", "p_1"], ["p_2", "p_2"], ["p_d", "p_diag"],
+                ["p_1", "p_1"],
+                ["p_2", "p_2"],
+                ["p_d", "p_diag"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
@@ -159,7 +161,9 @@ export class SimulationControls {
             let id = ele_id + "probability";
             const tr = dims_probabilities_table.add_ele("tr", { id: id });
             for (const [label, thing] of [
-                ["p_0", "p_initial"], ["u_x", "u_x"], ["p_ext", "p_conj"],
+                ["p_0", "p_initial"],
+                ["u_x", "u_x"],
+                ["p_ext", "p_conj"],
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
@@ -189,7 +193,9 @@ export class SimulationControls {
         // Edge / center / randomized
         {
             let id = ele_id + "_seed_kind";
-            const tr = edge_center_randomized_table.add_ele("tr", { id: ele_id + "_seed_kind" });
+            const tr = edge_center_randomized_table.add_ele("tr", {
+                id: ele_id + "_seed_kind",
+            });
             for (const [name, value] of [
                 ["edge", "Edge cell:"],
                 ["center", "Center cell:"],
@@ -199,7 +205,7 @@ export class SimulationControls {
                 td.add_label(ele_id + "seed_" + name, {
                     classes: "ic_radio_labels ic_radio_label_" + name,
                 }).set_content(value);
-                td.add_input_radio(id, name, true, {
+                td.add_input_radio(id, name, true, null, {
                     id: ele_id + "seed_" + name,
                     classes: "ic_radio_buttons ic_radio_button_" + name,
                 });
@@ -209,18 +215,19 @@ export class SimulationControls {
         {
             let id = ele_id + "presets";
             const tr = presets_table.add_ele("tr", { id: id });
-            console.log(`Creating dropdown menu for bedload_2d preset ${this.presets}`);
-            function preset_select_dropdown(event) {
-                const target = event.target;
-                const preset = Number(target.value);
-                window.main.enact_preset(preset);
-            }
-            if (this.presets != null) {
+            if (this.controllable !== null && this.controllable.presets.length != 0) {
+                console.log(`Creating dropdown menu for bedload_2d preset ${this.controllable.presets}`);
                 const td = tr.add_ele("td");
-                // const value = "Example choices: "
                 const value = "Parameter sets: ";
-                td.add_label(ele_id + "presets_dropdown", { classes: "presets_menu_label" }).set_content(value);
-                td.add_input_dropdown_with_callback(this.presets, preset_select_dropdown, { classes: "presets_menu" });
+                td.add_label(ele_id + "presets_dropdown", {
+                    classes: "presets_menu_label",
+                }).set_content(value);
+                td.add_input_dropdown(this.controllable.presets, null, (_e, value) => this.controllable.select_preset(value), {
+                    classes: "presets_menu",
+                });
+            }
+            else {
+                console.log(`NOT creating dropdown menu for empty presets`);
             }
         }
         // Simple / staggered
@@ -233,7 +240,7 @@ export class SimulationControls {
             ]) {
                 const td = tr.add_ele("td");
                 // Using value not name because we want upper case
-                td.add_input_radio(id, value, true, {
+                td.add_input_radio(id, value, true, null, {
                     id: ele_id + name,
                     classes: "sim_controls_radio " + name,
                 });
@@ -248,14 +255,14 @@ export class SimulationControls {
             const tr = run_save_table.add_ele("tr", { id: id });
             const td_run = tr.add_ele("td");
             td_run.add_input_button("Run simulation", () => {
-                window.main.run_simulation(dims);
+                this.controllable.run_simulation(dims);
             }, {
                 id: ele_id + "run_simulation",
                 classes: "controls simulation run_simulation",
             });
             const td_save = tr.add_ele("td");
             td_save.add_input_button("Save simulation", () => {
-                window.main.save_simulation(dims);
+                this.controllable.save_simulation(dims);
             }, {
                 id: ele_id + "save_simulation",
                 classes: "controls simulation save_simulation",

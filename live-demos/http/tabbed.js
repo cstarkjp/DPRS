@@ -139,7 +139,7 @@ export class Tabs {
         window.addEventListener("hashchange", () => {
             this.select_hash(location.hash);
         });
-        if (this.select_hash(location.hash) === undefined) {
+        if (this.select_hash(location.hash) === null) {
             this.select_tab_number(0);
         }
     }

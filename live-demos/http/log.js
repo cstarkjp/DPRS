@@ -23,6 +23,28 @@ class LogEntry {
         this.reason = reason;
         this.message = message;
     }
+    severity_as_string() {
+        return LogEntry.severity_to_string(this.severity);
+    }
+    static severity_to_string(s) {
+        switch (s) {
+            case Severity.Verbose: {
+                return "Verbose";
+            }
+            case Severity.Info: {
+                return "Info";
+            }
+            case Severity.Warning: {
+                return "Warning";
+            }
+            case Severity.Error: {
+                return "Error";
+            }
+            default: {
+                return "Fatal";
+            }
+        }
+    }
 }
 /** This class is a source for a Log
  *
@@ -129,6 +151,10 @@ export class Log {
     /** Create a new Log that will fill the given 'div' which has an 'id' of div_id
      *
      * @param {HtmlElement | string}  div an HtmlElement, or 'id' of a div in the document, to place the log into; if none is provided then logging is only to the console
+     *
+     * @param {Severity} min_severity Minimum severity for logging in the div; defaults to Info
+     *
+     * @param {Severity} console_min_severity Minimum severity for logging in the console; defaults to Warning
      */
     constructor(div, min_severity = Severity.Info, console_min_severty = Severity.Warning) {
         this.div = null;
@@ -159,7 +185,7 @@ export class Log {
             this.request_fill_div();
         }
         if (severity >= this.console_min_severity) {
-            console.log(`Log: ${severity} : ${src.src} : ${reason} : ${error}`);
+            console.log(`Log: ${LogEntry.severity_to_string(severity)} : ${src.src} : ${reason} : ${error}`);
         }
     }
     request_fill_div() {
@@ -178,7 +204,7 @@ export class Log {
         const table = this.div.add_ele("table", { id: "log_table" });
         for (const e of this.log) {
             const tr = table.add_ele("tr", { classes: `log_entry_${e.severity}` });
-            tr.add_ele("th").set_content(e.severity);
+            tr.add_ele("th").set_content(e.severity_as_string());
             tr.add_ele("td").set_content(e.src.src);
             tr.add_ele("td").set_content(e.reason);
             tr.add_ele("td").set_content(e.message);

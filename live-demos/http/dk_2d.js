@@ -2,11 +2,16 @@ import init from "../pkg/dprs_wasm.js";
 import { Log } from "./log.js";
 import { JsParameters } from "./js_parameters.js";
 import { MainBase } from "./base.js";
-class Main extends MainBase {
+class Main {
     constructor(logger) {
-        const model = "DomanyKinzel";
-        const dim = 2;
-        super(logger, model, dim);
+        this.preset_labels = [];
+        this.model_name = "DomanyKinzel";
+        this.dim = 2;
+        this.zoom = null;
+        this.do_rough_background = null;
+        this.default_preset = 0;
+        this.select_preset = null;
+        this.main = new MainBase(this, logger);
         // console.log(`${model} ${dim}d child class`);
     }
     get_default_parameters() {
@@ -39,5 +44,7 @@ function complete_init() {
     window.main = main;
 }
 window.addEventListener("load", (e) => {
-    init().then(() => { complete_init(); });
+    init().then(() => {
+        complete_init();
+    });
 });

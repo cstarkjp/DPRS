@@ -11,6 +11,8 @@ import { Tabs } from "./tabbed.js";
 class Main {
     constructor(logger, params) {
         this.autoplay = true;
+        this.presets = [];
+        this.default_preset_value = null;
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");
@@ -50,10 +52,10 @@ class Main {
         params_2d.settings.initial_seeding = "edge";
         params_2d.settings.growth_model = "DomanyKinzel";
         params_2d.settings.growth_scheme = "Staggered";
-        this.simulation_controls_1d = new SimulationControls("1d_sc_", "1d_sim_controls", 1);
+        this.simulation_controls_1d = new SimulationControls("1d_sc_", "1d_sim_controls", 1, this);
         this.simulation_controls_1d.parameters = params_1d;
         this.simulation_controls_1d.populate_webpage_entries();
-        this.simulation_controls_2d = new SimulationControls("2d_sc_", "2d_sim_controls", 2);
+        this.simulation_controls_2d = new SimulationControls("2d_sc_", "2d_sim_controls", 2, this);
         this.simulation_controls_2d.parameters = params_2d;
         this.simulation_controls_2d.populate_webpage_entries();
         this.log.info("HTML built, running initial simulation");
@@ -61,6 +63,7 @@ class Main {
         this.log.info("Initialization complete");
         this.log.pop_reason();
     }
+    select_preset(preset) { }
     load_simulation(filename) {
         this.log.push_reason("load");
         const sim_parameters = this.saved_sims.load(filename);
