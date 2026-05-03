@@ -61,6 +61,15 @@ div.md-container div div.md-content article.md-content__inner {
         .params_text {
             width: 6ch;
         }
+
+        .sim_controls_ic_radio_labels {
+            padding-right: 1px;
+        }
+
+        .sim_controls_ic_radio_buttons {
+            padding-left: 0px;
+            padding-right: 5px;
+        }
     }
 
     /* For the 'Run Simulation', 'Save Simulation' and the media control buttons */

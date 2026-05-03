@@ -194,11 +194,11 @@ export class SimulationControls {
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(ele_id + "seed_" + name, {
-                    classes: "sim_controls_label",
+                    classes: "sim_controls_ic_radio_labels sim_controls_ic_radio_label_" + name,
                 }).set_content(value);
                 td.add_input_radio(id, name, true, {
                     id: ele_id + "seed_" + name,
-                    classes: "sim_controls_radio " + name,
+                    classes: "sim_controls_ic_radio_buttons sim_controls_ic_radio_button_" + name,
                 });
             }
         }
@@ -215,8 +215,7 @@ export class SimulationControls {
             if (this.presets != null) {
                 const td = tr.add_ele("td");
                 const value = "Example choices: ";
-                const name = "label";
-                td.add_label(ele_id + "sim_preset_dropdown", { classes: "sim_preset_label " + "sim_preset_dropdown" }).set_content(value);
+                td.add_label(ele_id + "sim_preset_dropdown", { classes: "sim_preset_label" }).set_content(value);
                 td.add_input_dropdown_with_callback(this.presets, preset_select_dropdown);
             }
         }
