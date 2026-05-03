@@ -30,7 +30,7 @@ export class Visualize {
         /** Zoom scale to use
          *
          */
-        this.scale = 1;
+        this.zoom = 1;
         this.max_zoom = 5;
         /** Which direction to animate 'time slice' when animating
          *
@@ -64,8 +64,8 @@ export class Visualize {
     canvas_1d(sim_control) {
         this.log.push_reason("canvas_1d");
         var x_ofs = 0;
-        const x_scale = this.scale;
-        var y_scale = this.scale;
+        const x_scale = this.zoom;
+        var y_scale = this.zoom;
         const is_staggered = this.simulation.results_are_staggered();
         if (is_staggered) {
             y_scale = 0.5 * y_scale;
@@ -126,8 +126,8 @@ export class Visualize {
         else {
             this.t_increment = 1;
         }
-        const x_scale = this.scale;
-        const y_scale = this.scale;
+        const x_scale = this.zoom;
+        const y_scale = this.zoom;
         this.width = this.simulation.parameters.dimensions.n_x * x_scale;
         this.height = this.simulation.parameters.dimensions.n_y * y_scale;
         /*
@@ -207,7 +207,7 @@ export class Visualize {
                 let previous_cell_state = null;
                 let x_start = null;
                 // This isn't the correct way to get ux, but...
-                const u_x = this.simulation_controls.get_float("u_x", -100, 100);
+                const u_x = this.simulation_controls.get_webpage_float("u_x", -100, 100);
                 // const u_x = this.simulation_controls!.parameters.probabilities.u_x;
                 // const u_x = this.simulation.parameters.probabilities.u_x;
                 const x_sense = Math.sign(u_x);
@@ -351,7 +351,8 @@ export class Visualize {
         }
     }
     set_zoom(zoom) {
-        this.scale = zoom;
+        html.set_input_value("zoom", zoom);
+        this.zoom = zoom;
         this.redraw();
     }
     set_slice(slice) {

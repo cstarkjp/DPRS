@@ -85,8 +85,8 @@ class Main {
     }
     save_simulation(dims) {
         this.log.push_reason("save");
-        this.simulation_controls_1d.get_parameters_from_webpage_entries();
-        this.simulation_controls_2d.get_parameters_from_webpage_entries();
+        this.simulation_controls_1d.set_parameters_from_webpage_entries();
+        this.simulation_controls_2d.set_parameters_from_webpage_entries();
         this.simulation_controls_1d.parameters.dimensions.n_y = 1;
         this.simulation_controls_1d.parameters.dimensions.n_z = 1;
         this.simulation_controls_2d.parameters.dimensions.n_z = 1;
@@ -102,8 +102,8 @@ class Main {
         this.log.push_reason("sim");
         this.log.info(`Running simulation of dimension ${dim}`);
         this.visualize.animation_stop();
-        this.simulation_controls_1d.get_parameters_from_webpage_entries();
-        this.simulation_controls_2d.get_parameters_from_webpage_entries();
+        this.simulation_controls_1d.set_parameters_from_webpage_entries();
+        this.simulation_controls_2d.set_parameters_from_webpage_entries();
         this.simulation_controls_1d.parameters.dimensions.n_y = 1;
         this.simulation_controls_1d.parameters.dimensions.n_z = 1;
         this.simulation_controls_2d.parameters.dimensions.n_z = 1;
@@ -113,7 +113,7 @@ class Main {
         }
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation (dim ${dim}) complete with ${this.simulation.n_results()} results`);
-        this.visualize_controls.get_parameters_from_webpage_entries(this.simulation);
+        this.visualize_controls.set_parameters_from_webpage_entries(this.simulation);
         if (this.simulation.dim > 1) {
             this.visualize.set_redraw(this.simulation_controls_2d);
             this.visualize.redraw();

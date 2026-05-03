@@ -5,7 +5,7 @@ import { JsSimulation } from "./js_simulation.js";
 import { JsParameters } from "./js_parameters.js";
 import { SimulationControls } from "./simulation_controls.js";
 export class MainBase {
-    constructor(logger, model, dim) {
+    constructor(logger, model, dim, zoom = null, do_rough_background = null) {
         this.log = new Logger(logger, `${model}_${dim}d`);
         this.log.push_reason("init");
         this.log.info("Starting");
@@ -15,23 +15,21 @@ export class MainBase {
         this.simulation_controls.populate_webpage_entries();
         this.visualize = new Visualize(logger, this.simulation, "Visualize");
         this.visualize_controls = new VisualizeControls(logger, this.visualize, this.visualize, "VisualizationControls");
-        if (model == "DKBedload" && dim == 2) {
-            this.visualize.do_rough_background = true;
-            // TODO: this is a hack!!
-            this.visualize_controls.get_parameters_from_webpage_entries(this.simulation, 2.2);
+        if (do_rough_background != null) {
+            this.visualize.do_rough_background = do_rough_background;
         }
-        else {
-            this.visualize.do_rough_background = false;
+        if (zoom != null) {
+            this.visualize.set_zoom(zoom);
         }
         this.log.info("HTML built, running initial simulation");
         this.run_simulation(dim);
         this.log.info("Initialization complete");
         this.log.pop_reason();
     }
-    run_simulation(dim, zoom = 1) {
+    run_simulation(dim) {
         this.log.push_reason("sim");
         this.log.info(`Running simulation of dimension ${dim}`);
-        this.simulation_controls.get_parameters_from_webpage_entries();
+        this.simulation_controls.set_parameters_from_webpage_entries();
         if (dim <= 1) {
             this.simulation_controls.parameters.dimensions.n_y = 1;
         }
@@ -41,9 +39,7 @@ export class MainBase {
         const sim_parameters = this.simulation_controls.parameters;
         this.simulation.run(sim_parameters);
         this.log.info(`Simulation complete with ${this.simulation.n_results()} results`);
-        // Turn off setting of zoom here
-        // NB: this.visualize.scale records this zoom value
-        this.visualize_controls.get_parameters_from_webpage_entries(this.simulation, null);
+        this.visualize_controls.set_parameters_from_webpage_entries(this.simulation);
         this.visualize.set_redraw(this.simulation_controls);
         this.visualize.redraw();
         this.log.pop_reason();

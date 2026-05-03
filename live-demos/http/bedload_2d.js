@@ -6,7 +6,9 @@ class Main extends MainBase {
     constructor(logger) {
         const model = "DKBedload";
         const dim = 2;
-        super(logger, model, dim);
+        const zoom = 2.2;
+        const do_rough_background = true;
+        super(logger, model, dim, zoom, do_rough_background);
         // console.log(`${model} ${dim}d child class`);
     }
     get_default_parameters() {
@@ -41,21 +43,20 @@ class Main extends MainBase {
         p.preset = 2;
         return p;
     }
-    run_simulation(dim, _ = 1) {
-        const zoom = 2.2;
-        super.run_simulation(dim, zoom);
+    run_simulation(dim) {
+        super.run_simulation(dim);
     }
     get_presets() {
         return [
-            // ["0", "User"],
-            ["1", "A"],
-            ["2", "B"],
-            ["3", "C"],
-            ["4", "D"],
-            ["5", "E"],
+            ["1", "Critical p1~0.62"],
+            ["2", "Critical p1~0.81"],
+            ["3", "Critical p1~0.89"],
+            ["4", "Critical p1~0.97"],
+            ["5", "Critical p1~0.99"],
         ];
     }
     enact_preset(preset) {
+        console.log(`Enacting preset ${preset}`);
         var p = this.get_default_parameters();
         switch (preset) {
             case 0:
