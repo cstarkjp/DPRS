@@ -71,6 +71,10 @@ div.md-container div div.md-content article.md-content__inner {
             padding-right: 8px;
         }
 
+        .sim_controls_presets_menu_label {
+            padding-right: 6px;
+        }
+
         .sim_controls_presets_menu {
             padding: 6px;
             border: 1px solid rgb(83, 83, 83);
