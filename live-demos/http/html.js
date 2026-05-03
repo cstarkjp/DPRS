@@ -224,7 +224,7 @@ export class HtmlElement {
         this.ele.appendChild(input);
         return new HtmlElement(input);
     }
-    add_input_dropdown_with_callback(values_labels, callback) {
+    add_input_dropdown_with_callback(values_labels, callback, id_classes = {}) {
         const select = document.createElement("select");
         for (const [value, label] of values_labels) {
             const option = document.createElement("option");
@@ -234,6 +234,7 @@ export class HtmlElement {
         }
         select.addEventListener("change", callback);
         this.ele.appendChild(select);
+        HtmlElement.set_id_classes(select, id_classes);
         return new HtmlElement(select);
     }
     // add_input_dropdown_with_callback(
