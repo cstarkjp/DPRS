@@ -84,6 +84,14 @@ div.md-container div div.md-content article.md-content__inner {
       padding-right: 6px;
     }
 
+    .steps_etc_input_sample_period {
+      width: 3ch;
+    }
+
+    .steps_etc_input_random_seed {
+      width: 4ch;
+    }
+
     /* For the 'Run Simulation', 'Save Simulation' */
     .simulation {
       border-radius: 5px;

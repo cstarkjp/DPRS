@@ -191,7 +191,7 @@ export class SimulationControls {
                 }).set_content(label + ":");
                 td.add_input_text(name, value, {
                     id: this.ele_id + name,
-                    classes: "text_inputs steps_etc steps_etc_inputs",
+                    classes: "text_inputs steps_etc steps_etc_inputs steps_etc_input_" + name,
                 });
             }
         }
