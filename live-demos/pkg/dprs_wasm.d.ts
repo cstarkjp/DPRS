@@ -36,6 +36,7 @@ export class Simulation {
      */
     constructor(parameters: Parameters);
     result(index: number): Uint8Array | undefined;
+    result_sum_kernel_with_threshold(index: number, kernel_size: number, threshold: number, step: number): Uint8Array | undefined;
     simulate(model: string, scheme: string): void;
     parameters: Parameters;
 }
@@ -54,6 +55,13 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly __wbg_simulation_free: (a: number, b: number) => void;
+    readonly simulation_new: (a: number) => number;
+    readonly simulation_parameters: (a: number) => number;
+    readonly simulation_result: (a: number, b: number) => [number, number];
+    readonly simulation_result_sum_kernel_with_threshold: (a: number, b: number, c: number, d: number, e: number) => [number, number];
+    readonly simulation_set_parameters: (a: number, b: number) => void;
+    readonly simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly __wbg_get_topologybc_fix_max: (a: number) => number;
     readonly __wbg_get_topologybc_fix_min: (a: number) => number;
     readonly __wbg_get_topologybc_fix_value: (a: number) => number;
@@ -99,12 +107,6 @@ export interface InitOutput {
     readonly parameters_sim_dimension: (a: number) => number;
     readonly parameters_topology_bc_x: (a: number) => number;
     readonly parameters_u_x: (a: number) => number;
-    readonly __wbg_simulation_free: (a: number, b: number) => void;
-    readonly simulation_new: (a: number) => number;
-    readonly simulation_parameters: (a: number) => number;
-    readonly simulation_result: (a: number, b: number) => [number, number];
-    readonly simulation_set_parameters: (a: number, b: number) => void;
-    readonly simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;

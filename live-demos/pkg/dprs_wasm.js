@@ -299,6 +299,22 @@ export class Simulation {
         return v1;
     }
     /**
+     * @param {number} index
+     * @param {number} kernel_size
+     * @param {number} threshold
+     * @param {number} step
+     * @returns {Uint8Array | undefined}
+     */
+    result_sum_kernel_with_threshold(index, kernel_size, threshold, step) {
+        const ret = wasm.simulation_result_sum_kernel_with_threshold(this.__wbg_ptr, index, kernel_size, threshold, step);
+        let v1;
+        if (ret[0] !== 0) {
+            v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v1;
+    }
+    /**
      * @param {Parameters} parameters
      */
     set parameters(parameters) {

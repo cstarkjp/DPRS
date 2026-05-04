@@ -1,6 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const __wbg_simulation_free: (a: number, b: number) => void;
+export const simulation_new: (a: number) => number;
+export const simulation_parameters: (a: number) => number;
+export const simulation_result: (a: number, b: number) => [number, number];
+export const simulation_result_sum_kernel_with_threshold: (a: number, b: number, c: number, d: number, e: number) => [number, number];
+export const simulation_set_parameters: (a: number, b: number) => void;
+export const simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
 export const __wbg_get_topologybc_fix_max: (a: number) => number;
 export const __wbg_get_topologybc_fix_min: (a: number) => number;
 export const __wbg_get_topologybc_fix_value: (a: number) => number;
@@ -46,12 +53,6 @@ export const parameters_set_u_x: (a: number, b: number) => void;
 export const parameters_sim_dimension: (a: number) => number;
 export const parameters_topology_bc_x: (a: number) => number;
 export const parameters_u_x: (a: number) => number;
-export const __wbg_simulation_free: (a: number, b: number) => void;
-export const simulation_new: (a: number) => number;
-export const simulation_parameters: (a: number) => number;
-export const simulation_result: (a: number, b: number) => [number, number];
-export const simulation_set_parameters: (a: number, b: number) => void;
-export const simulation_simulate: (a: number, b: number, c: number, d: number, e: number) => [number, number];
 export const __wbindgen_externrefs: WebAssembly.Table;
 export const __wbindgen_free: (a: number, b: number, c: number) => void;
 export const __wbindgen_malloc: (a: number, b: number) => number;
