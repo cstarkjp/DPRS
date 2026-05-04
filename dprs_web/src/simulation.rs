@@ -135,7 +135,8 @@ impl Simulation {
         let n_x = self.parameters.n_x() as usize;
         let n_y = self.parameters.n_y() as usize;
 
-        // Last one in row requires r[kernel_size-1 + step * (dest_n_x - 1)] hence n_x-1 >= kernel_size-1+step*(dest_n_x-1)
+        // Last one in row requires r[kernel_size-1 + step * (dest_n_x - 1)] 
+        // hence n_x-1 >= kernel_size-1+step*(dest_n_x-1)
         //
         // n_x - kernel_size >= step * (dest_n_x-1)
         //

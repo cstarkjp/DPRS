@@ -57,13 +57,17 @@ export class JsSimulation {
      * Return the number of result lattices
      */
     n_results() {
-        return (this.parameters.settings.n_iterations / this.parameters.settings.sample_period);
+        return (this.parameters.settings.n_iterations /
+            this.parameters.settings.sample_period);
     }
     /**
      * Return the n'th result lattice
      */
     result(x) {
         return this.simulation.result(x);
+    }
+    result_sum_kernel_with_threshold(x, kernel_size, threshold, step) {
+        return this.simulation.result_sum_kernel_with_threshold(x, kernel_size, threshold, step);
     }
     /**
      * Return true if the results are staggered

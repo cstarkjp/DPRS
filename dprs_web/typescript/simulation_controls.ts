@@ -85,9 +85,7 @@ export class SimulationControls {
     const growth_scheme = html.get_input_radio_checked(
       this.ele_id + "growth_scheme",
     );
-    const initial_seeding = html.get_input_radio_checked(
-      this.ele_id + "_seed_kind",
-    );
+    const initial_seeding = html.get_input_radio_checked(this.ele_id + "ic");
     const preset = html.get_input_radio_checked(this.ele_id + "_preset");
 
     if (growth_model !== null) {

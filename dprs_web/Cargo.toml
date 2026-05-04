@@ -6,6 +6,9 @@ edition = "2024"
 name = "dprs-wasm"
 readme = "README.md"
 version = "0.0.1"
+repository = "https://github.com/cstarkjp/DPRS"
+# license = "MIT OR Apache-2.0"
+license = "TBD"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
