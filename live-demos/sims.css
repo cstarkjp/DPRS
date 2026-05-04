@@ -43,7 +43,7 @@ div.md-container div div.md-content article.md-content__inner {
 
     /* probability text input */
     .probabilities_inputs {
-      width: 8ch;
+      width: 7ch;
     }
 
     .radio_labels {
@@ -55,9 +55,19 @@ div.md-container div div.md-content article.md-content__inner {
       padding-right: 10px;
     }
 
+    .ic {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .growth_scheme {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
     .presets {
       margin-top: 0px;
-      margin-bottom: 5px;
+      margin-bottom: 15px;
     }
 
     .presets_menu {
@@ -78,7 +88,7 @@ div.md-container div div.md-content article.md-content__inner {
       width: 40%;
       text-align: center;
       margin-left: 60px;
-      margin-top: 10px;
+      margin-top: 0px;
       padding-top: 8px;
       padding-bottom: 8px;
       font-size: 105%;
