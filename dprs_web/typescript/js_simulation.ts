@@ -51,29 +51,28 @@ export class JsSimulation {
 
     this.log.info(
       `Dims ` +
-      `n_x:${parameters.dimensions.n_x} ` +
-      `n_y:${parameters.dimensions.n_y} ` +
-      `n_z:${parameters.dimensions.n_z}`,
+        `n_x:${parameters.dimensions.n_x} ` +
+        `n_y:${parameters.dimensions.n_y} ` +
+        `n_z:${parameters.dimensions.n_z}`,
     );
     this.log.info(
       `Probabilities  ` +
-      `p_1: ${parameters.probabilities.p_1} ` +
-      `p_2: ${parameters.probabilities.p_2} ` +
-      `p_conj: ${parameters.probabilities.p_conj} ` +
-      `p_nbr: ${parameters.probabilities.p_nbr} ` +
-      `p_diag: ${parameters.probabilities.p_diag} ` +
-      `u_x: ${parameters.probabilities.u_x} ` +
-      `p_initial:${parameters.probabilities.p_initial} `
-      ,
+        `p_1: ${parameters.probabilities.p_1} ` +
+        `p_2: ${parameters.probabilities.p_2} ` +
+        `p_conj: ${parameters.probabilities.p_conj} ` +
+        `p_nbr: ${parameters.probabilities.p_nbr} ` +
+        `p_diag: ${parameters.probabilities.p_diag} ` +
+        `u_x: ${parameters.probabilities.u_x} ` +
+        `p_initial:${parameters.probabilities.p_initial} `,
     );
     this.log.info(
       `Params ` +
-      `growth_model:${parameters.settings.growth_model}` +
-      `growth_scheme:${parameters.settings.growth_scheme}` +
-      `n_iterations:${parameters.settings.n_iterations} ` +
-      `sample_period:${parameters.settings.sample_period} ` +
-      `random_seed:${parameters.settings.random_seed} ` +
-      `initial_seeding:${parameters.settings.initial_seeding} `
+        `growth_model:${parameters.settings.growth_model}` +
+        `growth_scheme:${parameters.settings.growth_scheme}` +
+        `n_iterations:${parameters.settings.n_iterations} ` +
+        `sample_period:${parameters.settings.sample_period} ` +
+        `random_seed:${parameters.settings.random_seed} ` +
+        `initial_seeding:${parameters.settings.initial_seeding} `,
     );
 
     this.simulation = new Simulation(this.parameters.as_parameters());
@@ -82,7 +81,9 @@ export class JsSimulation {
     const dim = this.parameters.dim();
     const growth_model = this.parameters.wasm_growth_model();
     const growth_scheme = this.parameters.wasm_growth_scheme();
-    console.log(`Calling DPRS simulation with ${dim}d ${growth_model} ${growth_scheme}`);
+    console.log(
+      `Calling DPRS simulation with ${dim}d ${growth_model} ${growth_scheme}`,
+    );
     this.simulation.simulate(growth_model, growth_scheme);
     this.log.info("Completed simulation");
     this.log.pop_reason();
@@ -93,15 +94,30 @@ export class JsSimulation {
    */
   n_results() {
     return (
-      this.parameters.settings.n_iterations / this.parameters.settings.sample_period
+      this.parameters.settings.n_iterations /
+      this.parameters.settings.sample_period
     );
   }
 
   /**
    * Return the n'th result lattice
    */
-  result(x: number) {
+  result(x: number): Uint8Array<ArrayBuffer> | undefined {
     return this.simulation.result(x);
+  }
+
+  result_sum_kernel_with_threshold(
+    x: number,
+    kernel_size: number,
+    threshold: number,
+    step: number,
+  ): Uint8Array<ArrayBuffer> | undefined {
+    return this.simulation.result_sum_kernel_with_threshold(
+      x,
+      kernel_size,
+      threshold,
+      step,
+    );
   }
 
   /**

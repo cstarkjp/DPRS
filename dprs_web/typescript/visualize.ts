@@ -203,8 +203,8 @@ export class Visualize {
     }
 
     // Get the lattice size
-    const n_x = this.simulation.parameters.dimensions.n_x;
-    const n_y = this.simulation.parameters.dimensions.n_y;
+    let n_x = this.simulation.parameters.dimensions.n_x;
+    let n_y = this.simulation.parameters.dimensions.n_y;
 
     if (this.do_rough_background) {
       // Make a "rough" looking canvas
@@ -216,15 +216,20 @@ export class Visualize {
       } else {
         // Make sure to rebuild the rough bgrd if we've made the lattice bigger
         // and run a new sim
-        if (this.rough_background.width < n_x * this.max_zoom
-          || this.rough_background.height < n_y * this.max_zoom) {
+        if (
+          this.rough_background.width < n_x * this.max_zoom ||
+          this.rough_background.height < n_y * this.max_zoom
+        ) {
           redo = true;
         } else {
           redo = false;
         }
       }
       if (redo) {
-        this.rough_background = ctx.createImageData(n_x * this.max_zoom, n_y * this.max_zoom);
+        this.rough_background = ctx.createImageData(
+          n_x * this.max_zoom,
+          n_y * this.max_zoom,
+        );
         let rough_canvas_data = this.rough_background.data;
         for (let i = 0; i < rough_canvas_data.length; i += 4) {
           let alpha = Math.random() * 30 + 30;
@@ -232,8 +237,7 @@ export class Visualize {
         }
       }
       ctx.putImageData(this.rough_background!, 0, 0);
-    }
-    else {
+    } else {
       // Make a blank canvas
       // Unoccupied cells are colored grey
       ctx.fillStyle = "lightgrey";
@@ -242,7 +246,15 @@ export class Visualize {
 
     // Get this lattice slice (flattened into a 1d array) maybe
     const t_slice = this.slice;
-    const lattice_slice = this.simulation.result(t_slice);
+    // const lattice_slice = this.simulation.result(t_slice);
+    const lattice_slice = this.simulation.result_sum_kernel_with_threshold(
+      t_slice,
+      2,
+      1,
+      1,
+    );
+    n_x = n_x - 1;
+    n_y = n_y - 1;
 
     // Print the time slice in the lower-left corner of the canvas
     const offset = 10;
@@ -263,7 +275,11 @@ export class Visualize {
         let previous_cell_state = null;
         let x_start = null;
         // This isn't the correct way to get ux, but...
-        const u_x = this.simulation_controls!.get_webpage_float("u_x", -100, 100);
+        const u_x = this.simulation_controls!.get_webpage_float(
+          "u_x",
+          -100,
+          100,
+        );
         // const u_x = this.simulation_controls!.parameters.probabilities.u_x;
         // const u_x = this.simulation.parameters.probabilities.u_x;
         const x_sense = Math.sign(u_x);
@@ -273,11 +289,14 @@ export class Visualize {
         for (let x = 0; x < n_x; x++) {
           // This is where a velocity shift can be implemented for time slice t
           // with a shift ~ (u_x * t * (n_x/L)) modulo n_x
-          let i_cell = y * n_x + (x - x_sense * x_shift + n_x) % n_x;
+          let i_cell = y * n_x + ((x - x_sense * x_shift + n_x) % n_x);
           const cell_state = lattice_slice[i_cell];
-          // At the start of the row, when x=0, previous_cell_state=null, 
+          // At the start of the row, when x=0, previous_cell_state=null,
           // so this is skipped
-          if (previous_cell_state !== null && cell_state != previous_cell_state) {
+          if (
+            previous_cell_state !== null &&
+            cell_state != previous_cell_state
+          ) {
             // Plot a rectangle that's the RLE width of occupied cells,
             // and height of one cell, with both sizes scaled to canvas pixels
             if (previous_cell_state != empty) {

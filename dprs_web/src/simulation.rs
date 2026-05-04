@@ -114,4 +114,49 @@ impl Simulation {
     pub fn result(&self, index: usize) -> Option<Vec<u8>> {
         self.results.get(index).cloned()
     }
+
+    pub fn result_sum_kernel_with_threshold(
+        &self,
+        index: usize,
+        mut kernel_size: usize,
+        threshold: usize,
+        mut step: usize,
+    ) -> Option<Vec<u8>> {
+        let Some(r) = self.results.get(index) else {
+            return None;
+        };
+
+        if step == 0 {
+            step = 1;
+        }
+        if kernel_size < 2 {
+            kernel_size = 2;
+        }
+        let n_x = self.parameters.n_x() as usize;
+        let n_y = self.parameters.n_y() as usize;
+
+        // Last one in row requires r[kernel_size-1 + step * (dest_n_x - 1)] hence n_x-1 >= kernel_size-1+step*(dest_n_x-1)
+        //
+        // n_x - kernel_size >= step * (dest_n_x-1)
+        //
+        // dest_n_x <=(n_x - kernel_size) / step + 1
+        let dest_n_x = (n_x - kernel_size) / step + 1;
+        let dest_n_y = (n_y - kernel_size) / step + 1;
+        let mut thresholded = vec![];
+
+        for y in 0..dest_n_y {
+            for x in 0..dest_n_x {
+                let mut sum = 0;
+                for dy in 0..kernel_size {
+                    for dx in 0..kernel_size {
+                        sum += r[(y + dy) * step * n_x + (x + dx) * step];
+                    }
+                }
+                let value = { if sum >= threshold as u8 { 1 } else { 0 } };
+                thresholded.push(value);
+            }
+        }
+
+        return Some(thresholded);
+    }
 }
