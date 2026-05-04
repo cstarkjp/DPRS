@@ -361,6 +361,10 @@ export class Visualize {
     if (this.simulation.dim < 2) {
       return;
     }
+    if (this.slice == this.simulation.n_results()) {
+      console.log("Rewinding and restarting animation");
+      this.slice = 0;
+    }
     this.set_animation_is_playing();
     this.anim.schedule();
   }
