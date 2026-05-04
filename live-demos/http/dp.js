@@ -9,10 +9,10 @@ import { SimulationControls } from "./simulation_controls.js";
 import { SavedSimulations } from "./saved_simulations.js";
 import { Tabs } from "./tabbed.js";
 class Main {
+    // default_preset_value = null;
     constructor(logger, params) {
         this.autoplay = true;
         this.presets = [];
-        this.default_preset_value = null;
         this.log = new Logger(logger, "dk_main");
         this.log.push_reason("init");
         this.log.info("Starting dk");

@@ -1,26 +1,9 @@
 div.md-container div div.md-content article.md-content__inner {
+  .growth_scheme_labels {
+    display: none;
+  }
 
-    .sim_controls_label.staggered {
-        display: none;
-    }
-
-    .sim_controls_radio.staggered {
-        display: none;
-    }
-
-    .sim_controls_label.simple {
-        display: none;
-    }
-
-    .sim_controls_radio.simple {
-        display: none;
-    }
-
-    /* .sim_controls_label.bedload {
-        display: none;
-    }
-
-    .sim_controls_radio.bedload {
-        display: none;
-    } */
+  .growth_scheme_inputs {
+    display: none;
+  }
 }

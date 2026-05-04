@@ -4,9 +4,9 @@ import { VisualizeControls } from "./visualize_controls.js";
 import { JsSimulation } from "./js_simulation.js";
 import { SimulationControls, } from "./simulation_controls.js";
 export class MainBase {
+    // default_preset_value = null;
     constructor(main_sim, logger) {
         this.presets = [];
-        this.default_preset_value = null;
         const model = main_sim.model_name;
         const dim = main_sim.dim;
         this.main_sim = main_sim;

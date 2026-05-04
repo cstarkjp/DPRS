@@ -37,13 +37,6 @@ export class SimulationControls {
         else {
             this.set_webpage_radio_button("seed_random", true);
         }
-        // if (this.presets != null) {
-        //   console.log(`Setting preset in web page`,)
-        //   this.set_webpage_radio_button("sim_preset" + this.parameters.preset.toString(), true);
-        // }
-        // if (this.presets != null) {
-        //   console.log(`Setting preset in web page ${this.ele_id + "sim_presets"}`)
-        // }
         if (this.parameters.settings.growth_scheme == "Simple") {
             this.set_webpage_radio_button("simple", true);
         }
@@ -118,31 +111,37 @@ export class SimulationControls {
             const tr = dims_probabilities_table.add_ele("tr", { id: id });
             const td = tr.add_ele("td");
             // const label_nx = "<div><mjx-container class='MathJax CtxtMenu_Attached_0' jax='CHTML' style='font-size: 119.5%; position: relative;' tabindex='0' ctxtmenu_counter='1'><mjx-math class='MJX-TEX' aria-hidden='true'><mjx-msub><mjx-mi class='mjx-i'><mjx-c class='mjx-c1D45B TEX-I'></mjx-c></mjx-mi><mjx-script style='vertical-align: -0.15em;'><mjx-mi class='mjx-i' size='s'><mjx-c class='mjx-c1D465 TEX-I'></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable='on' display='inline'><mjx-container class='MathJax CtxtMenu_Attached_0' jax='CHTML' style='font-size: 119.5%; position: relative;' tabindex='0' ctxtmenu_counter='4'><mjx-math class='MJX-TEX' aria-hidden='true'><mjx-msub><mjx-mi class='mjx-i'><mjx-c class='mjx-c1D45B TEX-I'></mjx-c></mjx-mi><mjx-script style='vertical-align: -0.15em;'><mjx-mi class='mjx-i' size='s'><mjx-c class='mjx-c1D465 TEX-I'></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable='on' display='inline'><math xmlns='http://www.w3.org/1998/Math/MathML'><msub><mi>n</mi><mi>x</mi></msub></math></mjx-assistive-mml></mjx-container></mjx-assistive-mml></mjx-container></div>";
-            td.add_label("n_x", { classes: "sim_controls_label" }).set_content("x:");
+            td.add_label("n_x", {
+                classes: "text_labels dims_labels dims_label_nx",
+            }).set_content("x:");
             td.add_input_text("n_x", "20", {
                 id: this.ele_id + "n_x",
-                classes: "sim_controls_text dims_n_text",
+                classes: "text_inputs dims_inputs dims_input_nx",
             });
             if (dims >= 2) {
                 const td = tr.add_ele("td");
-                td.add_label("n_y", { classes: "sim_controls_label" }).set_content("y:");
+                td.add_label("n_y", {
+                    classes: "text_labels dims_labels dims_label_ny",
+                }).set_content("y:");
                 td.add_input_text("n_y", "20", {
                     id: this.ele_id + "n_y",
-                    classes: "sim_controls_text dims_n_text",
+                    classes: "text_inputs dims_inputs dims_input_ny",
                 });
             }
             if (dims >= 3) {
                 const td = tr.add_ele("td");
-                td.add_label("n_z", { classes: "sim_controls_label" }).set_content("z:");
+                td.add_label("n_z", {
+                    classes: "text_labels dims_labels dims_label_nz",
+                }).set_content("z:");
                 const x = td.add_input_text("n_z", "20", {
                     id: this.ele_id + "n_z",
-                    classes: "sim_controls_text dims_n_text",
+                    classes: "text_inputs dims_inputs dims_input_nz",
                 });
             }
         }
         // Probabilities
         {
-            let id = ele_id + "probability";
+            let id = ele_id + "probabilities";
             const tr = dims_probabilities_table.add_ele("tr", { id: id });
             for (const [label, thing] of [
                 ["p_1", "p_1"],
@@ -150,15 +149,17 @@ export class SimulationControls {
                 ["p_d", "p_diag"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
+                td.add_label(thing, {
+                    classes: "text_labels probabilities_labels",
+                }).set_content(label + ":");
                 td.add_input_text(thing, "0.5", {
                     id: this.ele_id + thing,
-                    classes: "sim_controls_text prob_text",
+                    classes: "text_inputs probabilities_inputs",
                 });
             }
         }
         {
-            let id = ele_id + "probability";
+            let id = ele_id + "probabilities";
             const tr = dims_probabilities_table.add_ele("tr", { id: id });
             for (const [label, thing] of [
                 ["p_0", "p_initial"],
@@ -166,16 +167,18 @@ export class SimulationControls {
                 ["p_ext", "p_conj"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_label(thing, { classes: "sim_controls_label" }).set_content(label + ":");
+                td.add_label(thing, {
+                    classes: "text_labels probabilities_labels",
+                }).set_content(label + ":");
                 td.add_input_text(thing, "0", {
                     id: this.ele_id + thing,
-                    classes: "sim_controls_text prob_text",
+                    classes: "text_inputs probabilities_inputs",
                 });
             }
         }
         // Steps / slicing / seed
         {
-            let id = ele_id + "sim_controls";
+            let id = ele_id + "steps_etc";
             const tr = steps_slicing_seed_table.add_ele("tr", { id: id });
             for (const [name, label, value] of [
                 ["n_iterations", "Steps", "1000"],
@@ -183,18 +186,20 @@ export class SimulationControls {
                 ["random_seed", "Seed", "1"],
             ]) {
                 const td = tr.add_ele("td");
-                td.add_label(name, { classes: "sim_controls_label" }).set_content(label + ":");
+                td.add_label(name, {
+                    classes: "text_labels steps_etc_labels",
+                }).set_content(label + ":");
                 td.add_input_text(name, value, {
                     id: this.ele_id + name,
-                    classes: "sim_controls_text params_text",
+                    classes: "text_inputs steps_etc_inputs",
                 });
             }
         }
         // Edge / center / randomized
         {
-            let id = ele_id + "_seed_kind";
+            let id = ele_id + "ic";
             const tr = edge_center_randomized_table.add_ele("tr", {
-                id: ele_id + "_seed_kind",
+                id: id,
             });
             for (const [name, value] of [
                 ["edge", "Edge cell:"],
@@ -203,11 +208,11 @@ export class SimulationControls {
             ]) {
                 const td = tr.add_ele("td");
                 td.add_label(ele_id + "seed_" + name, {
-                    classes: "ic_radio_labels ic_radio_label_" + name,
+                    classes: "radio_labels ic_labels ic_label_" + name,
                 }).set_content(value);
                 td.add_input_radio(id, name, true, null, {
                     id: ele_id + "seed_" + name,
-                    classes: "ic_radio_buttons ic_radio_button_" + name,
+                    classes: "radio_buttons ic_inputs ic_input_" + name,
                 });
             }
         }
@@ -240,32 +245,32 @@ export class SimulationControls {
             ]) {
                 const td = tr.add_ele("td");
                 // Using value not name because we want upper case
+                td.add_label(ele_id + name, {
+                    classes: "radio_labels growth_scheme_labels growth_scheme_label_" + name,
+                }).set_content(value + ":");
                 td.add_input_radio(id, value, true, null, {
                     id: ele_id + name,
-                    classes: "sim_controls_radio " + name,
+                    classes: "radio_buttons growth_scheme_inputs growth_scheme_input_" + name,
                 });
-                td.add_label(ele_id + name, {
-                    classes: "sim_controls_label " + name,
-                }).set_content(value);
             }
         }
         // Run / save
         {
-            let id = ele_id + "controls";
+            let id = ele_id + "simulation";
             const tr = run_save_table.add_ele("tr", { id: id });
             const td_run = tr.add_ele("td");
             td_run.add_input_button("Run simulation", () => {
                 this.controllable.run_simulation(dims);
             }, {
                 id: ele_id + "run_simulation",
-                classes: "controls simulation run_simulation",
+                classes: "simulation run_simulation",
             });
             const td_save = tr.add_ele("td");
             td_save.add_input_button("Save simulation", () => {
                 this.controllable.save_simulation(dims);
             }, {
                 id: ele_id + "save_simulation",
-                classes: "controls simulation save_simulation",
+                classes: "simulation save_simulation",
             });
         }
     }
