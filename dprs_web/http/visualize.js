@@ -188,10 +188,15 @@ export class Visualize {
         }
         // Get this lattice slice (flattened into a 1d array) maybe
         const t_slice = this.slice;
-        // const lattice_slice = this.simulation.result(t_slice);
-        const lattice_slice = this.simulation.result_sum_kernel_with_threshold(t_slice, 2, 1, 1);
-        n_x = n_x - 1;
-        n_y = n_y - 1;
+        const lattice_slice = this.simulation.result(t_slice);
+        // const lattice_slice = this.simulation.result_sum_kernel_with_threshold(
+        //   t_slice,
+        //   2,
+        //   1,
+        //   1,
+        // );
+        // n_x = n_x - 1;
+        // n_y = n_y - 1;
         // Print the time slice in the lower-left corner of the canvas
         const offset = 10;
         ctx.font = "12px Arial";
