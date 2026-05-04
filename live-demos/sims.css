@@ -50,6 +50,14 @@ div.md-container div div.md-content article.md-content__inner {
       width: 7ch;
     }
 
+    .probabilities_input_u_x {
+      width: 4ch;
+    }
+
+    .probabilities_input_p_ext {
+      width: 9ch;
+    }
+
     .radio_labels {
       padding-right: 1px;
     }

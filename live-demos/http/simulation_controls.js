@@ -85,6 +85,10 @@ export class SimulationControls {
             .add_ele("tr")
             .add_ele("td")
             .add_ele("table", { classes: "dims_probabilities" });
+        const dims_probabilities_table2 = table
+            .add_ele("tr")
+            .add_ele("td")
+            .add_ele("table", { classes: "dims_probabilities2" });
         const steps_slicing_seed_table = table
             .add_ele("tr")
             .add_ele("td")
@@ -160,7 +164,7 @@ export class SimulationControls {
         }
         {
             let id = ele_id + "probabilities";
-            const tr = dims_probabilities_table.add_ele("tr", { id: id });
+            const tr = dims_probabilities_table2.add_ele("tr", { id: id });
             for (const [label, thing] of [
                 ["p_0", "p_initial"],
                 ["u_x", "u_x"],
@@ -172,7 +176,7 @@ export class SimulationControls {
                 }).set_content(label + ":");
                 td.add_input_text(thing, "0", {
                     id: this.ele_id + thing,
-                    classes: "text_inputs probabilities_inputs",
+                    classes: "text_inputs probabilities_inputs probabilities_input_" + label,
                 });
             }
         }
