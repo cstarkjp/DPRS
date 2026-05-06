@@ -361,6 +361,9 @@ export class Visualize {
             const n_frames = this.simulation.n_results();
             const fps = (n_frames / total_time) * 1000;
             this.log.info("animation", `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`);
+            // Flag that we're at the end of playback, so hitting pause/play
+            // restarts immediately
+            this.set_animation_is_stopped();
         }
     }
     set_zoom(zoom) {
