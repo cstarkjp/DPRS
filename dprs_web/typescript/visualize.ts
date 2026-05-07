@@ -456,6 +456,9 @@ export class Visualize {
         "animation",
         `Played back @ ${fps} frames per second : ${n_frames} frames / ${total_time}ms`,
       );
+      // Flag that we're at the end of playback, so hitting pause/play
+      // restarts immediately
+      this.set_animation_is_stopped();
     }
   }
 
