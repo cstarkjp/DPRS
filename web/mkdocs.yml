@@ -109,6 +109,11 @@ extra:
 # not_in_nav: |
 #   /tutorials/**/*.md
 
+
+not_in_nav: |
+  live-demos/pkg/README.md
+  live-demos/pkg/LICENSE.md
+
 nav:
     - Home: index.md
     # - Navigation: navigation.md
